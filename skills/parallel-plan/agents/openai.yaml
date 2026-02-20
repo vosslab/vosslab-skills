@@ -1,0 +1,4 @@
+interface:
+  display_name: "Parallel Plan"
+  short_description: "Design and run safe parallel workstreams"
+  default_prompt: "Use $parallel-plan to split this effort into independent concurrent workstreams with checkpoints. Produce stream briefs and a unified plan."

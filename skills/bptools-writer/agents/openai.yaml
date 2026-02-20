@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bptools Writer"
+  short_description: "Author bptools Python question generators"
+  default_prompt: "Use $bptools-writer to create or edit bptools-based Python generators in biology-problems, following docs/QUESTION_AUTHORING_GUIDE.md and bptools.py patterns."

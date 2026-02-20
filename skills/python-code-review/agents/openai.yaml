@@ -1,0 +1,5 @@
+version: 1
+interface:
+  display_name: Python Code Review
+  short_description: Severity-ranked Python review with actionable fixes
+  default_prompt: Review this Python change for bugs, security, and maintainability; provide severity-ranked findings with file/line references and concrete fixes.
