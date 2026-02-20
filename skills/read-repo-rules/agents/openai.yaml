@@ -1,0 +1,4 @@
+interface:
+  display_name: "Read Repo Rules"
+  short_description: "Summarize repo rules; changelog latest entry only"
+  default_prompt: "Use $read-repo-rules to read AGENTS.md, REPO_STYLE.md, PYTHON_STYLE.md, and CHANGELOG.md, output one-line summaries, and summarize only the latest dated CHANGELOG entry."
