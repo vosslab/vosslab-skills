@@ -1,5 +1,9 @@
 ## 2026-02-21
 
+- Added `UI/UX Pro Max Skill (nextlevelbuilder)` to the `README.md` related repositories and standards list.
+- Added a `README.md` section, "Related repositories and standards," listing external skills repositories, the Agent Skills standard site, and marketplace references.
+- Updated `README.md` skills summary to keep only high-level workflow themes and remove specific skill-name listings.
+- Updated `tools/build_skills_index.py` to ignore `skills/.system/*` skill files entirely (not parsed or indexed) and report `system_skills_ignored` in run stats.
 - Generalized the `README.md` opening description from Codex-specific wording to broader workflow-skill language and noted use across Claude and Codex environments.
 - Polished the `README.md` opening scope sentence to "refactoring plans, code review, repository maintenance, and education content production" for clearer wording.
 - Updated the `README.md` opening scope sentence to: code refactor planning, code review, repository maintenance, and education production.

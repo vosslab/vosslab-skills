@@ -4,11 +4,24 @@ Reusable workflow skills for refactoring plans, code review, repository maintena
 
 ## Skills summary
 
-- General engineering workflow skills: `readme-fix`, `read-repo-rules`, `docset-refresh`, `arch-docs`, `install-usage-docs`.
-- Planning and execution skills: `manager-make-new-plan`, `manager-review-existing-plan`, `orchestrate-next-milestone`, `parallel-plan`, `parallel-web-game-build`.
-- Domain or task-specific skills: `python-code-review`, `unit-test-starter`, `pyflakes-fix`, `ascii-lint-fix`, `pdf`, `bptools-writer`, `webwork-writer`.
-- System skill tooling is under `skills/.system/` and includes `skill-creator` and `skill-installer`.
+- Skills cover planning and execution workflows for software tasks.
+- Skills cover quality and maintenance workflows such as review, linting, and documentation updates.
+- Skills cover education-focused production workflows.
 - Full generated skill index: [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md).
+
+## Related repositories and standards
+
+If you are building, organizing, or distributing agent skills, these projects are worth a look.
+
+- [Claude Scientific Skills (K-Dense)](https://github.com/K-Dense-AI/claude-scientific-skills): 140+ ready-to-use scientific and research skills using the Agent Skills standard.
+- [Codex Skills Library (proflead)](https://github.com/proflead/codex-skills-library): Curated, reusable Codex skills for common developer workflows, designed for consistent results.
+- [Anthropic Skills](https://github.com/anthropics/skills): Official Claude skills repo with examples of repeatable task instructions and resources.
+- [Agent Skills standard (agentskills.io)](https://agentskills.io/home): Overview of the open `SKILL.md` format and why skills improve agent reliability.
+- [Agent Skills Marketplace (skills.marketplace)](https://skillsmp.com/): Large directory for discovering open-source skills built on the `SKILL.md` ecosystem.
+- [Superpowers (obra)](https://github.com/obra/superpowers): A composable skills-based workflow for coding agents, focused on spec-first and disciplined implementation.
+- [Everything Claude Code (affaan-m)](https://github.com/affaan-m/everything-claude-code): A large, production-oriented collection of Claude Code configs, including many skill packs.
+- [Awesome Claude Skills (ComposioHQ)](https://github.com/ComposioHQ/awesome-claude-skills): A curated list of practical Claude skills and related tooling.
+- [UI/UX Pro Max Skill (nextlevelbuilder)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill): An agent skill focused on UI/UX design intelligence and automated design system generation across platforms.
 
 ## Documentation
 
