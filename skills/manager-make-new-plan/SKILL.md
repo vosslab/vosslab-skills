@@ -1,13 +1,30 @@
 ---
 name: manager-make-new-plan
-description: Create forward-looking implementation plans from scratch for coding teams without writing code. Use when the user needs a new plan document, major rewrite, phase restructuring, acceptance gates, migration strategy, risk handling, or rollout planning for future work; do not use this skill for post-implementation audits of an existing plan.
+description: Create forward-looking implementation plans from scratch for coding teams without writing code. Use when the user needs a new plan document, major rewrite, milestone restructuring, acceptance gates, migration strategy, risk handling, or rollout planning for future work; do not use this skill for post-implementation audits of an existing plan.
 ---
 
 # Manager Make New Plan
 
 ## Overview
 Build a manager-grade implementation plan that a coding team can execute with low ambiguity.
-Operate as a planning manager over multiple coders: define scope, architecture boundaries, phased delivery, gates, risk treatment, and rollout.
+Operate as a planning manager over multiple coders: define scope, architecture boundaries, milestone delivery, gates, risk treatment, and rollout.
+
+## Terminology Contract
+Canonical definitions live in `references/DEFINITIONS.md`.
+- Milestone: timeboxed planning unit with deliverables and gates. Use in docs only.
+- Workstream: parallel lane inside a milestone. Ownable by one coder or a small pair.
+- Work package: coder-sized chunk with acceptance criteria and verification commands.
+- Patch: a reviewable code change set (PR-sized), used in summaries and changelog entries.
+- Stage / Step / Pass: durable pipeline step or algorithm pass (allowed in code identifiers).
+- Component / Module / Subsystem: durable code boundary (allowed in filenames, packages, tests).
+- If you need a durable label in code, prefer component, module, stage, pass, feature, or contract.
+- Legacy note: update older docs to use milestone terminology consistently.
+
+## Terminology Collision
+- Use Milestone / Workstream / Work package only in planning docs, never in code identifiers.
+- Use Stage / Pass / Step for durable pipeline or algorithm steps; these are allowed in code identifiers.
+- If a repository already has `phase3_*` filenames, treat "phase" there as legacy meaning "stage", and do not introduce new planning phases into code.
+- Apply naming guardrails from `references/NAMING_GUARDRAILS.md`.
 
 ## Authority And Boundaries
 - Read any repository files needed for planning context.
@@ -25,13 +42,24 @@ Operate as a planning manager over multiple coders: define scope, architecture b
 - Do not perform coding tasks as part of this skill.
 - Do not include pseudo-complete promises without measurable acceptance criteria.
 - Do not collapse architecture, implementation, and release concerns into one checklist.
-- Keep phase boundaries explicit, testable, and order-dependent.
+- Keep milestone boundaries explicit, testable, and order-dependent.
+- Apply numeric capacity and sizing targets from the capacity reference.
+- Under Architecture Boundaries, require a mapping subsection: milestones and workstreams map to components and patches; components use durable terminology.
+- Do not encode dependencies by milestone number. Dependencies must be declared by dependency ID in `Depends on`, with a short reason.
+- Dependencies live at the work package level, not hidden inside milestone prose.
+- Exception: if work is inherently serial (for example, one critical refactor), document why, and still create parallel work packages for tests, tooling, docs, and migration.
+- A work package must be completable by one coder and result in at least one patch.
+- Work is tracked and reported as patches with cadence and sizing rules from the capacity reference.
+- In reports and changelog guidance, use "Patch 1", "Patch 2", etc.; reserve "change" for generic prose.
 
 ## Inputs To Read First
 1. `refactor_progress.md`
 2. Active plan docs in `docs/active_plans/`
 3. Archive plan docs in `docs/archive/`
 4. `references/plan_quality_standard.md`
+5. `references/DEFINITIONS.md`
+6. `references/CAPACITY_AND_SIZING.md`
+7. `references/NAMING_GUARDRAILS.md`
 
 Use these inputs to match local planning style, terminology, status language, and quality bars.
 
@@ -42,8 +70,11 @@ Read `refactor_progress.md` to map active, completed, and pending work.
 Read the most relevant active and archive plans and extract reusable structure and known pitfalls.
 3. Define plan charter:
 State objective, scope, non-goals, assumptions, constraints, and ownership boundaries.
-4. Design phased execution:
-Define ordered phases with dependencies, deliverables, and explicit done checks.
+4. Design milestone execution:
+Define ordered milestones with dependencies, deliverables, and explicit done checks.
+Milestone numbers are labels, not ordering. Ordering is defined by Depends on and Gates.
+Declare dependencies by dependency ID with a short reason in `Depends on`; do not imply dependencies from milestone numbering.
+Apply capacity and sizing targets from the capacity reference.
 5. Define quality gates:
 Add acceptance criteria, test strategy, rollback/safety considerations, and release gates.
 6. Define migration and compatibility:
@@ -51,7 +82,7 @@ State additive rollout rules, backward compatibility promises, and legacy deleti
 7. Build risk register:
 List key risks with impact, trigger, owner, and mitigation.
 8. Define documentation execution:
-Specify required documentation updates per phase (active plan, progress tracker, changelog, archive/closure notes).
+Specify required documentation updates per milestone (active plan, progress tracker, changelog, archive/closure notes). Use patch labels ("Patch 1", "Patch 2", ...) in implementation summaries and changelog-oriented sections.
 9. Publish manager-grade output:
 Deliver one execution-ready plan document with measurable closure criteria.
 
@@ -60,14 +91,18 @@ Deliver one execution-ready plan document with measurable closure criteria.
 - Scope and non-goals
 - Current state summary
 - Architecture boundaries and ownership
-- Phase plan (ordered, dependency-aware)
-- Per-phase deliverables and done checks
+- Mapping: milestones and workstreams map to components and patches. Components must be named with durable terminology.
+- Milestone plan (ordered, dependency-aware)
+- Workstream breakdown (for each workstream: Goal, Owner, Work packages [target ranges from capacity reference], Interfaces [needs/provides], Expected patches [count and rough grouping])
+- Per-milestone deliverables and done checks (each milestone includes Depends on using dependency IDs with short reasons, plus Entry criteria and Exit criteria; use "none" when not applicable)
+- Work package template (required for assignment-ready chunks): Work package title [verb + object], Owner, Touch points [files/components], Acceptance criteria, Verification commands, Dependencies [other work packages]
 - Acceptance criteria and gates
 - Test and verification strategy
 - Migration and compatibility policy
 - Risk register and mitigations
 - Rollout and release checklist
 - Documentation close-out requirements
+- Patch plan and reporting format (required format: "Patch 1: [component] [intent]", "Patch 2: [component] [intent]", "Patch N: tests, migration, docs")
 - Open questions and decisions needed
 
 ## Quality Standard
@@ -77,7 +112,7 @@ Reject or rewrite plan text that is vague, non-testable, or missing gate conditi
 ## Completion Criteria
 Treat the planning task as complete only when:
 - All required sections exist.
-- Each phase has concrete done checks.
+- Each milestone has concrete done checks.
 - Acceptance gates are measurable.
 - Migration/deletion policy is explicit.
 - Documentation close-out requirements are explicit and assignable.
