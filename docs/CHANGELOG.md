@@ -1,5 +1,6 @@
 ## 2026-02-21
 
+- Generalized the `README.md` opening description from Codex-specific wording to broader workflow-skill language and noted use across Claude and Codex environments.
 - Polished the `README.md` opening scope sentence to "refactoring plans, code review, repository maintenance, and education content production" for clearer wording.
 - Updated the `README.md` opening scope sentence to: code refactor planning, code review, repository maintenance, and education production.
 - Refined the `README.md` opening scope sentence to explicitly include education workflows.
