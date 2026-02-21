@@ -1,6 +1,6 @@
 # vosslab-skills
 
-`vosslab-skills` is a repository of reusable Codex skills for engineering and content workflows. It is for maintainers who curate skill definitions and for users who want to inspect or reuse `SKILL.md` instructions.
+Reusable Codex skills for refactoring plans, code review, repository maintenance, and education content production. Intended for maintainers who curate skill definitions and for users who inspect or reuse `SKILL.md` instructions.
 
 ## Skills summary
 
