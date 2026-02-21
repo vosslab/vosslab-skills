@@ -1,4 +1,0 @@
-interface:
-  display_name: "Coder: Implement Next Phase"
-  short_description: "Close the selected phase"
-  default_prompt: "Use $coder-implement-next-phase to execute the manager-selected phase to completion, including adjacent fixes needed to pass gates, and return a manager-grade evidence report."
