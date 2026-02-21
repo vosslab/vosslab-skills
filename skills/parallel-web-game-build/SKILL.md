@@ -13,6 +13,43 @@ Build a single-file web game (or interactive web app) from modular source files 
 
 **Orchestrator role:** The lead agent does NOT write game code (except Batch 1 foundation). It gathers requirements, writes contracts, dispatches coding agents in batches, runs smoke tests, and fixes integration issues.
 
+**Relationship to manager planning:** This skill is a domain-specific implementation profile of `manager-make-new-plan` for single-file web games. It keeps the same milestone/workstream/work-package/patch model, but preassigns standard workstreams so execution can start faster with less planning overhead.
+
+## Terminology Contract
+
+Canonical definitions live in `references/DEFINITIONS.md`.
+Naming constraints and legacy handling live in `references/NAMING_GUARDRAILS.md`.
+Capacity and sizing targets live in `references/CAPACITY_AND_SIZING.md`.
+
+## Terminology Collision
+
+- Use Milestone / Workstream / Work package only in planning docs, not in durable code identifiers.
+- Use Stage / Pass / Step for durable gameplay pipeline or algorithm steps in code identifiers.
+- If a repository already has `phaseN_*` artifacts, treat that as legacy naming and do not introduce new planning-phase names into code.
+
+## Preassigned Workstreams
+
+Use these default workstreams unless project requirements force a different split:
+
+- Workstream A: Foundation and state
+  - Files: `constants.js`, `characters.js`, `game_state.js`
+  - Goal: stable contracts and stage/state backbone
+- Workstream B: UI shell and styling
+  - Files: `head.html`, `body.html`, `tail.html`, `style.css`, `ui_rendering.js`
+  - Goal: interaction shell, layout, and shared UI controls
+- Workstream C: Core gameplay stage
+  - Files: `scene_stage.js`, `data_generation.js`
+  - Goal: core playable loop with contract-conformant data
+- Workstream D: Advanced gameplay and outcomes
+  - Files: `lab_stage.js`, `gel_rendering.js`, `case_board.js`, `scoring.js`, `educational.js`
+  - Goal: analysis/review stages, scoring, and endgame flow
+- Workstream E: Runtime utilities
+  - Files: `timer.js`, `save_load.js`, `init.js`
+  - Goal: lifecycle bootstrap, persistence, and timers
+
+When available agents are fewer than workstreams, merge adjacent workstreams and keep ownership explicit.
+When available agents exceed workstreams, split the largest workstream into work packages, not ad-hoc files.
+
 ## When to Use
 
 - Building a single HTML file from modular source files
@@ -78,7 +115,7 @@ digraph process {
 
 **You must actually ask.** Do not default to buttons (or any style) without confirmation. The agent prompt template includes a default, but that default exists as a fallback - it does not replace asking.
 
-**Why:** A 2-minute conversation saves a 30-minute rewrite. The DNA forensics build required a near-complete rewrite of the lab phase because agents built dropdowns and the user wanted buttons.
+**Why:** A 2-minute conversation saves a 30-minute rewrite. The DNA forensics build required a near-complete rewrite of the lab stage because agents built dropdowns and the user wanted buttons.
 
 ## Step 2: Define Minimum Viable Scope
 
@@ -107,11 +144,11 @@ parts/
   constants.js         Game config, data definitions, room/level data
   characters.js        Entity definitions with game-relevant attributes
   data_generation.js   Randomized content, puzzle/test result generators
-  game_state.js        State machine, phase transitions, round management
-  scene_phase.js       Phase 1 gameplay UI (e.g. exploration, collection)
-  lab_phase.js         Phase 2 gameplay UI (e.g. analysis, testing)
+  game_state.js        State machine, stage transitions, round management
+  scene_stage.js       Stage 1 gameplay UI (e.g. exploration, collection)
+  lab_stage.js         Stage 2 gameplay UI (e.g. analysis, testing)
   gel_rendering.js     Canvas rendering (if needed)
-  case_board.js        Phase 3 gameplay UI (e.g. review, decision, endgame)
+  case_board.js        Stage 3 gameplay UI (e.g. review, decision, endgame)
   scoring.js           Scoring engine
   educational.js       Help content, tooltips, explanations
   ui_rendering.js      Setup screen, modals, notifications, shared UI
@@ -125,7 +162,7 @@ parts/
 Not every game needs all 18 files. Map the template to your game:
 
 - **Always keep:** `head.html`, `body.html`, `tail.html`, `style.css`, `constants.js`, `game_state.js`, `init.js`
-- **Rename phase files** to match your game loop (e.g. `scene_phase.js` becomes `question_phase.js`, `puzzle_phase.js`, etc.)
+- **Rename stage files** to match your game loop (e.g. `scene_stage.js` becomes `question_stage.js`, `puzzle_stage.js`, etc.)
 - **Keep if applicable:** `characters.js` (entities), `data_generation.js` (randomized content), canvas rendering (rename to match), `scoring.js`, `educational.js`
 - **Defer to post-MVP:** `save_load.js`, `timer.js`, `educational.js` (keep scope minimal if included)
 
@@ -201,8 +238,8 @@ echo "<body>" >> output.html
 cat parts/body.html >> output.html
 echo "<script>" >> output.html
 cat parts/constants.js parts/characters.js parts/data_generation.js \
-    parts/game_state.js parts/timer.js parts/scene_phase.js \
-    parts/lab_phase.js parts/gel_rendering.js parts/case_board.js \
+    parts/game_state.js parts/timer.js parts/scene_stage.js \
+    parts/lab_stage.js parts/gel_rendering.js parts/case_board.js \
     parts/scoring.js parts/educational.js parts/ui_rendering.js \
     parts/save_load.js parts/init.js >> output.html
 echo "</script>" >> output.html
@@ -211,12 +248,14 @@ cat parts/tail.html >> output.html
 
 ## Step 5: Batched Agent Dispatch
 
+Before dispatching, map each batch assignment to one of the preassigned workstreams above and keep owner continuity across batches where possible.
+
 ### Batch 1: Foundation (sequential, ~2 min)
 
 Write in the orchestrator or a single agent:
 - `constants.js` - game config, test definitions, room data
 - `characters.js` - character pool with biological profiles
-- `game_state.js` - state machine, phase transitions
+- `game_state.js` - state machine, stage transitions
 
 **These define the data model everything else depends on.** They MUST reference the contracts.
 
@@ -240,11 +279,11 @@ Dispatch agents in parallel, each owning specific files:
 
 **Smoke test:** Build, open in browser, verify skeleton loads, state machine transitions work, timer displays.
 
-### Batch 3: Core game phases (parallel, ~5 min)
+### Batch 3: Core game stages (parallel, ~5 min)
 
 | Agent | Files | Notes |
 | --- | --- | --- |
-| Scene phase | `scene_phase.js` | Evidence collection UI |
+| Scene stage | `scene_stage.js` | Evidence collection UI |
 | Data generation | `data_generation.js` | Test result generators per contracts |
 
 **Smoke test:** Build, verify evidence collection works end-to-end via Playwright.
@@ -253,7 +292,7 @@ Dispatch agents in parallel, each owning specific files:
 
 | Agent | Files | Notes |
 | --- | --- | --- |
-| Lab + gel | `lab_phase.js`, `gel_rendering.js` | Test running, canvas visualization |
+| Lab + gel | `lab_stage.js`, `gel_rendering.js` | Test running, canvas visualization |
 | Case board + scoring + educational | `case_board.js`, `scoring.js`, `educational.js` | Endgame flow |
 
 **Smoke test:** Build, full playthrough via Playwright from title to game over.

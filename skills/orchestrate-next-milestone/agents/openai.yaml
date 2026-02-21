@@ -1,0 +1,4 @@
+interface:
+  display_name: "Orchestrate Next Milestone"
+  short_description: "Close the selected milestone"
+  default_prompt: "Use $orchestrate-next-milestone to execute the manager-selected milestone to closure, including adjacent fixes needed to pass gates, and return a manager-grade evidence report with work package and patch summaries."
