@@ -1,6 +1,6 @@
 # vosslab-skills
 
-Reusable Codex skills for refactoring plans, code review, repository maintenance, and education content production. Intended for maintainers who curate skill definitions and for users who inspect or reuse `SKILL.md` instructions.
+Reusable workflow skills for refactoring plans, code review, repository maintenance, and education content production. Intended for maintainers who curate skill definitions and for users who inspect or reuse `SKILL.md` instructions across Claude and Codex environments.
 
 ## Skills summary
 
