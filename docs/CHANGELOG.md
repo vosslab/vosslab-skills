@@ -1,5 +1,9 @@
 ## 2026-02-21
 
+- Polished the `README.md` opening scope sentence to "refactoring plans, code review, repository maintenance, and education content production" for clearer wording.
+- Updated the `README.md` opening scope sentence to: code refactor planning, code review, repository maintenance, and education production.
+- Refined the `README.md` opening scope sentence to explicitly include education workflows.
+- Revised the `README.md` opening description to remove redundant project-name repetition and replace vague "engineering and content workflows" wording with clearer scope language.
 - Added run summary stats output to `tools/build_skills_index.py` for each invocation, including processed skill count plus repository and system skill counts.
 - Updated `AGENTS.md` Python environment guidance to include the proper-form command: `source source_me.sh && python 3 tools/*.py`.
 - Updated `tools/build_skills_index.py` to index this repository's `skills/` tree (including nested `skills/.system/*` skills), improve frontmatter description parsing, and emit repository/system skill counts.
