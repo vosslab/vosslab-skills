@@ -1,5 +1,11 @@
 ## 2026-02-21
 
+- Added run summary stats output to `tools/build_skills_index.py` for each invocation, including processed skill count plus repository and system skill counts.
+- Updated `AGENTS.md` Python environment guidance to include the proper-form command: `source source_me.sh && python 3 tools/*.py`.
+- Updated `tools/build_skills_index.py` to index this repository's `skills/` tree (including nested `skills/.system/*` skills), improve frontmatter description parsing, and emit repository/system skill counts.
+- Generated and added `docs/SKILLS_INDEX.md` from current `skills/**/SKILL.md` files.
+- Expanded `README.md` with a clearer grouped skills summary and linked the generated [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md) index.
+- Updated `README.md` quick start to run `source source_me.sh && python3 tools/build_skills_index.py` and inspect `docs/SKILLS_INDEX.md`.
 - Renamed terminology and metadata in `skills/orchestrate-next-milestone/SKILL.md` from legacy phase language to milestone/workstream/work package/patch language aligned with `skills/manager-make-new-plan`.
 - Updated `skills/orchestrate-next-milestone/agents/openai.yaml` interface labels and default prompt to use the renamed `$orchestrate-next-milestone` skill and milestone-first wording.
 - Expanded and standardized `skills/manager-make-new-plan/SKILL.md` with milestone-first planning language, explicit terminology-collision rules, dependency-by-ID requirements, and links to canonical references.
