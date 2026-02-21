@@ -11,18 +11,12 @@ SKILLS_ROOT = REPO_ROOT / "skills"
 OUTPUT_PATH = REPO_ROOT / "docs" / "SKILLS_INDEX.md"
 
 
-def collect_skill_stats(skill_files: list[Path]) -> dict[str, int]:
-    """Count repository and system skills for run summaries."""
-    system_count = 0
-    for skill_file in skill_files:
-        if skill_file.relative_to(SKILLS_ROOT).parts[0] == ".system":
-            system_count += 1
+def collect_skill_stats(skill_files: list[Path], ignored_system_count: int) -> dict[str, int]:
+    """Count processed and ignored skills for run summaries."""
     total_count = len(skill_files)
-    repo_count = total_count - system_count
     return {
         "skills_processed": total_count,
-        "repository_skills": repo_count,
-        "system_skills": system_count,
+        "system_skills_ignored": ignored_system_count,
     }
 
 
@@ -71,23 +65,29 @@ def normalize_space(text: str) -> str:
     return " ".join(text.strip().split())
 
 
-def collect_skill_files() -> list[Path]:
-    return sorted(
+def collect_skill_files() -> tuple[list[Path], int]:
+    all_skill_files = sorted(
         SKILLS_ROOT.rglob("SKILL.md"),
         key=lambda p: p.relative_to(SKILLS_ROOT).as_posix().lower(),
     )
+    skill_files: list[Path] = []
+    ignored_system_count = 0
+    for skill_file in all_skill_files:
+        rel_parts = skill_file.relative_to(SKILLS_ROOT).parts
+        if rel_parts and rel_parts[0] == ".system":
+            ignored_system_count += 1
+            continue
+        skill_files.append(skill_file)
+    return skill_files, ignored_system_count
 
 
 def render_index(skill_files: list[Path]) -> str:
-    stats = collect_skill_stats(skill_files)
     lines = [
         "# Skills index",
         "",
         "Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.",
         "",
-        f"Total skills: {stats['skills_processed']}",
-        f"Repository skills: {stats['repository_skills']}",
-        f"System skills: {stats['system_skills']}",
+        f"Total skills: {len(skill_files)}",
         "",
     ]
 
@@ -112,8 +112,8 @@ def main() -> int:
     if not SKILLS_ROOT.is_dir():
         raise SystemExit(f"Missing skills directory: {SKILLS_ROOT}")
 
-    skill_files = collect_skill_files()
-    stats = collect_skill_stats(skill_files)
+    skill_files, ignored_system_count = collect_skill_files()
+    stats = collect_skill_stats(skill_files, ignored_system_count)
     rendered = render_index(skill_files)
 
     if args.check:
@@ -123,16 +123,14 @@ def main() -> int:
             print(
                 "Stats: "
                 + f"skills_processed={stats['skills_processed']}, "
-                + f"repository_skills={stats['repository_skills']}, "
-                + f"system_skills={stats['system_skills']}"
+                + f"system_skills_ignored={stats['system_skills_ignored']}"
             )
             return 1
         print(f"Up to date: {OUTPUT_PATH}")
         print(
             "Stats: "
             + f"skills_processed={stats['skills_processed']}, "
-            + f"repository_skills={stats['repository_skills']}, "
-            + f"system_skills={stats['system_skills']}"
+            + f"system_skills_ignored={stats['system_skills_ignored']}"
         )
         return 0
 
@@ -142,8 +140,7 @@ def main() -> int:
     print(
         "Stats: "
         + f"skills_processed={stats['skills_processed']}, "
-        + f"repository_skills={stats['repository_skills']}, "
-        + f"system_skills={stats['system_skills']}"
+        + f"system_skills_ignored={stats['system_skills_ignored']}"
     )
     return 0
 

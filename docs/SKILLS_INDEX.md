@@ -2,12 +2,8 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 17
-Repository skills: 15
-System skills: 2
+Total skills: 15
 
-- [.system/skill-creator/SKILL.md](../skills/.system/skill-creator/SKILL.md): Guide for creating effective skills.
-- [.system/skill-installer/SKILL.md](../skills/.system/skill-installer/SKILL.md): Install Codex skills into $CODEX_HOME/skills from a curated list or a GitHub repo path.
 - [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or update docs/CODE_ARCHITECTURE.md and docs/FILE_STRUCTURE.md by inspecting a repo.
 - [bptools-writer/SKILL.md](../skills/bptools-writer/SKILL.md): Create, edit, and validate biology-problems bptools Python question generators and supporting YAML content.
 - [docset-refresh/SKILL.md](../skills/docset-refresh/SKILL.md): Audit and refresh repo documentation sets against docs/REPO_STYLE.md, create missing docs only when supported by evidence, keep ALL CAPS doc naming under docs, and report created, updated, flagged, and known gaps.
