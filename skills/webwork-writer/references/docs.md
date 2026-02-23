@@ -1,4 +1,4 @@
-# WebWork Authoring Docs (biology-problems)
+# WebWork Authoring Docs
 
 Use these first when creating or editing PG/PGML problems:
 
@@ -24,13 +24,6 @@ Use these first when creating or editing PG/PGML problems:
   - niceTables translation guidance for HTML tables.
 - references/docs/webwork/INDEX.md
   - Index of all WebWork authoring docs in this repo.
-
-Repo-wide rules to keep in mind:
-
-- docs/REPO_STYLE.md (do not edit locally)
-- docs/PYTHON_STYLE.md (do not edit locally)
-- docs/MARKDOWN_STYLE.md (do not edit locally)
-- docs/CHANGELOG.md (add entries for any edits you make)
 
 Biochemistry PUBCHEM PGML notes (use when editing those problems):
 

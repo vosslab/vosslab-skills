@@ -1,19 +1,19 @@
 ---
 name: webwork-writer
-description: Create, edit, and lint WeBWorK PG/PGML questions in the biology-problems repo (and related local repos), following docs/webwork guidance, HTML whitelist constraints, and renderer-based lint checks. Use for tasks like authoring new PGML problems, adjusting randomization or grading, fixing PGML rendering issues, and running renderer API linting.
+description: Create, edit, and lint WeBWorK PG/PGML questions following docs/webwork guidance, HTML whitelist constraints, and renderer-based lint checks. Use for tasks like authoring new PGML problems, adjusting randomization or grading, fixing PGML rendering issues, and running renderer API linting.
 ---
 
 # WebWork Question Authoring
 
 ## Overview
 
-Use this skill to author or adjust PG/PGML problems with the local WebWork renderer, repo rules, and the docs in biology-problems.
+Use this skill to author or adjust PG/PGML problems with the local WebWork renderer, repo rules, and the docs in references/.
 
 ## Workflow
 
 1) Identify the target repo and file, then read the relevant doc references.
 2) Apply the PGML structure and rules from the WebWork author guide.
-3) Make edits in the problem file and update docs/CHANGELOG.md in biology-problems.
+3) Make edits in the problem file and update docs/CHANGELOG.md in the target repo.
 4) Render with `-r` using the local renderer API to visually confirm layout and checkbox behavior (prerequisite).
 5) Lint or render with the local renderer API when the change affects PGML output.
 
@@ -32,7 +32,7 @@ Use this skill to author or adjust PG/PGML problems with the local WebWork rende
 - Read references/repos.md to locate local repos and paths.
 - Read references/docs.md for the required WebWork authoring docs.
 - Read references/linting.md to run renderer API linting.
-- Check examples in the biology-problems repo under webwork_examples/ (see references/repos.md for path) and render them when needed to confirm renderer capabilities (for example, whether a macro is present).
+- Check bundled reference docs and examples; render them when needed to confirm renderer capabilities (for example, whether a macro is present).
 
 ## Notes
 

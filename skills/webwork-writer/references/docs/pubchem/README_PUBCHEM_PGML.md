@@ -156,6 +156,6 @@ To test the generated PG file:
 
 ## License
 
-This follows the biology-problems repository licensing:
+Licensing for this content:
 - Code: GPLv3
 - Educational content: CC BY-SA 4.0
