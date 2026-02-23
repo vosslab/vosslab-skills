@@ -1,5 +1,10 @@
 ## 2026-02-23
 
+- Removed all hardcoded external repo paths from `skills/webwork-writer/references/repos.md` and replaced with a generic prompt for the user to specify the target repo.
+- Removed `biology-problems` references from `skills/webwork-writer/SKILL.md` description, overview, workflow, and reference files sections.
+- Removed repo-specific docs section (REPO_STYLE, PYTHON_STYLE, MARKDOWN_STYLE, CHANGELOG) from `skills/webwork-writer/references/docs.md` and cleaned heading.
+- Changed `Local DBsubject values for biology-problems` heading to `Local DBsubject values` in `skills/webwork-writer/references/docs/webwork/WEBWORK_HEADER_STYLE.md`.
+- Removed `biology-problems` repo name from license section in `skills/webwork-writer/references/docs/pubchem/README_PUBCHEM_PGML.md`.
 - Updated `skills/webwork-writer/references/docs.md` to use local `references/docs/webwork/` paths instead of external `docs/webwork/` paths, and replaced external renderer doc links with a reference to `references/linting.md`.
 - Updated `skills/webwork-writer/references/linting.md` to remove hardcoded `/Users/vosslab/nsh/webwork-pg-renderer` and `/opt/homebrew/opt/python@3.12/bin/python3.12` paths, using generic repo references and `python3` instead.
 - Updated `skills/webwork-writer/SKILL.md` to replace hardcoded `/Users/vosslab/nsh/biology-problems/webwork_examples/` path with a generic reference to `references/repos.md`.

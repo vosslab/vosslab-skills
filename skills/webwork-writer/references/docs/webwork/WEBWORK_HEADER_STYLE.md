@@ -154,7 +154,7 @@ Primary browse and analysis hooks. These are the most useful tags for corpus sta
 - If uncertain, search for existing usage and copy the exact string.
 - Do not leave empty strings. If you are unsure, pick the closest existing label and revise later.
 
-### Local DBsubject values for biology-problems
+### Local DBsubject values
 
 Use these DBsubject values for life science content:
 
