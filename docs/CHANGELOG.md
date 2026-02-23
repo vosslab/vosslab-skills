@@ -46,3 +46,5 @@
 - Added `skills/parallel-web-game-build/references/CAPACITY_AND_SIZING.md` for centralized parallel execution targets and patch sizing/cadence guidance.
 - Reframed `skills/parallel-web-game-build/SKILL.md` as a specialized implementation profile of `manager-make-new-plan` and added preassigned default workstreams to enable faster manager execution with explicit ownership continuity.
 - Refreshed `README.md` documentation links to match the current small docset and keep quick start concise and verifiable.
+- Reframed `skills/parallel-plan/SKILL.md` as a lightweight implementation profile of `manager-make-new-plan` for active tasks, emphasizing early split-and-dispatch behavior, shared terminology, explicit ownership/dependencies, and minimal required outputs.
+- Updated `skills/parallel-plan/agents/openai.yaml` interface wording to match the lightweight manager-style split-and-dispatch prompt.

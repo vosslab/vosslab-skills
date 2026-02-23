@@ -1,15 +1,37 @@
 ---
 name: parallel-plan
-description: Plan and execute large tasks with independent concurrent workstreams and explicit dependency gates. Use when a request has multiple separable tracks, needs parallel subagents/sessions, or is too large for a single linear pass. Skip this skill for tightly coupled single-file edits.
+description: "Lightweight parallelization nudge for active tasks: split work so one agent does not carry everything. Use when a request has separable tracks, can benefit from help/subagents, or risks stalling in a single linear pass. Skip this skill for tightly coupled single-file edits."
 ---
 
 # Parallel Plan
 
 ## Overview
 
-Decompose large tasks into safe parallel workstreams, dispatch each stream with clear contracts, and synthesize one ordered execution plan before coding. Keep concurrency real, not simulated. Keep orchestrator memory usage bounded by requiring file-backed stream reports and compact stream handoffs.
+Use this skill as a lightweight implementation profile of `manager-make-new-plan` for current in-flight work.
+Its purpose is simple: do not try to do complex tasks alone; split into independent workstreams and use help.
+Keep the same core terminology (milestone/workstream/work package/patch), but reduce process weight so teams can start quickly.
 
-## Choose Execution Species
+## Terminology Contract
+
+- Milestone: short planning window for the current task.
+- Workstream: parallel lane with one clear owner.
+- Work package: assignment-sized chunk a single coder can finish.
+- Patch: reviewable change set used for progress reporting.
+
+## Core Nudge
+
+- If a task has 2 or more separable tracks, split it.
+- If one person is becoming the bottleneck, split it.
+- If independence is unclear, do prerequisite work first, then split the rest.
+- Prefer asking for help early rather than debugging integration late.
+
+## Relationship to Manager Planning
+
+- `manager-make-new-plan` is the full manager-grade planning workflow.
+- `parallel-plan` is the lightweight operational version for active execution.
+- Use the same language and dependency discipline, but with less document overhead and faster dispatch.
+
+## Choose Execution Mode
 
 - Decide between `orchestration-only` and `real parallel execution`.
 - Use `orchestration-only` when environment limits prevent true concurrency. Still split into independent streams and write complete stream briefs.
@@ -35,6 +57,7 @@ Decompose large tasks into safe parallel workstreams, dispatch each stream with 
 
 2. Define independent workstreams.
 - Assign each stream a clear goal, scope boundary, and owned files/directories.
+- Give each stream a named owner.
 - Merge or re-scope any streams that would modify the same files.
 
 3. Dispatch correctly.
@@ -50,13 +73,25 @@ Decompose large tasks into safe parallel workstreams, dispatch each stream with 
 
 5. Synthesize one ordered plan.
 - Synthesize only after all stream validations pass; if any validation fails, stop and fix before synthesis.
-- Read stream report files from orchestrator-assigned paths and merge them into one execution sequence with checkpoints.
+- Read stream report files from orchestrator-assigned paths and merge them into one milestone execution sequence with checkpoints.
 - Add integration risks, dependency notes, and fallback handling.
 
 6. Gate before implementation.
 - Confirm no unresolved cross-stream dependencies remain.
 - Confirm each checkpoint has explicit verification commands.
 - Confirm all expected stream report files exist and are readable before synthesis.
+
+## Lightweight Minimum Output
+
+Use this minimum structure when speed matters:
+1. Milestone objective (one paragraph)
+2. Workstreams (owner, scope boundary, dependencies)
+3. Work packages per workstream (small, assignable)
+4. Patch plan (`Patch 1`, `Patch 2`, ...)
+5. Checkpoints with verification commands
+
+Do not skip dependency declarations. Milestone numbers are labels, not ordering.
+Ordering must be explicit through dependencies and gates.
 
 ## Independence Rules
 
