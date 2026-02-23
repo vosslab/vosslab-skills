@@ -1,3 +1,15 @@
+## 2026-02-23
+
+- Updated `skills/webwork-writer/references/docs.md` to use local `references/docs/webwork/` paths instead of external `docs/webwork/` paths, and replaced external renderer doc links with a reference to `references/linting.md`.
+- Updated `skills/webwork-writer/references/linting.md` to remove hardcoded `/Users/vosslab/nsh/webwork-pg-renderer` and `/opt/homebrew/opt/python@3.12/bin/python3.12` paths, using generic repo references and `python3` instead.
+- Updated `skills/webwork-writer/SKILL.md` to replace hardcoded `/Users/vosslab/nsh/biology-problems/webwork_examples/` path with a generic reference to `references/repos.md`.
+- Added local copies of renderer docs: `references/docs/RENDERER_API_USAGE.md` and `references/docs/HOW_TO_LINT.md` (sourced from webwork-pg-renderer repo, hardcoded python paths replaced with `python3`).
+- Added local copies of PUBCHEM docs: `references/docs/pubchem/PGML_PUBCHEM_CONVERSION_SUMMARY.md`, `references/docs/pubchem/PUBCHEM_PGML_SYNTAX_NOTES.md`, and `references/docs/pubchem/README_PUBCHEM_PGML.md` (sourced from biology-problems repo, hardcoded paths removed).
+- Updated `references/docs.md` PUBCHEM section to point to local `references/docs/pubchem/` copies instead of biology-problems repo paths.
+- Fixed hardcoded path in `references/docs/webwork/PG_2_17_RENDERER_MACROS.md` to use generic repo reference.
+- Added local copy of lint script: `references/scripts/lint_pg_via_renderer_api.py` (from webwork-pg-renderer repo).
+- Updated `references/linting.md` to point to local `references/scripts/lint_pg_via_renderer_api.py` and assume renderer at localhost:3000.
+
 ## 2026-02-21
 
 - Added `UI/UX Pro Max Skill (nextlevelbuilder)` to the `README.md` related repositories and standards list.

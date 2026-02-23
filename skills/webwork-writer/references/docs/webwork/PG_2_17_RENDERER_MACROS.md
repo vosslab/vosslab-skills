@@ -16,7 +16,7 @@ Notes:
 
 ## How to refresh
 
-Run this in `/Users/vosslab/nsh/webwork-pg-renderer` and replace the list below:
+Run this in the webwork-pg-renderer repo (see references/repos.md for path) and replace the list below:
 
 ```
 find lib/PG/macros/ | sort

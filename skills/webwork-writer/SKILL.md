@@ -32,7 +32,7 @@ Use this skill to author or adjust PG/PGML problems with the local WebWork rende
 - Read references/repos.md to locate local repos and paths.
 - Read references/docs.md for the required WebWork authoring docs.
 - Read references/linting.md to run renderer API linting.
-- Check examples in /Users/vosslab/nsh/biology-problems/webwork_examples/ and render them when needed to confirm renderer capabilities (for example, whether a macro is present).
+- Check examples in the biology-problems repo under webwork_examples/ (see references/repos.md for path) and render them when needed to confirm renderer capabilities (for example, whether a macro is present).
 
 ## Notes
 

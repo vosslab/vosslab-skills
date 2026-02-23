@@ -2,27 +2,27 @@
 
 Use these first when creating or editing PG/PGML problems:
 
-- docs/webwork/WEBWORK_PROBLEM_AUTHOR_GUIDE.md
+- references/docs/webwork/WEBWORK_PROBLEM_AUTHOR_GUIDE.md
   - PGML-first structure, randomization rules, inline grading, HTML whitelist.
-- docs/webwork/WEBWORK_HEADER_STYLE.md
+- references/docs/webwork/WEBWORK_HEADER_STYLE.md
   - OPL-style header tags (DESCRIPTION, KEYWORDS, DBsubject, etc.).
-- docs/webwork/MATCHING_PROBLEMS.md
+- references/docs/webwork/MATCHING_PROBLEMS.md
   - Matching layout patterns, PopUp vs DropDown notes, PG 2.17 constraints.
-- docs/webwork/PGML_LINTER_EXPECTATIONS.md
+- references/docs/webwork/PGML_LINTER_EXPECTATIONS.md
   - Common PGML pitfalls and what the linter should flag.
-- docs/webwork/COLOR_TEXT_IN_WEBWORK.md
+- references/docs/webwork/COLOR_TEXT_IN_WEBWORK.md
   - Safe color strategies (PGML tag wrappers vs MathJax).
-- docs/webwork/HTML_TO_WEBWORK_PLAN.md
+- references/docs/webwork/HTML_TO_WEBWORK_PLAN.md
   - HTML translation rules and blocked tags (table, tr, td).
-- docs/webwork/RANDOMIZATION_REFERENCE.md
+- references/docs/webwork/RANDOMIZATION_REFERENCE.md
   - PG randomization entry points and seed stability notes.
-- docs/webwork/COLOR_CLASS_MIGRATION_PLAN.md
+- references/docs/webwork/COLOR_CLASS_MIGRATION_PLAN.md
   - Color class migration and strict conversion plan.
-- docs/webwork/REPLACEMENT_RULES_IMPLEMENTATION_PLAN.md
+- references/docs/webwork/REPLACEMENT_RULES_IMPLEMENTATION_PLAN.md
   - Replacement rules, sub/sup conversions, and color handling.
-- docs/webwork/NICETABLES_TRANSLATION_PLAN.md
+- references/docs/webwork/NICETABLES_TRANSLATION_PLAN.md
   - niceTables translation guidance for HTML tables.
-- docs/webwork/INDEX.md
+- references/docs/webwork/INDEX.md
   - Index of all WebWork authoring docs in this repo.
 
 Repo-wide rules to keep in mind:
@@ -34,11 +34,12 @@ Repo-wide rules to keep in mind:
 
 Biochemistry PUBCHEM PGML notes (use when editing those problems):
 
-- problems/biochemistry-problems/PUBCHEM/CONVERSION_SUMMARY.md
-- problems/biochemistry-problems/PUBCHEM/PGML_SYNTAX_NOTES.md
-- problems/biochemistry-problems/PUBCHEM/README_PGML.md
+- references/docs/pubchem/PGML_PUBCHEM_CONVERSION_SUMMARY.md
+- references/docs/pubchem/PUBCHEM_PGML_SYNTAX_NOTES.md
+- references/docs/pubchem/README_PUBCHEM_PGML.md
 
 Renderer and lint docs:
 
-- /Users/vosslab/nsh/webwork-pg-renderer/docs/RENDERER_API_USAGE.md
-- /Users/vosslab/nsh/webwork-pg-renderer/script/HOW_TO_LINT.md
+- references/linting.md (local lint and render instructions)
+- references/docs/RENDERER_API_USAGE.md
+- references/docs/HOW_TO_LINT.md

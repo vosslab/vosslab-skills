@@ -1,12 +1,12 @@
 # Lint and Render Checks
 
-Primary lint path uses the local renderer API in /Users/vosslab/nsh/webwork-pg-renderer.
+Primary lint path uses the local renderer API at http://localhost:3000.
 
 ## Renderer API (preferred)
 
 - Ensure http://localhost:3000/health returns JSON status.
-- Use the helper script:
-  - /opt/homebrew/opt/python@3.12/bin/python3.12 /Users/vosslab/nsh/webwork-pg-renderer/script/lint_pg_via_renderer_api.py -i <file.pgml>
+- Use the local helper script:
+  - python3 references/scripts/lint_pg_via_renderer_api.py -i <file.pgml>
   - Add -r to print rendered HTML.
 - The helper currently defaults to HTML responses. If you need structured lint fields,
   pass _format=json by adding it in the request or patching the helper.
