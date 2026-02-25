@@ -4,6 +4,9 @@
 - Generated `.claude-plugin/plugin.json` with plugin metadata, author info, and auto-populated keywords from 15 skills.
 - Generated `.claude-plugin/marketplace.json` with marketplace metadata and plugin entry.
 - Added `VERSION` file set to `1.0.0` as single source of truth for plugin version.
+- Rewrote `docs/INSTALL.md` with three installation methods: plugin install, local clone, and individual skill import, plus verify and update steps.
+- Rewrote `docs/USAGE.md` with skill invocation examples, skill structure overview, single-skill import instructions, and plugin manifest maintenance commands.
+- Updated `README.md` quick start to use `claude plugin add` as the primary install path, removed hardcoded local path, and updated documentation link descriptions.
 
 ## 2026-02-23
 
