@@ -44,6 +44,16 @@ Repo-wide conventions for this project and related repos.
 - "Last two days" means the two most recent `## YYYY-MM-DD` headings present in the changelog, not a rolling 48-hour window; dates may be non-consecutive.
 - Use archive filenames in the form `docs/CHANGELOG-YYYY-MM[a-z].md` (for example `docs/CHANGELOG-2026-02a.md`), choosing the next letter for additional rotations in the same month.
 - Preserve reverse-chronological order within each file after rotation.
+- Each day block (`## YYYY-MM-DD`) should include the same subsection headings, in this order:
+  - `### Additions and New Features`
+  - `### Behavior or Interface Changes`
+  - `### Fixes and Maintenance`
+  - `### Removals and Deprecations`
+  - `### Decisions and Failures`
+  - `### Developer Tests and Notes`
+- Keep section order stable so entries stay easy to scan over time.
+- Categories are not required when they would be empty, but every changelog entry must belong to one category.
+- Changelog entries are never removed, but they may be rephrased for accuracy and clarity.
 
 ## Versioning
 - Prefer `pyproject.toml` as the single source of truth when the repo is a single Python package with a single `pyproject.toml`.
@@ -103,6 +113,7 @@ Repo-wide conventions for this project and related repos.
 - `README.md`: project purpose, quick start, and links to deeper documentation.
 - `LICENSE`: legal terms for using and redistributing the project; keep exact license text.
 - `docs/CHANGELOG.md`: chronological, user facing record of changes, grouped by date. Timeline of what changed and when.
+- `docs/CHANGELOG.md` entries should also note important failures and key implementation choices so the log remains a useful learning record for later debugging and decision review.
 - `docs/CODE_ARCHITECTURE.md`: high-level system design, major components, and data flow.
 - `docs/FILE_STRUCTURE.md`: directory map with what belongs where, including generated assets.
 - `docs/INSTALL.md`: setup steps, dependencies, and environment requirements.
