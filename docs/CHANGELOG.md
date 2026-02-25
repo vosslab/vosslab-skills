@@ -1,3 +1,10 @@
+## 2026-02-25
+
+- Added `tools/build_plugin_manifest.py` to generate `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` from `skills/*/SKILL.md` frontmatter, with `--check` mode for CI verification.
+- Generated `.claude-plugin/plugin.json` with plugin metadata, author info, and auto-populated keywords from 15 skills.
+- Generated `.claude-plugin/marketplace.json` with marketplace metadata and plugin entry.
+- Added `VERSION` file set to `1.0.0` as single source of truth for plugin version.
+
 ## 2026-02-23
 
 - Removed all hardcoded external repo paths from `skills/webwork-writer/references/repos.md` and replaced with a generic prompt for the user to specify the target repo.
