@@ -1,0 +1,17 @@
+{
+  "name": "vosslab-skills",
+  "owner": {
+    "name": "Neil Voss"
+  },
+  "metadata": {
+    "description": "Workflow skills for planning, code review, documentation, and education content."
+  },
+  "plugins": [
+    {
+      "name": "vosslab-skills",
+      "source": "./",
+      "description": "Reusable workflow skills for refactoring plans, code review, repository maintenance, and education content production.",
+      "version": "1.0.0"
+    }
+  ]
+}
