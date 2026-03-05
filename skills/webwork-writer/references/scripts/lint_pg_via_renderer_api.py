@@ -126,8 +126,11 @@ def request_render(base_url: str, payload: dict) -> dict:
 	# Throttle API calls per repo guidance.
 	time.sleep(random.random())
 
+	# Guard against file:// or other unexpected schemes
+	if not (url.startswith("https://") or url.startswith("http://")):
+		raise ValueError(f"Only HTTP/HTTPS URLs are allowed, got: {url}")
 	request = urllib.request.Request(url, data=body, headers=headers, method="POST")
-	with urllib.request.urlopen(request, timeout=60) as response:
+	with urllib.request.urlopen(request, timeout=60) as response:  # nosec B310
 		raw_body = response.read().decode("utf-8")
 		try:
 			json_body = json.loads(raw_body)
