@@ -50,6 +50,10 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 - Refactor only after the algorithm works on the target dataset.
 - Ban big-bang fixes: no template redesigns, new extractors, new matchers, new gates, migration
   layers, or compatibility paths while the core failure is not experimentally pinned down.
+- After each stabilization cycle, assess whether fixes are converging or diverging.
+- If 3+ experiments fail for the same architectural reason, the approach itself is wrong --
+  scrap and redesign the algorithm before resuming incremental fixes.
+- See scrap-vs-fix decision criteria in `references/plan_quality_standard.md`.
 
 ## Mandatory Constraints
 - Make sure the plan has a clear design philosophy near the top to avoid drift

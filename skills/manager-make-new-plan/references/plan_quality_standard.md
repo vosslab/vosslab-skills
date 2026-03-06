@@ -167,6 +167,36 @@ Constraints:
 - No new architecture until all experiments pass or are reverted.
 - Graduate to a full milestone plan only after stabilization succeeds.
 
+## Scrap vs Fix Decision Criteria
+When stabilization experiments accumulate, use these criteria to decide whether to keep fixing
+incrementally or scrap the approach and redesign.
+
+**Scrap when:**
+- You cannot articulate why it fails after 3+ experiments.
+- The fix requires data discarded earlier in the pipeline.
+- Patches interact with each other and break previously passing cases.
+- The algorithm is wrong, not just the code.
+
+**Do not scrap when:**
+- You are frustrated but have not isolated the failure.
+- The pipeline works on 80%+ of inputs.
+- The code is ugly but correct.
+- One clear untested theory remains.
+
+**The honest test:** Can you describe the algorithm in one sentence?
+- Same algorithm but bad code = fix.
+- Different algorithm needed = scrap.
+- Cannot write the sentence = stop coding, design first.
+
+**How to scrap responsibly:**
+- Keep old code in version control (do not delete).
+- Carry forward the experiment log so lessons are not lost.
+- Write a one-sentence algorithm description before writing any new code.
+- Build the smallest version that works for one input first.
+
+**Graduation rule:** If the stabilization plan shows 3+ experiments failing for the same
+architectural reason, that is evidence for scrap.
+
 ## 10. Review Scoring Heuristic
 - Blocker: missing scope boundary, no acceptance gates, no milestone done checks.
 - High risk: unclear dependencies, no migration policy, no regression strategy.

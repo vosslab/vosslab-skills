@@ -13,3 +13,5 @@ If the system has unresolved failures, produce a stabilization plan (narrow fixe
 log) instead of a refactor plan.
 Never mix root-cause debugging, algorithm redesign, and organizational program management in
 one document. Each plan addresses exactly one abstraction level.
+If stabilization experiments show the algorithm itself is wrong (not just the code),
+recommend scrapping the approach and designing a new algorithm before resuming.
