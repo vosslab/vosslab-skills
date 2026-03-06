@@ -1,6 +1,7 @@
 ## 2026-03-06
 
 ### Additions and New Features
+- Added `skills/gas-town-workflow/SKILL.md` skill for Gas Town style multi-agent coordination with role-mapped task routing and convoy-based work decomposition. Includes `references/glossary.md` (Gas Town terminology mapped to Claude Code task equivalents), `references/role-map.md` (role authority boundaries and escalation targets), `references/convoy-templates.md` (ready-made task sequences for feature, bugfix, maintenance, and stabilization convoys), and `agents/openai.yaml` UI metadata.
 - Added `skills/skill-writing-guide/SKILL.md` skill for authoring Agent Skills following the [agentskills.io](https://agentskills.io/) open standard. Covers frontmatter format, directory layout, progressive disclosure, description writing, naming rules, repo-specific conventions, and a shipping checklist. Includes `references/SPEC_QUICK_REFERENCE.md` condensed spec card and `agents/openai.yaml` UI metadata.
 - Added `agents/coder.md` implementation agent for writing production code based on approved plans (Gas Town: Crew). Follows GUPP principle: if there is work assigned, run it without waiting.
 - Added `agents/architect.md` technical decision authority agent that approves or rejects cross-cutting design changes.
