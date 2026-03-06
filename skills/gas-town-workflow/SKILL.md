@@ -30,7 +30,7 @@ This repo maps Gas Town theatrical roles to Claude Code agent types. Each role h
 | Crew | coder | Production code, small doc updates |
 | Refinery | integrator | Merge, rebase, conflict resolution |
 | Witness | monitor | Observe progress, detect stalls, report |
-| Deacon | scheduler | Trigger workflows, retry failed tasks |
+| Deacon | scheduler | Trigger workflows, retry blocked/stalled tasks |
 | Dogs | maintainer | Cleanup, lint, index regeneration |
 | -- | reviewer | Read-only code review and plan auditing |
 | -- | tester | Tests, coverage, validation |
@@ -151,7 +151,7 @@ Agents must explicitly signal their state. Silent idleness with assigned work is
 | State | Action |
 | --- | --- |
 | Task finished | Mark task `completed` via TaskUpdate. Send completion message to team lead. |
-| Task blocked | Create a blocker task via TaskCreate. Send message to the blocking agent. Keep original task `in_progress`. |
+| Task blocked | Note the blocker in the task description via TaskUpdate. Create a blocker task via TaskCreate. Send message to the blocking agent. |
 | Task requires escalation | Send escalation message to the target agent. Note escalation in the task description. |
 | No more work available | Check TaskList. If nothing is available, notify team lead and wait for assignment. |
 
@@ -180,7 +180,7 @@ For the full glossary with mappings, read [references/glossary.md](references/gl
 
 ## Quick start
 
-1. Create a team with TeamCreate.
+1. If your environment supports teams, create one with TeamCreate (orchestrator or parallelizer only).
 2. Create convoy tasks with TaskCreate, using subject-line tags and the task description format.
 3. Set dependencies with TaskUpdate `addBlockedBy`.
 4. Spawn agents matching the tagged roles.

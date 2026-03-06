@@ -9,7 +9,7 @@ Role mapping between Gas Town theatrical names and Claude Code agent types, with
 | Crew | coder | Production code, small doc updates | architect (design), planner (ambiguity) |
 | Refinery | integrator | Merge, rebase, conflict resolution | human (failed merge after retry) |
 | Witness | monitor | Observe, detect stalls, report | orchestrator, then human |
-| Deacon | scheduler | Trigger workflows, retry, sync | (does not diagnose; monitor does that) |
+| Deacon | scheduler | Trigger workflows, retry blocked/stalled tasks | (does not diagnose; monitor does that) |
 | Dogs | maintainer | Cleanup, lint, index regen | (no arch decisions, no features) |
 | -- | reviewer | Read-only code review, plan auditing | planner (plan drift) |
 | -- | tester | Tests, coverage, validation | coder (production bug found) |
