@@ -1,6 +1,10 @@
 ## 2026-03-06
 
 ### Additions and New Features
+- Added "Scrap vs Fix Decision Criteria" section to `skills/manager-make-new-plan/references/plan_quality_standard.md` with scrap-when/don't-scrap-when criteria, the honest algorithm test, responsible scrap steps, and a graduation rule tied to stabilization experiments.
+- Added scrap-vs-fix convergence assessment to `skills/manager-make-new-plan/SKILL.md` Stabilization-First Rule: evaluate whether fixes converge or diverge after each cycle, scrap on 3+ same-reason failures.
+- Added algorithm-wrong scrap guidance to `agents/planner.md` stabilization section.
+- Added approach-viability checks to `skills/manager-review-existing-plan/SKILL.md`: architectural flaw detection in step 5, P1 "Plan approach invalidated" severity guidance, and scrap-vs-fix flag in What To Check.
 - Added `agents/reviewer.md` read-only agent for code review and plan auditing (no Edit/Write tools).
 - Added `agents/planner.md` documentation-only agent for plan creation (writes docs only, never production code).
 - Added stabilization-first discipline to `agents/planner.md`: assess stability before architecture changes, produce stabilization plans for unresolved failures, never mix debugging/redesign/program management in one document.

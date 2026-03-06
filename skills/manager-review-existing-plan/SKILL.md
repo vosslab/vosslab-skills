@@ -45,6 +45,8 @@ Inspect changed files, tests, and documentation updates tied to each phase/gate.
 Validate each phase deliverable and gate against concrete artifacts.
 5. Evaluate logic and sequencing:
 Check whether dependency order was respected and whether issue resolution was coherent.
+Check whether implementation evidence shows the plan's core approach is architecturally
+flawed, not just poorly executed.
 6. Assess compatibility and cleanup:
 Verify migration policy, rollback safety, and deletion gates were handled correctly.
 7. Run documentation close-out pass:
@@ -55,7 +57,9 @@ Return `Complete`, `Complete with follow-ups`, or `Not complete` with explicit r
 ## Review Output Contract
 Report findings first, ordered by severity.
 For each finding include:
-- Severity (`P1` critical, `P2` high, `P3` medium, `P4` low)
+- Severity (`P1` critical, `P2` high, `P3` medium, `P4` low).
+  "Plan approach invalidated" is a P1 finding that recommends scrap-and-redesign over
+  continued patching.
 - Plan or file reference (path + line)
 - Risk and likely impact
 - Evidence gap or mismatch
@@ -83,6 +87,8 @@ For each action include:
 - Compatibility handling: migration, rollback, and deletion criteria are explicitly satisfied.
 - Documentation integrity: status trackers and closure docs reflect the true state.
 - Ownership clarity: unresolved decisions have named owners or clear next actions.
+- Approach viability: if experiments or implementation reveal the core algorithm is wrong,
+  flag for scrap-vs-fix assessment per `references/plan_quality_standard.md`.
 
 ## Quality Standard
 Apply `references/plan_quality_standard.md` as the baseline rubric.
