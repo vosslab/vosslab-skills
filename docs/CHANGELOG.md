@@ -1,6 +1,17 @@
 ## 2026-03-06
 
 ### Additions and New Features
+- Added `agents/coder.md` implementation agent for writing production code based on approved plans (Gas Town: Crew). Follows GUPP principle: if there is work assigned, run it without waiting.
+- Added `agents/architect.md` technical decision authority agent that approves or rejects cross-cutting design changes.
+- Added `agents/integrator.md` merge manager agent for integrating completed work and resolving conflicts (Gas Town: Refinery).
+- Added `agents/tester.md` test engineer agent that generates tests, extends coverage, and validates behavior. Only modifies files under `tests/`.
+- Added `agents/monitor.md` monitoring agent that observes task progress, detects stalls, and reports problems (Gas Town: Witness). Read-only on code.
+- Added `agents/scheduler.md` scheduler agent that triggers recurring workflows and retries failed tasks (Gas Town: Deacon).
+- Added `agents/maintainer.md` housekeeping agent for cleanup, lint maintenance, and index regeneration (Gas Town: Dogs).
+
+### Behavior or Interface Changes
+- Updated `agents/reviewer.md` with plan-adherence checks: verify implementation matches approved plan, check for architectural drift, confirm tests exist, and block freestyle coding without an approved plan.
+- Updated `agents/planner.md` with architect boundary: planner proposes plans but does not finalize architecture decisions alone; architecture requires architect approval.
 - Added "Scrap vs Fix Decision Criteria" section to `skills/manager-make-new-plan/references/plan_quality_standard.md` with scrap-when/don't-scrap-when criteria, the honest algorithm test, responsible scrap steps, and a graduation rule tied to stabilization experiments.
 - Added scrap-vs-fix convergence assessment to `skills/manager-make-new-plan/SKILL.md` Stabilization-First Rule: evaluate whether fixes converge or diverge after each cycle, scrap on 3+ same-reason failures.
 - Added algorithm-wrong scrap guidance to `agents/planner.md` stabilization section.
