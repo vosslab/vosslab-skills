@@ -1,5 +1,13 @@
 ## 2026-03-06
 
+### Additions and New Features
+- Added `agents/reviewer.md` read-only agent for code review and plan auditing (no Edit/Write tools).
+- Added `agents/planner.md` documentation-only agent for plan creation (writes docs only, never production code).
+
+### Behavior or Interface Changes
+- Updated `agents/orchestrator.md` description to "Coordinate parallel tasks using task lists" to differentiate from parallelizer.
+- Updated `agents/parallelizer.md` description to "Coordinate parallel teams with messaging" to clarify its team/messaging focus.
+
 ### Fixes and Maintenance
 - Made repo-level path references (`refactor_progress.md`, `docs/active_plans/`, `docs/archive/`) conditional in `skills/manager-make-new-plan/SKILL.md`, `skills/manager-review-existing-plan/SKILL.md`, `skills/orchestrate-next-milestone/SKILL.md`, and `skills/python-code-review/SKILL.md` so agents skip those steps when the target repo lacks planning infrastructure.
 

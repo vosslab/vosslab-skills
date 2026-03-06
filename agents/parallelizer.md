@@ -1,6 +1,6 @@
 ---
 name: parallelizer
-description: "Break work into parallel tasks and coordinate subagents."
+description: "Coordinate parallel teams with messaging. Create teams, dispatch teammates, and manage inter-agent communication."
 tools: Bash, Glob, Grep, Read, WebFetch, WebSearch, Edit, Write, Skill, TaskCreate, TaskGet, TaskUpdate, TaskList, TeamCreate, TeamDelete, SendMessage
 ---
 
