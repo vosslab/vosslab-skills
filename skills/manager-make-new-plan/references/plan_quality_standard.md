@@ -120,6 +120,16 @@ Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAI
 - Milestone text that is a single linear narrative with no workstream owners or interfaces.
 - Work packages that are too large for one coder or that do not produce reviewable patches.
 - Dependency-by-number prose without explicit dependency IDs and reasons in `Depends on`.
+- Architecture astronautics: proposing grand refactors with many modules, milestones, schemas,
+  and migration layers before the core failure is experimentally isolated.
+- Mixing abstraction levels: combining root-cause debugging, algorithm redesign, and program
+  management in one document.
+- Big-bang fixes: starting template extraction, new matchers, new gates, and staged
+  modularization while anchor/core functionality is still failing.
+- Refactoring a broken pipeline: modularizing code that does not yet work correctly on the
+  target dataset.
+- Milestone theater: elaborate milestone plans when a short experiment log would be more honest
+  and effective.
 - Bad: `tests/test_milestone3_export.py`.
 - Good: `tests/test_export_contract.py` or `tests/test_export_regression.py`.
 
@@ -143,6 +153,19 @@ Use this skeleton when drafting:
 15. Risks and Mitigations
 16. Rollout/Release Checklist
 17. Open Questions
+
+## Stabilization Plan Format
+When the system has unresolved core failures, use this format instead of the full milestone plan:
+
+| Experiment | Hypothesis | Change | Metric | Result | Keep/Revert |
+| --- | --- | --- | --- | --- | --- |
+
+Constraints:
+- At most 5 experiments per stabilization cycle.
+- At most 2 success metrics (one functional, one visual/output-based).
+- Each experiment tests one suspected cause with one change.
+- No new architecture until all experiments pass or are reverted.
+- Graduate to a full milestone plan only after stabilization succeeds.
 
 ## 10. Review Scoring Heuristic
 - Blocker: missing scope boundary, no acceptance gates, no milestone done checks.

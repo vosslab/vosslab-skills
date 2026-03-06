@@ -37,6 +37,20 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 - Optimize for feasible execution, not defensive critique.
 - Keep ambition grounded by explicit acceptance gates and dependency-aware sequencing.
 
+## Stabilization-First Rule
+- Before proposing architecture or refactor plans, assess whether the current system works
+  reliably on its target inputs.
+- If core failures are unresolved, produce a stabilization plan instead:
+  - At most 5 experiments, 2 success metrics.
+  - Each experiment follows the proof ladder: observed failure, suspected cause, single change,
+    success metric, revert criteria.
+  - No new architecture until the current pipeline is stable.
+- Do not mix abstraction levels: one document covers one of (a) root-cause debugging,
+  (b) algorithm redesign, or (c) organizational program management.
+- Refactor only after the algorithm works on the target dataset.
+- Ban big-bang fixes: no template redesigns, new extractors, new matchers, new gates, migration
+  layers, or compatibility paths while the core failure is not experimentally pinned down.
+
 ## Mandatory Constraints
 - Make sure the plan has a clear design philosophy near the top to avoid drift
 - Do not perform coding tasks as part of this skill.
