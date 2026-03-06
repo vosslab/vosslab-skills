@@ -1,6 +1,6 @@
 ---
 name: orchestrator
-description: "Break work into parallel tasks and coordinate subagents."
+description: "Coordinate parallel tasks using task lists. Split work into subagents, synthesize results, then make changes."
 tools: Bash, Glob, Grep, Read, Edit, Write, WebFetch, WebSearch, Skill, TaskCreate, TaskGet, TaskUpdate, TaskList
 ---
 
