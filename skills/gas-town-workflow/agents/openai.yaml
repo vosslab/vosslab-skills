@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gas Town Workflow"
+  short_description: "Role-mapped multi-agent coordination with convoy-based task routing"
+  default_prompt: "Help me set up a Gas Town workflow with role-mapped agents and convoy-style task decomposition for this project."
