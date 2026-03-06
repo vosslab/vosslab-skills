@@ -2,7 +2,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 15
+Total skills: 16
 
 - [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or update docs/CODE_ARCHITECTURE.md and docs/FILE_STRUCTURE.md by inspecting a repo.
 - [bptools-writer/SKILL.md](../skills/bptools-writer/SKILL.md): Create, edit, and validate biology-problems bptools Python question generators and supporting YAML content.
@@ -17,5 +17,6 @@ Total skills: 15
 - [python-code-review/SKILL.md](../skills/python-code-review/SKILL.md): Comprehensive Python code review focused on bugs, correctness, security, maintainability, and actionable fixes.
 - [read-repo-rules/SKILL.md](../skills/read-repo-rules/SKILL.md): Read specified repo rule files (AGENTS.md, docs/REPO_STYLE.md, docs/PYTHON_STYLE.md, docs/CHANGELOG.md) and return one-sentence summaries in a strict four-line format, including missing-file handling and no recursive listings.
 - [readme-fix/SKILL.md](../skills/readme-fix/SKILL.md): Standardize README.md to match repo conventions.
+- [skill-writing-guide/SKILL.md](../skills/skill-writing-guide/SKILL.md): Guide for authoring Agent Skills (SKILL.md) covering the open standard format, frontmatter, directory layout, progressive disclosure, and best practices.
 - [unit-test-starter/SKILL.md](../skills/unit-test-starter/SKILL.md): Generate thorough Python 3 pytest unit tests across a repo by scanning every *.py file and each function, writing one test module per source file while skipping IO/network behavior and documenting gaps.
 - [webwork-writer/SKILL.md](../skills/webwork-writer/SKILL.md): Create, edit, and lint WeBWorK PG/PGML questions following docs/webwork guidance, HTML whitelist constraints, and renderer-based lint checks.
