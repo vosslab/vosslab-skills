@@ -62,7 +62,7 @@ Patrol agent that oversees workers. Monitors progress, detects stuck agents, tri
 
 Daemon beacon running continuous patrol cycles. Ensures worker activity, monitors system health.
 
-**Claude Code equivalent:** The scheduler agent. Triggers recurring workflows and retries failed tasks. Does not diagnose problems -- that is the monitor's job.
+**Claude Code equivalent:** The scheduler agent. Triggers recurring workflows and retries tasks flagged as blocked or stalled by the monitor. Does not diagnose problems -- that is the monitor's job.
 
 ### Dogs
 
@@ -124,7 +124,7 @@ Durable chained bead workflows. Multi-step processes where each step is tracked.
 
 Ephemeral bead destroyed after runs. Lightweight work items for transient operations.
 
-**Claude Code equivalent:** A task that is deleted after completion rather than kept for the record.
+**Claude Code equivalent:** A lightweight task used for scratch or transient coordination. In most Claude Code workflows, completed tasks persist rather than being deleted. Treat wisps as a conceptual category (short-lived, low-ceremony tasks) rather than a deletion mechanism.
 
 ### Patrol
 
@@ -139,5 +139,3 @@ Agent session refresh. Transfers work state to a new session when context fills.
 **Claude Code equivalent:** An agent completing its turn, going idle, and being resumed or replaced by the team lead when new work is ready.
 
 ---
-
-*Adapted from the [Gas Town glossary](https://github.com/steveyegge/gastown) by Clay Shirky.*
