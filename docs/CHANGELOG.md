@@ -1,6 +1,7 @@
 ## 2026-03-06
 
 ### Additions and New Features
+- Added `skills/skill-writing-guide/SKILL.md` skill for authoring Agent Skills following the [agentskills.io](https://agentskills.io/) open standard. Covers frontmatter format, directory layout, progressive disclosure, description writing, naming rules, repo-specific conventions, and a shipping checklist. Includes `references/SPEC_QUICK_REFERENCE.md` condensed spec card and `agents/openai.yaml` UI metadata.
 - Added `agents/coder.md` implementation agent for writing production code based on approved plans (Gas Town: Crew). Follows GUPP principle: if there is work assigned, run it without waiting.
 - Added `agents/architect.md` technical decision authority agent that approves or rejects cross-cutting design changes.
 - Added `agents/integrator.md` merge manager agent for integrating completed work and resolving conflicts (Gas Town: Refinery).
