@@ -1,6 +1,6 @@
 ---
 name: python-code-review
-description: Comprehensive Python code review focused on bugs, correctness, security, maintainability, and actionable fixes. Use when a user asks for a review of Python files, wants severity-rated findings, wants before/after fix suggestions, or wants verification that implementation matches an active plan document. Start by applying read-repo-rules to AGENTS.md, docs/REPO_STYLE.md, docs/PYTHON_STYLE.md, and docs/CHANGELOG.md so review guidance follows repository rules.
+description: Comprehensive Python code review focused on bugs, correctness, security, maintainability, and actionable fixes. Use when a user asks for a review of Python files, wants severity-rated findings, wants before/after fix suggestions, or wants verification that implementation matches an active plan document (if one exists). Start by applying read-repo-rules to AGENTS.md, docs/REPO_STYLE.md, docs/PYTHON_STYLE.md, and docs/CHANGELOG.md so review guidance follows repository rules.
 ---
 
 # Python Code Review
@@ -10,9 +10,9 @@ description: Comprehensive Python code review focused on bugs, correctness, secu
 2. Read those files and summarize repo rules in four one-sentence lines with prefixes:
 `AGENTS:`, `REPO_STYLE:`, `PYTHON_STYLE:`, `CHANGELOG:`.
 3. Inspect changed files first (`git diff`, `git status --short`), then inspect related call sites.
-4. Identify the active plan document(s) in `docs/active_plans/` that govern the change.
-5. Map code and tests to plan requirements, acceptance criteria, and stated constraints.
-6. Prioritize findings by severity: plan mismatch/regressions, correctness/safety, then maintainability.
+4. If the repo has `docs/active_plans/`, identify the active plan document(s) that govern the change. Otherwise, skip plan-conformance steps.
+5. If an active plan exists, map code and tests to plan requirements, acceptance criteria, and stated constraints. Otherwise, skip this step.
+6. Prioritize findings by severity: plan mismatch/regressions (if applicable), correctness/safety, then maintainability.
 7. Provide concrete, minimal fixes with before/after examples when a fix is straightforward.
 8. Flag uncertainty explicitly and ask targeted review questions for unclear logic or contracts.
 
