@@ -3,6 +3,10 @@
 ### Additions and New Features
 - Added `agents/reviewer.md` read-only agent for code review and plan auditing (no Edit/Write tools).
 - Added `agents/planner.md` documentation-only agent for plan creation (writes docs only, never production code).
+- Added stabilization-first discipline to `agents/planner.md`: assess stability before architecture changes, produce stabilization plans for unresolved failures, never mix debugging/redesign/program management in one document.
+- Added "Stabilization-First Rule" section to `skills/manager-make-new-plan/SKILL.md` covering proof-ladder experiments, single-abstraction-level documents, and big-bang fix ban.
+- Added "Stabilization Plan Format" section to `skills/manager-make-new-plan/references/plan_quality_standard.md` with experiment table template and constraints (max 5 experiments, 2 metrics per cycle).
+- Added five new anti-patterns to `references/plan_quality_standard.md`: architecture astronautics, mixing abstraction levels, big-bang fixes, refactoring a broken pipeline, and milestone theater.
 
 ### Behavior or Interface Changes
 - Updated `agents/orchestrator.md` description to "Coordinate parallel tasks using task lists" to differentiate from parallelizer.
