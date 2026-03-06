@@ -26,8 +26,8 @@ Prioritize finishing the milestone with passing gates and clear evidence.
 ## Inputs to read first
 0. Review STYLE guides in AGENTS.md, docs/PYTHON_STYLE.md, and docs/REPO_STYLE.md
 1. Manager directive naming the target milestone (or latest explicit manager instruction).
-2. Target plan in `docs/active_plans/`.
-3. `refactor_progress.md` for active/completed context.
+2. Target plan in `docs/active_plans/` (if present in the target repo; or use specified path).
+3. `refactor_progress.md` for active/completed context (if present in the target repo).
 4. Related archive precedent if cited by the plan.
 5. Current repo state (`git status --short`, `git diff`).
 

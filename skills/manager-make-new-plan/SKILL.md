@@ -53,9 +53,9 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 - In reports and changelog guidance, use "Patch 1", "Patch 2", etc.; reserve "change" for generic prose.
 
 ## Inputs To Read First
-1. `refactor_progress.md`
-2. Active plan docs in `docs/active_plans/`
-3. Archive plan docs in `docs/archive/`
+1. `refactor_progress.md` (if present in the target repo)
+2. Active plan docs in `docs/active_plans/` (if present in the target repo)
+3. Archive plan docs in `docs/archive/` (if present in the target repo)
 4. `references/plan_quality_standard.md`
 5. `references/DEFINITIONS.md`
 6. `references/CAPACITY_AND_SIZING.md`
@@ -65,9 +65,9 @@ Use these inputs to match local planning style, terminology, status language, an
 
 ## Workflow
 1. Build context baseline:
-Read `refactor_progress.md` to map active, completed, and pending work.
+If the repo has `refactor_progress.md`, read it to map active, completed, and pending work. Otherwise, skip this step.
 2. Gather precedent:
-Read the most relevant active and archive plans and extract reusable structure and known pitfalls.
+If the repo has `docs/active_plans/` or `docs/archive/`, read the most relevant plans and extract reusable structure and known pitfalls. Otherwise, skip this step.
 3. Define plan charter:
 State objective, scope, non-goals, assumptions, constraints, and ownership boundaries.
 4. Design milestone execution:

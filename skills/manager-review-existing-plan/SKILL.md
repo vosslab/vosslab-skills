@@ -28,9 +28,9 @@ Operate as an independent review manager over multiple coders: verify goals, seq
 - Keep findings severity-ranked and actionable.
 
 ## Inputs To Read First
-1. `refactor_progress.md`
-2. Target plan in `docs/active_plans/` (or specified path)
-3. Related archive precedent in `docs/archive/`
+1. `refactor_progress.md` (if present in the target repo)
+2. Target plan in `docs/active_plans/` (or specified path; skip if not present)
+3. Related archive precedent in `docs/archive/` (if present in the target repo)
 4. Changed files and verification artifacts (`git status --short`, `git diff`, test outputs, changelog entries)
 5. `references/plan_quality_standard.md`
 
@@ -48,7 +48,7 @@ Check whether dependency order was respected and whether issue resolution was co
 6. Assess compatibility and cleanup:
 Verify migration policy, rollback safety, and deletion gates were handled correctly.
 7. Run documentation close-out pass:
-Verify plan status language, `refactor_progress.md`, changelog closure notes, and archive/closure routing are consistent with implementation reality.
+Verify plan status language, `refactor_progress.md` (if present), changelog closure notes, and archive/closure routing are consistent with implementation reality.
 8. Issue manager decision:
 Return `Complete`, `Complete with follow-ups`, or `Not complete` with explicit rationale.
 
