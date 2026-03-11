@@ -1,5 +1,6 @@
 ---
 name: scheduler
+model: haiku
 description: "Scheduler agent that triggers recurring workflows and retries failed tasks. (Gas Town: Deacon)"
 tools: Bash, Glob, Grep, Read, TaskCreate, TaskGet, TaskUpdate, TaskList, SendMessage
 ---

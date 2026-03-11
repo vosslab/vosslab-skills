@@ -1,5 +1,6 @@
 ---
 name: coder
+model: haiku
 description: "Implementation agent that writes production code based on approved plans. (Gas Town: Crew)"
 tools: Bash, Glob, Grep, Read, Edit, Write, WebFetch, WebSearch, Skill, TaskCreate, TaskGet, TaskUpdate, TaskList
 ---

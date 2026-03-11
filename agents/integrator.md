@@ -1,5 +1,6 @@
 ---
 name: integrator
+model: sonnet
 description: "Merge manager responsible for integrating completed work and resolving conflicts. (Gas Town: Refinery)"
 tools: Bash, Glob, Grep, Read, Edit, Write, TaskGet, TaskUpdate, TaskList, SendMessage
 ---

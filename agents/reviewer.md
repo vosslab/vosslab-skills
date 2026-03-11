@@ -1,5 +1,6 @@
 ---
 name: reviewer
+model: sonnet
 description: "Read-only agent for code review and plan auditing. Cannot modify production code."
 tools: Bash, Glob, Grep, Read, WebFetch, WebSearch, Skill, TaskCreate, TaskGet, TaskUpdate, TaskList
 ---
