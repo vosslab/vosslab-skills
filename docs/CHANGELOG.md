@@ -1,3 +1,11 @@
+## 2026-03-11
+
+### Additions and New Features
+- Added `skills/manager-make-new-plan/references/EXECUTION_RESOURCES.md` with agent catalog (all 11 agent types with model, capability, and assignment guidance), skill lifecycle table (5 plan-stage skills), and work package assignment guidelines.
+
+### Behavior or Interface Changes
+- Updated `skills/manager-make-new-plan/SKILL.md` to read `references/EXECUTION_RESOURCES.md` as input 8, require agent type in work package Owner field, and include a Plan Handoff section linking to adjacent execution skills.
+
 ## 2026-03-06
 
 ### Additions and New Features

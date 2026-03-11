@@ -78,6 +78,7 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 5. `references/DEFINITIONS.md`
 6. `references/CAPACITY_AND_SIZING.md`
 7. `references/NAMING_GUARDRAILS.md`
+8. `references/EXECUTION_RESOURCES.md`
 
 Use these inputs to match local planning style, terminology, status language, and quality bars.
 
@@ -113,7 +114,7 @@ Deliver one execution-ready plan document with measurable closure criteria.
 - Milestone plan (ordered, dependency-aware)
 - Workstream breakdown (for each workstream: Goal, Owner, Work packages [target ranges from capacity reference], Interfaces [needs/provides], Expected patches [count and rough grouping])
 - Per-milestone deliverables and done checks (each milestone includes Depends on using dependency IDs with short reasons, plus Entry criteria and Exit criteria; use "none" when not applicable)
-- Work package template (required for assignment-ready chunks): Work package title [verb + object], Owner, Touch points [files/components], Acceptance criteria, Verification commands, Dependencies [other work packages]
+- Work package template (required for assignment-ready chunks): Work package title [verb + object], Owner (must reference a specific agent type from `references/EXECUTION_RESOURCES.md`), Touch points [files/components], Acceptance criteria, Verification commands, Dependencies [other work packages]
 - Acceptance criteria and gates
 - Test and verification strategy
 - Migration and compatibility policy
@@ -126,6 +127,14 @@ Deliver one execution-ready plan document with measurable closure criteria.
 ## Quality Standard
 Apply the checklist in `references/plan_quality_standard.md`.
 Reject or rewrite plan text that is vague, non-testable, or missing gate conditions.
+
+## Plan Handoff
+After the plan is published, execution uses adjacent skills:
+- `parallel-plan` for lightweight parallelization of active work.
+- `orchestrate-next-milestone` for end-to-end milestone delivery.
+- `manager-review-existing-plan` for post-implementation audit.
+- `gas-town-workflow` for role-mapped multi-agent coordination.
+See `references/EXECUTION_RESOURCES.md` for the full lifecycle and agent catalog.
 
 ## Completion Criteria
 Treat the planning task as complete only when:
