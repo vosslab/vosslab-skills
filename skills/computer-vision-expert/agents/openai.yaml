@@ -1,0 +1,4 @@
+interface:
+  display_name: "Computer Vision Expert"
+  short_description: "Build and debug CV pipelines"
+  default_prompt: "Use $computer-vision-expert to design, implement, or debug a computer vision workflow in Python."

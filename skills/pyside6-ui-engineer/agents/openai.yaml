@@ -1,0 +1,4 @@
+interface:
+  display_name: "PySide6 UI Engineer"
+  short_description: "Build polished PySide6 desktop UIs"
+  default_prompt: "Use $pyside6-ui-engineer to design or implement a polished PySide6 desktop interface with strong UI and UX logic."

@@ -10,6 +10,7 @@ description: "Lightweight parallelization nudge for active tasks: split work so 
 Use this skill as a lightweight implementation profile of `manager-make-new-plan` for current in-flight work.
 Its purpose is simple: do not try to do complex tasks alone; split into independent workstreams and use help.
 Keep the same core terminology (milestone/workstream/work package/patch), but reduce process weight so teams can start quickly.
+The ultimate goal is to reduce implementation wall time, not to maximize process, parallelism theater, or document volume.
 
 ## Terminology Contract
 
@@ -24,6 +25,7 @@ Keep the same core terminology (milestone/workstream/work package/patch), but re
 - If one person is becoming the bottleneck, split it.
 - If independence is unclear, do prerequisite work first, then split the rest.
 - Prefer asking for help early rather than debugging integration late.
+- Judge every split by one question: will this reduce elapsed time to a correct implementation?
 
 ## Relationship to Manager Planning
 
@@ -34,8 +36,10 @@ Keep the same core terminology (milestone/workstream/work package/patch), but re
 ## Choose Execution Mode
 
 - Decide between `orchestration-only` and `real parallel execution`.
+- Choose the mode that minimizes elapsed time to a validated result.
 - Use `orchestration-only` when environment limits prevent true concurrency. Still split into independent streams and write complete stream briefs.
 - Use `real parallel execution` when streams can run at the same time in isolated sessions/worktrees or a single batched multi-task dispatch.
+- If briefing, coordination, and merge overhead exceed likely time savings, do not parallelize.
 
 ## Tooling and State
 
@@ -48,6 +52,28 @@ Keep the same core terminology (milestone/workstream/work package/patch), but re
 - Prefer repo-local temp directories or other orchestrator-selected temp locations when practical.
 - Add a task database (`sqlite`/Berkeley DB) only when cross-session resume or external query requirements are explicit.
 
+## Repo Agent Awareness
+
+- Before assigning owners, inspect the repo-root `agents/` directory if it exists.
+- Treat those `agents/*.md` files as the available role catalog for this repo, not as decorative docs.
+- Prefer assigning workstreams to actual available agent roles from that catalog.
+- Read the agent files themselves before dispatch so role assignment reflects real capabilities and constraints, not just filenames.
+- If the repo has no `agents/` directory, fall back to generic owner labels.
+- If the repo has both specialized and generic agents, prefer the most specialized agent that fits the stream.
+
+In this repo, the currently available root agents and their intended uses are:
+- `orchestrator`: split larger tasks into parallel subagents and synthesize outputs before code changes.
+- `parallelizer`: coordinate parallel teams with messaging; good for active multi-stream execution.
+- `planner`: write plans and docs only; never production code or tests.
+- `architect`: approve or reject cross-cutting design changes and resolve design disputes.
+- `coder`: implement production code from approved plans; no self-approval and no architectural redesign.
+- `integrator`: merge completed work, resolve conflicts, and maintain branch stability.
+- `reviewer`: read-only review and plan auditing; cannot modify production files.
+- `tester`: create and run tests; only modify files under `tests/`.
+- `monitor`: detect stalls, crashes, and deadlocks; read-only on code.
+- `scheduler`: trigger recurring workflows and retries; not for implementation or diagnosis.
+- `maintainer`: cleanup, lint maintenance, and index regeneration; not for feature work or architecture.
+
 ## Workflow
 
 1. Resolve shared prerequisites first.
@@ -57,8 +83,18 @@ Keep the same core terminology (milestone/workstream/work package/patch), but re
 
 2. Define independent workstreams.
 - Assign each stream a clear goal, scope boundary, and owned files/directories.
-- Give each stream a named owner.
+- Give each stream a named owner and, when available, an explicit agent role selected from the repo-root `agents/` directory.
 - Merge or re-scope any streams that would modify the same files.
+- Prefer `coder` for production implementation streams.
+- Prefer `tester` only for test work under `tests/`.
+- Prefer `reviewer` for read-only code review, audit, and plan-conformance checks.
+- Prefer `integrator` for merge sequencing, conflict resolution, and stabilization after streams complete.
+- Prefer `planner` for documentation-only planning outputs.
+- Prefer `architect` for streams that exist solely to settle a cross-cutting design decision.
+- Prefer `monitor` for observing progress, stalls, and deadlocks rather than fixing code.
+- Prefer `scheduler` only for recurring or retry-oriented coordination tasks.
+- Prefer `maintainer` for cleanup, lint maintenance, and derived-index regeneration.
+- Prefer the smallest number of streams that materially lowers wall time; more streams are not automatically better.
 
 3. Dispatch correctly.
 - For real parallel execution, launch streams concurrently in one batch dispatch or separate isolated sessions.
@@ -85,7 +121,7 @@ Keep the same core terminology (milestone/workstream/work package/patch), but re
 
 Use this minimum structure when speed matters:
 1. Milestone objective (one paragraph)
-2. Workstreams (owner, scope boundary, dependencies)
+2. Workstreams (owner, agent role if available, scope boundary, dependencies)
 3. Work packages per workstream (small, assignable)
 4. Patch plan (`Patch 1`, `Patch 2`, ...)
 5. Checkpoints with verification commands
@@ -99,6 +135,7 @@ Ordering must be explicit through dependencies and gates.
 - Do not parallelize streams that edit the same files or the same mutable state.
 - If independence is uncertain, serialize that portion.
 - Prefer finishing dependency-establishing work first, then parallelizing the rest.
+- Do not split work purely to keep more agents busy; idle agents are cheaper than merge-heavy fake parallelism.
 
 ## Orchestrator Memory Rules
 

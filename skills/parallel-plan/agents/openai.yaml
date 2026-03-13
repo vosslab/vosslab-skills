@@ -1,4 +1,4 @@
 interface:
   display_name: "Parallel Plan"
   short_description: "Lightweight split-and-dispatch planning"
-  default_prompt: "Use $parallel-plan as a lightweight manager profile: split this active task into independent concurrent workstreams with owners, dependencies, work packages, patch plan, and checkpoints."
+  default_prompt: "Use $parallel-plan to reduce wall time on this active task by choosing the smallest useful set of independent workstreams, selecting from available repo `agents/` roles when possible."

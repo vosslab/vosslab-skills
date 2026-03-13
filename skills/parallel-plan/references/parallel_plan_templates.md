@@ -7,6 +7,7 @@ Use this when dispatching each stream.
 ```text
 Stream Name:
 Goal:
+Assigned Agent Role:
 Scope Boundary:
 Owned Files/Dirs:
 Inputs Available Now:
@@ -96,6 +97,8 @@ Reject or rework plans that show any of these:
 - Streams editing the same file without explicit serialization.
 - Streams blocked on outputs from other streams but dispatched together.
 - Sequential dispatch labeled as parallel.
+- Assigning streams to agent roles that do not exist in the repo-root `agents/` directory when that directory is available.
+- More coordination overhead than likely wall-time savings.
 - Missing validation commands per stream.
 - Missing checkpoint pass/fail criteria in the unified plan.
 - Introducing a task database without explicit persistence/query requirements.

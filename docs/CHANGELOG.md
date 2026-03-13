@@ -1,3 +1,37 @@
+## 2026-03-13
+
+### Additions and New Features
+- Added `skills/computer-vision-expert/SKILL.md` for designing, implementing, debugging, and reviewing Python computer-vision systems across classification, detection, segmentation, tracking, OCR, camera pipelines, and evaluation workflows.
+- Added `skills/computer-vision-expert/references/task_selection.md` to help frame ambiguous vision requests into the correct prediction task and error model.
+- Added `skills/computer-vision-expert/references/pipeline_design.md` to guide classical CV vs. learned-model vs. hybrid pipeline choices.
+- Added `skills/computer-vision-expert/references/debugging_and_failure_analysis.md` to structure CV debugging around metrics, visual inspection, and clustered failure modes.
+- Added `skills/computer-vision-expert/references/local_books.md` to map the bundled local CV book resources to the right task types and note the current extraction issue with `Multiple-View_Geometry.txt`.
+- Added `skills/computer-vision-expert/agents/openai.yaml` UI metadata for the new skill.
+- Added `skills/pyside6-ui-engineer/SKILL.md` for designing, implementing, refactoring, and reviewing PySide6 desktop applications with explicit UI/UX logic, state handling, and architecture guidance.
+- Added `skills/pyside6-ui-engineer/references/pyside6_patterns.md` with PySide6-specific patterns for window selection, widget composition, model/view usage, threading, and theming.
+- Added `skills/pyside6-ui-engineer/references/ui_ux_review.md` with a concise UI/UX review checklist covering hierarchy, interaction quality, validation, state coverage, and accessibility.
+- Added `skills/pyside6-ui-engineer/references/official_qt_for_python_docs.md` with the official Qt for Python documentation entry points for getting started, modules, tutorials, examples, and package tools.
+- Added `skills/pyside6-ui-engineer/references/design_books.md` with a curated design-reading map covering practical UI books, typography, grids, interaction design, and design systems relevant to PySide6 UI work.
+- Added `skills/pyside6-ui-engineer/references/model_view.md` with official-source guidance for PySide6 model/view work in tables, trees, delegates, sorting, and filtering.
+- Added `skills/pyside6-ui-engineer/references/signals_slots.md` with official-source guidance for PySide6 signal-slot design, event flow, worker updates, and `QThread` usage.
+- Added `skills/pyside6-ui-engineer/references/designer_ui_workflow.md` with official-source guidance for Qt Designer, `.ui` files, `pyside6-uic`, and Qt resource workflows.
+- Added `skills/pyside6-ui-engineer/references/deployment_and_packaging.md` with official-source guidance for packaging and validating distributable PySide6 apps.
+- Added `skills/pyside6-ui-engineer/agents/openai.yaml` UI metadata for the new skill.
+
+### Behavior or Interface Changes
+- Updated `skills/parallel-plan/SKILL.md` to read the actual repo-root `agents/*.md` files as the role catalog and map workstreams to role-specific constraints and responsibilities instead of relying on filenames alone.
+- Updated `skills/parallel-plan/SKILL.md`, `skills/parallel-plan/references/parallel_plan_templates.md`, and `skills/parallel-plan/agents/openai.yaml` to make reduced implementation wall time the explicit top-level objective, discourage fake parallelism, and require stream splits to justify their coordination cost.
+- Updated `skills/parallel-plan/SKILL.md`, `skills/parallel-plan/references/parallel_plan_templates.md`, and `skills/parallel-plan/agents/openai.yaml` to make stream planning aware of the repo-root `agents/` role catalog, prefer actual available agent roles during assignment, and record the selected agent role in stream briefs.
+- Updated `skills/computer-vision-expert/agents/openai.yaml` to fix the default prompt so it correctly names `$computer-vision-expert`.
+- Updated `skills/computer-vision-expert/SKILL.md` and `references/pipeline_design.md` to point agents at the bundled `Learning_OpenCV.txt`, `OpenCV_Cookbook.txt`, and `Video_Object_Tracking.txt` resources for OpenCV-heavy and tracking-heavy tasks.
+- Updated `skills/pyside6-ui-engineer/SKILL.md` to explicitly prefer official Qt for Python documentation for API lookup and tool usage, distinguish Qt Widgets from Qt Quick selection earlier in the workflow, and steer `.ui` and project tasks toward `pyside6-designer`, `pyside6-uic`, `pyside6-rcc`, and `pyside6-project`.
+- Updated `skills/pyside6-ui-engineer/references/ui_ux_review.md` to incorporate a structured set of foundational UI/UX principles and value lenses adapted from the GeeksforGeeks "Principles of UI/UX Design" article and cite the source URL.
+- Updated `skills/pyside6-ui-engineer/SKILL.md` to point agents at `references/design_books.md` for durable design heuristics around hierarchy, typography, layout, and design systems.
+- Updated `skills/pyside6-ui-engineer/SKILL.md` and `references/design_books.md` to use the local `Refactoring_UI.txt` resource directly and to note that the current `About_Face.txt` file should be verified before treating it as the Alan Cooper interaction design text.
+- Updated `skills/pyside6-ui-engineer/SKILL.md` and `references/design_books.md` to treat the corrected local `About_Face.txt` file as a trusted interaction-design resource for flows, task structure, and dialog behavior.
+- Updated `skills/pyside6-ui-engineer/SKILL.md` to point agents to dedicated references for signal-slot design, model/view work, Designer-based UI workflows, and deployment/packaging tasks.
+- Updated `skills/pyside6-ui-engineer/SKILL.md` and `references/design_books.md` to add the local `Practical_UI.txt` resource and define the three preferred local design-book resources as `Refactoring_UI.txt`, `Practical_UI.txt`, and `About_Face.txt`.
+
 ## 2026-03-11
 
 ### Additions and New Features
