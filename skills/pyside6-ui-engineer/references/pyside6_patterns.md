@@ -8,6 +8,7 @@
 - Navigation patterns
 - Model/view guidance
 - Threading and responsiveness
+- QGraphicsView scroll, zoom, and trackpad
 - Styling and theming
 
 ## Window and container selection
@@ -54,6 +55,17 @@
 - Show progress when the action takes long enough for the user to wonder whether the app stalled.
 - Disable or debounce repeated triggers when duplicate actions would conflict.
 - Always define what the UI should show while work is running, after success, and after failure.
+
+## QGraphicsView scroll, zoom, and trackpad
+
+- On macOS, trackpad two-finger swipe and mouse scroll wheel both emit `QWheelEvent`. Distinguish them using `event.phase()` and `event.hasPixelDelta()`:
+  - Trackpad events carry scroll phases (`ScrollBegin`, `ScrollUpdate`, `ScrollEnd`, `ScrollMomentum`).
+  - Mouse wheel clicks have `Qt.ScrollPhase.NoScrollPhase` and `hasPixelDelta()` returns `False`.
+  - Do not rely on `pixelDelta().isNull()` alone. Qt reports null `pixelDelta` at `ScrollBegin` and `ScrollEnd` phases even for trackpad events, causing false negatives.
+- For trackpad pan via scroll bars: when the scene fits inside the viewport (fit-to-view), the scroll bar range is zero and `setValue()` has no effect. Expand the scene rect with a tiny margin (e.g. 2% of image size) before panning so the scroll bars have nonzero range. Keep the margin minimal to prevent the user from scrolling content off screen.
+- Reset the scene rect to image bounds before calling `fitInView()`, otherwise fit-to-view will fit to the expanded (margin-padded) rect.
+- Use `setTransformationAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse)` so wheel zoom anchors around the cursor position.
+- For zoom, prefer `self.scale(factor, factor)` for incremental adjustment or `self.setTransform(QTransform().scale(f, f))` for absolute zoom level.
 
 ## Styling and theming
 
