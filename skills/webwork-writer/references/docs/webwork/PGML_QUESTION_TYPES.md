@@ -50,6 +50,52 @@ Notes:
 - For horizontal options, use a separator (for example `separator => $SPACE x 5`)
   or HTML spacing via `separator => '<div ...>'`.
 
+## Multipart multiple choice (multiple RadioButtons)
+
+Use separate `RadioButtons` objects (`$rb1`, `$rb2`, `$rb3`, etc.) for
+multipart questions that share a single graph or prompt. Store question text
+in HTML variables and pass through with `[$var]*`.
+
+```perl
+# Setup: build each RadioButtons independently
+$rb1 = RadioButtons([@q1_choices], $q1_answer,
+	labels => 'ABC', displayLabels => 1,
+	separator => '<div style="margin-bottom: 0.5em;"></div>',
+);
+$q1_html = "Which enzyme is most active at <strong>acidic</strong> pH?";
+
+$rb2 = RadioButtons([@q2_choices], $q2_answer,
+	labels => ['A', 'B', 'C', 'D', 'E'], displayLabels => 1,
+	separator => '<div style="margin-bottom: 0.5em;"></div>',
+);
+$q2_html = "What is the optimal pH of Enzyme B?";
+```
+
+PGML layout:
+
+```text
+[@ image(insertGraph($gr), width => 520, height => 300) @]*
+
+*Part 1.* [$q1_html]*
+
+[_]{$rb1}
+
+*Part 2.* [$q2_html]*
+
+[_]{$rb2}
+```
+
+Notes:
+- Each `[_]{$rb}` generates a separate `AnSwEr` blank.
+- Use `[$q_html]*` (trailing `*`) so PGML passes HTML through unescaped.
+- Always use `labels => 'ABC'` (shorthand that auto-generates A, B, C, D, ...
+  for any number of choices). Do NOT spell out letters (e.g., `'ABCDE'`) --
+  that falls back to "Choice 1", "Choice 2". Avoid array refs.
+- HTML spans work directly in choice strings for colored text (see
+  [COLOR_TEXT_IN_WEBWORK.md](COLOR_TEXT_IN_WEBWORK.md)).
+- Reference: `enzyme_simulation.pgml`, `enzyme_ph_activity_graph.pgml`,
+  `enzyme_temp_activity_graph.pgml`.
+
 ## Multiple answer (checkbox)
 
 Checkbox macros are unreliable in our PG 2.17 renderer snapshot. Avoid

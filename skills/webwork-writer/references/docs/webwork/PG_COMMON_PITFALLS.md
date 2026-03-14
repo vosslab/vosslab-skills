@@ -526,6 +526,65 @@ for my $i (1 .. $#values) {
 
 ---
 
+## Special Characters: Degree Symbol
+
+### Pitfall: `&deg;` Gets Double-Escaped in PGML
+
+**Problem:** HTML entities like `&deg;` placed directly in PGML text are escaped to `&amp;deg;` (literal text) instead of rendering as the degree symbol.
+
+```perl
+# WRONG - PGML escapes the ampersand
+BEGIN_PGML
+The temperature is 37 &deg;C.
+END_PGML
+# Result: displays "37 &deg;C" as literal text
+```
+
+**Symptom:** `&amp;deg;C` appears in the rendered HTML instead of the degree symbol.
+
+**Fix:** Put the HTML entity inside a Perl variable and use `[$var]*` passthrough.
+
+```perl
+# RIGHT - build string with HTML entity in Perl, pass through to PGML
+$temp_display = "37&deg;C";
+
+BEGIN_PGML
+The temperature is [$temp_display]*.
+END_PGML
+# Result: displays "37 deg-symbol C" correctly
+```
+
+**For graph labels (PGgraphmacros):** Graph labels are rendered into a GD bitmap image, not HTML. Use Perl's `\x{B0}` (Latin-1 degree sign) in graph label strings.
+
+```perl
+# Graph axis label with degree symbol
+$gr->lb(new Label(40, -1.3, "Temperature (\x{B0}C)",
+    'black', 'center', 'middle'));
+```
+
+**PG 2.17+ student input note:** Students can type `deg` in MathQuill answer fields and it auto-converts to the degree symbol. Students can also type `degC` or `degF` for Celsius/Fahrenheit. This is for student input only -- it does not affect how authors write problem display text.
+
+**Example from this repo:** `enzyme_temp_activity_graph.pgml` uses `$query_temp_str = "${query_temp}&deg;C"` with `[$query_temp_str]*` in PGML.
+
+---
+
+## PGgraphmacros: Functions cover axes
+
+### Pitfall: Curve tails cover the x-axis line
+
+**Problem:** In `PGgraphmacros.pl`, functions always render on top of axes, grid lines, and tick marks. Near-zero curve tails cover the x-axis.
+
+**Why:** `WWPlot.pm` draws functions **twice** (lines 492 and 573 of `draw()`). The second pass ensures curves are always the topmost layer.
+
+**What does NOT work:**
+- Clamping values to 0.05 so curves float above the axis -- creates a visible colored band, scientifically inaccurate
+- Returning off-graph values (-10) for near-zero points -- creates ugly vertical lines
+- Redrawing the axis with `moveTo`/`lineTo` -- added to function list, still covered
+
+**Accept it:** This is a fundamental PGgraphmacros limitation. See [HOW_TO_MAKE_GRAPHS.md](HOW_TO_MAKE_GRAPHS.md) for full graph limitations and workarounds.
+
+---
+
 ## Debugging Strategies
 
 ### Strategy 1: Check Line Numbers
@@ -609,6 +668,7 @@ Before committing a new PG file:
 - [ ] `ans_rule()` created BEFORE `ANS()` call
 - [ ] SMILES strings validated with Python RDKit
 - [ ] Tested with renderer (`-r` flag) to verify HTML output
+- [ ] HTML entities (`&deg;`, `&ndash;`, etc.) in Perl vars with `[$var]*`, not bare in PGML
 - [ ] No PGML parsing errors in renderer warnings
 
 ---
@@ -631,6 +691,106 @@ Before committing a new PG file:
 | Variable shows empty in PGML | `my $var` instead of `$var` | Remove `my` for PGML-visible vars |
 | Random order changes | Hash keys not sorted | Sort keys before selection |
 | `'sort' trapped by operation mask` | `sort { ... }` in PG | Hardcode sorted order or manual insertion sort |
+| `&amp;deg;` shown literally | `&deg;` directly in PGML text | Use `$var = "37&deg;C"` with `[$var]*` |
+| Curves cover x-axis line | PGgraphmacros draws functions twice | Accept it; do not clamp values |
+| Auto-labels on graph axes | `grid`/`ticks` options in `init_graph` | Use manual `v_grid`/`h_grid` + labels |
+
+---
+
+## Sandbox: `sort` is trapped by operation mask
+
+**Problem:** The WeBWorK safe compartment blocks Perl's `sort` function.
+
+**Symptom:** `'sort' trapped by operation mask at line N`
+
+**Fix:** Use a manual bubble sort or min/max loop instead.
+
+```perl
+# WRONG - sort is blocked by the sandbox
+my @sorted = sort { $a <=> $b } @values;
+
+# RIGHT - manual bubble sort
+for (my $i = 0; $i < scalar(@values); $i++) {
+	for (my $j = $i + 1; $j < scalar(@values); $j++) {
+		if ($values[$j] < $values[$i]) {
+			my $tmp = $values[$i];
+			$values[$i] = $values[$j];
+			$values[$j] = $tmp;
+		}
+	}
+}
+```
+
+For finding min/max, use a simple loop:
+
+```perl
+# WRONG
+my $min_enzyme = (sort { $a->{optim} <=> $b->{optim} } @enzymes)[0];
+
+# RIGHT
+my $min_enzyme = $enzymes[0];
+for (my $i = 1; $i < 3; $i++) {
+	if ($enzymes[$i]->{optim} < $min_enzyme->{optim}) {
+		$min_enzyme = $enzymes[$i];
+	}
+}
+```
+
+**Example:** `enzyme_ph_activity_graph.pgml`, `enzyme_temp_activity_graph.pgml`
+
+---
+
+## Apostrophes in Perl double-quoted strings
+
+**Problem:** English possessives like `"the enzyme's shape"` contain a single
+quote that can break Perl string parsing in some contexts, especially when
+strings are interpolated or passed through multiple layers.
+
+**Symptom:** Syntax errors, truncated strings, or unexpected variable
+interpolation.
+
+**Fix:** Rewrite to avoid the apostrophe.
+
+```perl
+# RISKY
+"The enzyme's peptide bonds are hydrolyzed"
+
+# SAFE
+"Peptide bonds in the enzyme are hydrolyzed"
+```
+
+**Why:** While Perl double-quoted strings technically allow single quotes, the
+WeBWorK evaluation environment and nested string contexts can mishandle them.
+Avoiding apostrophes in string literals is a defensive practice.
+
+---
+
+## RadioButtons: `labels` shorthand vs literal strings
+
+**Problem:** `labels => 'ABC'` and `labels => '123'` are recognized shorthand
+keywords that auto-generate labels (A, B, C, D, ... or 1, 2, 3, 4, ...) for
+any number of choices. But spelling out the letters like `labels => 'ABCDE'`
+is NOT recognized and falls back to "Choice 1", "Choice 2", etc.
+
+**Symptom:** Radio buttons display "Choice 1", "Choice 2" instead of letter
+labels.
+
+**Fix:** Always use the shorthand `'ABC'` or `'123'`.
+
+```perl
+# RIGHT - shorthand works for any number of choices
+$rb = RadioButtons([@choices], $answer, labels => 'ABC');
+$rb = RadioButtons([@choices], $answer, labels => '123');
+
+# WRONG - literal string is not a recognized shorthand
+$rb = RadioButtons([@choices], $answer, labels => 'ABCDE');
+# produces "Choice 1", "Choice 2", etc.
+
+# AVOID - array reference is fragile and unnecessary
+$rb = RadioButtons([@choices], $answer, labels => ['A', 'B', 'C', 'D']);
+```
+
+Verified against the PG 2.17 renderer.
 
 ---
 

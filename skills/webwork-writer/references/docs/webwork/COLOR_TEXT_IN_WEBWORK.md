@@ -118,6 +118,38 @@ Which one of the following [$plural_choice]* corresponds to [$singular_item]* [$
 The correct answer is: [$correct]*
 ```
 
+## Colored text in RadioButtons choices
+
+HTML spans render directly inside RadioButtons choice strings. WeBWorK does
+not escape HTML in the choice text, so you can color-code choices to match
+graph curves or other visual elements.
+
+```perl
+# Build a colored enzyme name lookup
+my %enzyme_html = ();
+for (my $i = 0; $i < 3; $i++) {
+	my $n = $enzymes[$i]->{name};
+	my $h = $enzymes[$i]->{hexcolor};
+	$enzyme_html{$n} = "<span style='color:${h}; font-weight:700;'>"
+		. "Enzyme ${n}</span>";
+}
+
+# Use colored names in both the answer and the choices
+my $answer = $enzyme_html{$target->{name}};
+my @choices = ($enzyme_html{'A'}, $enzyme_html{'B'}, $enzyme_html{'C'});
+
+$rb = RadioButtons(
+	[@choices], $answer,
+	labels => 'ABC', displayLabels => 1,
+	separator => '<div style="margin-bottom: 0.5em;"></div>',
+);
+```
+
+The answer string must exactly match one of the choice strings (including the
+HTML tags) for grading to work correctly.
+
+Reference: `enzyme_ph_activity_graph.pgml`, `enzyme_temp_activity_graph.pgml`.
+
 ## Notes
 - Use `A)` instead of `A.` in rendered lists when PGML auto-converts `A.` into an ordered list.
 - The warning "unknown block type 'balance'" may appear in PGML logs; it did not affect CSS-based coloring in our tests.
