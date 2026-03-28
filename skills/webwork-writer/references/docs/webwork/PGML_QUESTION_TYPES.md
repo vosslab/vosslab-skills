@@ -98,16 +98,17 @@ Notes:
 
 ## Multiple answer (checkbox)
 
-Checkbox macros are unreliable in our PG 2.17 renderer snapshot. Avoid
-checkboxes unless you have verified the macro exists in
-[PG_2_17_RENDERER_MACROS.md](PG_2_17_RENDERER_MACROS.md) and tested rendering.
+As of March 27, 2026. It was determined that ADAPT has the CheckBoxList element in 
+its PG install, so it was added to the renderer. Backport parserCheckboxList.pl
+it works something like this
 
-Preferred fallback patterns:
-- Use multiple `RadioButtons` or `PopUp` widgets, one per statement.
-- Convert to multiple choice if the learning goal allows it.
+```perl
+$checks = CheckboxList([[ "Random 1", "Random 2", "Random 3" ]], 2);
 
-If checkboxes are confirmed available, keep the same PGML-first pattern and
-inline the evaluator in the blank.
+BEGIN_PGML
+[_]{$checks}
+END_PGML
+```
 
 ## Fill-in-blank (string)
 
