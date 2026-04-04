@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI/UX Engineer"
+  short_description: "Review and improve UI/UX quality"
+  default_prompt: "Use $ui-ux-engineer to review and improve the user experience of this interface."

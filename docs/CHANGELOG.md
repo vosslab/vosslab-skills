@@ -1,3 +1,14 @@
+## 2026-04-04
+
+### Behavior or Interface Changes
+- Split `skills/pyside6-ui-engineer` into two separate skills: `skills/pyside6-engineer` (PySide6 widget architecture, signal-slot design, state flow) and `skills/ui-ux-engineer` (framework-agnostic UI/UX review, visual hierarchy, interaction quality, design heuristics).
+- Renamed `skills/pyside6-ui-engineer` to `skills/pyside6-engineer`, removing general UI/UX content and adding a cross-reference to `ui-ux-engineer`.
+- Moved `ui_ux_review.md`, `design_books.md`, `Refactoring_UI.txt`, `Practical_UI.txt`, and `About_Face.txt` from `skills/pyside6-engineer/references/` to `skills/ui-ux-engineer/references/`.
+
+### Additions and New Features
+- Added `skills/ui-ux-engineer/SKILL.md` for framework-agnostic UI/UX review covering visual hierarchy, interaction quality, accessibility, validation, error states, and design heuristics.
+- Added `skills/ui-ux-engineer/agents/openai.yaml` UI metadata for the new skill.
+
 ## 2026-03-13
 
 ### Additions and New Features

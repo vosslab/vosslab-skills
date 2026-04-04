@@ -3,3 +3,4 @@ skills/pyside6-ui-engineer/references/*.txt
 report_*.txt
 .DS_Store
 skills/.system/
+skills/*/references/*.txt

@@ -1,15 +1,16 @@
 ---
-name: pyside6-ui-engineer
-description: Design, implement, refactor, and review PySide6 desktop applications with strong widget architecture, signal-slot design, state flow, and expert UI/UX logic. Use when building or fixing Qt for Python windows, dialogs, forms, navigation shells, model-view tables, theming, validation, accessibility, or interaction polish in Python GUI code.
+name: pyside6-engineer
+description: Design, implement, refactor, and review PySide6 desktop applications with strong widget architecture, signal-slot design, and state flow. Use when building or fixing Qt for Python windows, dialogs, forms, navigation shells, model-view tables, theming, or validation in Python GUI code.
 ---
 
-# PySide6 UI Engineer
+# PySide6 Engineer
 
 ## Overview
 
-Use this skill to build desktop interfaces that are technically sound and pleasant to use.
-Balance PySide6 implementation details with product-level UI/UX judgment instead of treating visuals as an afterthought.
+Use this skill to build desktop interfaces that are technically sound with PySide6.
+Focus on widget architecture, signal-slot design, state management, and Qt best practices.
 Use the official Qt for Python docs as the primary source for APIs, examples, and tool behavior.
+For UI/UX review and design polish, use the `ui-ux-engineer` skill.
 
 ## Workflow
 
@@ -27,29 +28,9 @@ Use the official Qt for Python docs as the primary source for APIs, examples, an
 
 3. Build the UI from layout and hierarchy first.
 - Prefer layouts over absolute positioning.
-- Make visual hierarchy obvious with spacing, grouping, alignment, and restrained emphasis.
 - Keep forms short, labels explicit, and primary actions visually dominant.
 - Design for resizing from the start; do not assume one fixed window size.
 - Read [`references/model_view.md`](references/model_view.md) before building non-trivial tables, trees, filtering, sorting, or custom cell rendering.
-
-4. Add interaction quality, not just functionality.
-- Give immediate feedback for user actions.
-- Prevent errors before showing errors.
-- Keep destructive actions explicit and reversible when practical.
-- Support keyboard flow, sensible tab order, and accessible names/tooltips where needed.
-- Read [`references/ui_ux_review.md`](references/ui_ux_review.md) when polishing hierarchy, affordances, validation, empty states, feedback, and accessibility.
-- Read [`references/design_books.md`](references/design_books.md) when you need durable design heuristics, typography guidance, grid/layout thinking, or design-system perspective beyond immediate PySide6 mechanics.
-- Read the local top-three design resources in this order when they match the problem:
-  [`references/Refactoring_UI.txt`](references/Refactoring_UI.txt) for visual hierarchy, spacing, typography, color, and component polish;
-  [`references/Practical_UI.txt`](references/Practical_UI.txt) for logic-driven accessibility, interaction, and usability rules;
-  [`references/About_Face.txt`](references/About_Face.txt) for flow, task structure, dialog behavior, and interaction model decisions.
-- Read [`references/About_Face.txt`](references/About_Face.txt) when the flow, task structure, dialog behavior, or interaction model feels weak rather than merely looking weak.
-
-5. Verify behavior with a UX review pass.
-- Check whether the screen communicates purpose in three seconds.
-- Check whether the main action is obvious.
-- Check whether busy work has been removed from the user's path.
-- Check whether edge states look intentional rather than broken.
 
 ## Implementation defaults
 
@@ -67,17 +48,13 @@ Use the official Qt for Python docs as the primary source for APIs, examples, an
 
 ## Quality bar
 
-- Favor clarity over decoration.
 - Favor stable patterns over clever widget tricks.
 - Favor predictable state transitions over hidden side effects.
-- Avoid cramped layouts, unlabeled icons, ambiguous submit buttons, and dialogs that ask questions without context.
 - Do not block the event loop with expensive work, sleeps, or synchronous network/file operations in click handlers.
 
 ## Output expectations
 
 When using this skill, aim to produce:
 - PySide6 code that is organized by responsibility and easy to extend.
-- UI decisions that can be defended in terms of user goals, not personal taste.
 - Explicit handling for validation, error messaging, empty states, and loading states.
-- A short explanation of key UX decisions when the change is non-obvious.
 - References to the relevant official Qt for Python docs when using unfamiliar APIs or package tools.

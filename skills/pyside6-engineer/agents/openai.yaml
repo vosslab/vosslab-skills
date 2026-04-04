@@ -1,0 +1,4 @@
+interface:
+  display_name: "PySide6 Engineer"
+  short_description: "Build PySide6 desktop applications"
+  default_prompt: "Use $pyside6-engineer to design or implement a PySide6 desktop application with strong widget architecture and state flow."
