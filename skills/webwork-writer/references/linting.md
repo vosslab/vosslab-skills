@@ -9,8 +9,11 @@ Primary lint path uses the local renderer API at http://localhost:3000.
   - `python3 references/scripts/lint_pg_via_renderer_api.py -i <file.pgml>`
     prints a human-readable lint report (default mode).
   - `python3 references/scripts/lint_pg_via_renderer_api.py -i <file.pgml> --json`
-    prints the full renderer JSON response, pretty-printed and JWT-redacted,
-    suitable for piping into `jq` or `json.loads`.
+    prints the full renderer JSON response, pretty-printed, with auth-token
+    keys (`JWT`, `sessionJWT`, `answerJWT`, `problemJWT`) dropped outright so
+    the output is lean enough to pipe into `head`, `jq`, or `json.loads`.
+  - Add `--no-html` to additionally omit `renderedHTML` from `--json` output
+    when only the structured fields are needed.
   - `python3 references/scripts/lint_pg_via_renderer_api.py -i <file.pgml> --html`
     prints the rendered HTML (the same `renderedHTML` string that appears
     inside the JSON payload).

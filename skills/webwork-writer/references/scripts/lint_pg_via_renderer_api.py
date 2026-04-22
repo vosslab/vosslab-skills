@@ -26,6 +26,14 @@ JWT_INPUT_PATTERN = re.compile(
 	re.IGNORECASE,
 )
 
+# Literal exact-match keys to drop from JSON output. Exact match only: a future
+# server-side field like "hasJWT" or "jwtExpiry" must not silently disappear.
+# "JWT" is the observed wrapper dict ({answer, problem, session}) in the
+# renderer response as of 2026-04-22; the 2-part "problem" token inside it is
+# what defeats the three-dot regex and bloats --json. The other three are
+# defensive coverage for hypothetical flat keys seen in lib/RenderApp.
+JWT_KEYS_TO_DROP = {"JWT", "sessionJWT", "answerJWT", "problemJWT"}
+
 
 #============================================
 def parse_args() -> argparse.Namespace:
@@ -75,7 +83,18 @@ def parse_args() -> argparse.Namespace:
 		help="Print rendered HTML extracted from the JSON response, JWT-redacted.",
 	)
 	parser.set_defaults(output_mode="lint")
+	# --no-html: drop the renderedHTML key from JSON output (only meaningful
+	# with --json; errors at parse time if combined with --html).
+	parser.add_argument(
+		"--no-html",
+		dest="no_html",
+		action="store_true",
+		help="Omit renderedHTML from --json output (only valid with --json).",
+	)
 	args = parser.parse_args()
+	# Enforce --no-html only applies to --json mode.
+	if args.no_html and args.output_mode != "json":
+		parser.error("--no-html requires --json")
 	return args
 
 
@@ -112,6 +131,30 @@ def redact_jwt(text: str) -> str:
 	redacted = JWT_INPUT_PATTERN.sub("", text)
 	redacted = JWT_PATTERN.sub("<REDACTED_JWT>", redacted)
 	return redacted
+
+
+#============================================
+def strip_jwt_tree(value):
+	"""
+	Walk a decoded JSON tree and delete any dict key in JWT_KEYS_TO_DROP.
+	Exact-match, case-sensitive. Recurses into remaining dicts and lists.
+
+	Observed shape in the renderer response on 2026-04-22: top-level key
+	"JWT" is a dict {answer, problem, session}; "problem" is a 2-part token
+	that the three-dot JWT_PATTERN does not match, which is the reason
+	--json output carries ~2 KB of base64 despite the existing redaction.
+	Dropping the wrapper outright removes all three tokens at once.
+	"""
+	if isinstance(value, dict):
+		cleaned = {}
+		for key, item in value.items():
+			if key in JWT_KEYS_TO_DROP:
+				continue
+			cleaned[key] = strip_jwt_tree(item)
+		return cleaned
+	if isinstance(value, list):
+		return [strip_jwt_tree(item) for item in value]
+	return value
 
 
 #============================================
@@ -250,11 +293,19 @@ def print_rendered_html(response: dict) -> None:
 
 
 #============================================
-def print_json_response(response: dict) -> None:
+def print_json_response(response: dict, drop_html: bool = False) -> None:
 	"""
-	Print the full JSON response, JWT-redacted, pretty-printed.
+	Print the full JSON response, JWT-stripped, pretty-printed.
+
+	strip_jwt_tree drops the known JWT-bearing keys outright. redact_tree
+	then walks remaining strings as a belt-and-suspenders backstop (catches
+	any inline JWT inside other fields and strips `<input name="...JWT" ...>`
+	tags embedded inside the renderedHTML string).
 	"""
-	redacted = redact_tree(response)
+	stripped = strip_jwt_tree(response)
+	if drop_html:
+		stripped.pop("renderedHTML", None)
+	redacted = redact_tree(stripped)
 	serialized = json.dumps(redacted, indent=2, sort_keys=True)
 	print(serialized)
 
@@ -280,7 +331,7 @@ def main() -> None:
 		print_rendered_html(response)
 		return
 	if args.output_mode == "json":
-		print_json_response(response)
+		print_json_response(response, drop_html=args.no_html)
 		return
 
 	messages = collect_lint_messages(response)

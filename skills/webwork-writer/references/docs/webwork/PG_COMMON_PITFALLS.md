@@ -765,6 +765,45 @@ Avoiding apostrophes in string literals is a defensive practice.
 
 ---
 
+## Safe compartment: escaped pipe in regex silently drops
+
+### Pitfall: `/\|/` in `split` acts like an empty regex
+
+**Problem:** `split(/\|/, $str, 2)` does NOT split on a literal pipe in PG's
+Safe compartment. Instead it behaves like an empty regex, splitting between
+every character.
+
+```perl
+# WRONG - \| is not honoured, behaves like //
+my $key = "ARRRLM|beta";
+my ($a, $b) = split(/\|/, $key, 2);
+# Result: $a = "A", $b = "RRRLM|beta"  (split between chars 0 and 1)
+```
+
+**Symptom:** Downstream lookups fail because the first "field" is a single
+letter and the second contains the delimiter. Easy to miss because there is
+no error -- the code silently misbehaves.
+
+**Fix:** Use a character class instead of an escaped metacharacter.
+
+```perl
+# RIGHT - character class is honoured
+my ($a, $b) = split(/[|]/, $key, 2);
+# Result: $a = "ARRRLM", $b = "beta"
+```
+
+**Why:** PG's regex compiler inside the Safe compartment appears to drop the
+backslash-pipe sequence. Character classes (`[|]`) go through a different
+code path that is not affected. The same workaround applies to other
+escaped alternation-class metachars when split mysteriously produces
+single-character fields.
+
+**Recommendation:** When joining and splitting composite string keys inside
+PG, pick a delimiter that does not require escaping (`:`, `#`, `~`) or use a
+character class in the split.
+
+---
+
 ## RadioButtons: `labels` shorthand vs literal strings
 
 **Problem:** `labels => 'ABC'` and `labels => '123'` are recognized shorthand
