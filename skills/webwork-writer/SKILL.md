@@ -27,6 +27,36 @@ Use this skill to author or adjust PG/PGML problems with the local WebWork rende
 - Avoid MathJax color macros; use HTML spans and CSS for color.
 - Always render with `-r` to visually confirm layout and checkbox behavior before reporting results.
 
+## Self-contained PGML files
+
+PGML files are uploaded to the problem server individually, so each file must
+be fully self-contained. Do not factor shared helpers into a sibling `.pl`
+macro and `loadMacros()` it from several PGMLs -- the uploaded file will not
+have access to it.
+
+When several PGML files need the same helpers (SVG primitives, lookup tables,
+domain utilities), inline a copy of the helpers inside each file. To keep
+maintenance sane, wrap each reusable chunk in a clearly labelled block so it
+can be copy-pasted between files verbatim:
+
+```perl
+# ==== BEGIN BLOCK: svg_primitives (v1) ====
+sub svg_text { ... }
+sub svg_rect { ... }
+# ==== END BLOCK: svg_primitives ====
+```
+
+Conventions:
+
+- Use `# ==== BEGIN BLOCK: <name> (v<N>) ====` and matching `END BLOCK` lines.
+- Bump the version suffix when the block changes so drift across files is easy
+  to spot with `grep`.
+- Keep each block independent (no cross-block calls that aren't also in the
+  block set) so a block can be dropped into a new file without pulling in a
+  whole web of dependencies.
+- When fixing a bug in a block, update every PGML that carries it; a repo-wide
+  `grep` on the block name surfaces them all.
+
 ## Reference Files
 
 - Read references/repos.md to locate local repos and paths.
