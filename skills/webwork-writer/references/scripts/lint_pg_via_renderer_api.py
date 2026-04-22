@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Post a local PG/PGML file to the renderer API and report lint findings or HTML.
+Post a local PG/PGML file to the renderer API and report lint findings,
+the full JSON response, or rendered HTML.
 """
 
 # Standard Library
@@ -11,6 +12,9 @@ import argparse
 import urllib.request
 import html
 import re
+
+BASE_URL = "http://localhost:3000"
+TEMPLATE_CHOICES = ("static", "default", "debug")
 
 JWT_PATTERN = re.compile(
 	r"(?<![A-Za-z0-9_-])"
@@ -39,13 +43,6 @@ def parse_args() -> argparse.Namespace:
 		help="Local PG/PGML file to send as problemSource.",
 	)
 	parser.add_argument(
-		"-b",
-		"--base-url",
-		dest="base_url",
-		default="http://localhost:3000",
-		help="Renderer base URL (default: http://localhost:3000).",
-	)
-	parser.add_argument(
 		"-s",
 		"--seed",
 		dest="problem_seed",
@@ -54,27 +51,30 @@ def parse_args() -> argparse.Namespace:
 		help="Problem seed (default: random).",
 	)
 	parser.add_argument(
-		"-o",
-		"--output-format",
-		dest="output_format",
-		default="classic",
-		help="Output format template id (default: classic).",
+		"-t",
+		"--template",
+		dest="template",
+		choices=TEMPLATE_CHOICES,
+		default="debug",
+		help="Renderer template id (default: debug). Choices: static, default, debug.",
 	)
-	parser.add_argument(
-		"-r",
-		"--render",
-		dest="render_html",
-		action="store_true",
-		help="Print rendered HTML instead of lint findings.",
+	# Output mode group: default (no flag) = lint report.
+	mode_group = parser.add_mutually_exclusive_group()
+	mode_group.add_argument(
+		"--json",
+		dest="output_mode",
+		action="store_const",
+		const="json",
+		help="Print full JSON response, pretty-printed, JWT-redacted.",
 	)
-	parser.add_argument(
-		"-n",
-		"--no-render",
-		dest="render_html",
-		action="store_false",
-		help="Print lint findings instead of rendered HTML.",
+	mode_group.add_argument(
+		"--html",
+		dest="output_mode",
+		action="store_const",
+		const="html",
+		help="Print rendered HTML extracted from the JSON response, JWT-redacted.",
 	)
-	parser.set_defaults(render_html=False)
+	parser.set_defaults(output_mode="lint")
 	args = parser.parse_args()
 	return args
 
@@ -90,14 +90,14 @@ def read_source(path: str) -> str:
 
 
 #============================================
-def build_payload(source_text: str, problem_seed: int, output_format: str) -> dict:
+def build_payload(source_text: str, problem_seed: int, template: str) -> dict:
 	"""
 	Build the JSON payload for the render request.
 	"""
 	payload = {
 		"problemSource": source_text,
 		"problemSeed": problem_seed,
-		"outputFormat": output_format,
+		"outputFormat": template,
 	}
 	return payload
 
@@ -115,11 +115,27 @@ def redact_jwt(text: str) -> str:
 
 
 #============================================
+def redact_tree(value):
+	"""
+	Walk a decoded JSON tree and apply redact_jwt to every string value.
+	Non-string values (numbers, None, bools, nested containers) pass through.
+	"""
+	if isinstance(value, str):
+		return redact_jwt(value)
+	if isinstance(value, dict):
+		return {key: redact_tree(item) for key, item in value.items()}
+	if isinstance(value, list):
+		return [redact_tree(item) for item in value]
+	return value
+
+
+#============================================
 def request_render(base_url: str, payload: dict) -> dict:
 	"""
 	Post to /render-api and return the decoded JSON response.
 	"""
-	url = f"{base_url}/render-api"
+	# _format must be a query param; the renderer ignores it in the JSON body.
+	url = f"{base_url}/render-api?_format=json"
 	body = json.dumps(payload).encode("utf-8")
 	headers = {"Content-Type": "application/json"}
 
@@ -234,22 +250,37 @@ def print_rendered_html(response: dict) -> None:
 
 
 #============================================
+def print_json_response(response: dict) -> None:
+	"""
+	Print the full JSON response, JWT-redacted, pretty-printed.
+	"""
+	redacted = redact_tree(response)
+	serialized = json.dumps(redacted, indent=2, sort_keys=True)
+	print(serialized)
+
+
+#============================================
 def main() -> None:
 	"""
 	Run the lint or render workflow.
 	"""
 	args = parse_args()
-	base_url = args.base_url.rstrip("/")
 	source_text = read_source(args.input_file)
 	seed_value = args.problem_seed
 	if seed_value is None:
 		seed_value = random.randint(1, 999999)
-		print(f"Using random seed: {seed_value}")
-	payload = build_payload(source_text, seed_value, args.output_format)
-	response = request_render(base_url, payload)
+		# Only print the seed notice in lint mode so --json and --html
+		# produce clean, parseable stdout.
+		if args.output_mode == "lint":
+			print(f"Using random seed: {seed_value}")
+	payload = build_payload(source_text, seed_value, args.template)
+	response = request_render(BASE_URL, payload)
 
-	if args.render_html:
+	if args.output_mode == "html":
 		print_rendered_html(response)
+		return
+	if args.output_mode == "json":
+		print_json_response(response)
 		return
 
 	messages = collect_lint_messages(response)
