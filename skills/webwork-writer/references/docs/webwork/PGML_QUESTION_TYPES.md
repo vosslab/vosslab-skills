@@ -1,7 +1,7 @@
 # PGML Question Type Patterns
 
 This guide describes the preferred PGML style for common question types in this
-repo. It complements [WEBWORK_PROBLEM_AUTHOR_GUIDE.md](WEBWORK_PROBLEM_AUTHOR_GUIDE.md)
+repo. It complements [WEBWORK_PROBLEM_AUTHOR_GUIDE.md](../WEBWORK_PROBLEM_AUTHOR_GUIDE.md)
 and [MATCHING_PROBLEMS.md](MATCHING_PROBLEMS.md).
 
 ## General rules (all question types)

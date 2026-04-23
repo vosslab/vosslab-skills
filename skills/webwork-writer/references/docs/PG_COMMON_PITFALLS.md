@@ -581,7 +581,7 @@ $gr->lb(new Label(40, -1.3, "Temperature (\x{B0}C)",
 - Returning off-graph values (-10) for near-zero points -- creates ugly vertical lines
 - Redrawing the axis with `moveTo`/`lineTo` -- added to function list, still covered
 
-**Accept it:** This is a fundamental PGgraphmacros limitation. See [HOW_TO_MAKE_GRAPHS.md](HOW_TO_MAKE_GRAPHS.md) for full graph limitations and workarounds.
+**Accept it:** This is a fundamental PGgraphmacros limitation. See [webwork/HOW_TO_MAKE_GRAPHS.md](webwork/HOW_TO_MAKE_GRAPHS.md) for full graph limitations and workarounds.
 
 ---
 
@@ -835,9 +835,9 @@ Verified against the PG 2.17 renderer.
 
 ## Related Documentation
 
-- [RANDOMIZATION_REFERENCE.md](RANDOMIZATION_REFERENCE.md) - Seeding and shuffling
-- [RDKIT_MOLECULAR_STRUCTURES.md](RDKIT_MOLECULAR_STRUCTURES.md) - SMILES validation
-- [QUESTION_STATEMENT_EMPHASIS.md](QUESTION_STATEMENT_EMPHASIS.md) - HTML in PGML
+- [webwork/RANDOMIZATION_REFERENCE.md](webwork/RANDOMIZATION_REFERENCE.md) - Seeding and shuffling
+- [webwork/RDKIT_MOLECULAR_STRUCTURES.md](webwork/RDKIT_MOLECULAR_STRUCTURES.md) - SMILES validation
+- [webwork/QUESTION_STATEMENT_EMPHASIS.md](webwork/QUESTION_STATEMENT_EMPHASIS.md) - HTML in PGML
 - [WEBWORK_PROBLEM_AUTHOR_GUIDE.md](WEBWORK_PROBLEM_AUTHOR_GUIDE.md) - Overall structure
 
 ---

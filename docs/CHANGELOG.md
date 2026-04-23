@@ -1,3 +1,17 @@
+## 2026-04-23
+
+### Additions and New Features
+- Bundled authoring-relevant docs from `biology-problems` into `skills/bptools-writer/references/docs/` so the skill is self-contained: `QUESTION_AUTHORING_GUIDE.md`, `QUESTION_FUNCTION_INDEX.md`, `UNIFICATION_PLAN.md`, `YAML_QUESTION_BANK_INDEX.md`, plus 8 domain guides under `docs/problems/` (matching sets, PUBCHEM biochem, MC statements, pedigrees, phylogenetic trees). Explicitly skipped repo-infrastructure files (CHANGELOG*, INSTALL, USAGE, style docs, refactor workflow artifacts) and the `webwork` symlink that was itself pointing into the webwork-writer skill.
+
+### Behavior or Interface Changes
+- Tightened `skills/bptools-writer/SKILL.md` with a mandatory Required reading block forcing the agent to Read the bundled `QUESTION_AUTHORING_GUIDE.md` plus the live `bptools.py` at the target repo root (the skill only runs inside `biology-problems`, so the repo root is resolved via `git rev-parse --show-toplevel`). Updated Workflow, Core Rules, and Reference Files to point at bundled paths and noted the drift risk for bundled snapshots.
+- Rewrote `skills/bptools-writer/references/docs.md` to index the bundled docs by purpose (Required reading, Core authoring, Domain-specific by type) and kept external qti_package_maker pointers separate from bundled snapshots.
+- Tightened `skills/webwork-writer/SKILL.md` with a mandatory Required reading block that forces the agent to Read `HOW_TO_LINT.md`, `PG_COMMON_PITFALLS.md`, and `WEBWORK_PROBLEM_AUTHOR_GUIDE.md` before any PGML edit.
+- Promoted the three required-reading docs to the top level of `skills/webwork-writer/references/docs/` via `git mv`, so top-level = required reading + tooling and subfolders = additional content. Updated cross-references in sibling docs (`INDEX.md`, `WEBWORK_HEADER_STYLE.md`, `PGML_QUESTION_TYPES.md`, `QUESTION_STATEMENT_EMPHASIS.md`, `HOW_TO_MAKE_GRAPHS.md`) and inside the moved docs.
+
+### Additions and New Features
+- Rewrote `skills/webwork-writer/references/docs.md` to index every doc under `references/docs/` grouped by purpose (Required reading, Core authoring, Question-type specific, Graphs and molecules, Color and accessibility, HTML and tables, Randomization, PG version notes, PubChem biochem, Renderer and lint tooling), adding previously unreferenced docs: `COLOR_CONTRAST_ACCESSIBILITY.md`, `HOW_TO_MAKE_GRAPHS.md`, `ORDERING_PROBLEMS.md`, `PG_2_17_RENDERER_MACROS.md`, `PG_2.20_to_2.16_features.md`, `PGML_QUESTION_TYPES.md`, `QUESTION_STATEMENT_EMPHASIS.md`, `RDKIT_MOLECULAR_STRUCTURES.md`.
+
 ## 2026-04-04
 
 ### Behavior or Interface Changes

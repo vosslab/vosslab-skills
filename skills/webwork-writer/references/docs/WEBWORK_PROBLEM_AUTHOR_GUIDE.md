@@ -446,7 +446,7 @@ If you use interactive widgets, treat them as first-class and keep grading expli
   seed yields stable results across runs.
 - Prefer non-deprecated helpers (for example `random_subset`) over wrappers like
   `NchooseK` when possible.
-- See [RANDOMIZATION_REFERENCE.md](RANDOMIZATION_REFERENCE.md) for a list of
+- See [webwork/RANDOMIZATION_REFERENCE.md](webwork/RANDOMIZATION_REFERENCE.md) for a list of
   common PG randomization entry points.
 
 ---

@@ -371,7 +371,7 @@ my $graph_img = image(insertGraph($gr), ...);
 $graph_img = image(insertGraph($gr), ...);
 ```
 
-See [PG_COMMON_PITFALLS.md](PG_COMMON_PITFALLS.md) for more scoping details.
+See [PG_COMMON_PITFALLS.md](../PG_COMMON_PITFALLS.md) for more scoping details.
 
 ---
 
@@ -533,7 +533,7 @@ $gr->lb(new Label(39, -0.9, "Temperature (\x{B0}C)",
 
 For degree symbols in PGML text (outside the graph), use HTML entities in a Perl
 variable with `[$var]*` passthrough. See
-[PG_COMMON_PITFALLS.md](PG_COMMON_PITFALLS.md).
+[PG_COMMON_PITFALLS.md](../PG_COMMON_PITFALLS.md).
 
 ---
 
@@ -602,5 +602,5 @@ plus manual `h_ticks`/`v_ticks` calls to get both.
 ## Related Documentation
 
 - [PG_2_17_RENDERER_MACROS.md](PG_2_17_RENDERER_MACROS.md) - Full list of available macros
-- [PG_COMMON_PITFALLS.md](PG_COMMON_PITFALLS.md) - Variable scoping, PGML parsing, degree symbols
-- [WEBWORK_PROBLEM_AUTHOR_GUIDE.md](WEBWORK_PROBLEM_AUTHOR_GUIDE.md) - Overall problem structure
+- [PG_COMMON_PITFALLS.md](../PG_COMMON_PITFALLS.md) - Variable scoping, PGML parsing, degree symbols
+- [WEBWORK_PROBLEM_AUTHOR_GUIDE.md](../WEBWORK_PROBLEM_AUTHOR_GUIDE.md) - Overall problem structure

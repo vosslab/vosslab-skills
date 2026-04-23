@@ -327,7 +327,7 @@ $emph = "<span style='color:blue;'>value</span>";
 
 ## Related Documentation
 
-- [WEBWORK_PROBLEM_AUTHOR_GUIDE.md](WEBWORK_PROBLEM_AUTHOR_GUIDE.md) - Overall problem structure
+- [WEBWORK_PROBLEM_AUTHOR_GUIDE.md](../WEBWORK_PROBLEM_AUTHOR_GUIDE.md) - Overall problem structure
 - [PGML_QUESTION_TYPES.md](PGML_QUESTION_TYPES.md) - Question type patterns
 - [COLOR_TEXT_IN_WEBWORK.md](COLOR_TEXT_IN_WEBWORK.md) - PGML color span handling
 
