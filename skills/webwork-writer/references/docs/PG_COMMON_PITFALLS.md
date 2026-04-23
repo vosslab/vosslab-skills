@@ -568,6 +568,54 @@ $gr->lb(new Label(40, -1.3, "Temperature (\x{B0}C)",
 
 ---
 
+## Special Characters: Use HTML4 Entities, Not HTML5-Only
+
+### Pitfall: `&cdot;` and other HTML5-only entities fail to render
+
+**Problem:** Some named HTML entities were added in HTML5 and are not
+rendered reliably across all WeBWorK display paths (browser preview,
+PDF export, MathJax fallback, legacy server-side renderers). Even when
+the entity passes cleanly through PGML via `[$var]*` / `[@ @]*`
+passthrough, the downstream renderer may display the literal
+`&entityname;` text instead of the character.
+
+```perl
+# RISKY - &cdot; is HTML5-only (U+22C5), shows as literal text in
+# some WeBWorK display paths
+$topic = 'the G&cdot;U wobble base pair';
+```
+
+**Symptom:** The rendered HTML contains the entity intact (a grep
+for `&cdot;` succeeds, no `&amp;cdot;` double-escape), but the
+browser or exported view shows `G&cdot;U` as literal text.
+
+**Fix:** Use the HTML4 equivalent entity. HTML4 entities are
+universally supported.
+
+| HTML5-only | HTML4 equivalent | Character |
+|---|---|---|
+| `&cdot;` | `&middot;` | `.` middle dot (U+00B7, not U+22C5 but close enough) |
+| `&hellip;` | (HTML4 OK) | `...` (already HTML4) |
+| `&mdash;` | (HTML4 OK) | `--` (already HTML4) |
+
+```perl
+# RIGHT - &middot; is HTML4, universally rendered
+$topic = 'the G&middot;U wobble base pair';
+```
+
+**Rule of thumb:** Prefer the oldest entity name that maps to the
+character you want. If you are not sure, check whether the entity
+was defined in HTML 4.01. HTML5 added many names (especially
+MathML-flavored ones like `&cdot;`, `&ne;`, `&le;`, `&ge;`) that
+look identical in modern Chrome/Firefox but break elsewhere in the
+WeBWorK pipeline.
+
+**Example from this repo:** `molecular_biology/g-u_wobble.yml` used
+`&cdot;` which survived PGML passthrough but displayed as literal
+text; switching to `&middot;` fixed it.
+
+---
+
 ## PGgraphmacros: Functions cover axes
 
 ### Pitfall: Curve tails cover the x-axis line
