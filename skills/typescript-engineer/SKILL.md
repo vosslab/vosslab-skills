@@ -1,15 +1,16 @@
 ---
 name: typescript-engineer
-description: Resolve TypeScript errors, eliminate `any`, and design complex types including generics, conditional types, mapped types, template literal types, branded or opaque types, and deep inference. Use for type-inference problems, `infer` or `extends` questions, utility types such as `Partial`, `Record`, `ReturnType`, `Awaited`, `NoInfer`, `satisfies`, function overloads, declaration merging, strict-mode refactors, and production-grade type-safety reviews.
+description: Resolve TypeScript errors, eliminate `any`, and design modular, strict TypeScript types including generics, conditional types, mapped types, template literal types, branded or opaque types, and deep inference. Use for type-inference problems, `infer` or `extends` questions, utility types such as `Partial`, `Record`, `ReturnType`, `Awaited`, `NoInfer`, `satisfies`, module-boundary type design, function overloads, declaration merging, strict-mode refactors, and production-grade type-safety reviews.
 ---
 
 # TypeScript Engineer
 
 ## Overview
 
-Use this skill for type-level design, compiler-error diagnosis, and strict-safety refactoring in
-TypeScript. Route non-trivial work to the focused rule files in `references/`; do not answer from
-`SKILL.md` alone when the request involves advanced type behavior.
+Use this skill for type-level design, module-boundary type ownership, compiler-error diagnosis, and
+strict-safety refactoring in TypeScript. Route non-trivial work to the focused rule files in
+`references/`; do not answer from `SKILL.md` alone when the request involves advanced type behavior
+or shared type design.
 
 ## Design philosophy
 
@@ -19,19 +20,24 @@ TypeScript. Route non-trivial work to the focused rule files in `references/`; d
   change for different reasons.
 - Co-locate private helper types with the implementation that uses them.
 - Promote a type to a shared file only after multiple modules need the same contract.
+- Export stable contracts, not incidental implementation helper types.
+- Treat API, storage, validation, and domain shapes as separate owners unless the repo proves they
+  change together.
 
 ## When to use
 
 - Untangle TypeScript compiler errors.
 - Eliminate `any`, unsafe `unknown` handling, or unchecked casts.
 - Design generics, conditional types, mapped types, template literal types, or branded types.
+- Design shared contracts, DTOs, schema-derived types, domain models, or public type APIs.
 - Refactor a file or module toward stricter compile-time safety without changing runtime behavior.
 - Explain a TypeScript type-system concept with concrete before and after examples.
 - Validate production refactors with `tsc --noEmit` and type-level tests.
 
 ## When not to use
 
-- Runtime validation: use project libraries such as Zod, io-ts, Valibot, or local validators.
+- Runtime validation alone: use project libraries such as Zod, io-ts, Valibot, or local validators.
+  Use this skill when connecting validated runtime boundaries to static TypeScript contracts.
 - Behavioral refactors: use a broader refactoring and testing workflow when runtime behavior changes.
 - Build tooling failures such as missing `tsc`, bad `tsconfig` paths, or package resolution issues.
 - JavaScript-only questions where types are not involved.
@@ -47,6 +53,8 @@ TypeScript. Route non-trivial work to the focused rule files in `references/`; d
 2. Load the right rule file.
 - Use the decision tree and routing table below.
 - Read every matching rule file before making a non-trivial type-level change.
+- Read [`references/modular-type-design.md`](references/modular-type-design.md) when a type is
+  exported, shared, schema-derived, DTO-like, domain-level, or moved between files.
 - Prefer repo-local `docs/TYPESCRIPT_STYLE.md` when present.
 
 3. Choose the simplest type that works.
@@ -55,6 +63,8 @@ TypeScript. Route non-trivial work to the focused rule files in `references/`; d
 - Explain dense types with a short comment naming the technique.
 - Keep each edited or new file focused on one responsibility; split unrelated type helpers into
   separate files instead of growing a catch-all module.
+- Prefer local duplication of tiny incidental types over coupling distant modules through a weak
+  shared abstraction.
 
 4. Prove the type.
 - Add or suggest type-level assertions such as `Expect<Equal<A, B>>` when the repo has a pattern.
@@ -68,6 +78,8 @@ TypeScript. Route non-trivial work to the focused rule files in `references/`; d
 - Then read the rule file matching the error category.
 
 2. The user needs a type or API design:
+- Start with [`references/modular-type-design.md`](references/modular-type-design.md) when the type
+  crosses a module, package, API, schema, storage, or domain boundary.
 - Start with [`references/generics-basics.md`](references/generics-basics.md).
 - Add [`references/conditional-types.md`](references/conditional-types.md),
   [`references/mapped-types.md`](references/mapped-types.md), or
@@ -86,6 +98,7 @@ TypeScript. Route non-trivial work to the focused rule files in `references/`; d
 
 | Keyword or topic | Rule file |
 | --- | --- |
+| Shared contract, DTO, domain model, schema-derived type, public type API, boundary ownership | [`references/modular-type-design.md`](references/modular-type-design.md) |
 | `as const`, `typeof`, `satisfies`, enum alternative, derive types from values | [`references/as-const-typeof.md`](references/as-const-typeof.md) |
 | Array element type, `[number]` index | [`references/array-index-access.md`](references/array-index-access.md) |
 | `Partial`, `Record`, `Omit`, `Pick`, `ReturnType`, `Parameters`, `Awaited`, `NoInfer` | [`references/utility-types.md`](references/utility-types.md) |
