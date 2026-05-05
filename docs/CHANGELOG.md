@@ -1,3 +1,14 @@
+## 2026-05-05
+
+### Additions and New Features
+- Added `skills/typescript-engineer/SKILL.md` for TypeScript compiler-error diagnosis, strict type-safety refactors, `any` elimination, and advanced type-level design.
+- Added 15 focused `skills/typescript-engineer/references/` rule files covering `as const`, array index access, utility types, generics, builder patterns, deep inference, conditional types, `infer`, template literal types, mapped types, opaque types, narrowing, assertion functions, overloads, and error diagnosis.
+- Added `skills/typescript-engineer/agents/openai.yaml` UI metadata for the new skill.
+
+### Behavior or Interface Changes
+- Replaced the broader draft `typescript-expert` skill with the narrower `typescript-engineer` skill focused on compile-time TypeScript type design rather than runtime validation or build tooling.
+- Added an explicit one-responsibility-per-file design philosophy to `skills/typescript-engineer/SKILL.md`.
+
 ## 2026-04-23
 
 ### Additions and New Features

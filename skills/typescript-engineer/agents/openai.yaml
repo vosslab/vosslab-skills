@@ -1,0 +1,4 @@
+interface:
+  display_name: "TypeScript Engineer"
+  short_description: "Diagnose and design strict TypeScript types"
+  default_prompt: "Use $typescript-engineer to resolve TypeScript errors, eliminate any, or design complex strict-mode types."

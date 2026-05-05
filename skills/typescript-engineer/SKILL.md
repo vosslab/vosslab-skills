@@ -1,0 +1,137 @@
+---
+name: typescript-engineer
+description: Resolve TypeScript errors, eliminate `any`, and design complex types including generics, conditional types, mapped types, template literal types, branded or opaque types, and deep inference. Use for type-inference problems, `infer` or `extends` questions, utility types such as `Partial`, `Record`, `ReturnType`, `Awaited`, `NoInfer`, `satisfies`, function overloads, declaration merging, strict-mode refactors, and production-grade type-safety reviews.
+---
+
+# TypeScript Engineer
+
+## Overview
+
+Use this skill for type-level design, compiler-error diagnosis, and strict-safety refactoring in
+TypeScript. Route non-trivial work to the focused rule files in `references/`; do not answer from
+`SKILL.md` alone when the request involves advanced type behavior.
+
+## Design philosophy
+
+- Keep one responsibility per file.
+- Prefer small type modules with a single purpose over broad shared type dumping grounds.
+- Split runtime behavior, runtime validation, and type-level helpers into separate files when they
+  change for different reasons.
+- Co-locate private helper types with the implementation that uses them.
+- Promote a type to a shared file only after multiple modules need the same contract.
+
+## When to use
+
+- Untangle TypeScript compiler errors.
+- Eliminate `any`, unsafe `unknown` handling, or unchecked casts.
+- Design generics, conditional types, mapped types, template literal types, or branded types.
+- Refactor a file or module toward stricter compile-time safety without changing runtime behavior.
+- Explain a TypeScript type-system concept with concrete before and after examples.
+- Validate production refactors with `tsc --noEmit` and type-level tests.
+
+## When not to use
+
+- Runtime validation: use project libraries such as Zod, io-ts, Valibot, or local validators.
+- Behavioral refactors: use a broader refactoring and testing workflow when runtime behavior changes.
+- Build tooling failures such as missing `tsc`, bad `tsconfig` paths, or package resolution issues.
+- JavaScript-only questions where types are not involved.
+
+## Working style
+
+1. Reproduce first.
+- Run the repo's focused TypeScript check, preferably `tsc --noEmit`, before proposing a fix when
+  the code is available.
+- Capture the exact diagnostic text and relevant `ts(...)` code.
+- If the check cannot be run, state that clearly and reason from the visible code.
+
+2. Load the right rule file.
+- Use the decision tree and routing table below.
+- Read every matching rule file before making a non-trivial type-level change.
+- Prefer repo-local `docs/TYPESCRIPT_STYLE.md` when present.
+
+3. Choose the simplest type that works.
+- Prefer clear generics and utility types before conditional, mapped, or template-literal machinery.
+- Preserve existing runtime behavior unless the user explicitly requests behavior changes.
+- Explain dense types with a short comment naming the technique.
+- Keep each edited or new file focused on one responsibility; split unrelated type helpers into
+  separate files instead of growing a catch-all module.
+
+4. Prove the type.
+- Add or suggest type-level assertions such as `Expect<Equal<A, B>>` when the repo has a pattern.
+- Use negative tests such as `// @ts-expect-error` only when they prove an intentional rejection.
+- Re-run `tsc --noEmit` or the repo's type-check command after changes.
+
+## Decision tree
+
+1. Something does not compile or `tsc` is red:
+- Start with [`references/error-diagnosis.md`](references/error-diagnosis.md).
+- Then read the rule file matching the error category.
+
+2. The user needs a type or API design:
+- Start with [`references/generics-basics.md`](references/generics-basics.md).
+- Add [`references/conditional-types.md`](references/conditional-types.md),
+  [`references/mapped-types.md`](references/mapped-types.md), or
+  [`references/template-literal-types.md`](references/template-literal-types.md) as needed.
+
+3. The user wants to remove `any` or tighten types:
+- Read [`references/type-narrowing.md`](references/type-narrowing.md).
+- Read [`references/utility-types.md`](references/utility-types.md).
+- Read [`references/generics-basics.md`](references/generics-basics.md) when a function or class
+  needs to become generic.
+
+4. The user asks for an explanation:
+- Match the concept in the routing table, then provide a minimal before and after example.
+
+## Routing table
+
+| Keyword or topic | Rule file |
+| --- | --- |
+| `as const`, `typeof`, `satisfies`, enum alternative, derive types from values | [`references/as-const-typeof.md`](references/as-const-typeof.md) |
+| Array element type, `[number]` index | [`references/array-index-access.md`](references/array-index-access.md) |
+| `Partial`, `Record`, `Omit`, `Pick`, `ReturnType`, `Parameters`, `Awaited`, `NoInfer` | [`references/utility-types.md`](references/utility-types.md) |
+| Generic, constraint, `extends`, type parameter | [`references/generics-basics.md`](references/generics-basics.md) |
+| Builder pattern, chainable, fluent API | [`references/builder-pattern.md`](references/builder-pattern.md) |
+| Deep inference, const type parameter, preserve literal types | [`references/deep-inference.md`](references/deep-inference.md) |
+| Conditional type, `extends ? :`, distribute | [`references/conditional-types.md`](references/conditional-types.md) |
+| `infer`, extract inner type | [`references/infer-keyword.md`](references/infer-keyword.md) |
+| Template literal type, string manipulation at type level | [`references/template-literal-types.md`](references/template-literal-types.md) |
+| Mapped type, `in keyof`, transform properties | [`references/mapped-types.md`](references/mapped-types.md) |
+| Brand type, opaque type, nominal typing, validated ID | [`references/opaque-types.md`](references/opaque-types.md) |
+| Narrowing, `typeof`, `instanceof`, `in`, discriminated union, type guard, `is` | [`references/type-narrowing.md`](references/type-narrowing.md) |
+| Assertion function, `asserts value is`, validate and throw | [`references/assertion-functions.md`](references/assertion-functions.md) |
+| Overload, multiple signatures | [`references/function-overloads.md`](references/function-overloads.md) |
+| Type error, diagnostic, `ts(...)`, not assignable, circular reference | [`references/error-diagnosis.md`](references/error-diagnosis.md) |
+
+## Smell-test snippets
+
+### Eliminate `any` with a generic
+
+```ts
+function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
+	return obj[key];
+}
+```
+
+Read [`references/generics-basics.md`](references/generics-basics.md).
+
+### Narrow an unknown response at the boundary
+
+```ts
+function isUser(value: unknown): value is { id: number; name: string } {
+	return typeof value === "object" && value !== null && "id" in value && "name" in value;
+}
+```
+
+Read [`references/type-narrowing.md`](references/type-narrowing.md) and
+[`references/assertion-functions.md`](references/assertion-functions.md).
+
+### Preserve literals while enforcing shape
+
+```ts
+const palette = {
+	red: [255, 0, 0],
+	green: [0, 255, 0],
+} as const satisfies Record<string, readonly [number, number, number]>;
+```
+
+Read [`references/as-const-typeof.md`](references/as-const-typeof.md).
