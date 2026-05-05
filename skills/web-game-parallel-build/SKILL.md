@@ -1,6 +1,6 @@
 ---
 name: web-game-parallel-build
-description: Use when building a TypeScript browser game from modular `parts/*.ts` files using parallel subagents to reduce wall-clock build time (designed for live/podcast time pressure). Default release target is GitHub Pages from `dist/` via GitHub Actions; an optional `export_single_file.sh` produces a portable one-file HTML when explicitly requested. The skill delegates type design to `typescript-engineer`, parallel dispatch to `superpowers:subagent-driven-development`, and lane decisions to `parallel-plan`; it owns the web-game specifics (workstream layout, batched smoke testing, web-platform gotchas, single-file export).
+description: Use when building a TypeScript browser game from modular `parts/*.ts` files using parallel subagents to ship good code AND reduce wall-clock build time (designed for live/podcast time pressure). Immediate live target is the locally-served preview from `run_web_server.sh`; GitHub Pages from `dist/` (via GitHub Actions) and the optional `export_single_file.sh` portable HTML are post-show release paths. The skill delegates type design to `typescript-engineer`, parallel dispatch to `superpowers:subagent-driven-development`, and lane decisions to `parallel-plan`; it owns the web-game specifics (workstream layout, batched smoke testing, web-platform gotchas, single-file export).
 ---
 
 # Web Game Parallel Build
@@ -13,16 +13,31 @@ release target is a GitHub Pages-ready `dist/` produced by
 `build_github_pages.sh`; an optional one-file HTML export is available via
 `export_single_file.sh` when the user explicitly asks for portable sharing.
 
-**Why this skill exists:** to reduce the wall-clock time of building a
-playable web game end-to-end. The skill is designed for time-pressured
-live contexts (podcasts, classroom demos, livestreams) where serial
-implementation would not finish inside the available window. Parallelism
-buys minutes you cannot get any other way; everything else here -- contracts,
-batches, smoke tests, the build identity split -- exists to make that
-parallelism safe.
+**Why this skill exists:** two co-primary goals, one mechanism.
+
+- Goal 1 -- ship good code: typed cross-module contracts, isolated
+  feature-area modules, smoke-tested integration, and a strict
+  TypeScript posture (`tsc --noEmit`, `noUncheckedIndexedAccess`,
+  `exactOptionalPropertyTypes`, no unchecked `as` casts).
+- Goal 2 -- cut wall-clock time enough to finish a playable web game
+  inside a live/podcast/classroom-demo/livestream window where serial
+  implementation would not. The immediate target during the live
+  window is the locally-served preview from `run_web_server.sh`, not
+  the GitHub Pages deploy. GitHub Pages (and the optional single-file
+  export) are post-show release paths, not the artifact the audience
+  watches you build.
+- Mechanism: parallel coding subagents coordinated by an orchestrator
+  around shared contracts and batched integration checkpoints.
+
+Contracts, batches, smoke tests, and the build-identity split serve
+BOTH goals -- they keep parallel output safe to merge AND keep the
+resulting code good. Neither goal subsidizes the other: speed is not
+an excuse to drop the quality bar, and the quality bar is not an
+excuse to abandon parallelism and miss the window.
 
 **Core principle:** Contracts before code, batches before integration,
-browser testing before declaring done.
+browser testing before declaring done. Parallel agents are how we hit
+the deadline without giving up the quality bar.
 
 **Orchestrator role:** The lead agent does NOT write game code (except
 Batch 1 foundation). It gathers requirements, writes type contracts,
@@ -77,11 +92,13 @@ deployment.
 
 The three driver scripts have distinct, non-overlapping jobs:
 
-- `run_web_server.sh`: local development preview.
+- `run_web_server.sh`: local development preview. **This is the
+  immediate live/podcast/demo target** -- the audience watches the
+  game come up at `http://localhost:<port>/` from this script.
 - `build_github_pages.sh`: canonical production build to `dist/`.
-  Must NOT produce single-file output.
+  Post-show release path. Must NOT produce single-file output.
 - `export_single_file.sh`: optional portable artifact to `dist-single/`.
-  Must NOT mutate `dist/`.
+  Post-show portable-sharing path. Must NOT mutate `dist/`.
 
 ## Shipped artifacts
 
@@ -438,8 +455,9 @@ Gates: `npx tsc --noEmit` passes; full playthrough via Playwright.
 ### Total wall-clock: ~20 min with 4 integration checkpoints
 
 Compare: all-at-once parallel (8 min authoring + 60 min debugging =
-68 min). The whole skill exists to bend wall clock; sequential
-gates are the price of that bend.
+68 min). The sequential gates exist to keep the code good under
+parallel authoring; parallelism is how those same gates still fit
+inside a live window.
 
 ## Step 6: Integration fix loop
 
@@ -512,8 +530,10 @@ subsequent agents need the corrected contract.
 
 ## Bottlenecks and mitigation
 
-The skill exists to bend wall clock for live/podcast contexts. Every
-sequential step below is a wall-clock cost; minimize but do not skip.
+The skill bends wall clock without lowering the quality bar. The
+sequential steps below are the minimum needed to keep the code good
+under parallel authoring in a live/podcast context; minimize but do
+not skip.
 
 | Bottleneck | Time | Why sequential | Mitigation |
 | --- | --- | --- | --- |
@@ -588,6 +608,7 @@ removes work entirely.
 | "We'll test it all together at the end" | Test each module in isolation first. |
 | "TypeScript slows agents down" | `tsc --noEmit` between batches catches contract drift in seconds; the JS version found the same drift only at Playwright time. |
 | "We can `as any` the tricky spot" | Forbidden outside brand constructors and save-file type guards. Route the problem to `typescript-engineer`. |
+| "Parallel means we can lower the quality bar to hit the deadline" | No. The skill exists to hit the deadline AT the quality bar. Cutting contracts, smoke tests, or `tsc --noEmit` does not buy time; it moves the same time into integration debugging at the end. |
 
 ## Red flags - STOP
 
