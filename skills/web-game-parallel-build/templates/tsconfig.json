@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"target": "es2020",
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitOverride": true,
+		"verbatimModuleSyntax": true,
+		"useUnknownInCatchVariables": true,
+		"noEmit": true,
+		"skipLibCheck": true
+	},
+	"include": ["**/*.ts"]
+}

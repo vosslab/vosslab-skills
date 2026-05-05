@@ -1,0 +1,8 @@
+# Copy this file to .gitignore at the project root.
+# Shipped without a leading '.' so it is not itself ignored when the
+# skill repo is checked out.
+
+node_modules/
+dist/
+dist-single/
+_bundle.js

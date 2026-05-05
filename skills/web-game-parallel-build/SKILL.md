@@ -1,70 +1,189 @@
 ---
-name: parallel-web-game-build
-description: Use when building a single-file web game or interactive web app from modular source files using parallel agents. Use when the output is one HTML file assembled from parts via a build script, and multiple agents will write code concurrently.
+name: web-game-parallel-build
+description: Use when building a TypeScript browser game from modular `parts/*.ts` files using parallel subagents to reduce wall-clock build time (designed for live/podcast time pressure). Default release target is GitHub Pages from `dist/` via GitHub Actions; an optional `export_single_file.sh` produces a portable one-file HTML when explicitly requested. The skill delegates type design to `typescript-engineer`, parallel dispatch to `superpowers:subagent-driven-development`, and lane decisions to `parallel-plan`; it owns the web-game specifics (workstream layout, batched smoke testing, web-platform gotchas, single-file export).
 ---
 
-# Parallel Web Game Build
+# Web Game Parallel Build
 
 ## Overview
 
-Build a single-file web game (or interactive web app) from modular source files using parallel agents with batched integration checkpoints. The output is one self-contained HTML file assembled from `parts/` via a build script.
+Build a TypeScript browser game from modular source files in `parts/` using
+parallel coding subagents with batched integration checkpoints. The default
+release target is a GitHub Pages-ready `dist/` produced by
+`build_github_pages.sh`; an optional one-file HTML export is available via
+`export_single_file.sh` when the user explicitly asks for portable sharing.
 
-**Core principle:** Contracts before code, batches before integration, browser testing before declaring done.
+**Why this skill exists:** to reduce the wall-clock time of building a
+playable web game end-to-end. The skill is designed for time-pressured
+live contexts (podcasts, classroom demos, livestreams) where serial
+implementation would not finish inside the available window. Parallelism
+buys minutes you cannot get any other way; everything else here -- contracts,
+batches, smoke tests, the build identity split -- exists to make that
+parallelism safe.
 
-**Orchestrator role:** The lead agent does NOT write game code (except Batch 1 foundation). It gathers requirements, writes contracts, dispatches coding agents in batches, runs smoke tests, and fixes integration issues.
+**Core principle:** Contracts before code, batches before integration,
+browser testing before declaring done.
 
-**Relationship to manager planning:** This skill is a domain-specific implementation profile of `manager-make-new-plan` for single-file web games. It keeps the same milestone/workstream/work-package/patch model, but preassigns standard workstreams so execution can start faster with less planning overhead.
+**Orchestrator role:** The lead agent does NOT write game code (except
+Batch 1 foundation). It gathers requirements, writes type contracts,
+dispatches coding agents in batches, runs smoke tests, and fixes integration
+issues.
 
-## Terminology Contract
+Type design lives in `typescript-engineer`. This skill does not restate any
+TypeScript rules.
 
-Canonical definitions live in `references/DEFINITIONS.md`.
-Naming constraints and legacy handling live in `references/NAMING_GUARDRAILS.md`.
-Capacity and sizing targets live in `references/CAPACITY_AND_SIZING.md`.
+## Required upstream skills
 
-## Terminology Collision
+This skill requires three upstream skills. Invoke them; do not hand-roll
+their work here.
 
-- Use Milestone / Workstream / Work package only in planning docs, not in durable code identifiers.
-- Use Stage / Pass / Step for durable gameplay pipeline or algorithm steps in code identifiers.
-- If a repository already has `phaseN_*` artifacts, treat that as legacy naming and do not introduce new planning-phase names into code.
+- `typescript-engineer` (this repo, `skills/typescript-engineer/`) owns all
+  type design. Route to:
+  [`references/game-type-patterns.md`](../typescript-engineer/references/game-type-patterns.md)
+  for branded ids, save-file boundary, `GameEvent` unions, ECS shapes,
+  and `as const satisfies` config tables;
+  [`references/modular-type-design.md`](../typescript-engineer/references/modular-type-design.md)
+  for feature-area ownership;
+  [`references/strict-mode-flags.md`](../typescript-engineer/references/strict-mode-flags.md)
+  for strict posture.
+- `superpowers:subagent-driven-development` owns parallel dispatch and
+  integration mechanics: ownership boundaries, dispatch hygiene,
+  per-task review, integration after each batch. Invoke before
+  dispatching any coding subagent. This skill only adds the web-game
+  specifics on top.
+- `parallel-plan` owns the up-front decision of how many lanes to split
+  into and when one agent should hand off rather than carry everything.
+  Invoke once before Batch 1; revisit if a batch becomes lopsided.
 
-## Preassigned Workstreams
+## What this skill still owns
 
-Use these default workstreams unless project requirements force a different split:
+- The preassigned workstream layout for browser games.
+- The `parts/` module decomposition.
+- The build identity split (GitHub Pages default vs. single-file export).
+- Web-platform gotchas (canvas + `innerHTML`, branded ids leaking to DOM,
+  type-only imports under `verbatimModuleSyntax`).
+- Playwright smoke testing between batches.
+- Shipped script artifacts under `templates/` (see "Shipped artifacts"
+  below).
 
+## Build identity
+
+Default to a GitHub Pages-ready TypeScript browser game that builds into
+`dist/`. Use the single-file HTML export only when the user explicitly
+asks for a portable file, offline sharing, email attachment, or archive
+build. Prefer GitHub Actions for deployment. Do not make agents manually
+copy `dist/` to a branch unless the user explicitly asks for branch-based
+deployment.
+
+The three driver scripts have distinct, non-overlapping jobs:
+
+- `run_web_server.sh`: local development preview.
+- `build_github_pages.sh`: canonical production build to `dist/`.
+  Must NOT produce single-file output.
+- `export_single_file.sh`: optional portable artifact to `dist-single/`.
+  Must NOT mutate `dist/`.
+
+## Shipped artifacts
+
+The skill ships real files under `templates/` an orchestrator can copy
+verbatim:
+
+- `templates/setup_game.sh` -- one-time `npm install` + initial build.
+- `templates/setup_playwright.sh` -- one-time Playwright + chromium
+  install (separate from `setup_game.sh` because the chromium download
+  is heavier and may be skipped on machines that already have it).
+- `templates/run_web_server.sh` -- local dev preview.
+- `templates/build_github_pages.sh` -- canonical release build.
+- `templates/export_single_file.sh` -- optional portable export.
+- `templates/tsconfig.json` -- strict baseline (`strict` +
+  `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes` and a few
+  others; the canonical owner is
+  `typescript-engineer/references/strict-mode-flags.md`).
+- `templates/package.json` -- minimal dev dependencies (`typescript`,
+  `esbuild`).
+- `templates/parts_index.html` -- entry HTML copied to `dist/index.html`.
+- `templates/parts_layout.md` -- one-page `parts/` skeleton.
+- `templates/agent_prompt_template.md` -- per-agent prompt skeleton.
+- `templates/gitignore` -- copy to `.gitignore`.
+- `templates/playwright_smoke_test.md` -- between-batch smoke recipe.
+- `templates/deploy_pages_workflow.yml` -- GitHub Actions deploy
+  workflow. Copy to `.github/workflows/deploy-pages.yml` (the
+  template lives outside the `.github/` path so the skill repo does
+  not ship a hidden directory; the orchestrator renames on copy,
+  same pattern as `gitignore` -> `.gitignore`).
+- `references/GITHUB_PAGES_DEPLOY.md` -- step-by-step deploy guide.
+
+## Terminology
+
+Canonical definitions live in [`references/DEFINITIONS.md`](references/DEFINITIONS.md).
+Naming constraints and legacy handling live in
+[`references/NAMING_GUARDRAILS.md`](references/NAMING_GUARDRAILS.md).
+Capacity and sizing targets live in
+[`references/CAPACITY_AND_SIZING.md`](references/CAPACITY_AND_SIZING.md).
+
+## Terminology collision
+
+- Use Milestone / Workstream / Work package only in planning docs, not in
+  durable code identifiers.
+- Use Stage / Pass / Step for durable gameplay pipeline or algorithm
+  steps in code identifiers.
+- If a repository already has `phaseN_*` artifacts, treat that as legacy
+  naming and do not introduce new planning-phase names into code.
+
+## Preassigned workstreams
+
+Use these defaults unless project requirements force a different split.
+Lane count, scope splits, and merges go through `parallel-plan` before
+Batch 1.
+
+- Workstream A0: Types and contracts
+  - Files: `parts/types/*.ts`, `parts/brands.ts`
+  - Owner: orchestrator (or a dedicated agent before Batch 1)
+  - Goal: cross-workstream contracts so all later batches can compile in
+    isolation.
 - Workstream A: Foundation and state
-  - Files: `constants.js`, `characters.js`, `game_state.js`
-  - Goal: stable contracts and stage/state backbone
+  - Files: `parts/constants.ts`, `parts/characters.ts`, `parts/game_state.ts`
+  - Goal: stable contracts and stage/state backbone.
 - Workstream B: UI shell and styling
-  - Files: `head.html`, `body.html`, `tail.html`, `style.css`, `ui_rendering.js`
-  - Goal: interaction shell, layout, and shared UI controls
+  - Files: `parts/head.html`, `parts/body.html`, `parts/tail.html`,
+    `parts/index.html`, `parts/style.css`, `parts/ui_rendering.ts`
+  - Goal: interaction shell, layout, and shared UI controls.
 - Workstream C: Core gameplay stage
-  - Files: `scene_stage.js`, `data_generation.js`
-  - Goal: core playable loop with contract-conformant data
+  - Files: `parts/scene_stage.ts`, `parts/data_generation.ts`
+  - Goal: core playable loop with contract-conformant data.
 - Workstream D: Advanced gameplay and outcomes
-  - Files: `lab_stage.js`, `gel_rendering.js`, `case_board.js`, `scoring.js`, `educational.js`
-  - Goal: analysis/review stages, scoring, and endgame flow
+  - Files: `parts/lab_stage.ts`, `parts/gel_rendering.ts`,
+    `parts/case_board.ts`, `parts/scoring.ts`, `parts/educational.ts`
+  - Goal: analysis/review stages, scoring, and endgame flow.
 - Workstream E: Runtime utilities
-  - Files: `timer.js`, `save_load.js`, `init.js`
-  - Goal: lifecycle bootstrap, persistence, and timers
+  - Files: `parts/timer.ts`, `parts/save_load.ts`, `parts/init.ts`
+  - Goal: lifecycle bootstrap, persistence, timers.
 
-When available agents are fewer than workstreams, merge adjacent workstreams and keep ownership explicit.
-When available agents exceed workstreams, split the largest workstream into work packages, not ad-hoc files.
+## When to use
 
-## When to Use
+- Building a TypeScript browser game in a time-pressured live context
+  (podcast, classroom demo, livestream) where wall-clock time matters
+  more than strict serial discipline.
+- Multiple subagents will write `.ts`, CSS, and HTML concurrently.
+- The app has interacting modules (data generation, display, user
+  interaction).
+- Canvas rendering is involved (gel visualizations, charts, game graphics).
+- The release target is GitHub Pages (default) or a portable single
+  HTML file (optional export).
 
-- Building a single HTML file from modular source files
-- Multiple agents will write JavaScript/CSS/HTML concurrently
-- The app has interacting modules (data generation, display, user interaction)
-- Canvas rendering is involved (gel visualizations, charts, game graphics)
+## When NOT to use
 
-## When NOT to Use
+- Simple single-file edits.
+- Server-side applications.
+- Multi-page apps with heavy build tooling beyond `tsc` + `esbuild`
+  (Vite, Webpack, Next, etc.).
+- Tasks where one subagent can finish in under 10 minutes; the
+  parallelization overhead is not worth it.
+- Off-stage work where wall-clock minutes are not a constraint -- a
+  serial agent with TDD will produce cleaner output for the same
+  total cost.
 
-- Simple single-file edits
-- Server-side applications
-- Multi-page web apps with build tooling (webpack, vite)
-- Tasks where one agent can finish in under 10 minutes
-
-## The Process
+## The process
 
 ```dot
 digraph process {
@@ -72,395 +191,438 @@ digraph process {
 
     "1. Gather UI preferences" [shape=box];
     "2. Define minimum viable scope" [shape=box];
-    "3. Write data contracts" [shape=box];
-    "4. Write build script" [shape=box];
+    "3. Write type contracts (parts/types/*.ts)" [shape=box];
+    "4. Configure build (templates -> parts/, dist/, .github/)" [shape=box];
     "5. Batch 1: Foundation (sequential)" [shape=box];
-    "Build + smoke test" [shape=diamond];
+    "tsc + smoke 1" [shape=diamond];
     "6. Batch 2: Infrastructure (parallel)" [shape=box];
-    "Build + smoke test 2" [shape=diamond];
+    "tsc + smoke 2" [shape=diamond];
     "7. Batch 3: Core features (parallel)" [shape=box];
-    "Build + smoke test 3" [shape=diamond];
+    "tsc + smoke 3" [shape=diamond];
     "8. Batch 4: Advanced features (parallel)" [shape=box];
-    "Build + full playthrough" [shape=diamond];
+    "tsc + full playthrough" [shape=diamond];
     "Fix?" [shape=diamond];
     "Fix integration bugs" [shape=box];
     "Done" [shape=doublecircle];
 
     "1. Gather UI preferences" -> "2. Define minimum viable scope";
-    "2. Define minimum viable scope" -> "3. Write data contracts";
-    "3. Write data contracts" -> "4. Write build script";
-    "4. Write build script" -> "5. Batch 1: Foundation (sequential)";
-    "5. Batch 1: Foundation (sequential)" -> "Build + smoke test";
-    "Build + smoke test" -> "6. Batch 2: Infrastructure (parallel)" [label="pass"];
-    "6. Batch 2: Infrastructure (parallel)" -> "Build + smoke test 2";
-    "Build + smoke test 2" -> "7. Batch 3: Core features (parallel)" [label="pass"];
-    "7. Batch 3: Core features (parallel)" -> "Build + smoke test 3";
-    "Build + smoke test 3" -> "8. Batch 4: Advanced features (parallel)" [label="pass"];
-    "8. Batch 4: Advanced features (parallel)" -> "Build + full playthrough";
-    "Build + full playthrough" -> "Fix?";
+    "2. Define minimum viable scope" -> "3. Write type contracts (parts/types/*.ts)";
+    "3. Write type contracts (parts/types/*.ts)" -> "4. Configure build (templates -> parts/, dist/, .github/)";
+    "4. Configure build (templates -> parts/, dist/, .github/)" -> "5. Batch 1: Foundation (sequential)";
+    "5. Batch 1: Foundation (sequential)" -> "tsc + smoke 1";
+    "tsc + smoke 1" -> "6. Batch 2: Infrastructure (parallel)" [label="pass"];
+    "6. Batch 2: Infrastructure (parallel)" -> "tsc + smoke 2";
+    "tsc + smoke 2" -> "7. Batch 3: Core features (parallel)" [label="pass"];
+    "7. Batch 3: Core features (parallel)" -> "tsc + smoke 3";
+    "tsc + smoke 3" -> "8. Batch 4: Advanced features (parallel)" [label="pass"];
+    "8. Batch 4: Advanced features (parallel)" -> "tsc + full playthrough";
+    "tsc + full playthrough" -> "Fix?";
     "Fix?" -> "Fix integration bugs" [label="errors"];
-    "Fix integration bugs" -> "Build + full playthrough";
+    "Fix integration bugs" -> "tsc + full playthrough";
     "Fix?" -> "Done" [label="clean"];
 }
 ```
 
-## Step 1: Gather UI Preferences (2 min)
+## Step 1: Gather UI preferences (2 min)
 
-**Before writing any code**, ask the user about interaction style:
+Before writing any code, ask the user about interaction style:
 
 - Buttons vs dropdowns vs drag-and-drop?
 - Dark theme vs light?
 - Mobile support needed?
 - Any visual references or screenshots?
 
-**You must actually ask.** Do not default to buttons (or any style) without confirmation. The agent prompt template includes a default, but that default exists as a fallback - it does not replace asking.
+You must actually ask. Do not default to a style without confirmation.
+A 2-minute conversation prevents a 30-minute rewrite.
 
-**Why:** A 2-minute conversation saves a 30-minute rewrite. The DNA forensics build required a near-complete rewrite of the lab stage because agents built dropdowns and the user wanted buttons.
-
-## Step 2: Define Minimum Viable Scope
+## Step 2: Define minimum viable scope
 
 Start small. Get the core loop working end-to-end before expanding.
 
-**Template:**
-- 1-2 core mechanics (not 5)
-- 1-2 content types (not 5)
-- Fixed difficulty (not 3 levels)
-- No save/load in first pass
+- 1-2 core mechanics (not 5).
+- 1-2 content types (not 5).
+- Fixed difficulty (not 3 levels).
+- No save/load in first pass.
 
-**Why:** The DNA forensics build started with 5 forensic test types and had to cut to 2 after integration failure. Starting with 2 and expanding later would have been faster overall.
+If a feature can be added after the core loop works, defer it. Wall
+clock matters; scope creep at the start kills it.
 
-**Rule:** If a feature can be added after the core loop works, defer it.
+## Step 2b: Decompose into modules
 
-## Step 2b: Decompose into Modules
+Copy [`templates/parts_layout.md`](templates/parts_layout.md) into the
+project to scaffold `parts/`. Adapt the runtime files per project, but
+keep the file roles in
+[`templates/parts_layout.md`](templates/parts_layout.md) as the
+canonical layout for ownership.
 
-Break the game into files in `parts/`. Use this proven 18-file template as a starting point, then adapt per project:
+Type ownership rules (do not restate type-design rules from
+`typescript-engineer`):
 
-```
-parts/
-  head.html            DOCTYPE, meta, title
-  style.css            All CSS
-  body.html            DOM structure (screens, panels, modals)
-  tail.html            Closing tags
-  constants.js         Game config, data definitions, room/level data
-  characters.js        Entity definitions with game-relevant attributes
-  data_generation.js   Randomized content, puzzle/test result generators
-  game_state.js        State machine, stage transitions, round management
-  scene_stage.js       Stage 1 gameplay UI (e.g. exploration, collection)
-  lab_stage.js         Stage 2 gameplay UI (e.g. analysis, testing)
-  gel_rendering.js     Canvas rendering (if needed)
-  case_board.js        Stage 3 gameplay UI (e.g. review, decision, endgame)
-  scoring.js           Scoring engine
-  educational.js       Help content, tooltips, explanations
-  ui_rendering.js      Setup screen, modals, notifications, shared UI
-  timer.js             Countdown/timer mechanics
-  save_load.js         localStorage persistence
-  init.js              Bootstrap, keyboard shortcuts, DOMContentLoaded
-```
+- `parts/types/` is for cross-workstream contracts only. It is not a
+  dumping ground.
+- Feature-local types stay with the owning runtime module (for example,
+  `ScoreBreakdown` lives next to `parts/scoring.ts`).
+- Promotion to `parts/types/` follows
+  [`typescript-engineer/references/modular-type-design.md`](../typescript-engineer/references/modular-type-design.md).
+- `parts/types/*.ts` files are type-only: no runtime values, no
+  `const enum`, no helpers. Brand constructors and other tiny boundary
+  helpers belong in `parts/brands.ts` or the owning runtime module.
+- `parts/types/events.ts` is held to a stricter rule: it may export
+  only the composed `GameEvent` union and its type-only imports.
+  Per-feature event variants live with the feature owner. Do not put
+  inline payload shapes directly into the central union.
 
-**How to adapt per project:**
-
-Not every game needs all 18 files. Map the template to your game:
-
-- **Always keep:** `head.html`, `body.html`, `tail.html`, `style.css`, `constants.js`, `game_state.js`, `init.js`
-- **Rename stage files** to match your game loop (e.g. `scene_stage.js` becomes `question_stage.js`, `puzzle_stage.js`, etc.)
-- **Keep if applicable:** `characters.js` (entities), `data_generation.js` (randomized content), canvas rendering (rename to match), `scoring.js`, `educational.js`
-- **Defer to post-MVP:** `save_load.js`, `timer.js`, `educational.js` (keep scope minimal if included)
-
-**Estimate module complexity before proceeding:**
+Estimate module complexity before proceeding:
 
 | Signal | Action |
 | --- | --- |
-| 4+ content types in one module | Split into separate files or reduce scope |
-| Multiple distinct UI screens | Split by screen |
-| Both data generation AND display | Split generator from renderer |
-| Over ~400 lines expected | Find a split point |
+| 4+ content types in one module | Split or reduce scope. |
+| Multiple distinct UI screens | Split by screen. |
+| Both data generation AND display | Split generator from renderer. |
+| Over ~400 lines expected | Find a split point. |
 
-A batch finishes as fast as its slowest agent. Complex modules bottleneck the entire batch.
+A batch finishes as fast as its slowest agent. Complex modules
+bottleneck the entire batch.
 
-## Step 3: Write Data Contracts (5-10 min, SEQUENTIAL)
+## Step 3: Write type contracts (5-10 min, SEQUENTIAL)
 
-**This is the most important step.** Write contracts BEFORE dispatching any coding agents.
+Before writing any file under `parts/types/`, invoke
+`typescript-engineer` and follow its decision tree. The shapes you
+author here are governed by that skill, not by this one.
 
-The contracts document can be a Markdown file (e.g. `parts/CONTRACTS.md`), a comment-only JS file, or inline in the plan document. The format does not matter. What matters is that every cross-module interface is specified with exact property names and types.
+Required reading:
 
-Write the contracts document specifying:
+- [`typescript-engineer/references/game-type-patterns.md`](../typescript-engineer/references/game-type-patterns.md)
+- [`typescript-engineer/references/modular-type-design.md`](../typescript-engineer/references/modular-type-design.md)
+- [`typescript-engineer/references/strict-mode-flags.md`](../typescript-engineer/references/strict-mode-flags.md)
+- [`typescript-engineer/references/opaque-types.md`](../typescript-engineer/references/opaque-types.md)
 
-1. **Function return shapes** - exact property names and types for every generator function
-2. **Function signatures** - parameters and expected types for every cross-module call
-3. **DOM element IDs** - every ID that one module creates and another reads
-4. **Global state shape** - the game state object structure
-5. **Event flow** - which functions call which, in what order
+Web-game-orchestration-only rules (no TypeScript design rules; those are
+upstream):
 
-**Example contract (blood typing):**
-```javascript
-// generateBloodTypeResult(sample, sourceCharacter) returns:
-// {
-//   bloodType: string,     // "A", "B", "AB", or "O" (no Rh suffix)
-//   rhFactor: string,      // "+" or "-"
-//   agglutination: {       // visual display data
-//     antiA: boolean,
-//     antiB: boolean,
-//     antiD: boolean
-//   }
-// }
-//
-// displayBloodTypeResult() reads: result.bloodType, result.rhFactor,
-//   result.agglutination.antiA, result.agglutination.antiB, result.agglutination.antiD
+- Contracts are real `.ts` files under `parts/types/`, not JSDoc
+  comments.
+- Shared contracts are imported with `import type` and the imports are
+  extensionless (`from "./types/save"`, not `from "./types/save.ts"`),
+  matching the default `tsconfig.json`.
+- Missing cross-module types go back to the contract owner; agents must
+  not locally redeclare a contract shape.
+- `npx tsc --noEmit -p parts/tsconfig.json` passes before a batch is
+  considered green.
+
+Minimal example showing the orchestration shape only (a generator and
+display sharing a contract; type design itself is upstream):
+
+```ts
+// parts/types/forensics.ts
+export type BloodTypeResult = {
+  bloodType: "A" | "B" | "AB" | "O";
+  rhFactor: "+" | "-";
+};
+
+// parts/data_generation.ts
+import type { BloodTypeResult } from "./types/forensics";
+export function generateBloodTypeResult(/* ... */): BloodTypeResult { /* ... */ }
+
+// parts/lab_stage.ts
+import type { BloodTypeResult } from "./types/forensics";
+export function displayBloodTypeResult(result: BloodTypeResult): void { /* ... */ }
 ```
 
-**Example contract (RFLP):**
-```javascript
-// generateRFLPResult(sample, sourceCharacter, enzyme?) returns:
-// {
-//   enzyme: string,           // single enzyme name, e.g. "EcoRI"
-//   fragments: number[],      // fragment sizes in bp, e.g. [1200, 3400, 5600]
-//   degraded: boolean
-// }
-//
-// displayRFLPResult() reads: result.enzyme, result.fragments
-// renderGel() expects lanes: [{label: string, fragments: number[]}]
+## Step 4: Configure the build (sequential, 2-3 min)
+
+Copy the relevant templates into the project. Do not invent new build
+scripts; the shipped ones are the contract.
+
+```sh
+cp -R skills/web-game-parallel-build/templates/. .
+mv gitignore .gitignore
+chmod +x setup_game.sh setup_playwright.sh run_web_server.sh \
+         build_github_pages.sh export_single_file.sh
+mv parts_index.html parts/index.html
+mv parts_layout.md docs/PARTS_LAYOUT.md   # or wherever the project keeps docs
+mv tsconfig.json parts/tsconfig.json
+mkdir -p .github/workflows
+mv deploy_pages_workflow.yml .github/workflows/deploy-pages.yml
 ```
 
-**Why:** In the DNA forensics build, every single test type had a data structure mismatch between generator and display. `generateTestResult()` nested under `result.data`, displays read flat properties. `generateRFLPResult()` returned all enzymes, display expected one. This consumed 60+ minutes of debugging. A 10-minute contracts doc would have prevented all of it.
+Do not overwrite an existing `.github/workflows/deploy-pages.yml`; if
+one already exists, leave it alone and patch minimally.
 
-## Step 4: Write Build Script (sequential, 2 min)
+The workflow file under `.github/workflows/` requires workflow-file
+permission to push. The user typically gets:
 
-Create the build script that concatenates `parts/` into the final HTML file. This runs in the orchestrator context before dispatching agents.
-
-```bash
-#!/bin/bash
-# build_game.sh - concatenate parts into single HTML file
-cat parts/head.html > output.html
-echo "<style>" >> output.html
-cat parts/style.css >> output.html
-echo "</style>" >> output.html
-echo "<body>" >> output.html
-cat parts/body.html >> output.html
-echo "<script>" >> output.html
-cat parts/constants.js parts/characters.js parts/data_generation.js \
-    parts/game_state.js parts/timer.js parts/scene_stage.js \
-    parts/lab_stage.js parts/gel_rendering.js parts/case_board.js \
-    parts/scoring.js parts/educational.js parts/ui_rendering.js \
-    parts/save_load.js parts/init.js >> output.html
-echo "</script>" >> output.html
-cat parts/tail.html >> output.html
+```text
+refusing to allow a Personal Access Token to create or update workflow
+.github/workflows/deploy-pages.yml without workflow scope
 ```
 
-## Step 5: Batched Agent Dispatch
+When this happens, the user should add the workflow through the GitHub
+web UI or update their token's permission. See
+[`references/GITHUB_PAGES_DEPLOY.md`](references/GITHUB_PAGES_DEPLOY.md)
+for the three remediations in order of "least annoying".
 
-Before dispatching, map each batch assignment to one of the preassigned workstreams above and keep owner continuity across batches where possible.
+The build pipeline:
+
+- `npx tsc --noEmit -p parts/tsconfig.json` typechecks (no emit).
+- `npx esbuild parts/init.ts --bundle --format=esm --target=es2020
+  --platform=browser --outfile=dist/main.js` emits the bundle.
+- `parts/index.html` and `parts/style.css` are copied into `dist/`.
+- `dist/.nojekyll` is created.
+
+`tsc` is the type-check gate only; esbuild is the bundler. Do not
+remove `noEmit: true` from `parts/tsconfig.json`.
+
+## Step 5: Batched agent dispatch
+
+Dispatch and integration mechanics live in
+`superpowers:subagent-driven-development`; invoke that skill before
+reading the rest of this section. Lane count and scope splits across
+batches are decided once in `parallel-plan` before Batch 1; revisit if
+any batch becomes lopsided.
+
+After Workstream A0 (Types and contracts) finishes, dispatch the four
+batches below.
 
 ### Batch 1: Foundation (sequential, ~2 min)
 
 Write in the orchestrator or a single agent:
-- `constants.js` - game config, test definitions, room data
-- `characters.js` - character pool with biological profiles
-- `game_state.js` - state machine, stage transitions
 
-**These define the data model everything else depends on.** They MUST reference the contracts.
+- `parts/constants.ts` -- game config, level/room data
+- `parts/characters.ts` -- entity definitions
+- `parts/game_state.ts` -- state machine, stage transitions
 
-**Smoke test:** Build and open in browser. Verify no JS errors.
+These define the data model everything else depends on. They MUST
+import their cross-module shapes from `parts/types/`.
+
+Gates: `npx tsc --noEmit -p parts/tsconfig.json` passes; build with
+`./build_github_pages.sh`; open in browser; verify no JS errors.
 
 ### Batch 2: Infrastructure (parallel, ~4 min)
 
-Dispatch agents in parallel, each owning specific files:
-
-| Agent | Files | Notes |
+| Agent | Files | Imports types from |
 | --- | --- | --- |
-| Styling | `style.css`, `head.html`, `body.html`, `tail.html` | All HTML structure + CSS |
-| Timer + utilities | `timer.js`, `save_load.js` | No cross-module UI |
-| UI rendering | `ui_rendering.js` | Setup screen, modals, notifications |
+| Styling | `parts/style.css`, `parts/head.html`, `parts/body.html`, `parts/tail.html`, `parts/index.html` | (HTML/CSS only) |
+| Timer + utilities | `parts/timer.ts`, `parts/save_load.ts` | `parts/types/save.ts` |
+| UI rendering | `parts/ui_rendering.ts` | `parts/types/events.ts` |
 
-**Each agent prompt MUST include:**
-- The full contracts document
-- The constants.js and game_state.js content (or key excerpts)
-- Their owned files (no other files)
-- Explicit constraint: "Do NOT modify files outside your assignment"
+Each agent prompt MUST include:
 
-**Smoke test:** Build, open in browser, verify skeleton loads, state machine transitions work, timer displays.
+- The full type-contract file list (`parts/types/*.ts`).
+- The constants/state foundation (or key excerpts).
+- Their owned files (no other files).
+- Explicit constraint: "Do NOT modify files outside your assignment."
+
+Gates: `npx tsc --noEmit` passes; Playwright smoke per
+[`templates/playwright_smoke_test.md`](templates/playwright_smoke_test.md).
 
 ### Batch 3: Core game stages (parallel, ~5 min)
 
-| Agent | Files | Notes |
+| Agent | Files | Imports types from |
 | --- | --- | --- |
-| Scene stage | `scene_stage.js` | Evidence collection UI |
-| Data generation | `data_generation.js` | Test result generators per contracts |
+| Scene stage | `parts/scene_stage.ts` | `parts/types/events.ts`, feature-local types |
+| Data generation | `parts/data_generation.ts` | feature-local return types |
 
-**Smoke test:** Build, verify evidence collection works end-to-end via Playwright.
+Gates: `npx tsc --noEmit` passes; Playwright smoke verifies the core
+loop end-to-end.
 
 ### Batch 4: Advanced features (parallel, ~5 min)
 
-| Agent | Files | Notes |
+| Agent | Files | Imports types from |
 | --- | --- | --- |
-| Lab + gel | `lab_stage.js`, `gel_rendering.js` | Test running, canvas visualization |
-| Case board + scoring + educational | `case_board.js`, `scoring.js`, `educational.js` | Endgame flow |
+| Lab + gel | `parts/lab_stage.ts`, `parts/gel_rendering.ts` | feature-local types, `parts/types/events.ts` |
+| Case board + scoring + educational | `parts/case_board.ts`, `parts/scoring.ts`, `parts/educational.ts` | `parts/types/save.ts`, feature-local types |
 
-**Smoke test:** Build, full playthrough via Playwright from title to game over.
+Gates: `npx tsc --noEmit` passes; full playthrough via Playwright.
 
 ### Total wall-clock: ~20 min with 4 integration checkpoints
 
-Compare: all-at-once parallel (8 min authoring + 60 min debugging = 68 min).
+Compare: all-at-once parallel (8 min authoring + 60 min debugging =
+68 min). The whole skill exists to bend wall clock; sequential
+gates are the price of that bend.
 
-## Step 6: Integration Fix Loop
+## Step 6: Integration fix loop
 
 After the final smoke test, if Playwright finds errors:
 
-1. Check `browser_console_messages` for JS errors
-2. Take a browser snapshot to see DOM state
-3. Identify which module(s) are broken
-4. Dispatch a fix agent with the specific error message and the relevant module code
-5. Rebuild and re-test
+1. Check `browser_console_messages` for JS errors.
+2. Take a browser snapshot to see DOM state.
+3. Identify which module(s) are broken.
+4. Dispatch a fix agent with the specific error message and the
+   relevant module code.
+5. Rebuild and re-test.
 
-Repeat until clean. The fix scope should be small (1-2 modules) if contracts were followed.
+Repeat until clean. The fix scope should be small (1-2 modules) if
+contracts were followed.
 
-## Agent Prompt Template
+## Agent prompt template
 
-Every coding agent gets this structure:
+Use [`templates/agent_prompt_template.md`](templates/agent_prompt_template.md)
+for every coding subagent. The full dispatch and review mechanics live
+in `superpowers:subagent-driven-development`; the template adds these
+web-game-specific rules:
 
-```
-## Your Assignment
-Files you own: [list]
-DO NOT create or modify any other files.
+- Files are `.ts`. Use ES `import` / `export` for everything.
+- Imports are extensionless.
+- Import contract types from `parts/types/*.ts` using
+  `import type { ... }`.
+- Do not redefine cross-module shapes locally.
+- Zero unchecked `as` casts (brand constructors and save-file type
+  guards excepted; see
+  [`typescript-engineer/references/opaque-types.md`](../typescript-engineer/references/opaque-types.md)).
+- Run `npx tsc --noEmit -p parts/tsconfig.json` before reporting done.
 
-## Data Contracts
-[paste full contracts document]
+For type-design help, the agent invokes `typescript-engineer` and
+follows its decision tree. Game-shape questions start at
+[`typescript-engineer/references/game-type-patterns.md`](../typescript-engineer/references/game-type-patterns.md).
 
-## Foundation Code
-[paste constants.js, characters.js, game_state.js - or key excerpts]
+## Smoke testing with Playwright
 
-## Web Platform Rules
-- After setting innerHTML on a container with a <canvas>, wrap any
-  canvas drawing calls in requestAnimationFrame:
-    display.innerHTML = html;
-    requestAnimationFrame(function() {
-        renderCanvas('canvas-id', data);
-    });
-- Use button-based UI for user choices (not dropdowns or textareas)
-  unless the user specified otherwise
-- All code runs in a single <script> block - no modules, no imports
-- No external dependencies - everything inline
+After each batch, follow
+[`templates/playwright_smoke_test.md`](templates/playwright_smoke_test.md):
 
-## Your Task
-[specific instructions for this agent's module]
-```
+1. `npx tsc --noEmit -p parts/tsconfig.json` passes.
+2. `./build_github_pages.sh` succeeds.
+3. `python3 -m http.server 8123 --directory dist &`.
+4. Navigate to `http://localhost:8123/`, snapshot, click one element
+   from the current batch.
+5. `browser_console_messages` is empty (ignore favicon 404).
+6. Close browser, kill server.
 
-## Smoke Testing with Playwright
+Do not skip the `tsc` gate before the browser smoke test. `tsc` is
+much cheaper than browser load and catches contract drift instantly.
 
-After each batch, run a Playwright smoke test:
+When a smoke test fails, fix the failing module before proceeding to
+the next batch. If the failure is a contract violation, update
+`parts/types/` and re-run `tsc` before re-dispatching agents -- all
+subsequent agents need the corrected contract.
 
-1. Start a local HTTP server: `python3 -m http.server 8000 &`
-2. Navigate to the built HTML file
-3. Take a snapshot, check for expected DOM elements
-4. Click through the current game flow
-5. Check `browser_console_messages` for zero JS errors (ignore favicon 404)
-6. Close browser, kill server
-
-**Critical:** Do not skip smoke tests between batches. The whole point of batching is to catch integration bugs early when they are cheap to fix (1-2 modules to check) rather than late (14 modules to debug).
-
-**When a smoke test fails:** Fix the failing module before proceeding to the next batch. The fix scope is small (only modules from the current and previous batches exist). If the failure is a contract violation, update the contracts document before dispatching the next batch - all subsequent agents need the corrected contract.
-
-## Web Platform Gotchas
-
-Include these in every agent prompt to prevent known issues:
+## Web platform gotchas
 
 | Gotcha | Fix |
 | --- | --- |
-| Canvas blank after innerHTML | Wrap render calls in `requestAnimationFrame` |
-| Canvas zero size | Set width/height attributes on `<canvas>`, not just CSS |
-| onclick not firing | Verify element exists in DOM before attaching handler; prefer `addEventListener` |
-| Global name collision | Use unique function names across all modules (no generic `init()`, `render()`) |
-| Concatenation order matters | Functions must be defined before they are called in the concatenated output |
+| Canvas blank after `innerHTML` | Wrap render calls in `requestAnimationFrame`. |
+| Canvas zero size | Set `width` / `height` attributes on `<canvas>`, not just CSS. |
+| `onclick` not firing | Verify element exists in DOM before attaching; prefer `addEventListener`. |
+| Branded id leaked into JSON / DOM dataset | Pass through a brand constructor on read; never `as CellId` outside the constructor. |
+| Type-only import emitted at runtime | Use `import type { ... }` under `verbatimModuleSyntax`; do not value-import a type-only symbol. |
+| Index access typed too loosely | Under `noUncheckedIndexedAccess`, `arr[i]` is `T | undefined`; narrow before use. |
+| Root-relative path breaks Pages | Use `./main.js`, never `/main.js`. Project pages serve from a subpath. |
+| GitHub Pages strips files starting with `_` | `build_github_pages.sh` already creates `dist/.nojekyll`; do not delete it. |
 
-## Bottlenecks and Mitigation
+## Bottlenecks and mitigation
 
-Four sequential steps gate the parallel work. Each one is mandatory but can be shortened.
+The skill exists to bend wall clock for live/podcast contexts. Every
+sequential step below is a wall-clock cost; minimize but do not skip.
 
 | Bottleneck | Time | Why sequential | Mitigation |
 | --- | --- | --- | --- |
-| UI preference interview | ~2 min | Must happen before any code | Prepare a short checklist (buttons/dropdowns, theme, mobile). Ask before opening the repo. |
-| Data contracts | ~5-10 min | Every agent needs the contracts before writing code | Reuse contract templates from prior builds. Keep contracts to minimum viable scope only - do not write contracts for deferred features. |
-| Batch 1 foundation | ~2 min | Constants, characters, and game state define the data model all other modules depend on | Keep Batch 1 to 3 files max. Write only the data model and state machine - no UI, no game logic. |
-| Smoke tests between batches | ~2 min each, 4 total | Each batch must pass before the next starts | Keep smoke tests tight: build, load page, check console errors, click one element. Save full playthroughs for the final batch only. Reuse a Playwright smoke test script across batches. |
+| UI preference interview | ~2 min | Must happen before any code. | Prepare a short checklist; ask before opening the repo. |
+| Type contracts | ~5-10 min | Every agent needs the contracts before writing code. | Reuse the feature-area split from `game-type-patterns.md`; do not invent a new layout per game. Promote a shape to `parts/types/` only on the third cross-module use, per `modular-type-design.md`. |
+| Batch 1 foundation | ~2 min | Constants, characters, and game state define the data model all other modules depend on. | Keep Batch 1 to 3 files max; data model and state machine only, no UI, no game logic. |
+| Smoke tests between batches | ~2 min each, 4 total | Each batch must pass before the next starts. | Tight smokes: build, load, console check, click one element. Save full playthroughs for the final batch. Reuse the recipe in `templates/playwright_smoke_test.md`. |
 
-**The hidden bottleneck is skipping these steps.** Without contracts, debugging mismatches cost 60+ minutes. Without batching, all bugs surface at the end in a 14-module pile. The sequential gates are faster than the alternative.
+The hidden bottleneck is skipping these steps. Without contracts,
+debugging mismatches cost 60+ minutes. Without batching, all bugs
+surface at the end in a 14-module pile. The sequential gates are
+faster than the alternative.
 
-**Where time is NOT a bottleneck:** Agent authoring within a batch is fully parallel. 6 agents writing 14 files in 4 batches takes ~15 min of agent wall-clock time. The sequential overhead (contracts + smoke tests) adds ~15 min. Total: ~30 min. Compare to all-at-once: 8 min authoring + 60 min debugging = 68 min.
+Where time is NOT a bottleneck: subagent authoring within a batch is
+fully parallel. Six subagents writing 14 files in 4 batches takes
+~15 min of agent wall-clock time. Sequential overhead (contracts +
+smoke tests) adds ~15 min. Total: ~30 min. Compare to all-at-once:
+8 min authoring + 60 min debugging = 68 min.
 
 ### Independent component testing
 
-Modules should be testable in isolation, without waiting for integration. Each agent should deliver a module that can run with stub dependencies.
+Modules should be testable in isolation, without waiting for
+integration. Each subagent's prompt includes instructions to write
+their module so it degrades gracefully when other modules are absent:
 
-**How:** Each agent's prompt includes instructions to write their module so it degrades gracefully when other modules are absent. For example:
-- A display function should render something when called with hardcoded test data, even if the generator module does not exist yet.
-- A data generator should be callable from the browser console with test inputs, even if no UI exists to trigger it.
+- A display function should render something when called with
+  hardcoded test data, even if the generator module does not exist
+  yet.
+- A data generator should be callable from the browser console with
+  test inputs, even if no UI exists to trigger it.
 
-**Practical pattern:** After each agent finishes, verify the module in isolation before the batch smoke test:
-
-```javascript
-// Drop into browser console after building with just this module + foundation
-// Test data_generation.js independently:
-var sample = {type: 'blood', quality: 'pristine'};
-var character = gameState.suspects[0];
-var result = generateBloodTypeResult(sample, character);
-console.log(result.bloodType, result.rhFactor);  // should print e.g. "A" "+"
-```
-
-This catches internal bugs (wrong property names, missing returns) before integration, when the fix scope is one file instead of fourteen.
+This catches internal bugs (wrong property names, missing returns)
+before integration, when the fix scope is one file instead of
+fourteen.
 
 ### Complex module detection and splitting
 
-**A batch finishes as fast as its slowest agent.** If one module is significantly more complex than its batch-mates, it becomes the bottleneck for the entire batch.
-
-**Before dispatching a batch, estimate relative complexity:**
+A batch finishes as fast as its slowest agent. If one module is
+significantly more complex than its batch-mates, it becomes the
+bottleneck.
 
 | Signal | Likely complex |
 | --- | --- |
-| Multiple content types (help topics, tooltips, explanations, summaries) | Yes - split by content type |
-| More than 2 distinct UI screens or flows | Yes - split by screen |
-| Both data generation AND display logic | Yes - split generator from renderer |
-| Over ~400 lines expected | Yes - find a split point |
+| Multiple content types (help topics, tooltips, explanations, summaries) | Yes -- split by content type. |
+| More than 2 distinct UI screens or flows | Yes -- split by screen. |
+| Both data generation AND display logic | Yes -- split generator from renderer. |
+| Over ~400 lines expected | Yes -- find a split point. |
 
-**When you identify a complex module, you have two options:**
+Two options when a module is complex:
 
-1. **Split it into smaller files** that can be assigned to separate agents within the same batch. Example: instead of one `educational.js` handling help topics, tooltips, test explanations, and end-game summaries, split into `educational_help.js` (help topic content) and `educational_display.js` (rendering and tooltip logic).
+1. Split it into smaller files assigned to separate agents in the same
+   batch.
+2. Reduce scope for the first pass.
 
-2. **Reduce scope for first pass.** Ship the simple version in the current batch, expand later. Example: educational content for 2 test types instead of 5, plain text tooltips instead of rich HTML popups.
+Prefer option 2 (reduce scope) over option 1 (split files) when
+possible. Splitting adds coordination overhead. Reducing scope
+removes work entirely.
 
-**Prefer option 2 (reduce scope) over option 1 (split files) when possible.** Splitting adds coordination overhead. Reducing scope removes work entirely.
-
-**Real example:** The DNA forensics build had `educational.js` (~771 lines) covering help topics for 5 test types, concept tooltips, test result explanations, and end-game forensic science summaries. This was the slowest agent in its batch and held up the entire wave. Better approach: first pass covers help topics for 2 test types only, no tooltips, no end-game summary. Add the rest after the core loop works.
-
-## Rationalization Table
+## Rationalization table
 
 | Excuse | Reality |
 | --- | --- |
 | "Contracts take too long" | 10 min contracts vs 60 min debugging mismatches. Not negotiable. |
 | "We can fix integration later" | Integration bugs compound. 2 mismatched modules = 1 fix. 14 mismatched modules = 20 fixes. |
-| "Let's add all features now" | Get 2 working before adding 3 more. Scope creep killed the first build. |
-| "Smoke tests slow us down" | 2 min smoke test catches bugs worth 30 min of debugging. |
+| "Let's add all features now" | Get 2 working before adding 3 more. Scope creep killed every podcast build that tried it. |
+| "Smoke tests slow us down" | 2 min smoke catches bugs worth 30 min of debugging. |
 | "Agents can figure out the interface" | They cannot. Every generator/display pair mismatched without contracts. Every single one. |
 | "I'll ask about UI preferences after" | UI rewrite cost 30 min. Asking first costs 2 min. |
 | "requestAnimationFrame is optional" | Canvas will be blank. This is not optional. |
 | "All agents can run at once" | Foundation agents must finish first. Batching is the whole point. |
-| "One agent can handle this big module" | A batch finishes as fast as its slowest agent. Split or scope-reduce complex modules. |
-| "We'll test it all together at the end" | Test each module in isolation first. Console-level checks catch bugs before integration. |
+| "One agent can handle this big module" | A batch finishes as fast as its slowest agent. Split or scope-reduce. |
+| "We'll test it all together at the end" | Test each module in isolation first. |
+| "TypeScript slows agents down" | `tsc --noEmit` between batches catches contract drift in seconds; the JS version found the same drift only at Playwright time. |
+| "We can `as any` the tricky spot" | Forbidden outside brand constructors and save-file type guards. Route the problem to `typescript-engineer`. |
 
-## Red Flags - STOP
+## Red flags - STOP
 
-- Dispatching coding agents before contracts are written
-- Skipping a smoke test between batches
-- Adding features beyond the minimum viable scope in batch 3-4
-- Agent prompts that don't include the contracts document
-- Two agents assigned to the same file
-- No Playwright browser testing planned
-- Skipping UI preference gathering
-- One agent assigned a module with 4+ content types or 400+ expected lines without splitting or scope-reducing
-- No plan for testing modules independently before integration
+- Dispatching coding agents before contracts are written.
+- Skipping a smoke test between batches.
+- Skipping `tsc --noEmit` before a Playwright smoke.
+- Adding features beyond the minimum viable scope in batch 3-4.
+- Agent prompts that don't include the contracts list.
+- Two agents assigned to the same file.
+- No Playwright browser testing planned.
+- Skipping UI preference gathering.
+- One agent assigned a module with 4+ content types or 400+ expected
+  lines without splitting or scope-reducing.
+- Contracts written in JSDoc comments instead of `parts/types/*.ts`.
+- An agent prompt that does not name the type files it must import
+  from.
+- A batch declared green without `tsc --noEmit` passing.
+- Any `as` cast outside a brand constructor or save-file type guard.
+- `build_github_pages.sh` modified to produce single-file output.
+- `export_single_file.sh` modified to write into `dist/`.
 
-## Common Mistakes
+## Common mistakes
 
-**Flat vs nested data:** Generators return `{enzyme: "EcoRI", fragments: [...]}`. Do not nest: `{data: {enzyme: "EcoRI", fragments: [...]}}`. Flat properties are what display functions will read.
+**Locally redeclaring a contract shape.** If a generator and a display
+both need the same return type, export the type from
+`parts/types/<feature>.ts` and have both modules import it via
+`import type`. Do not let each side define its own version; that is
+the JSDoc-era trap in TypeScript clothing.
 
-**Scope creep in contracts:** Only write contracts for features in the minimum viable scope. Do not write contracts for deferred features.
+**Canvas in `innerHTML`.** Always use `requestAnimationFrame` after
+`innerHTML` that creates a canvas. Always set canvas `width` and
+`height` as element attributes. This is the #1 rendering bug in
+browser games.
 
-**Canvas in innerHTML:** Always use `requestAnimationFrame` after `innerHTML` that creates a canvas. Always set canvas `width` and `height` as element attributes. This is the #1 rendering bug in single-file web apps.
+**Mixing build identities.** `build_github_pages.sh` is the GitHub
+Pages release path; `export_single_file.sh` is the portable artifact
+path. Each has a distinct output location (`dist/` vs `dist-single/`)
+for a reason. Do not blend them.
