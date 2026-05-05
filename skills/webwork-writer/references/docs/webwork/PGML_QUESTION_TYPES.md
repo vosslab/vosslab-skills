@@ -98,7 +98,7 @@ Notes:
 
 ## Multiple answer (checkbox)
 
-As of March 27, 2026. It was determined that ADAPT has the CheckBoxList element in 
+As of March 27, 2026. It was determined that ADAPT has the CheckBoxList element in
 its PG install, so it was added to the renderer. Backport parserCheckboxList.pl
 it works something like this
 
