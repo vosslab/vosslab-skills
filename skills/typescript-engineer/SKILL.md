@@ -22,7 +22,10 @@ or shared type design.
 - Promote a type to a shared file only after multiple modules need the same contract.
 - Export stable contracts, not incidental implementation helper types.
 - Treat API, storage, validation, and domain shapes as separate owners unless the repo proves they
-  change together.
+  change together. For single-domain projects (browser games, CLIs, simple libraries) where some
+  of those owners do not exist, fall back to feature-area boundaries inside the domain.
+- Zero unchecked cast: `as` is permitted only inside a brand constructor, a type-guard return, or
+  a documented boundary adapter. Never as a fix for a compiler error.
 
 ## When to use
 
@@ -40,7 +43,10 @@ or shared type design.
   Use this skill when connecting validated runtime boundaries to static TypeScript contracts.
 - Behavioral refactors: use a broader refactoring and testing workflow when runtime behavior changes.
 - Build tooling failures such as missing `tsc`, bad `tsconfig` paths, or package resolution issues.
-- JavaScript-only questions where types are not involved.
+- JavaScript-only questions where types are not involved or you cannot enforce TypeScript in the
+  build pipeline.
+- Framework- or platform-specific runtime patterns (React component design, Node service routing,
+  Next/Nest/Vue conventions). This skill is type-level only; route those to a framework skill.
 
 ## Working style
 
@@ -54,7 +60,10 @@ or shared type design.
 - Use the decision tree and routing table below.
 - Read every matching rule file before making a non-trivial type-level change.
 - Read [`references/modular-type-design.md`](references/modular-type-design.md) when a type is
-  exported, shared, schema-derived, DTO-like, domain-level, or moved between files.
+  exported, shared, schema-derived, DTO-like, domain-level, owned by a game feature area
+  (player, simulation, render, save, config), or moved between files. For game-shape
+  patterns specifically, also read
+  [`references/game-type-patterns.md`](references/game-type-patterns.md).
 - Prefer repo-local `docs/TYPESCRIPT_STYLE.md` when present.
 
 3. Choose the simplest type that works.
@@ -65,6 +74,34 @@ or shared type design.
   separate files instead of growing a catch-all module.
 - Prefer local duplication of tiny incidental types over coupling distant modules through a weak
   shared abstraction.
+- Avoid deep recursive distribution over large unions at the type level; prefer tail-recursive
+  conditionals and cap recursion depth where the compiler will choke. This is about type-checker
+  work, not bundler or build-tool performance.
+
+### Pre-export checklist
+
+Before exporting a type from one module to another, confirm:
+
+- The type has a clear owner (which feature, schema, boundary, or domain owns it).
+- The contract is stable enough for downstream callers to depend on.
+- It is derived from a source of truth (schema, client, constants) when one exists.
+- The export is a narrow `export type` re-export, not a deep barrel chain.
+- No unchecked `as` cast leaks across the boundary; brand constructors are the only exception.
+
+### Review tasks
+
+When the request is a review or audit, organize findings under these fixed headings only.
+Do not introduce Perf, Security, or Runtime headings; those are out of scope.
+
+- Type Safety
+- Module Boundaries
+- Compile-Time Errors
+- Type-Level Tests
+
+The four headings are fixed. Game-flavored vocabulary (Entity IDs,
+Coordinates and units, Save-file boundary, Simulation vs render, Config
+ownership, Event ownership) may appear as subheadings inside them, never
+as new top-level headings.
 
 4. Prove the type.
 - Add or suggest type-level assertions such as `Expect<Equal<A, B>>` when the repo has a pattern.
@@ -72,6 +109,17 @@ or shared type design.
 - Re-run `tsc --noEmit` or the repo's type-check command after changes.
 
 ## Decision tree
+
+0. The request is a sweep, audit, pre-PR review, or type-safety sweep:
+- Start with [`references/checklist.md`](references/checklist.md), then drill into the specific
+  rule files it links.
+
+0a. The project is a single-bundle browser game, simulation, or interactive
+client (keywords: game, simulation, save file, entity id, coordinate,
+`GameEvent`, ECS, replay, seed, migration):
+- Start with [`references/game-type-patterns.md`](references/game-type-patterns.md), then
+  drill into other rule files (generics, conditional, mapped, opaque) as the
+  task requires.
 
 1. Something does not compile or `tsc` is red:
 - Start with [`references/error-diagnosis.md`](references/error-diagnosis.md).
@@ -98,7 +146,10 @@ or shared type design.
 
 | Keyword or topic | Rule file |
 | --- | --- |
+| Audit, sweep, pre-PR review, type-safety sweep | [`references/checklist.md`](references/checklist.md) |
+| Game, browser game, simulation, save file, entity id, coordinate, unit, config table, GameEvent, ECS, replay, seed, migration | [`references/game-type-patterns.md`](references/game-type-patterns.md) |
 | Shared contract, DTO, domain model, schema-derived type, public type API, boundary ownership | [`references/modular-type-design.md`](references/modular-type-design.md) |
+| `tsconfig` strictness, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `verbatimModuleSyntax` | [`references/strict-mode-flags.md`](references/strict-mode-flags.md) |
 | `as const`, `typeof`, `satisfies`, enum alternative, derive types from values | [`references/as-const-typeof.md`](references/as-const-typeof.md) |
 | Array element type, `[number]` index | [`references/array-index-access.md`](references/array-index-access.md) |
 | `Partial`, `Record`, `Omit`, `Pick`, `ReturnType`, `Parameters`, `Awaited`, `NoInfer` | [`references/utility-types.md`](references/utility-types.md) |
@@ -115,7 +166,7 @@ or shared type design.
 | Overload, multiple signatures | [`references/function-overloads.md`](references/function-overloads.md) |
 | Type error, diagnostic, `ts(...)`, not assignable, circular reference | [`references/error-diagnosis.md`](references/error-diagnosis.md) |
 
-## Smell-test snippets
+## Type-level smell tests
 
 ### Eliminate `any` with a generic
 
@@ -127,11 +178,12 @@ function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
 
 Read [`references/generics-basics.md`](references/generics-basics.md).
 
-### Narrow an unknown response at the boundary
+### Narrow a save-file load at the boundary
 
 ```ts
-function isUser(value: unknown): value is { id: number; name: string } {
-	return typeof value === "object" && value !== null && "id" in value && "name" in value;
+function isSaveFileV1(value: unknown): value is SaveFileV1 {
+	return typeof value === "object" && value !== null
+		&& (value as { version?: unknown }).version === 1;
 }
 ```
 
@@ -148,3 +200,49 @@ const palette = {
 ```
 
 Read [`references/as-const-typeof.md`](references/as-const-typeof.md).
+
+### Prove a type with `Expect<Equal<A, B>>`
+
+```ts
+type _A = Expect<Equal<ReturnType<typeof getUser>, User>>;
+```
+
+Read [`references/deep-inference.md`](references/deep-inference.md).
+
+### Cross-table key consistency with `as const satisfies`
+
+```ts
+const SPRITE_CONFIG = {
+	empty:    { src: "empty.png" },
+	infected: { src: "infected.png" },
+} as const;
+type SpriteKey = keyof typeof SPRITE_CONFIG;
+
+const TILE_CONFIG = {
+	empty:    { spriteKey: "empty" },
+	infected: { spriteKey: "infected" },
+} as const satisfies Record<string, { spriteKey: SpriteKey }>;
+type TileKind = keyof typeof TILE_CONFIG;
+```
+
+Read [`references/game-type-patterns.md`](references/game-type-patterns.md) and
+[`references/as-const-typeof.md`](references/as-const-typeof.md).
+
+### Exhaustive `never` on a `GameEvent` union
+
+```ts
+type GameEvent =
+	| { type: "turn:advanced"; turn: number }
+	| { type: "cell:infected"; cellId: CellId };
+
+function handle(event: GameEvent): void {
+	switch (event.type) {
+		case "turn:advanced": return;
+		case "cell:infected": return;
+		default: { const _exhaustive: never = event; return _exhaustive; }
+	}
+}
+```
+
+Read [`references/type-narrowing.md`](references/type-narrowing.md) and
+[`references/game-type-patterns.md`](references/game-type-patterns.md).
