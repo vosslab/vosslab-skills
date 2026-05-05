@@ -3,9 +3,9 @@
 #
 # Contract:
 #   - Wipes dist/ from scratch.
-#   - Type-checks via `tsc --noEmit` (parts/tsconfig.json keeps noEmit: true).
-#   - Bundles parts/init.ts into dist/main.js with esbuild.
-#   - Copies parts/index.html and parts/style.css into dist/.
+#   - Type-checks via `tsc --noEmit` (src/tsconfig.json keeps noEmit: true).
+#   - Bundles src/init.ts into dist/main.js with esbuild.
+#   - Copies src/index.html and src/style.css into dist/.
 #   - Creates dist/.nojekyll so GitHub Pages serves files starting with _.
 #   - Asserts dist/index.html exists before exiting.
 #
@@ -21,17 +21,17 @@ cd "$(git rev-parse --show-toplevel)"
 rm -rf dist
 mkdir -p dist
 
-npx tsc --noEmit -p parts/tsconfig.json
+npx tsc --noEmit -p src/tsconfig.json
 
-npx esbuild parts/init.ts \
+npx esbuild src/init.ts \
 	--bundle \
 	--format=esm \
 	--target=es2020 \
 	--platform=browser \
 	--outfile=dist/main.js
 
-cp parts/index.html dist/index.html
-cp parts/style.css dist/style.css
+cp src/index.html dist/index.html
+cp src/style.css dist/style.css
 
 touch dist/.nojekyll
 

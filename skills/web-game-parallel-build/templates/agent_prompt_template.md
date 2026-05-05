@@ -11,19 +11,19 @@ template only adds the web-game specifics.
 
 Files you own:
 
-- `parts/<file_a>.ts`
-- `parts/<file_b>.ts`
+- `src/<file_a>.ts`
+- `src/<file_b>.ts`
 
 DO NOT create or modify any other files. If a contract type is missing,
-ask the orchestrator to add it to `parts/types/` instead of declaring it
+ask the orchestrator to add it to `src/types/` instead of declaring it
 locally.
 
 ## Type contracts
 
 Read these before writing code:
 
-- `parts/types/<contract_a>.ts`
-- `parts/types/<contract_b>.ts`
+- `src/types/<contract_a>.ts`
+- `src/types/<contract_b>.ts`
 
 Import them with `import type`:
 
@@ -35,9 +35,9 @@ import type { SaveFile } from "./types/save";
 
 The orchestrator has already produced:
 
-- `parts/constants.ts`
-- `parts/characters.ts`
-- `parts/game_state.ts`
+- `src/constants.ts`
+- `src/characters.ts`
+- `src/game_state.ts`
 
 Treat these as fixed. If you need to extend them, file a request with
 the orchestrator.
@@ -49,10 +49,10 @@ the orchestrator.
   `from "./types/save.ts"`).
 - Do not redefine cross-module shapes locally; route missing contracts
   back to the orchestrator.
-- Zero unchecked `as` casts. Brand constructors (`parts/brands.ts`) and
+- Zero unchecked `as` casts. Brand constructors (`src/brands.ts`) and
   documented save-file type guards are the only exceptions; see
   [`typescript-engineer/references/opaque-types.md`](../../typescript-engineer/references/opaque-types.md).
-- Run `npx tsc --noEmit -p parts/tsconfig.json` before reporting done.
+- Run `npx tsc --noEmit -p src/tsconfig.json` before reporting done.
 
 ## Web platform rules
 
@@ -68,7 +68,7 @@ the orchestrator.
 
 - Use button-based UI for user choices unless the user specified
   otherwise.
-- All code is bundled by esbuild from `parts/init.ts`. There is no
+- All code is bundled by esbuild from `src/init.ts`. There is no
   global script-concat order; rely on real `import` statements.
 - No external runtime dependencies.
 

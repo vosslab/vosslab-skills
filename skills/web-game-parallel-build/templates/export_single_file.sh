@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # export_single_file.sh - portable one-file HTML export.
 #
-# Produces a self-contained HTML file by bundling parts/init.ts into an
+# Produces a self-contained HTML file by bundling src/init.ts into an
 # IIFE and inlining it (along with style.css) inside head.html + body.html
 # + tail.html.
 #
@@ -10,10 +10,10 @@
 # keeps the GitHub Pages artifact and the portable artifact independently
 # buildable.
 #
-# Required parts/ contract:
-#   - parts/head.html: contains <head>...</head> only (no <body>).
-#   - parts/body.html: contains everything between <body> and </body>.
-#   - parts/tail.html: contains </body></html>.
+# Required src/ contract:
+#   - src/head.html: contains <head>...</head> only (no <body>).
+#   - src/body.html: contains everything between <body> and </body>.
+#   - src/tail.html: contains </body></html>.
 
 set -euo pipefail
 
@@ -23,9 +23,9 @@ OUTDIR="${OUTDIR:-dist-single}"
 OUTPUT="${OUTDIR}/game.html"
 mkdir -p "${OUTDIR}"
 
-npx tsc --noEmit -p parts/tsconfig.json
+npx tsc --noEmit -p src/tsconfig.json
 
-npx esbuild parts/init.ts \
+npx esbuild src/init.ts \
 	--bundle \
 	--format=iife \
 	--target=es2020 \
@@ -33,15 +33,15 @@ npx esbuild parts/init.ts \
 	--outfile=_bundle.js
 
 {
-	cat "parts/head.html"
+	cat "src/head.html"
 	printf '<style>\n'
-	cat "parts/style.css"
+	cat "src/style.css"
 	printf '</style>\n'
-	cat "parts/body.html"
+	cat "src/body.html"
 	printf '<script>\n'
 	cat _bundle.js
 	printf '</script>\n'
-	cat "parts/tail.html"
+	cat "src/tail.html"
 } > "${OUTPUT}"
 
 rm -f _bundle.js

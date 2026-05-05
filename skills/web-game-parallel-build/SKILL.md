@@ -1,13 +1,13 @@
 ---
 name: web-game-parallel-build
-description: Use when building a TypeScript browser game from modular `parts/*.ts` files using parallel subagents to ship good code AND reduce wall-clock build time (designed for live/podcast time pressure). Immediate live target is the locally-served preview from `run_web_server.sh`; GitHub Pages from `dist/` (via GitHub Actions) and the optional `export_single_file.sh` portable HTML are post-show release paths. The skill delegates type design to `typescript-engineer`, parallel dispatch to `superpowers:subagent-driven-development`, and lane decisions to `parallel-plan`; it owns the web-game specifics (workstream layout, batched smoke testing, web-platform gotchas, single-file export).
+description: Use when building a TypeScript browser game from modular `src/*.ts` files using parallel subagents to ship good code AND reduce wall-clock build time (designed for live/podcast time pressure). Immediate live target is the locally-served preview from `run_web_server.sh`; GitHub Pages from `dist/` (via GitHub Actions) and the optional `export_single_file.sh` portable HTML are post-show release paths. The skill delegates type design to `typescript-engineer`, parallel dispatch to `superpowers:subagent-driven-development`, and lane decisions to `parallel-plan`; it owns the web-game specifics (workstream layout, batched smoke testing, web-platform gotchas, single-file export).
 ---
 
 # Web Game Parallel Build
 
 ## Overview
 
-Build a TypeScript browser game from modular source files in `parts/` using
+Build a TypeScript browser game from modular source files in `src/` using
 parallel coding subagents with batched integration checkpoints. The default
 release target is a GitHub Pages-ready `dist/` produced by
 `build_github_pages.sh`; an optional one-file HTML export is available via
@@ -73,7 +73,7 @@ their work here.
 ## What this skill still owns
 
 - The preassigned workstream layout for browser games.
-- The `parts/` module decomposition.
+- The `src/` module decomposition.
 - The build identity split (GitHub Pages default vs. single-file export).
 - Web-platform gotchas (canvas + `innerHTML`, branded ids leaking to DOM,
   type-only imports under `verbatimModuleSyntax`).
@@ -89,6 +89,8 @@ asks for a portable file, offline sharing, email attachment, or archive
 build. Prefer GitHub Actions for deployment. Do not make agents manually
 copy `dist/` to a branch unless the user explicitly asks for branch-based
 deployment.
+
+Note on `tsc`-only projects: this skill's templates assume an esbuild bundle entrypoint at `src/init.ts`. Projects that prefer `tsc` multi-file emit should keep `src/` but supply their own `build_github_pages.sh` (see the sports-life-game repo for an example) and skip `export_single_file.sh` until they migrate to esbuild.
 
 The three driver scripts have distinct, non-overlapping jobs:
 
@@ -112,14 +114,15 @@ verbatim:
 - `templates/run_web_server.sh` -- local dev preview.
 - `templates/build_github_pages.sh` -- canonical release build.
 - `templates/export_single_file.sh` -- optional portable export.
+- `templates/check_codebase.sh` -- type-check and unit test runner.
 - `templates/tsconfig.json` -- strict baseline (`strict` +
   `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes` and a few
   others; the canonical owner is
   `typescript-engineer/references/strict-mode-flags.md`).
 - `templates/package.json` -- minimal dev dependencies (`typescript`,
   `esbuild`).
-- `templates/parts_index.html` -- entry HTML copied to `dist/index.html`.
-- `templates/parts_layout.md` -- one-page `parts/` skeleton.
+- `templates/src_index.html` -- entry HTML copied to `dist/index.html`.
+- `templates/src_layout.md` -- one-page `src/` skeleton.
 - `templates/agent_prompt_template.md` -- per-agent prompt skeleton.
 - `templates/gitignore` -- copy to `.gitignore`.
 - `templates/playwright_smoke_test.md` -- between-batch smoke recipe.
@@ -154,26 +157,26 @@ Lane count, scope splits, and merges go through `parallel-plan` before
 Batch 1.
 
 - Workstream A0: Types and contracts
-  - Files: `parts/types/*.ts`, `parts/brands.ts`
+  - Files: `src/types/*.ts`, `src/brands.ts`
   - Owner: orchestrator (or a dedicated agent before Batch 1)
   - Goal: cross-workstream contracts so all later batches can compile in
     isolation.
 - Workstream A: Foundation and state
-  - Files: `parts/constants.ts`, `parts/characters.ts`, `parts/game_state.ts`
+  - Files: `src/constants.ts`, `src/characters.ts`, `src/game_state.ts`
   - Goal: stable contracts and stage/state backbone.
 - Workstream B: UI shell and styling
-  - Files: `parts/head.html`, `parts/body.html`, `parts/tail.html`,
-    `parts/index.html`, `parts/style.css`, `parts/ui_rendering.ts`
+  - Files: `src/head.html`, `src/body.html`, `src/tail.html`,
+    `src/index.html`, `src/style.css`, `src/ui_rendering.ts`
   - Goal: interaction shell, layout, and shared UI controls.
 - Workstream C: Core gameplay stage
-  - Files: `parts/scene_stage.ts`, `parts/data_generation.ts`
+  - Files: `src/scene_stage.ts`, `src/data_generation.ts`
   - Goal: core playable loop with contract-conformant data.
 - Workstream D: Advanced gameplay and outcomes
-  - Files: `parts/lab_stage.ts`, `parts/gel_rendering.ts`,
-    `parts/case_board.ts`, `parts/scoring.ts`, `parts/educational.ts`
+  - Files: `src/lab_stage.ts`, `src/gel_rendering.ts`,
+    `src/case_board.ts`, `src/scoring.ts`, `src/educational.ts`
   - Goal: analysis/review stages, scoring, and endgame flow.
 - Workstream E: Runtime utilities
-  - Files: `parts/timer.ts`, `parts/save_load.ts`, `parts/init.ts`
+  - Files: `src/timer.ts`, `src/save_load.ts`, `src/init.ts`
   - Goal: lifecycle bootstrap, persistence, timers.
 
 ## When to use
@@ -208,8 +211,8 @@ digraph process {
 
     "1. Gather UI preferences" [shape=box];
     "2. Define minimum viable scope" [shape=box];
-    "3. Write type contracts (parts/types/*.ts)" [shape=box];
-    "4. Configure build (templates -> parts/, dist/, .github/)" [shape=box];
+    "3. Write type contracts (src/types/*.ts)" [shape=box];
+    "4. Configure build (templates -> src/, dist/, .github/)" [shape=box];
     "5. Batch 1: Foundation (sequential)" [shape=box];
     "tsc + smoke 1" [shape=diamond];
     "6. Batch 2: Infrastructure (parallel)" [shape=box];
@@ -223,9 +226,9 @@ digraph process {
     "Done" [shape=doublecircle];
 
     "1. Gather UI preferences" -> "2. Define minimum viable scope";
-    "2. Define minimum viable scope" -> "3. Write type contracts (parts/types/*.ts)";
-    "3. Write type contracts (parts/types/*.ts)" -> "4. Configure build (templates -> parts/, dist/, .github/)";
-    "4. Configure build (templates -> parts/, dist/, .github/)" -> "5. Batch 1: Foundation (sequential)";
+    "2. Define minimum viable scope" -> "3. Write type contracts (src/types/*.ts)";
+    "3. Write type contracts (src/types/*.ts)" -> "4. Configure build (templates -> src/, dist/, .github/)";
+    "4. Configure build (templates -> src/, dist/, .github/)" -> "5. Batch 1: Foundation (sequential)";
     "5. Batch 1: Foundation (sequential)" -> "tsc + smoke 1";
     "tsc + smoke 1" -> "6. Batch 2: Infrastructure (parallel)" [label="pass"];
     "6. Batch 2: Infrastructure (parallel)" -> "tsc + smoke 2";
@@ -266,25 +269,25 @@ clock matters; scope creep at the start kills it.
 
 ## Step 2b: Decompose into modules
 
-Copy [`templates/parts_layout.md`](templates/parts_layout.md) into the
-project to scaffold `parts/`. Adapt the runtime files per project, but
+Copy [`templates/src_layout.md`](templates/src_layout.md) into the
+project to scaffold `src/`. Adapt the runtime files per project, but
 keep the file roles in
-[`templates/parts_layout.md`](templates/parts_layout.md) as the
+[`templates/src_layout.md`](templates/src_layout.md) as the
 canonical layout for ownership.
 
 Type ownership rules (do not restate type-design rules from
 `typescript-engineer`):
 
-- `parts/types/` is for cross-workstream contracts only. It is not a
+- `src/types/` is for cross-workstream contracts only. It is not a
   dumping ground.
 - Feature-local types stay with the owning runtime module (for example,
-  `ScoreBreakdown` lives next to `parts/scoring.ts`).
-- Promotion to `parts/types/` follows
+  `ScoreBreakdown` lives next to `src/scoring.ts`).
+- Promotion to `src/types/` follows
   [`typescript-engineer/references/modular-type-design.md`](../typescript-engineer/references/modular-type-design.md).
-- `parts/types/*.ts` files are type-only: no runtime values, no
+- `src/types/*.ts` files are type-only: no runtime values, no
   `const enum`, no helpers. Brand constructors and other tiny boundary
-  helpers belong in `parts/brands.ts` or the owning runtime module.
-- `parts/types/events.ts` is held to a stricter rule: it may export
+  helpers belong in `src/brands.ts` or the owning runtime module.
+- `src/types/events.ts` is held to a stricter rule: it may export
   only the composed `GameEvent` union and its type-only imports.
   Per-feature event variants live with the feature owner. Do not put
   inline payload shapes directly into the central union.
@@ -303,7 +306,7 @@ bottleneck the entire batch.
 
 ## Step 3: Write type contracts (5-10 min, SEQUENTIAL)
 
-Before writing any file under `parts/types/`, invoke
+Before writing any file under `src/types/`, invoke
 `typescript-engineer` and follow its decision tree. The shapes you
 author here are governed by that skill, not by this one.
 
@@ -317,31 +320,31 @@ Required reading:
 Web-game-orchestration-only rules (no TypeScript design rules; those are
 upstream):
 
-- Contracts are real `.ts` files under `parts/types/`, not JSDoc
+- Contracts are real `.ts` files under `src/types/`, not JSDoc
   comments.
 - Shared contracts are imported with `import type` and the imports are
   extensionless (`from "./types/save"`, not `from "./types/save.ts"`),
   matching the default `tsconfig.json`.
 - Missing cross-module types go back to the contract owner; agents must
   not locally redeclare a contract shape.
-- `npx tsc --noEmit -p parts/tsconfig.json` passes before a batch is
+- `npx tsc --noEmit -p src/tsconfig.json` passes before a batch is
   considered green.
 
 Minimal example showing the orchestration shape only (a generator and
 display sharing a contract; type design itself is upstream):
 
 ```ts
-// parts/types/forensics.ts
+// src/types/forensics.ts
 export type BloodTypeResult = {
   bloodType: "A" | "B" | "AB" | "O";
   rhFactor: "+" | "-";
 };
 
-// parts/data_generation.ts
+// src/data_generation.ts
 import type { BloodTypeResult } from "./types/forensics";
 export function generateBloodTypeResult(/* ... */): BloodTypeResult { /* ... */ }
 
-// parts/lab_stage.ts
+// src/lab_stage.ts
 import type { BloodTypeResult } from "./types/forensics";
 export function displayBloodTypeResult(result: BloodTypeResult): void { /* ... */ }
 ```
@@ -355,10 +358,10 @@ scripts; the shipped ones are the contract.
 cp -R skills/web-game-parallel-build/templates/. .
 mv gitignore .gitignore
 chmod +x setup_game.sh setup_playwright.sh run_web_server.sh \
-         build_github_pages.sh export_single_file.sh
-mv parts_index.html parts/index.html
-mv parts_layout.md docs/PARTS_LAYOUT.md   # or wherever the project keeps docs
-mv tsconfig.json parts/tsconfig.json
+         build_github_pages.sh export_single_file.sh check_codebase.sh
+mv src_index.html src/index.html
+mv src_layout.md docs/SRC_LAYOUT.md   # or wherever the project keeps docs
+mv tsconfig.json src/tsconfig.json
 mkdir -p .github/workflows
 mv deploy_pages_workflow.yml .github/workflows/deploy-pages.yml
 ```
@@ -381,14 +384,14 @@ for the three remediations in order of "least annoying".
 
 The build pipeline:
 
-- `npx tsc --noEmit -p parts/tsconfig.json` typechecks (no emit).
-- `npx esbuild parts/init.ts --bundle --format=esm --target=es2020
+- `npx tsc --noEmit -p src/tsconfig.json` typechecks (no emit).
+- `npx esbuild src/init.ts --bundle --format=esm --target=es2020
   --platform=browser --outfile=dist/main.js` emits the bundle.
-- `parts/index.html` and `parts/style.css` are copied into `dist/`.
+- `src/index.html` and `src/style.css` are copied into `dist/`.
 - `dist/.nojekyll` is created.
 
 `tsc` is the type-check gate only; esbuild is the bundler. Do not
-remove `noEmit: true` from `parts/tsconfig.json`.
+remove `noEmit: true` from `src/tsconfig.json`.
 
 ## Step 5: Batched agent dispatch
 
@@ -399,33 +402,34 @@ batches are decided once in `parallel-plan` before Batch 1; revisit if
 any batch becomes lopsided.
 
 After Workstream A0 (Types and contracts) finishes, dispatch the four
-batches below.
+batches below. Run `./check_codebase.sh` after each batch to verify
+types and unit tests pass.
 
 ### Batch 1: Foundation (sequential, ~2 min)
 
 Write in the orchestrator or a single agent:
 
-- `parts/constants.ts` -- game config, level/room data
-- `parts/characters.ts` -- entity definitions
-- `parts/game_state.ts` -- state machine, stage transitions
+- `src/constants.ts` -- game config, level/room data
+- `src/characters.ts` -- entity definitions
+- `src/game_state.ts` -- state machine, stage transitions
 
 These define the data model everything else depends on. They MUST
-import their cross-module shapes from `parts/types/`.
+import their cross-module shapes from `src/types/`.
 
-Gates: `npx tsc --noEmit -p parts/tsconfig.json` passes; build with
+Gates: `npx tsc --noEmit -p src/tsconfig.json` passes; build with
 `./build_github_pages.sh`; open in browser; verify no JS errors.
 
 ### Batch 2: Infrastructure (parallel, ~4 min)
 
 | Agent | Files | Imports types from |
 | --- | --- | --- |
-| Styling | `parts/style.css`, `parts/head.html`, `parts/body.html`, `parts/tail.html`, `parts/index.html` | (HTML/CSS only) |
-| Timer + utilities | `parts/timer.ts`, `parts/save_load.ts` | `parts/types/save.ts` |
-| UI rendering | `parts/ui_rendering.ts` | `parts/types/events.ts` |
+| Styling | `src/style.css`, `src/head.html`, `src/body.html`, `src/tail.html`, `src/index.html` | (HTML/CSS only) |
+| Timer + utilities | `src/timer.ts`, `src/save_load.ts` | `src/types/save.ts` |
+| UI rendering | `src/ui_rendering.ts` | `src/types/events.ts` |
 
 Each agent prompt MUST include:
 
-- The full type-contract file list (`parts/types/*.ts`).
+- The full type-contract file list (`src/types/*.ts`).
 - The constants/state foundation (or key excerpts).
 - Their owned files (no other files).
 - Explicit constraint: "Do NOT modify files outside your assignment."
@@ -437,8 +441,8 @@ Gates: `npx tsc --noEmit` passes; Playwright smoke per
 
 | Agent | Files | Imports types from |
 | --- | --- | --- |
-| Scene stage | `parts/scene_stage.ts` | `parts/types/events.ts`, feature-local types |
-| Data generation | `parts/data_generation.ts` | feature-local return types |
+| Scene stage | `src/scene_stage.ts` | `src/types/events.ts`, feature-local types |
+| Data generation | `src/data_generation.ts` | feature-local return types |
 
 Gates: `npx tsc --noEmit` passes; Playwright smoke verifies the core
 loop end-to-end.
@@ -447,8 +451,8 @@ loop end-to-end.
 
 | Agent | Files | Imports types from |
 | --- | --- | --- |
-| Lab + gel | `parts/lab_stage.ts`, `parts/gel_rendering.ts` | feature-local types, `parts/types/events.ts` |
-| Case board + scoring + educational | `parts/case_board.ts`, `parts/scoring.ts`, `parts/educational.ts` | `parts/types/save.ts`, feature-local types |
+| Lab + gel | `src/lab_stage.ts`, `src/gel_rendering.ts` | feature-local types, `src/types/events.ts` |
+| Case board + scoring + educational | `src/case_board.ts`, `src/scoring.ts`, `src/educational.ts` | `src/types/save.ts`, feature-local types |
 
 Gates: `npx tsc --noEmit` passes; full playthrough via Playwright.
 
@@ -482,13 +486,13 @@ web-game-specific rules:
 
 - Files are `.ts`. Use ES `import` / `export` for everything.
 - Imports are extensionless.
-- Import contract types from `parts/types/*.ts` using
+- Import contract types from `src/types/*.ts` using
   `import type { ... }`.
 - Do not redefine cross-module shapes locally.
 - Zero unchecked `as` casts (brand constructors and save-file type
   guards excepted; see
   [`typescript-engineer/references/opaque-types.md`](../typescript-engineer/references/opaque-types.md)).
-- Run `npx tsc --noEmit -p parts/tsconfig.json` before reporting done.
+- Run `npx tsc --noEmit -p src/tsconfig.json` before reporting done.
 
 For type-design help, the agent invokes `typescript-engineer` and
 follows its decision tree. Game-shape questions start at
@@ -499,7 +503,7 @@ follows its decision tree. Game-shape questions start at
 After each batch, follow
 [`templates/playwright_smoke_test.md`](templates/playwright_smoke_test.md):
 
-1. `npx tsc --noEmit -p parts/tsconfig.json` passes.
+1. `npx tsc --noEmit -p src/tsconfig.json` passes.
 2. `./build_github_pages.sh` succeeds.
 3. `python3 -m http.server 8123 --directory dist &`.
 4. Navigate to `http://localhost:8123/`, snapshot, click one element
@@ -512,7 +516,7 @@ much cheaper than browser load and catches contract drift instantly.
 
 When a smoke test fails, fix the failing module before proceeding to
 the next batch. If the failure is a contract violation, update
-`parts/types/` and re-run `tsc` before re-dispatching agents -- all
+`src/types/` and re-run `tsc` before re-dispatching agents -- all
 subsequent agents need the corrected contract.
 
 ## Web platform gotchas
@@ -538,7 +542,7 @@ not skip.
 | Bottleneck | Time | Why sequential | Mitigation |
 | --- | --- | --- | --- |
 | UI preference interview | ~2 min | Must happen before any code. | Prepare a short checklist; ask before opening the repo. |
-| Type contracts | ~5-10 min | Every agent needs the contracts before writing code. | Reuse the feature-area split from `game-type-patterns.md`; do not invent a new layout per game. Promote a shape to `parts/types/` only on the third cross-module use, per `modular-type-design.md`. |
+| Type contracts | ~5-10 min | Every agent needs the contracts before writing code. | Reuse the feature-area split from `game-type-patterns.md`; do not invent a new layout per game. Promote a shape to `src/types/` only on the third cross-module use, per `modular-type-design.md`. |
 | Batch 1 foundation | ~2 min | Constants, characters, and game state define the data model all other modules depend on. | Keep Batch 1 to 3 files max; data model and state machine only, no UI, no game logic. |
 | Smoke tests between batches | ~2 min each, 4 total | Each batch must pass before the next starts. | Tight smokes: build, load, console check, click one element. Save full playthroughs for the final batch. Reuse the recipe in `templates/playwright_smoke_test.md`. |
 
@@ -622,7 +626,7 @@ removes work entirely.
 - Skipping UI preference gathering.
 - One agent assigned a module with 4+ content types or 400+ expected
   lines without splitting or scope-reducing.
-- Contracts written in JSDoc comments instead of `parts/types/*.ts`.
+- Contracts written in JSDoc comments instead of `src/types/*.ts`.
 - An agent prompt that does not name the type files it must import
   from.
 - A batch declared green without `tsc --noEmit` passing.
@@ -634,7 +638,7 @@ removes work entirely.
 
 **Locally redeclaring a contract shape.** If a generator and a display
 both need the same return type, export the type from
-`parts/types/<feature>.ts` and have both modules import it via
+`src/types/<feature>.ts` and have both modules import it via
 `import type`. Do not let each side define its own version; that is
 the JSDoc-era trap in TypeScript clothing.
 

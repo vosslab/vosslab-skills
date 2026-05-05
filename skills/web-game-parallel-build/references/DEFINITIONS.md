@@ -16,6 +16,6 @@ Canonical terminology for parallel web game planning docs in this skill.
 - Naming policy and legacy handling live in `references/NAMING_GUARDRAILS.md`.
 
 ## TypeScript Engineering Terms
-- Type contract: a `parts/types/*.ts` file that exports `type` and `interface` declarations consumed by multiple runtime modules. Type-only; no runtime values.
+- Type contract: a `src/types/*.ts` file that exports `type` and `interface` declarations consumed by multiple runtime modules. Type-only; no runtime values.
 - Brand constructor: the normal place where an `as <Brand>` cast is isolated. Unchecked casts outside brand constructors or documented boundary guards (for example save-file `is*` type guards) are red flags; the canonical rule lives in `skills/typescript-engineer/references/opaque-types.md`.
 - Strict baseline: `strict` + `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes`, sourced from `skills/typescript-engineer/references/strict-mode-flags.md`.

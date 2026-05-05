@@ -1,11 +1,11 @@
-# parts/ layout
+# src/ layout
 
 Canonical scaffold for a web-game-parallel-build TypeScript project. Copy
 this tree into your project root, then fill in the modules per the agent
 workstreams in `SKILL.md`.
 
 ```
-parts/
+src/
 	head.html         <head>...</head> only (no <body>)
 	body.html         everything between <body> and </body>
 	tail.html         </body></html>
@@ -40,7 +40,7 @@ parts/
 
 ## File contracts
 
-`parts/head.html`, `parts/body.html`, `parts/tail.html` exist only for
+`src/head.html`, `src/body.html`, `src/tail.html` exist only for
 `export_single_file.sh`, which concatenates them around an inlined
 `<style>`+`<script>`. They follow this contract:
 
@@ -48,7 +48,7 @@ parts/
 - `body.html` contains everything between `<body>` and `</body>`.
 - `tail.html` contains `</body></html>`.
 
-`parts/index.html` is the GitHub Pages entry. It is copied verbatim into
+`src/index.html` is the GitHub Pages entry. It is copied verbatim into
 `dist/index.html` by `build_github_pages.sh`. Asset paths must be
 relative (`./main.js`, `./style.css`); GitHub Pages may serve from a
 subpath (`https://USER.github.io/REPO/`), and root-relative paths (`/`)
@@ -56,17 +56,17 @@ break in that environment.
 
 ## Type ownership
 
-`parts/types/` is for cross-workstream contracts only. It is not a
+`src/types/` is for cross-workstream contracts only. It is not a
 dumping ground.
 
 - Feature-local types stay with their owning runtime module (for
   example `ScoreBreakdown` lives next to `scoring.ts`).
-- Promotion to `parts/types/` follows
+- Promotion to `src/types/` follows
   [`typescript-engineer/references/modular-type-design.md`](../../typescript-engineer/references/modular-type-design.md).
-- `parts/types/*.ts` files are type-only: no runtime values, no `const
+- `src/types/*.ts` files are type-only: no runtime values, no `const
   enum`, no helpers. Brand constructors and other tiny boundary helpers
-  belong in `parts/brands.ts` or the owning runtime module.
-- `parts/types/events.ts` is held to a stricter rule: it may export only
+  belong in `src/brands.ts` or the owning runtime module.
+- `src/types/events.ts` is held to a stricter rule: it may export only
   the composed `GameEvent` union and the type-only imports it depends
   on. Per-feature event variants live with the feature owner.
 

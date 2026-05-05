@@ -66,8 +66,8 @@ The script:
 
 1. Wipes `dist/` from scratch.
 2. Type-checks via `npx tsc --noEmit`.
-3. Bundles `parts/init.ts` to `dist/main.js` with esbuild.
-4. Copies `parts/index.html` and `parts/style.css` into `dist/`.
+3. Bundles `src/init.ts` to `dist/main.js` with esbuild.
+4. Copies `src/index.html` and `src/style.css` into `dist/`.
 5. Creates `dist/.nojekyll`.
 6. Asserts `dist/index.html` exists.
 
@@ -258,7 +258,7 @@ Risky for project pages:
 <img src="/assets/icon.png">
 ```
 
-The shipped `templates/parts_index.html` already uses relative paths.
+The shipped `templates/src_index.html` already uses relative paths.
 
 ## .nojekyll
 

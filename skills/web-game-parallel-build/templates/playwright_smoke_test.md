@@ -9,7 +9,7 @@ Run `setup_playwright.sh` once per machine before the first smoke test.
 
 ## Between batches
 
-1. Run `npx tsc --noEmit -p parts/tsconfig.json`. Fix any errors before
+1. Run `npx tsc --noEmit -p src/tsconfig.json`. Fix any errors before
    continuing; `tsc` is cheaper than browser load time.
 2. Build: `./build_github_pages.sh`.
 3. Start a static server in the background:
@@ -32,7 +32,7 @@ Run `setup_playwright.sh` once per machine before the first smoke test.
 - Fix the failing module before proceeding to the next batch. The fix
   scope is small (only modules from the current and previous batches
   exist).
-- If the failure is a contract violation, update `parts/types/` and
+- If the failure is a contract violation, update `src/types/` and
   re-run `npx tsc --noEmit` before re-dispatching.
 - If `tsc` already passed and the failure is a DOM/Playwright issue,
   reproduce it with the snapshot and console messages first; do not
