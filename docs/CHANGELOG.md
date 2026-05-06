@@ -12,6 +12,11 @@
 - Clarified `skills/read-repo-rules/SKILL.md` requested-file handling, standardized
   "explicit-path checks" wording, broadened the Claude hook question to search or grep behavior,
   and restored exact-format compliance for prompts that request exact lines or prefixes.
+- Refreshed stale `agents/openai.yaml` metadata for OpenAI docs, skill creator, skill installer,
+  Gas Town workflow, PDF, Python code review, and skill writing guide skills so prompts mention
+  their `$skill-name` and short descriptions stay within the documented UI length range.
+- Aligned `skills/read-repo-rules/agents/openai.yaml` with the skill's updated Claude hook question
+  wording about how Claude should search or grep files.
 
 ## 2026-05-05
 
