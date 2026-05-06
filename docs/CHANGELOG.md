@@ -36,6 +36,17 @@
 - Updated `tools/build_plugin_manifest.py` so normal generation syncs `VERSION` to the current
   `YY.MM.DD` CalVer value before writing plugin metadata, while `--check` remains read-only and
   reports a stale `VERSION` file.
+- Strengthened `skills/review-code-changes/SKILL.md` so independent subagent review is required:
+  the main agent coordinates context, launches review subagents, waits for results, and integrates
+  findings instead of performing the review locally.
+- Tightened `skills/review-code-changes/SKILL.md` again so the main agent performs only minimal
+  preflight before launching review subagents, leaving deeper history, plan, diff, and call-site
+  inspection to the scoped reviewers.
+- Reworded `skills/review-code-changes/SKILL.md` and its OpenAI metadata to stress independent
+  review throughout the description, overview, required behavior, and subagent prompt template.
+- Added concrete reviewer names to `skills/review-code-changes/SKILL.md`: Plan auditor, Test
+  auditor, Style auditor, and Docs auditor, so each independent review subagent has an explicit
+  identity and scope.
 
 ## 2026-05-05
 

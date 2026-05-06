@@ -1,4 +1,4 @@
 interface:
   display_name: "Review Code Changes"
-  short_description: "Run parallel review passes on changes"
-  default_prompt: "Use $review-code-changes to run focused review agents for this code change."
+  short_description: "Run independent subagent review"
+  default_prompt: "Use $review-code-changes to launch independent review subagents for this code change."
