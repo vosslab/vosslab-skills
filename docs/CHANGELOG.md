@@ -5,6 +5,10 @@
   `skills/review-code-changes/agents/openai.yaml` for launching focused parallel review agents
   across plan conformance, smoke and unit tests, code style, and documentation impact before
   merging findings into a single code-review response.
+- Extended `skills/review-code-changes/SKILL.md` with two more parallel reviewers: a
+  legacy/dead-code auditor that flags unused code and feature drift, and a comment/readability
+  auditor that checks for clear naming, comments, and docstrings against
+  [docs/PYTHON_STYLE.md](docs/PYTHON_STYLE.md).
 
 ### Behavior or Interface Changes
 - Updated `skills/read-repo-rules/SKILL.md` and

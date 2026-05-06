@@ -32,10 +32,7 @@ Repo-wide conventions for this project and related repos.
 - Error report must include: the command run and full stderr, plus a short next step: close other Git processes, remove a stale lock only if no process holds it, or fix `.git` permissions.
 
 ## Pytest failure triage
-- If you are unsure whether a failing pytest result is pre-existing or introduced by your current work, assume it is new first.
-- Reason: we try not to commit code with known failing tests, so a fresh failure is usually related to current uncommitted changes.
-- If uncertainty remains, inspect `git diff` and check whether the suspicious lines are part of current uncommitted edits.
-- Never use `git stash` as a diagnostic step for this.
+- For pytest test-writing rules, commands, and failure triage, see [docs/PYTEST_STYLE.md](PYTEST_STYLE.md).
 
 ## Changelog rotation
 - Rotate `docs/CHANGELOG.md` when it reaches about 1000 lines (`wc -l docs/CHANGELOG.md`).
@@ -74,6 +71,8 @@ Repo-wide conventions for this project and related repos.
 - Add a shebang for executable scripts and keep them runnable directly.
 - For repo-local Python commands, use:
   - `source source_me.sh && python ...`
+- For pytest commands, use:
+  - `pytest tests/`
 - Avoid hard-coded interpreter paths in routine command examples.
 - Document shared helpers and modules in `docs/USAGE.md` when used across scripts.
 - Use `tests/test_pyflakes_code_lint.py` and `tests/test_ascii_compliance.py` for repo-wide lint checks, with `tests/check_ascii_compliance.py` for single-file ASCII/ISO-8859-1 checks and `tests/fix_ascii_compliance.py` for single-file fixes.
@@ -130,7 +129,9 @@ Repo-wide conventions for this project and related repos.
 
 ### Centrally maintained docs, do not edit locally
 - `docs/AUTHORS.md`: primary maintainers and notable contributors
+- `docs/CLAUDE_HOOK_USAGE_GUIDE.md`: generated hook behavior reference, not a repo style source of truth. If repo style differs from hook examples, update repo style docs and recommend a hook rule update upstream.
 - `docs/MARKDOWN_STYLE.md`: Markdown writing rules and formatting conventions for this repo.
+- `docs/PYTEST_STYLE.md`: pytest test-writing rules, commands, fixtures, and failure triage.
 - `docs/PYTHON_STYLE.md`: Python formatting, linting, and project-specific conventions.
 - `docs/REPO_STYLE.md`: repo-level organization, conventions, and file placement rules.
 

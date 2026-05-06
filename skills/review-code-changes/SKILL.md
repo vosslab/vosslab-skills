@@ -10,7 +10,7 @@ description: Require independent review by parallel subagents for code changes a
 
 ## Overview
 
-Use this skill to turn a code-change review into four independent review passes run by separate
+Use this skill to turn a code-change review into six independent review passes run by separate
 subagents. The main agent is the review coordinator: gather shared context, launch independent
 review subagents with separate scopes, wait for their results, then merge their findings into a
 single concise review.
@@ -37,7 +37,7 @@ single concise review.
      [docs/MARKDOWN_STYLE.md](../../docs/MARKDOWN_STYLE.md), and
      [docs/CHANGELOG.md](../../docs/CHANGELOG.md).
    - Focused test commands already run and their results, if available.
-2. Launch four independent review subagents in parallel immediately after the minimal shared
+2. Launch six independent review subagents in parallel immediately after the minimal shared
    context is ready. Use the reviewer names below so each pass has a concrete identity and scope.
    Give each subagent the same shared context plus its specific scope. Ask subagents for findings
    only, with file and line references when possible.
@@ -97,6 +97,36 @@ Review focus:
 - User-visible behavior changes missing from docs.
 - New commands, dependencies, outputs, files, or workflows missing from docs.
 - Stale documentation contradicted by the patch.
+
+### Reviewer 5: Legacy/dead-code auditor
+
+Launch `Legacy auditor` to find unused code, dead branches, and legacy cruft introduced or left
+behind by the change. Goal: prevent feature drift and keep the code lean.
+
+Review focus:
+- Functions, classes, imports, files, flags, or config keys that are no longer referenced after
+  the change.
+- Superseded code paths, compatibility shims, or TODO/FIXME notes that should be removed now that
+  the change has landed.
+- Duplicate implementations or near-duplicate helpers that should be consolidated.
+- Disabled tests, commented-out blocks, and unreachable branches.
+- Dependencies in `pip_requirements.txt`, `Brewfile`, or similar that no code references anymore.
+
+### Reviewer 6: Comment auditor
+
+Launch `Comment auditor` to confirm changed code is well commented and easy to read. Anchor
+the review in [docs/PYTHON_STYLE.md](../../docs/PYTHON_STYLE.md) commenting rules when Python
+changed.
+
+Review focus:
+- Non-trivial logic has a short comment above it explaining intent.
+- Function and module docstrings present where the style guide expects them, using Google style
+  for Python.
+- Variable, function, and file names are descriptive and match repo naming conventions.
+- Visual function separators (`#====`) used in Python where the style guide expects them.
+- No emoji or non-ASCII characters in comments; UTF-8 escaped where needed.
+- Overly long functions, deeply nested logic, or unclear control flow that hurts readability.
+- Stale, misleading, or redundant comments that contradict the code.
 
 ## Agent prompt template
 

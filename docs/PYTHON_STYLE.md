@@ -14,7 +14,7 @@ AI agents frequently get these wrong. Read the full sections below for details.
 - **Import the module, not names from it.** Prefer `import os` over `from os import path`. See [IMPORTING](#importing).
 - **No relative imports.** Never use `from . import` or `from ..module import`. See [IMPORTING](#importing).
 - **Declare all third-party imports.** Every non-stdlib, non-local import must be in `pip_requirements.txt`. See [IMPORT REQUIREMENTS](#import-requirements).
-- **No brittle pytest assertions.** Do not assert on dates, collection sizes, required key lists, hardcoded defaults, or function names. See [PYTEST](#pytest).
+- **No brittle pytest assertions.** Do not assert on dates, collection sizes, required key lists, hardcoded defaults, or function names. See [PYTEST_STYLE.md](PYTEST_STYLE.md).
 
 ## Python version
 
@@ -170,8 +170,9 @@ volume_text = f"<span style='font-family: monospace;'>{vol1:.1f} mL</span>"
 - For simple functions only, provide an **assert** command.
 - create a folder in most projects called tests for storing test scripts
 - a good repo-wide pyflakes gate is `tests/test_pyflakes_code_lint.py` (run with pytest)
+- For pytest-specific style, test design, and command usage, see [PYTEST_STYLE.md](PYTEST_STYLE.md).
 ```bash
-source source_me.sh && python -m pytest tests/test_pyflakes_code_lint.py
+pytest tests/test_pyflakes_code_lint.py
 ```
 
 ## DO NOT USE HEREDOCS
@@ -254,48 +255,6 @@ assert test_entry['Final Score'] == '10.00'
 result = make_key({'ID': 12, 'Name': 'JoHN  '}, ('ID', 'Name'))
 assert result == '12 john'
 ```
-
-## PYTEST
-* Prefer pytest for automated tests when a repo has more than a few simple asserts.
-* Store tests in tests/ with files named test_*.py.
-* Test functions should be named test_* and should use plain assert.
-* Keep tests small and deterministic. Avoid network calls, random behavior, and time based logic unless mocked.
-* Prefer fixtures for setup and shared resources. Use built in fixtures like tmp_path instead of custom temp directories.
-* Avoid complex logic inside tests. If test logic needs comments, move the logic into helper functions and test those helpers.
-* Before writing any test, ask: "will this test still pass next week without code changes?" If not, do not write it.
-* One or two assertions per function is enough. Five assertions for a simple function is overkill.
-* Do not test trivial behavior or thin wrappers around standard library calls.
-
-### What makes a good test
-
-Tests should verify logic that could plausibly be wrong, using assertions that remain stable when unrelated code changes. Good tests survive refactors, renamed fields, added config keys, and tuned constants.
-
-* **Pure function correctness**: fixed inputs produce expected outputs (math, parsing, encoding).
-* **Round-trip invariants**: encode then decode, serialize then deserialize, convert then convert back.
-* **Behavioral properties**: "score A > score B", "output is sorted", "result is within 0 and 1".
-* **Error detection**: invalid input produces errors or warnings.
-* **Boundary enforcement**: architectural rules like "core must not import PySide6".
-
-```python
-# Good: tests logic with fixed inputs
-assert parse_title_year("The.Matrix.1999.BluRay.mkv") == ("The Matrix", "1999")
-
-# Good: round-trip invariant
-scene_x, scene_y = transform.pixel_to_scene(frame, px, py)
-px_rt, py_rt = transform.scene_to_pixel(frame, scene_x, scene_y)
-assert numpy.isclose(px_rt, px, atol=0.5)
-
-# Good: behavioral property, not a hardcoded value
-assert 0.0 <= score <= 1.0
-assert score_exact_match > score_different_title
-```
-
-Avoid tests that assert on dates, collection sizes, lists of required keys, hardcoded defaults, tunable constants, or dataclass storage. These break when unrelated code changes and provide no real value.
-* Basic commands:
-* pytest run all tests
-* pytest -q quiet
-* pytest -k name run tests matching a substring
-* pytest -x stop on first failure
 
 ## TYPE HINTING
 * Use the python3-style explicit variable type hinting. I think it is good practice. Very little of my code uses it now, but I want to change that. For example,

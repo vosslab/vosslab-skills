@@ -40,7 +40,17 @@ cd /Users/vosslab/nsh/cell-culture-game-claude
 node tests/test_game_ui.mjs
 ```
 
-Put test scripts in `tests/` at the repo root, not in `/tmp/`.
+Put Playwright scripts in `tests/` at the repo root.
+
+## Script location
+
+Store Playwright scripts in `tests/` with an `.mjs` extension, for example
+`tests/test_game_ui.mjs`. This matches the testing convention in
+[docs/TYPESCRIPT_STYLE.md](TYPESCRIPT_STYLE.md), and it can overlap with pytest files safely:
+
+- Pytest collects Python files such as `test_*.py`.
+- Playwright helper scripts use `.mjs` and are run directly with `node`.
+- Keeping both under `tests/` makes test and verification scripts easy to find.
 
 ## Packages
 
@@ -145,8 +155,7 @@ Should show `playwright@x.x.x` under the project.
 
 ## File conventions
 
-- Put Playwright scripts in `tests/` at the repo root. Mixing with pytest files
-  (`test_*.py`) is fine; see [docs/REPO_STYLE.md](docs/REPO_STYLE.md).
+- Put Playwright scripts in `tests/` at the repo root.
+- Mixing Playwright `.mjs` files with pytest `test_*.py` files is fine.
 - Use `.mjs` extension for ES module scripts (e.g., `tests/test_game_ui.mjs`).
 - Put screenshots in `test-results/` (gitignored).
-- `devel/` is reserved for one-off developer tools, not bulk test files.
