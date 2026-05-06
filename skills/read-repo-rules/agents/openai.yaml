@@ -1,4 +1,8 @@
 interface:
   display_name: "Read Repo Rules"
-  short_description: "Summarize repo rules; changelog latest entry only"
-  default_prompt: "Use $read-repo-rules to read AGENTS.md, REPO_STYLE.md, PYTHON_STYLE.md, and CHANGELOG.md, output one-line summaries, and summarize only the latest dated CHANGELOG entry."
+  short_description: "Answer targeted repo-rule questions"
+  default_prompt: >-
+    Use $read-repo-rules to read AGENTS.md, docs/REPO_STYLE.md, docs/PYTHON_STYLE.md,
+    docs/PYTEST_STYLE.md, docs/CLAUDE_HOOK_USAGE_GUIDE.md, and docs/CHANGELOG.md; answer
+    how to run code, what makes pytest fragile, how Claude should grep files, and the
+    latest CHANGELOG change.

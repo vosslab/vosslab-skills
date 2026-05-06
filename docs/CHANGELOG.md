@@ -1,3 +1,18 @@
+## 2026-05-06
+
+### Behavior or Interface Changes
+- Updated `skills/read-repo-rules/SKILL.md` and
+  `skills/read-repo-rules/agents/openai.yaml` so the skill reads `docs/PYTEST_STYLE.md`
+  and `docs/CLAUDE_HOOK_USAGE_GUIDE.md`, then answers targeted questions about
+  `source source_me.sh && python3`, fragile pytest patterns, Claude grep usage, and the
+  latest changelog change instead of producing only generic one-sentence summaries.
+- Relaxed `skills/read-repo-rules/SKILL.md` output guidance to favor useful answers over terse
+  one-line constraints, while keeping exact-line output available when the calling prompt requests
+  it.
+- Clarified `skills/read-repo-rules/SKILL.md` requested-file handling, standardized
+  "explicit-path checks" wording, broadened the Claude hook question to search or grep behavior,
+  and restored exact-format compliance for prompts that request exact lines or prefixes.
+
 ## 2026-05-05
 
 ### Additions and New Features
