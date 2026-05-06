@@ -29,6 +29,13 @@
 - Updated `skills/unit-test-starter/SKILL.md` to match current Python/pytest style by using
   `rg --files` discovery, `git rev-parse --show-toplevel`, `tmp_path` for filesystem contract
   tests, no shebangs in test files, and repo bootstrap pytest commands.
+- Standardized `README.md` with a concise documentation map near the top, a shorter related
+  repositories section, and stale skill-count wording removed from [docs/INSTALL.md](INSTALL.md).
+- Updated `VERSION` to `26.05` per repo CalVer style and regenerated plugin metadata from the
+  version source of truth.
+- Updated `tools/build_plugin_manifest.py` so normal generation syncs `VERSION` to the current
+  `YY.MM.DD` CalVer value before writing plugin metadata, while `--check` remains read-only and
+  reports a stale `VERSION` file.
 
 ## 2026-05-05
 

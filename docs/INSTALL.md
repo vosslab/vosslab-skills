@@ -9,7 +9,7 @@ This repository is a Claude Code plugin that provides reusable workflow skills. 
 
 ## Method 1: install as a Claude Code plugin
 
-Point Claude Code at this repo to load all 15 skills as a plugin.
+Point Claude Code at this repo to load all repository skills as a plugin.
 
 ```bash
 claude plugin add https://github.com/vosslab/vosslab-skills
@@ -56,7 +56,7 @@ source source_me.sh && python3 tools/build_skills_index.py
 cat docs/SKILLS_INDEX.md
 ```
 
-If the skills index lists 15 skills, the repo is set up correctly.
+If the skills index lists the expected repository skills, the repo is set up correctly.
 
 ## Updating
 

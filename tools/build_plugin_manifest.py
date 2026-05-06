@@ -3,8 +3,9 @@
 
 from __future__ import annotations
 
-import json
 import argparse
+import datetime
+import json
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -27,13 +28,37 @@ LICENSE_ID = "MIT"
 
 
 #============================================
+def get_current_calver() -> str:
+	"""Return the current YY.MM.DD plugin version."""
+	today = datetime.date.today()
+	version = f"{today:%y.%m.%d}"
+	return version
+
+
+#============================================
 def read_version() -> str:
-	"""Read version from VERSION file, defaulting to 1.0.0."""
+	"""Read version from VERSION file, defaulting to current YY.MM.DD."""
 	if VERSION_FILE.exists():
 		text = VERSION_FILE.read_text(encoding="utf-8").strip()
 		if text:
 			return text
-	return "1.0.0"
+	version = get_current_calver()
+	return version
+
+
+#============================================
+def sync_version_file(check: bool) -> tuple[str, bool]:
+	"""Return the current YY.MM.DD version and whether VERSION already matched."""
+	version = get_current_calver()
+	existing_version = ""
+	if VERSION_FILE.exists():
+		existing_version = VERSION_FILE.read_text(encoding="utf-8").strip()
+	is_current = existing_version == version
+	if check or is_current:
+		return version, is_current
+
+	VERSION_FILE.write_text(version + "\n", encoding="utf-8")
+	return version, True
 
 
 #============================================
@@ -161,7 +186,7 @@ def main() -> int:
 	# collect data
 	skill_files = collect_skill_files()
 	keywords = collect_keywords(skill_files)
-	version = read_version()
+	version, version_is_current = sync_version_file(args.check)
 
 	# build json content
 	plugin_data = build_plugin_json(version, keywords)
@@ -175,7 +200,9 @@ def main() -> int:
 
 	if args.check:
 		# verify files are up-to-date
-		all_match = True
+		all_match = version_is_current
+		if not version_is_current:
+			print(f"Out of date: {VERSION_FILE}")
 		for path, expected in [
 			(PLUGIN_JSON, plugin_text),
 			(MARKETPLACE_JSON, marketplace_text),
