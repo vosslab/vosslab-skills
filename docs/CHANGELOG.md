@@ -1,5 +1,11 @@
 ## 2026-05-06
 
+### Additions and New Features
+- Added `skills/review-code-changes/SKILL.md` and
+  `skills/review-code-changes/agents/openai.yaml` for launching focused parallel review agents
+  across plan conformance, smoke and unit tests, code style, and documentation impact before
+  merging findings into a single code-review response.
+
 ### Behavior or Interface Changes
 - Updated `skills/read-repo-rules/SKILL.md` and
   `skills/read-repo-rules/agents/openai.yaml` so the skill reads `docs/PYTEST_STYLE.md`
@@ -17,6 +23,12 @@
   their `$skill-name` and short descriptions stay within the documented UI length range.
 - Aligned `skills/read-repo-rules/agents/openai.yaml` with the skill's updated Claude hook question
   wording about how Claude should search or grep files.
+- Updated `skills/python-code-review/SKILL.md` to match the current `read-repo-rules` workflow and
+  current Python/pytest style guidance, including `source source_me.sh && python ...`, `tmp_path`,
+  stable pytest assertions, and fragile-test checks.
+- Updated `skills/unit-test-starter/SKILL.md` to match current Python/pytest style by using
+  `rg --files` discovery, `git rev-parse --show-toplevel`, `tmp_path` for filesystem contract
+  tests, no shebangs in test files, and repo bootstrap pytest commands.
 
 ## 2026-05-05
 
