@@ -5,6 +5,8 @@ Language Model guide to Neil pytest usage.
 ## Test structure
 
 * Prefer pytest for automated tests when a repo has more than a few simple asserts.
+* `tests/` and `tests_e2e/` are the only places `assert` statements should appear in this repo. Plain scripts and library modules must not contain `assert`. See [PYTHON_STYLE.md](PYTHON_STYLE.md#assert) for the rationale (module-level asserts slow script startup).
+* Pytest is the fast lane: keep tests deterministic and quick. Slow end-to-end tests live outside pytest in their own folder; see [E2E_TESTS.md](E2E_TESTS.md).
 * Store tests in `tests/` with files named `test_*.py`.
 * Use `tests/conftest.py` for pytest configuration, fixtures, collection hooks, and shared pytest setup.
 * Test functions should be named `test_*` and should use plain `assert`.

@@ -34,6 +34,10 @@ and checks each leaf independently:
 - **Allow**: ALL leaves must match an allow rule for the command to be allowed
 - **Passthrough**: if any leaf has no matching rule (and none are denied)
 
+A compound command fails as a whole even if only one leaf is illegal. If
+`find ... ; ls ...` is denied, the `ls ...` half would have run on its own --
+drop the denied leaf and re-run rather than rewriting both.
+
 The hook also unwraps `bash -c "..."` patterns and extracts commands inside `$(...)`.
 
 Environment-variable assignments (e.g., `NODE_PATH=/foo`) are stripped from leaf
@@ -44,6 +48,25 @@ just `node script.js`.
 
 Commands with more than **5** chained sub-commands are denied automatically. Break
 long chains into smaller commands or write a script file.
+
+### Bash-side reference for redirected commands
+
+`Read`, `Grep`, `Glob`, `Edit`, and `Write` are Claude Code *tool calls*,
+invoked directly with named parameters. They replace the Bash forms below.
+The third column lists the Bash forms that remain allowed for cases the tool
+calls do not cover (typically slicing piped stdout or listing files for a
+shell pipeline).
+
+| Denied Bash form | Tool call | Allowed Bash forms |
+| --- | --- | --- |
+| `cat /path/to/file`, `head -20 /path`, `tail -20 /path` | `Read(file_path=..., offset=..., limit=...)` | `... \| cat`, `... \| head -5`, `... \| tail -5` (pipeline, no file arg) |
+| `grep pat /path`, `/usr/bin/grep ...`, `rg pat dir/`, `egrep`, `fgrep` | `Grep(pattern=..., path=..., glob=..., output_mode=..., head_limit=...)` | `... \| grep pat` (pipeline, no file arg) for stdout filtering |
+| `find . -name "*.py"` (any path form) | `Glob(pattern='**/*.py', path=...)` | `ls <dir>`, `git ls-files <pathspec>` |
+| `sed -n '10,20p' file.txt` | `Read(file_path=..., offset=10, limit=11)` | `... \| sed -n '10,20p'` (pipeline) |
+
+The deny rules cover all binary variants (alternate names, absolute paths like
+`/usr/bin/grep` or `/opt/homebrew/.../grep`, `rg`). The fastest path through a
+deny is the tool call in column two.
 
 ## Allowed commands
 
@@ -326,28 +349,56 @@ workflow.
 
 **Blocked:** `cat /path/to/file`, `head -20 /abs/path/file.txt`
 
-**Why:** The Read tool provides a better experience with line numbers and offset/limit.
+**Why:** Read is a Claude Code tool call (like Edit/Write). It provides line
+numbers, offset, and limit, and is the canonical way to inspect a file from
+this harness.
 
-**Instead:** Use the Read tool with optional `offset` and `limit` parameters.
-Pipeline usage without file paths (e.g., consuming stdin) is still allowed.
+**Instead:** Invoke the Read tool directly with `file_path` and optional
+`offset` and `limit`. The pipeline form (`... | head -5`, `... | tail -5`,
+`... | cat`) stays allowed for slicing piped stdout, where Read does not
+apply.
 
 ### `grep`/`rg` with file paths
 
-**Blocked:** `grep pattern /path/to/file`, `rg pattern /abs/search/dir`
+**Blocked:** `grep pattern /path/to/file`, `rg pattern /abs/search/dir`,
+`/usr/bin/grep ...`, `/opt/homebrew/.../grep ...`, `egrep`, `fgrep`. The
+deny covers all binary names and absolute paths.
 
-**Why:** The Grep tool provides structured output modes and context lines.
+**Why:** Grep is a Claude Code tool call (like Read/Edit/Write). It supplies
+structured output modes, glob filters, and context lines, and is the
+canonical way to search files from this harness.
 
-**Instead:** Use the Grep tool with `pattern`, `path`, `glob`, `-A`/`-B`/`-C`,
-`output_mode`, and `head_limit` parameters. Pipeline filtering (no file path)
-is still allowed.
+**Instead:** Invoke the Grep tool directly with `pattern`, `path`, `glob`,
+`-A`/`-B`/`-C`, `output_mode`, and `head_limit`. The pipeline form
+(`... | grep pat`) stays allowed for slicing piped stdout, where Grep does
+not apply.
+
+### `git grep`
+
+**Blocked:** `git grep <pattern>`, including all git invocation forms
+(`/usr/bin/git grep`, `command git grep`, `env X=y git grep`,
+`git -c core.pager=cat grep`, `git -C <path> grep`,
+`git --git-dir=<dir> grep`, `git --work-tree=<dir> grep`).
+
+**Why:** Grep is a Claude Code tool call (like Read/Edit/Write); `git grep`
+would keep every search shell-side and re-create the loop the file-`grep`
+deny is meant to break. The Grep tool is the canonical search path.
+
+**Instead:** Invoke the Grep tool directly with `pattern`, `path`, `glob`,
+`-A`/`-B`/`-C`, `output_mode`, and `head_limit`. There is no Bash escape
+hatch for repo searches. For Bash file listings, `ls <dir>` and
+`git ls-files <pathspec>` remain allowed.
 
 ### `find`
 
-**Blocked:** `find . -name "*.py"`
+**Blocked:** `find . -name "*.py"`, including absolute-path invocations.
 
-**Why:** The Glob tool is faster and supports recursive patterns. Also has a deny rule.
+**Why:** Glob is a Claude Code tool call (like Read/Edit/Write) and supports
+recursive patterns directly.
 
-**Instead:** Use `Glob(pattern='**/*.py', path='/search/dir')`.
+**Instead:** Invoke the Glob tool directly with `pattern='**/*.py'` and `path`.
+For a shell-side file listing, `ls <dir>` and `git ls-files <pathspec>` are
+both allowed.
 
 ### `sed -n` with file paths
 
@@ -647,13 +698,20 @@ interactive UI dialogs, causing blank answers or skipped consent screens.
 
 ## Common patterns
 
+The Grep, Read, Glob, Edit, and Write entries below are Claude Code
+*tool calls*, not shell commands. Invoke them as tools, not via Bash.
+There is no Bash escape hatch for searching repo files -- use the Grep
+tool. For Bash file listings, `git ls-files <pathspec>` and `ls <dir>`
+are allowed; for slicing piped stdout, `... | grep pat`, `... | head -5`,
+and `... | sed -n '10,20p'` are allowed.
+
 | Task | Wrong | Right |
 | --- | --- | --- |
 | Run Python | `python3 script.py` | `source source_me.sh && python3 script.py` |
 | Read a file | `cat /path/to/file.py` | Read tool: `file_path="/path/to/file.py"` |
 | Search files | `grep -r "pattern" src/` | Grep tool: `pattern="pattern"`, `path="src/"` |
 | Tool name as Bash | `Grep -n "^## " docs/CHANGELOG.md` | Invoke the Grep tool directly (not via Bash) |
-| Find files | `find . -name "*.py"` | Glob tool: `pattern="**/*.py"` |
+| Find files | `find . -name "*.py"` | Glob tool: `pattern="**/*.py"`. For Bash listings, `ls <dir>` or `git ls-files '*.py'` |
 | Read lines 10-20 | `sed -n '10,20p' file.txt` | Read tool: `offset=10`, `limit=11` |
 | Delete temp file | `rm temp.py` | Name it `_temp.py`, then `rm _temp.py` |
 | Rename file | `mv old.py new.py` | `git mv old.py new.py` |
