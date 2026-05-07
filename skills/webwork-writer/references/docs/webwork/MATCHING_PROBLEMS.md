@@ -2,7 +2,7 @@
 
 ## Summary
 
-**UPDATE 2026-01-24:** Matching PGML uses HTML layout wrappers in this repo. The matching generator ([problems/matching_sets/yaml_match_to_pgml.py](../../problems/matching_sets/yaml_match_to_pgml.py)) follows the `matching_from_web.pgml` pattern using `MODES(...)` wrappers to build a flexbox HTML layout.
+**UPDATE 2026-01-24:** Matching PGML uses HTML layout wrappers in this repo. The matching generator (`<biology-problems>/problems/matching_sets/yaml_match_to_pgml.py`) follows the `matching_from_web.pgml` pattern using `MODES(...)` wrappers to build a flexbox HTML layout.
 
 ## Recommended pattern (HTML-only output)
 

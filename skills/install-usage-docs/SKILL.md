@@ -23,15 +23,15 @@ of guessing.
 ## Workflow
 
 1. Inspect evidence
-   - Read [README.md](../../README.md) and [AGENTS.md](../../AGENTS.md) when present
+   - Read [README.md](README.md) and [AGENTS.md](AGENTS.md) when present
      to learn purpose, constraints, and any required environment notes.
-   - Look for entry points and run commands (scripts, [pyproject.toml](../../pyproject.toml),
+   - Look for entry points and run commands (scripts, [pyproject.toml](pyproject.toml),
      `setup.cfg`, `Makefile`, `tools/`, `bin/`) and note what a user actually runs.
    - Identify dependencies and install method (pip editable, requirements file, system deps),
      and only record what is confirmed by repo files.
 2. Create or update docs
    - Create missing files, or trim and correct stale ones.
-   - Keep doc naming under [docs/](../../docs/) consistent with repo conventions.
+   - Keep doc naming under [docs/](docs/) consistent with repo conventions.
 3. Keep stubs minimal
    - Prefer 2 to 6 bullets per section.
    - Prefer one primary path and keep alternates out unless the repo makes them explicit.
@@ -58,7 +58,7 @@ of guessing.
    - Do not move README content here. If README needs pruning or restructuring,
      use the readme-fix skill and keep INSTALL/USAGE focused on setup and run steps.
 9. Update changelog
-   - Record doc changes in [docs/CHANGELOG.md](../../docs/CHANGELOG.md) with a short,
+   - Record doc changes in [docs/CHANGELOG.md](docs/CHANGELOG.md) with a short,
      dated entry describing what changed.
 
 ## docs/INSTALL.md stub template

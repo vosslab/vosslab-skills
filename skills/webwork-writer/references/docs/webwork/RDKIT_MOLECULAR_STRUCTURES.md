@@ -481,24 +481,24 @@ $gly_ala = 'C[C@@H](C(=O)O)NC(=O)CN';
 
 ### Basic examples
 
-- `problems/biochemistry-problems/PUBCHEM/rdkit_working_in_webwork.pgml`
+- `<biology-problems>/problems/biochemistry-problems/PUBCHEM/rdkit_working_in_webwork.pgml`
   - Minimal working example with two amino acids
   - Good starting template
 
 ### Intermediate examples
 
-- `problems/biochemistry-problems/PUBCHEM/which_amino_acid.pgml`
+- `<biology-problems>/problems/biochemistry-problems/PUBCHEM/which_amino_acid.pgml`
   - Random amino acid selection
   - Single molecule identification
 
 ### Advanced examples
 
-- `problems/biochemistry-problems/histidine_protonation_states.pgml`
+- `<biology-problems>/problems/biochemistry-problems/histidine_protonation_states.pgml`
   - Multiple charge states
   - pH-dependent protonation
   - Individual radio buttons per structure
 
-- `problems/biochemistry-problems/PUBCHEM/polypeptide_mc_sequence-easy.pgml`
+- `<biology-problems>/problems/biochemistry-problems/PUBCHEM/polypeptide_mc_sequence-easy.pgml`
   - Peptide bond highlighting
   - Larger molecules
 

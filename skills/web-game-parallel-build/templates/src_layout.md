@@ -62,7 +62,7 @@ dumping ground.
 - Feature-local types stay with their owning runtime module (for
   example `ScoreBreakdown` lives next to `scoring.ts`).
 - Promotion to `src/types/` follows
-  [`typescript-engineer/references/modular-type-design.md`](../../typescript-engineer/references/modular-type-design.md).
+  `<typescript-engineer skill>/references/modular-type-design.md`.
 - `src/types/*.ts` files are type-only: no runtime values, no `const
   enum`, no helpers. Brand constructors and other tiny boundary helpers
   belong in `src/brands.ts` or the owning runtime module.

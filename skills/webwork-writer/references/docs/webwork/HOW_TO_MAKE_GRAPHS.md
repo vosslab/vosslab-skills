@@ -594,8 +594,8 @@ plus manual `h_ticks`/`v_ticks` calls to get both.
 
 ## Reference Examples
 
-- [enzyme_ph_activity_graph.pgml](../../problems/biochemistry-problems/enzymes/enzyme_ph_activity_graph.pgml) -- Gaussian curves, manual grid, accessible colors, vertical y-axis label
-- [enzyme_temp_activity_graph.pgml](../../problems/biochemistry-problems/enzymes/enzyme_temp_activity_graph.pgml) -- Gumbel curves, degree symbol, two-pass normalization
+- `<biology-problems>/problems/biochemistry-problems/enzymes/enzyme_ph_activity_graph.pgml` -- Gaussian curves, manual grid, accessible colors, vertical y-axis label
+- `<biology-problems>/problems/biochemistry-problems/enzymes/enzyme_temp_activity_graph.pgml` -- Gumbel curves, degree symbol, two-pass normalization
 
 ---
 

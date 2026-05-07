@@ -24,7 +24,7 @@ The generated question:
 - **`generate_macromolecule_id_pgml.py`**: Python script that generates the PG file
 - **`macromolecule_identification.pg`**: Generated WeBWorK problem file (66KB)
 - **`macromolecules.yml`**: Source data - molecule names organized by type
-- **`../../../data/pubchem_molecules_data.yml`**: Source data - molecule details (SMILES, formulas, etc.)
+- **`<biology-problems>/data/pubchem_molecules_data.yml`**: Source data - molecule details (SMILES, formulas, etc.)
 - **`rdkit_working_in_webwork.pg`**: Working prototype demonstrating RDKit.js in WeBWorK
 
 ## Generated File Statistics

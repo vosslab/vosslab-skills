@@ -51,6 +51,38 @@
 - Added concrete reviewer names to `skills/review-code-changes/SKILL.md`: Plan auditor, Test
   auditor, Style auditor, and Docs auditor, so each independent review subagent has an explicit
   identity and scope.
+- Reframed the `Test auditor` reviewer in `skills/review-code-changes/SKILL.md` so its default
+  action is removing fragile pytests, not adding new ones. The reviewer now flags pytests over
+  ~1 second, elaborate scenarios that belong in `tests_e2e/` per
+  [E2E_TESTS.md](E2E_TESTS.md), and fragile-assertion patterns from
+  [PYTEST_STYLE.md](PYTEST_STYLE.md), and only proposes new pytests after pruning when a
+  real correctness bug would otherwise slip through.
+- Added a "Runtime budget" subsection to [PYTEST_STYLE.md](PYTEST_STYLE.md) stating that
+  every pytest under `tests/` should finish in well under one second, that elaborate or slow
+  scenarios belong in `tests_e2e/` per [E2E_TESTS.md](E2E_TESTS.md), and that deleting a
+  slow or fragile pytest is preferred over rewriting it. Extended the "Brittle tests" section
+  with "When in doubt, delete. A missing pytest is cheaper than a fragile one."
+- Documented a cross-repo and cross-skill placeholder convention in
+  [REPO_STYLE.md](REPO_STYLE.md): use `<repo-name>/...` for paths in a sibling git repo and
+  `<skill-name skill>/...` for paths inside a sibling Claude skill, rendered as backticks
+  rather than broken relative Markdown links.
+
+### Fixes and Maintenance
+- Fixed broken `../../docs/...` links in `skills/review-code-changes/SKILL.md` and
+  `skills/install-usage-docs/SKILL.md` to be repo-root relative (`docs/...`, `README.md`,
+  `AGENTS.md`), matching how a coder running the skill from a target repo root would resolve
+  them.
+- Replaced stale `../../` cross-repo links in five `skills/webwork-writer/references/docs/`
+  files (pubchem README, `COLOR_CONTRAST_ACCESSIBILITY.md`, `HOW_TO_MAKE_GRAPHS.md`,
+  `MATCHING_PROBLEMS.md`, `RDKIT_MOLECULAR_STRUCTURES.md`) with explicit
+  `<biology-problems>/...` placeholders so vendored doc paths name the upstream repo instead
+  of resolving to broken relative links here.
+- Replaced stale `../../typescript-engineer/...` links in
+  `skills/web-game-parallel-build/templates/agent_prompt_template.md`,
+  `skills/web-game-parallel-build/templates/src_layout.md`, and
+  `skills/web-game-parallel-build/references/DEFINITIONS.md` with
+  `<typescript-engineer skill>/...` placeholders, since coders running the skill outside this
+  repo cannot resolve sibling-skill paths via the filesystem.
 
 ## 2026-05-05
 

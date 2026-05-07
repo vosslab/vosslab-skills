@@ -28,7 +28,7 @@ For CR = 5.5, L_fg = 0.14091.
 
 ## Contrast calculator tool
 
-[tools/contrast_calculator.py](../../tools/contrast_calculator.py) implements the
+`<biology-problems>/tools/contrast_calculator.py` implements the
 WCAG v2 contrast formula with backward solving via binary search on HSL lightness.
 
 Usage:

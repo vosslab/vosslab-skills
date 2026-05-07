@@ -51,7 +51,7 @@ the orchestrator.
   back to the orchestrator.
 - Zero unchecked `as` casts. Brand constructors (`src/brands.ts`) and
   documented save-file type guards are the only exceptions; see
-  [`typescript-engineer/references/opaque-types.md`](../../typescript-engineer/references/opaque-types.md).
+  `<typescript-engineer skill>/references/opaque-types.md` (load via the skill loader, not a filesystem path).
 - Run `npx tsc --noEmit -p src/tsconfig.json` before reporting done.
 
 ## Web platform rules
@@ -78,7 +78,7 @@ For type-level questions (generics, conditional types, brand patterns,
 save-file versioning, `as const satisfies` config tables, `GameEvent`
 shape, ECS, replay, migration), invoke the `typescript-engineer` skill
 and follow its decision tree. Game-shape questions start at
-[`references/game-type-patterns.md`](../../typescript-engineer/references/game-type-patterns.md).
+`<typescript-engineer skill>/references/game-type-patterns.md`.
 
 ## Your task
 

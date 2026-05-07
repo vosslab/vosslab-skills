@@ -32,10 +32,10 @@ single concise review.
    - User request and any referenced plan document.
    - `git status --short` and the relevant `git diff`.
    - Repo rule files that exist, especially `AGENTS.md`,
-     [docs/REPO_STYLE.md](../../docs/REPO_STYLE.md),
-     [docs/PYTHON_STYLE.md](../../docs/PYTHON_STYLE.md), `docs/PYTEST_STYLE.md` when present,
-     [docs/MARKDOWN_STYLE.md](../../docs/MARKDOWN_STYLE.md), and
-     [docs/CHANGELOG.md](../../docs/CHANGELOG.md).
+     [docs/REPO_STYLE.md](docs/REPO_STYLE.md),
+     [docs/PYTHON_STYLE.md](docs/PYTHON_STYLE.md), `docs/PYTEST_STYLE.md` when present,
+     [docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md), and
+     [docs/CHANGELOG.md](docs/CHANGELOG.md).
    - Focused test commands already run and their results, if available.
 2. Launch six independent review subagents in parallel immediately after the minimal shared
    context is ready. Use the reviewer names below so each pass has a concrete identity and scope.
@@ -65,24 +65,34 @@ Review focus:
 
 ### Reviewer 2: Test auditor
 
-Launch `Test auditor` to review smoke and unit test coverage against repo test style.
+Launch `Test auditor` to prune fragile pytests and route elaborate scenarios to E2E, keeping
+`tests/` fast and stable. Less is more: the default action is removal, not addition.
 
 Review focus:
-- Whether changed behavior has focused tests.
-- Whether smoke tests cover the user-facing workflow.
-- Whether tests follow `docs/PYTEST_STYLE.md` when present, otherwise the pytest section in
-  [docs/PYTHON_STYLE.md](../../docs/PYTHON_STYLE.md).
-- Fragile pytest patterns, over-broad assertions, order dependence, sleeps, hidden network or file
-  system coupling, and tests that pass without validating the changed behavior.
-- Missing focused test commands or unclear test evidence.
+- Goal: remove fragile pytests. Do not propose new pytests unless a missing one is the root cause
+  of a real correctness bug in the changed code.
+- Flag pytests that take more than ~1 second, or that look like they would: sleeps, real
+  subprocess calls, real filesystem trees beyond `tmp_path`, network calls, large fixtures, or
+  model loads.
+- Flag elaborate end-to-end scenarios sitting in `tests/`: whole-script CLI runs, I/O round trips,
+  real external tools. These belong in `tests_e2e/` per
+  [docs/E2E_TESTS.md](docs/E2E_TESTS.md), not in pytest. Recommend moving or deleting, not
+  rewriting in place.
+- Flag fragile assertions per [docs/PYTEST_STYLE.md](docs/PYTEST_STYLE.md): dates,
+  collection sizes, lists of required keys, hardcoded defaults, tunable constants, dataclass
+  storage, function-name strings, and over-broad or order-dependent assertions.
+- Flag tests of trivial behavior, thin stdlib wrappers, `_temp.*` files, or tests that will not
+  still pass next week without code changes.
+- Only after pruning, note any genuinely missing pure-function pytest where a real bug could
+  plausibly slip through. Keep this list small and concrete.
 
 ### Reviewer 3: Style auditor
 
 Launch `Style auditor` to review changed code against implementation style guides.
 
 Review focus:
-- Python style from [docs/PYTHON_STYLE.md](../../docs/PYTHON_STYLE.md) when Python changed.
-- Repo-wide style from [docs/REPO_STYLE.md](../../docs/REPO_STYLE.md).
+- Python style from [docs/PYTHON_STYLE.md](docs/PYTHON_STYLE.md) when Python changed.
+- Repo-wide style from [docs/REPO_STYLE.md](docs/REPO_STYLE.md).
 - Naming, file placement, dependency choices, command examples, and generated-output handling.
 - Maintainability issues introduced by the patch, including unclear ownership boundaries or
   unnecessary abstractions.
@@ -115,7 +125,7 @@ Review focus:
 ### Reviewer 6: Comment auditor
 
 Launch `Comment auditor` to confirm changed code is well commented and easy to read. Anchor
-the review in [docs/PYTHON_STYLE.md](../../docs/PYTHON_STYLE.md) commenting rules when Python
+the review in [docs/PYTHON_STYLE.md](docs/PYTHON_STYLE.md) commenting rules when Python
 changed.
 
 Review focus:

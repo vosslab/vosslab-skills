@@ -25,6 +25,15 @@ Language Model guide to Neil pytest usage.
 * Do not write tests for `_temp.*` files, ad-hoc debugging scripts, or any code intended to be deleted shortly after use.
 * Tests in `tests/` are reserved for code that will remain in the repo.
 
+## Runtime budget
+
+* Every pytest under `tests/` should finish in well under one second. `pytest tests/` is the
+  fast lane; slow tests poison it and discourage running the suite during development.
+* If a check needs sleeps, real subprocess calls, real network, large file trees beyond
+  `tmp_path`, model loads, or a multi-step CLI run, it is not a pytest. Move it to
+  `tests_e2e/` per [E2E_TESTS.md](E2E_TESTS.md).
+* Prefer deleting a slow or fragile pytest over rewriting it. Less is more.
+
 ## Good tests
 
 Tests should verify logic that could plausibly be wrong, using assertions that remain stable
@@ -57,7 +66,7 @@ assert score_exact_match > score_different_title
 
 Avoid tests that assert on dates, collection sizes, lists of required keys, hardcoded defaults,
 tunable constants, or dataclass storage. These break when unrelated code changes and provide no
-real value.
+real value. When in doubt, delete. A missing pytest is cheaper than a fragile one.
 
 ## Basic commands
 
