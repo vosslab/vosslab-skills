@@ -1,3 +1,24 @@
+## 2026-05-07
+
+### Additions and New Features
+- Added `skills/manager-driven-execution/` containing `SKILL.md` and three subagent prompt templates
+  under `templates/` (`implementer_prompt.md`, `spec_reviewer_prompt.md`, and
+  `quality_reviewer_prompt.md`), defining a vosslab-flavored, lighter alternative to upstream
+  `superpowers:subagent-driven-development` and explicitly lighter than `/review-code-changes` (one
+  quality reviewer rather than six). The defining rule is that the main agent acts as a manager
+  only and never edits files itself, including `docs/CHANGELOG.md`; all file changes are delegated
+  to coder, reviewer, tester, and docs subagents, dispatched sequentially by default and only in
+  parallel when the plan marks tasks as independent.
+- Added `skills/manager-driven-execution/references/manager_contract.md` defining the
+  manager-vs-subagent ownership boundary, violation examples, and recovery steps. Linked from
+  `SKILL.md` under `## Manager rules`.
+
+### Behavior or Interface Changes
+- Tightened `skills/manager-driven-execution/SKILL.md` `## When not to use` bullet from
+  "edit directly" to "do not use this skill" so the skill never advises direct file edits.
+- Replaced an em-dash separator in `skills/manager-driven-execution/templates/implementer_prompt.md`
+  intro with two short sentences for cleaner punctuation.
+
 ## 2026-05-06
 
 ### Additions and New Features
