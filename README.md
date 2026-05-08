@@ -8,6 +8,8 @@ Reusable workflow skills for refactoring plans, code review, repository maintena
 - [docs/USAGE.md](docs/USAGE.md): Invoking skills, browsing the index, and maintaining the plugin manifest.
 - [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md): Common issues and quick checks.
 - [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md): Generated skill-by-skill index with one-line descriptions.
+- [docs/CODE_ARCHITECTURE.md](docs/CODE_ARCHITECTURE.md): System layout, major components, and extension points.
+- [docs/FILE_STRUCTURE.md](docs/FILE_STRUCTURE.md): Directory map and where to add new work.
 - [docs/CHANGELOG.md](docs/CHANGELOG.md): Dated record of documentation and skill updates.
 - [docs/REPO_STYLE.md](docs/REPO_STYLE.md): Repository organization and documentation conventions.
 - [docs/PYTHON_STYLE.md](docs/PYTHON_STYLE.md): Python coding standards used by this repository.

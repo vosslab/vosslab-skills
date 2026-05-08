@@ -2,6 +2,9 @@
 
 ### Additions and New Features
 
+- Added [docs/CODE_ARCHITECTURE.md](CODE_ARCHITECTURE.md) describing the plugin's layout, major components ([skills/](../skills/), [agents/](../agents/), [tools/](../tools/), [devel/](../devel/), [tests/](../tests/), [docs/](../docs/)), data flow, indexing flow, testing gates, and extension points. Records two `Known gaps`: missing root runtime requirements manifest and a stray `tingly-foraging-mccarthy.md` plan file at the repo root.
+- Added [docs/FILE_STRUCTURE.md](FILE_STRUCTURE.md) with an ASCII top-level layout, key-subtree notes (including the [tools/](../tools/) vs [devel/](../devel/) distinction and the centrally-maintained vs repo-specific split inside [docs/](../docs/)), generated-artifact pointers, and a `Where to add new work` section.
+- Linked [docs/CODE_ARCHITECTURE.md](CODE_ARCHITECTURE.md) and [docs/FILE_STRUCTURE.md](FILE_STRUCTURE.md) from [README.md](../README.md) Documentation list.
 - Added new skill `agents-md-fixer` ([skills/agents-md-fixer/SKILL.md](../skills/agents-md-fixer/SKILL.md)): trims and standardizes a repo's `AGENTS.md` to the 100-150 line target from [docs/REPO_STYLE.md](REPO_STYLE.md), moving long content into `docs/*.md` and leaving links. Introduces a new `-fixer` suffix family in [docs/SKILL_NAMING.md](SKILL_NAMING.md) for in-place trim/standardize of a single named artifact. [docs/SKILLS_INDEX.md](SKILLS_INDEX.md) updated to 24 skills.
 - Added [docs/SKILL_PHILOSOPHY_REVIEW.md](SKILL_PHILOSOPHY_REVIEW.md) applying the four canonical philosophies anchored at [docs/REPO_STYLE.md#core-philosophies](REPO_STYLE.md#core-philosophies) to all 23 vosslab skills, with per-skill diagnosis, conflict catalog, mode and execution-posture taxonomy, philosophy applicability matrix (with evidence IDs), and a Phase 3 verification appendix.
 - Added new `## Delegated execution` sections on 11 doer skills marked `delegated` or `either` in the matrix.
