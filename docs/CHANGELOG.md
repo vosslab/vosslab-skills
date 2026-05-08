@@ -14,6 +14,8 @@
 - Implemented plan tingly-foraging-mccarthy.md M1 + M2 in one pass.
 - New convention doc [docs/SKILL_NAMING.md](SKILL_NAMING.md) with rules, suffix-family table (now including `-reader`), reserved harness tokens, and a 23-row audit table reflecting the accepted post-rename state.
 - New tool `tools/list_loaded_skills.py` (stdlib-only) that walks repo + `~/.claude/skills/` + `~/.claude/plugins/cache/`, collapses same-content duplicates across sources (joins sources with `+`), flags genuine name collisions with a `[!]` prefix, and supports `--names-only` and `--check`.
+- Extended [tools/list_loaded_skills.py](../tools/list_loaded_skills.py) with a `Prefix collisions` column in default output that lists other skills sharing >=3 leading characters with each entry. `old-*` skills are exempt (deprecation marker; collisions among or with them are intentional and not interesting).
+- Added `--collisions` (`-x`) flag to [tools/list_loaded_skills.py](../tools/list_loaded_skills.py) that filters default output to only rows with content or prefix collisions, for fast collision-only review.
 
 ### Behavior or Interface Changes
 
@@ -28,6 +30,8 @@
 - New `## Listing loaded skills` section in [docs/USAGE.md](USAGE.md) documents `tools/list_loaded_skills.py`.
 - Skill-folder naming convention is documented in [docs/SKILL_NAMING.md](SKILL_NAMING.md); cross-link into [docs/REPO_STYLE.md](REPO_STYLE.md) is an upstream-vendored-doc task and is NOT applied locally.
 - Regenerated [docs/SKILLS_INDEX.md](SKILLS_INDEX.md) (23 skills, all new names).
+- [tools/list_loaded_skills.py](../tools/list_loaded_skills.py) default output switched from raw `name<tab>source` lines to a tabulated three-column table (Skill, Source, Prefix collisions) via the `tabulate` package; `--names-only` and `--check` modes are unchanged.
+- Added `tabulate` to [pip_requirements-dev.txt](../pip_requirements-dev.txt) for the new tabulated output in [tools/list_loaded_skills.py](../tools/list_loaded_skills.py).
 
 ### Fixes and Maintenance
 
@@ -36,6 +40,7 @@
 - Repaired regression: WP-T2 / WP-T5d description-rewrite coders briefly dropped `mode:` and `execution:` from `python-code-review` and `readme-fix`; both restored.
 - Applied style fixes from the 6-reviewer audit: H1 ordering at top of [docs/SKILL_PHILOSOPHY_REVIEW.md](SKILL_PHILOSOPHY_REVIEW.md); corrected relative-depth links inside that doc; trimmed `## Repo philosophies for new skills` heading to 6 words; reformatted `web-game-parallel-build` "Subagent dispatch" to match the other 4 manager skills.
 - Updated repo-wide cross-references (~25 files: SKILL.md bodies, agent YAMLs, plugin manifest, README, docs/INSTALL.md, docs/USAGE.md, docs/SKILL_PHILOSOPHY_REVIEW.md, dev scripts, web-game-parallel-builder templates) to use new skill names.
+- Fixed [tools/list_loaded_skills.py](../tools/list_loaded_skills.py) plugin scanner: the previous walk assumed `cache/<plugin>/<version>/skills/` (3 levels) but the actual cache layout is `cache/<marketplace>/<plugin>/<version>/skills/` (4 levels), so all 16 plugin skills (14 superpowers, 1 frontend-design, 1 skill-creator) were silently missed. Replaced filesystem-walk with `~/.claude/plugins/installed_plugins.json` lookup, which gives the active install path directly and skips stale cached versions.
 
 ### Decisions and Failures
 

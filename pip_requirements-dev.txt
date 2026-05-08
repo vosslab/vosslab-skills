@@ -4,3 +4,4 @@ packaging  # version parsing/comparison helpers used by tooling/tests
 pyflakes  # static analysis lint checks
 pytest  # automated test runner
 rich  # formatted terminal output in developer tools
+tabulate  # plain-text table rendering for developer tools (tools/list_loaded_skills.py)

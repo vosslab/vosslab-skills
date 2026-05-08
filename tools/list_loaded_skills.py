@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 """List loaded skills from repo, personal, plugin cache, and harness."""
 
-import argparse
+# Standard Library
+import sys
+import json
 import hashlib
+import argparse
 import pathlib
 import subprocess
-import sys
+
+# PIP3 modules
+import tabulate
 
 
 #============================================================
@@ -24,6 +29,13 @@ HARNESS_BUILTINS = {
 	"claude-api",
 	"security-review",
 }
+
+# Minimum shared character prefix that flags two skills as colliding in
+# the default-output "Prefix collisions" column. Skills whose first
+# MIN_PREFIX_CHARS characters match get listed against each other.
+# old-* skills are exempt (deprecation marker; collisions among or with
+# them are acceptable and not interesting).
+MIN_PREFIX_CHARS = 3
 
 
 #============================================================
@@ -49,8 +61,32 @@ def get_repo_root():
 	return None
 
 
+def read_installed_plugins():
+	"""Return active plugin install paths from ~/.claude/plugins/installed_plugins.json.
+
+	The JSON keys are "<plugin>@<marketplace>"; we keep just the plugin part
+	for display. A plugin entry can list multiple installs; we take the first
+	(typical case is one install per plugin scope).
+
+	Returns:
+		dict: plugin display name -> pathlib.Path to active install directory.
+	"""
+	plugins_json = pathlib.Path.home() / ".claude" / "plugins" / "installed_plugins.json"
+	if not plugins_json.is_file():
+		return {}
+	with open(plugins_json) as plugins_file:
+		data = json.load(plugins_file)
+	result = {}
+	for full_name, installs in data.get("plugins", {}).items():
+		plugin_name = full_name.split("@")[0]
+		if installs:
+			install_path = pathlib.Path(installs[0]["installPath"])
+			result[plugin_name] = install_path
+	return result
+
+
 def collect_skills():
-	"""Collect skills from all sources (repo, personal, plugins)."""
+	"""Collect skills from all sources (repo, personal, plugins, harness)."""
 	skills = []
 	repo_root = get_repo_root()
 
@@ -73,31 +109,21 @@ def collect_skills():
 				if skill_md.is_file():
 					skills.append((skill_dir.name, "personal", skill_md))
 
-	# Plugin cache skills: ~/.claude/plugins/cache/*/*/skills/*/
-	# Skip ~/.claude/plugins/marketplaces/
-	plugins_cache_dir = pathlib.Path.home() / ".claude" / "plugins" / "cache"
-	if plugins_cache_dir.is_dir():
-		for plugin_dir in plugins_cache_dir.iterdir():
-			if not plugin_dir.is_dir():
-				continue
-			if plugin_dir.name == "marketplaces":
-				continue
-			plugin_name = plugin_dir.name
-			seen_skills = set()
-			for version_dir in plugin_dir.iterdir():
-				if not version_dir.is_dir():
-					continue
-				skills_dir = version_dir / "skills"
-				if skills_dir.is_dir():
-					for skill_dir in skills_dir.iterdir():
-						if skill_dir.is_dir():
-							skill_md = skill_dir / "SKILL.md"
-							if skill_md.is_file():
-								skill_name = skill_dir.name
-								if skill_name not in seen_skills:
-									source = f"plugin:{plugin_name}"
-									skills.append((skill_name, source, skill_md))
-									seen_skills.add(skill_name)
+	# Plugin skills: read active install paths from installed_plugins.json
+	# and walk <install_path>/skills/<skill>/SKILL.md. This avoids guessing
+	# the cache layout (cache/<marketplace>/<plugin>/<version>/skills/...)
+	# and ensures we only see currently-installed plugins (no stale cached versions).
+	installed_plugins = read_installed_plugins()
+	for plugin_name, install_path in installed_plugins.items():
+		plugin_skills_dir = install_path / "skills"
+		if not plugin_skills_dir.is_dir():
+			continue
+		for skill_dir in plugin_skills_dir.iterdir():
+			if skill_dir.is_dir():
+				skill_md = skill_dir / "SKILL.md"
+				if skill_md.is_file():
+					source = f"plugin:{plugin_name}"
+					skills.append((skill_dir.name, source, skill_md))
 
 	# Harness builtins
 	for name in HARNESS_BUILTINS:
@@ -110,11 +136,8 @@ def hash_skill_md(skill_md_path):
 	"""Compute SHA256 hash of SKILL.md content."""
 	if skill_md_path is None:
 		return None
-	try:
-		with open(skill_md_path, "rb") as f:
-			return hashlib.sha256(f.read()).hexdigest()
-	except (OSError, IOError):
-		return None
+	with open(skill_md_path, "rb") as skill_file:
+		return hashlib.sha256(skill_file.read()).hexdigest()
 
 
 def dedupe_skills(skills):
@@ -176,6 +199,36 @@ def dedupe_skills(skills):
 	return result
 
 
+def longest_common_prefix_len(string_a, string_b):
+	"""Return the length of the longest common prefix of two strings."""
+	count = 0
+	for char_a, char_b in zip(string_a, string_b):
+		if char_a != char_b:
+			break
+		count += 1
+	return count
+
+
+def find_prefix_collisions(name, all_names):
+	"""Return sorted list of skill names sharing a MIN_PREFIX_CHARS+ prefix with `name`.
+
+	old-* skills are exempt on both sides: they don't get flagged themselves and
+	they don't flag others, since old- is a deprecation marker and shared `old-`
+	prefix among legacy skills is intentional.
+	"""
+	if name.startswith("old-"):
+		return []
+	collisions = []
+	for other in all_names:
+		if other == name:
+			continue
+		if other.startswith("old-"):
+			continue
+		if longest_common_prefix_len(name, other) >= MIN_PREFIX_CHARS:
+			collisions.append(other)
+	return sorted(collisions)
+
+
 def parse_args():
 	"""Parse command-line arguments."""
 	parser = argparse.ArgumentParser(description="List loaded skills from repo and personal/plugin sources.")
@@ -190,6 +243,12 @@ def parse_args():
 		dest="check_name",
 		type=str,
 		help="Check for name collisions with NAME (same leading hyphen-token, >=5 chars)",
+	)
+	parser.add_argument(
+		"-x", "--collisions",
+		dest="collisions_only",
+		action="store_true",
+		help="Show only skills with content or prefix collisions (filters default output)",
 	)
 	args = parser.parse_args()
 	return args
@@ -206,10 +265,11 @@ def main():
 	# Collect skills
 	skills = collect_skills()
 	deduped = dedupe_skills(skills)
+	all_names = [name for name, _, _ in deduped]
 
 	if args.names_only:
 		# Output: one name per line, sorted, deduped
-		names = sorted(set(name for name, _, _ in deduped))
+		names = sorted(set(all_names))
 		for name in names:
 			print(name)
 	elif args.check_name:
@@ -241,17 +301,30 @@ def main():
 		# Print results
 		if collisions or content_collision:
 			# Sort deduped names
-			all_names = sorted(collisions)
-			for coll_name in all_names:
+			all_collisions = sorted(collisions)
+			for coll_name in all_collisions:
 				print(coll_name)
 			sys.exit(1)
 		else:
 			sys.exit(0)
 	else:
-		# Default output: <name>\t<source-list> per line, sorted
+		# Default output: tabulated table with name, source, prefix-collision columns.
+		# `[!]` prefix in the Skill column marks content-collision skills (different
+		# SKILL.md content under the same name across sources).
+		# The Prefix collisions column lists other skills sharing >=MIN_PREFIX_CHARS
+		# leading characters; old-* skills are exempt and never flagged.
+		rows = []
 		for name, source, is_collision in deduped:
-			prefix = "[!] " if is_collision else ""
-			print(f"{prefix}{name}\t{source}")
+			marker = "[!] " if is_collision else ""
+			prefix_collisions = find_prefix_collisions(name, all_names)
+			has_any_collision = is_collision or bool(prefix_collisions)
+			# Skip non-colliding rows when --collisions is set
+			if args.collisions_only and not has_any_collision:
+				continue
+			collisions_text = ", ".join(prefix_collisions) if prefix_collisions else ""
+			rows.append([f"{marker}{name}", source, collisions_text])
+		headers = ["Skill", "Source", "Prefix collisions"]
+		print(tabulate.tabulate(rows, headers=headers, tablefmt="simple"))
 
 
 if __name__ == "__main__":
