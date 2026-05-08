@@ -6,6 +6,7 @@ Language Model guide to Neil python3 programming
 
 AI agents frequently get these wrong. Read the full sections below for details.
 
+- **Fix the design, not the symptom.** When something behaves wrong, fix the design before adding a fallback. See [Design philosophy](REPO_STYLE.md#core-philosophies).
 - **Tabs not spaces.** Always indent with tabs. See [USE TABS](#use-tabs).
 - **Avoid try/except.** Do not wrap code in try/except blocks. See [CODE STRUCTURE](#code-structure).
 - **Do not hide bugs with defaults.** Use `dict[key]` when the key must exist, not `dict.get(key, fallback)`. See [DO NOT HIDE BUGS WITH DEFAULTS](#do-not-hide-bugs-with-defaults).
@@ -60,7 +61,7 @@ AI agents frequently get these wrong. Read the full sections below for details.
 
 ## DO NOT HIDE BUGS WITH DEFAULTS
 
-Defensive coding patterns that silently supply fallback values hide bugs instead of exposing them. If a key, attribute, or value is required, access it directly so missing data fails loudly.
+This section is the Python expression of "fix the design, not the symptom" (see [Design philosophy](REPO_STYLE.md#core-philosophies)). Defensive coding patterns that silently supply fallback values hide bugs instead of exposing them. If a key, attribute, or value is required, access it directly so missing data fails loudly.
 
 - Use `dict[key]` when the key must exist. Do not use `dict.get(key, default)` to paper over missing data.
 - Use `dict.get(key, default)` only when the key is genuinely optional and the default is intentional.

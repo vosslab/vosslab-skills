@@ -66,7 +66,8 @@ assert score_exact_match > score_different_title
 
 Avoid tests that assert on dates, collection sizes, lists of required keys, hardcoded defaults,
 tunable constants, or dataclass storage. These break when unrelated code changes and provide no
-real value. When in doubt, delete. A missing pytest is cheaper than a fragile one.
+real value. When in doubt, delete. A missing pytest is cheaper than a fragile one. This is the
+design-first philosophy applied to tests: see [REPO_STYLE.md](REPO_STYLE.md#core-philosophies).
 
 ## Basic commands
 

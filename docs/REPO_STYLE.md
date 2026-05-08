@@ -2,12 +2,31 @@
 
 Repo-wide conventions for this project and related repos.
 
+## Core philosophies
+
+Four principles guide work in this repo. Cite them by name when making judgment calls. This file is the canonical home for all four; sibling docs and `AGENTS.md` should cross-reference, not restate.
+
+- **Long-term over short-term.** Accept a small cost now to avoid larger costs later. Prefer the durable fix over the quick patch, even when the durable fix takes more effort today. Concrete examples: deleting a fragile pytest instead of rewriting it ([PYTEST_STYLE.md](PYTEST_STYLE.md)); accepting a loud failure on a missing dict key instead of `dict.get(key, default)` ([PYTHON_STYLE.md](PYTHON_STYLE.md)).
+- **Fix the design, not the symptom.** When something behaves wrong, fix the design that allowed the problem. Do not add fallbacks, special cases, or broad try/except blocks just to hide the symptom. Concrete examples: the no-try/except rule, the no-defensive-defaults rule, and the minimal `__init__.py` rule, all in [PYTHON_STYLE.md](PYTHON_STYLE.md).
+- **Fresh subagent per task.** Give each independent task to a new subagent with a self-contained prompt. Reusing a subagent across tasks carries stale context, encourages drift, and weakens independent judgment. The cost of a new dispatch is small; the cost of a confused reused agent is large.
+- **Atomic task decomposition.** Break hard problems into the smallest independently completable tasks. Each task should have one owner, one clear outcome, and one verification step. Atomic tasks pair cleanly with the fresh-subagent rule (one atomic task = one fresh dispatch).
+
 ## Repository structure
 - Prefer small, single-purpose scripts at the repo root.
 - Create topic folders only when a collection needs grouping.
 - Avoid deep nesting; keep paths short.
 - Keep `README.md` and `AGENTS.md` at the repo root.
 - Determine REPO_ROOT with `git rev-parse --show-toplevel`, not by deriving paths from the current working directory.
+
+## AGENTS.md files
+
+Keep `AGENTS.md` files concise and operational. They should usually be around
+100-150 lines and focus on specific tasks, workflows, and constraints.
+Do not use `AGENTS.md` for long philosophical discussions or duplicated style
+guidance. Put canonical explanations in the appropriate `docs/*.md` file, then
+link to that file from `AGENTS.md`.
+Concise `AGENTS.md` files help coding agents perform better because the
+instructions are easier to scan, prioritize, and follow.
 
 ## Naming
 - Use SCREAMING_SNAKE_CASE for Markdown docs filenames, with the .md extension
