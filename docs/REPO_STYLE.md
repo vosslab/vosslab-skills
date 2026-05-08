@@ -109,12 +109,6 @@ Repo-wide conventions for this project and related repos.
 - I prefer to use social media links instead of hard coding my email in repos. For example, Neil Voss, https://bsky.app/profile/neilvosslab.bsky.social
 - When referencing files, use Markdown links so users can click through. Markdown links are created using the syntax [link text](URL), where "link text" is the clickable text that appears in the document, and "URL" is the web address or file path the link points to. This allows users to navigate between different content easily. Use file-path link text so readers know the exact filename (good: [docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md), bad: [Style Guide for Markdown](docs/MARKDOWN_STYLE.md)). Only include a backticked path when the link text is not the path.
 
-### Cross-repo and cross-skill placeholders
-- When a doc references a path that does not live in this repo, do not write a relative `../../` link that will not resolve. Use an angle-bracket placeholder instead so readers know the path is external and where it lives.
-- Sibling git repository: `<repo-name>/path/to/file` (for example `<biology-problems>/data/pubchem_molecules_data.yml`). The reader is expected to locate that repo on their own machine.
-- Sibling Claude skill: `<skill-name skill>/references/file.md` (for example `<typescript-engineer skill>/references/opaque-types.md`). The reader resolves it through the skill loader, not the filesystem.
-- Render placeholders as inline backticks (no Markdown link), since the path is not clickable.
-
 
 ### Recommended common docs
 - `AGENTS.md`: agent instructions, tool constraints, and repo-specific workflow guardrails.

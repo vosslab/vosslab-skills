@@ -15,7 +15,7 @@ AI agents frequently get these wrong. Read the full sections below for details.
 - **No relative imports.** Never use `from . import` or `from ..module import`. See [IMPORTING](#importing).
 - **Declare all third-party imports.** Every non-stdlib, non-local import must be in `pip_requirements.txt`. See [IMPORT REQUIREMENTS](#import-requirements).
 - **No brittle pytest assertions.** Do not assert on dates, collection sizes, required key lists, hardcoded defaults, or function names. See [PYTEST_STYLE.md](PYTEST_STYLE.md).
-- **No `assert` in plain scripts.** All `assert` statements live in `tests/test_*.py` or in `tests_e2e/` end-to-end scripts. Module-level asserts run on every import and slow script startup. See [ASSERT](#assert).
+- **No `assert` in plain scripts.** All `assert` statements live in `tests/test_*.py`, `tests/playwright/` (browser tests), or `tests/e2e/` (shell/Python E2E). Module-level asserts run on every import and slow script startup. See [ASSERT](#assert).
 
 ## Python version
 
@@ -230,7 +230,7 @@ export PYTHONDONTWRITEBYTECODE=1
 
 ## ASSERT
 
-* Do not put `assert` statements in plain `.py` scripts or library modules. All asserts live in `tests/test_*.py` or in `tests_e2e/` end-to-end scripts.
+* Do not put `assert` statements in plain `.py` scripts or library modules. All asserts live in `tests/test_*.py`, `tests/playwright/` (browser tests), or `tests/e2e/` (shell/Python E2E).
 * Reason: module-level asserts run at import time, which slows CLI startup. Tests pay the cost once, in the test suite.
 * Do not assert in functions that require user input or read/write to files; cover those with end-to-end checks instead. See [E2E_TESTS.md](E2E_TESTS.md).
 * Keep individual asserts short: under 4 lines and under 100 characters.
