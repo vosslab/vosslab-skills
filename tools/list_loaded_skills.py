@@ -242,13 +242,22 @@ def parse_args():
 		"-c", "--check",
 		dest="check_name",
 		type=str,
-		help="Check for name collisions with NAME (same leading hyphen-token, >=5 chars)",
+		help=(
+			"Check whether NAME would collide with an existing skill. "
+			"Strict mode: matches when NAME shares its full leading "
+			"hyphen-token with another skill (token must be >=5 chars). "
+			"For the broader 3-char prefix check, see --collisions."
+		),
 	)
 	parser.add_argument(
 		"-x", "--collisions",
 		dest="collisions_only",
 		action="store_true",
-		help="Show only skills with content or prefix collisions (filters default output)",
+		help=(
+			"Show only skills whose first 3+ characters overlap with "
+			"another skill, plus any content collisions. old-* skills are "
+			"exempt (deprecation marker)."
+		),
 	)
 	args = parser.parse_args()
 	return args

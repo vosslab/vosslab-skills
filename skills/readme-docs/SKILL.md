@@ -130,8 +130,8 @@ Keep deeper detail in `docs/` and link it from the README.
 
 ## Delegated execution
 
-Under `execution-manager`, this skill is assigned to a fresh subagent
+Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagent
 with one bounded task, the relevant repo rules, and one verification step.
 Do not continue the same subagent across unrelated follow-up work; dispatch a
 new subagent for each atomic task. See
-[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
+`docs/REPO_STYLE.md`.

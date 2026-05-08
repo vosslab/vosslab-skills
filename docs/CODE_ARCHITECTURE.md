@@ -18,13 +18,13 @@ Version is tracked in [VERSION](../VERSION) and mirrored in `plugin.json`.
 - [skills/](../skills/): one folder per skill, each containing a `SKILL.md`
   with frontmatter (`name`, `description`, `mode`, `execution`) and skill
   instructions. These are the user-invocable units (for example
-  `/vosslab-skills:python-reviewer`).
+  `/vosslab-skills:old-python-code-review`).
 - [agents/](../agents/): per-role markdown files (`architect.md`,
   `coder.md`, `integrator.md`, `maintainer.md`, `monitor.md`,
   `orchestrator.md`, `parallelizer.md`, `planner.md`, `reviewer.md`,
   `scheduler.md`, `tester.md`) used by orchestration skills such as
   [skills/gas-town-workflow/SKILL.md](../skills/gas-town-workflow/SKILL.md)
-  and [skills/execution-manager/SKILL.md](../skills/execution-manager/SKILL.md).
+  and [skills/delegate-manager-to-subagents/SKILL.md](../skills/delegate-manager-to-subagents/SKILL.md).
 - [tools/](../tools/): Python generators run from the repo root.
   - [tools/build_skills_index.py](../tools/build_skills_index.py) regenerates
     [docs/SKILLS_INDEX.md](SKILLS_INDEX.md) from `skills/**/SKILL.md`.

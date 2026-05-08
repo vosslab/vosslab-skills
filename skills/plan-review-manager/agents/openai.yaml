@@ -1,4 +1,0 @@
-interface:
-  display_name: "Manager: Review Existing Plan"
-  short_description: "Audit plan execution and closure quality"
-  default_prompt: "Use $plan-review-manager to review an existing plan against code, tests, gates, and closure evidence."

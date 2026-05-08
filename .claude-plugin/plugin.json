@@ -1,7 +1,7 @@
 {
   "name": "vosslab-skills",
   "description": "Reusable workflow skills for refactoring plans, code review, repository maintenance, and education content production.",
-  "version": "26.05.06",
+  "version": "26.05.08",
   "author": {
     "name": "Neil Voss",
     "url": "https://bsky.app/profile/neilvosslab.bsky.social"
@@ -9,27 +9,29 @@
   "repository": "https://github.com/vosslab/vosslab-skills",
   "license": "MIT",
   "keywords": [
+    "agents-md-fixer",
     "arch-docs",
+    "audit-code-reviewer",
+    "blueprint-plan-drafter",
     "bptools-writer",
     "computer-vision-expert",
+    "delegate-manager-to-subagents",
     "docset-updater",
     "gas-town-workflow",
+    "html-game-parallel-builder",
     "install-usage-docs",
-    "planning-manager",
-    "plan-review-manager",
-    "milestone-manager",
+    "old-manager-review-existing-plan",
+    "old-orchestrate-next-milestone",
+    "old-python-code-review",
     "parallel-plan",
-    "pdf",
+    "pdf-guide",
     "pyside6-engineer",
-    "python-reviewer",
-    "repo-rules-reader",
     "readme-docs",
-    "audit-code-reviewer",
+    "repo-rules-reader",
     "skill-writing-guide",
     "typescript-engineer",
     "ui-ux-engineer",
     "unit-test-starter",
-    "web-game-parallel-builder",
     "webwork-writer"
   ]
 }

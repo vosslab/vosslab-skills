@@ -69,7 +69,7 @@ and keep outputs concise, scannable, and evidence based.
    - Keep links relative and descriptive.
    - Use present tense, short bullets, and avoid speculation.
 10. Update changelog
-    - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `execution-manager`, dispatch a docs subagent to add the entry.
+    - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `delegate-manager-to-subagents`, dispatch a docs subagent to add the entry.
 11. Provide a short report
     - Created: list new docs.
     - Updated: list updated docs.
@@ -85,8 +85,8 @@ and keep outputs concise, scannable, and evidence based.
 
 ## Delegated execution
 
-Under `execution-manager`, this skill is assigned to a fresh subagent
+Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagent
 with one bounded task, the relevant repo rules, and one verification step.
 Do not continue the same subagent across unrelated follow-up work; dispatch a
 new subagent for each atomic task. See
-[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
+`docs/REPO_STYLE.md`.

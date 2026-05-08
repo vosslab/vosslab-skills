@@ -88,7 +88,7 @@ mkdocs.yml
    - Save both files.
    - Ensure `README.md` links to `docs/CODE_ARCHITECTURE.md` and
      `docs/FILE_STRUCTURE.md` (add links if missing).
-   - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `execution-manager`, dispatch a docs subagent to add the entry.
+   - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `delegate-manager-to-subagents`, dispatch a docs subagent to add the entry.
    - Summarize what changed and what could not be verified.
    - Note that docs-only changes do not require tests unless otherwise requested.
 
@@ -105,8 +105,8 @@ mkdocs.yml
 
 ## Delegated execution
 
-Under `execution-manager`, this skill is assigned to a fresh subagent
+Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagent
 with one bounded task, the relevant repo rules, and one verification step.
 Do not continue the same subagent across unrelated follow-up work; dispatch a
 new subagent for each atomic task. See
-[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
+`docs/REPO_STYLE.md`.

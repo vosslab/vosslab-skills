@@ -26,7 +26,7 @@ non-blank text line in the rendered Markdown):
   docs is better than a 40-line one that restates them.
 
 If a rule has a canonical home in `docs/*.md`, link, do not restate. The
-[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md) "AGENTS.md files" section
+`docs/REPO_STYLE.md` "AGENTS.md files" section
 describes the philosophy.
 
 ## Required content (keep)
@@ -34,11 +34,11 @@ describes the philosophy.
 Keep only items that are repo-specific and load-bearing:
 
 - Pointer links to canonical style docs that exist in this repo, for example
-  [docs/REPO_STYLE.md](../../docs/REPO_STYLE.md),
-  [docs/PYTHON_STYLE.md](../../docs/PYTHON_STYLE.md),
-  [docs/MARKDOWN_STYLE.md](../../docs/MARKDOWN_STYLE.md),
-  [docs/PYTEST_STYLE.md](../../docs/PYTEST_STYLE.md), and
-  [docs/CHANGELOG.md](../../docs/CHANGELOG.md).
+  `docs/REPO_STYLE.md`,
+  `docs/PYTHON_STYLE.md`,
+  `docs/MARKDOWN_STYLE.md`,
+  `docs/PYTEST_STYLE.md`, and
+  `docs/CHANGELOG.md`.
 - Repo-specific runtime quirks: interpreter bootstrap, env activation,
   container entry, non-default install paths.
 - Non-obvious workflow constraints actually enforced in this repo (example:
@@ -92,7 +92,7 @@ demands action.
    for `docset-updater`, `install-usage-docs`, or `arch-docs`.
 5. Rewrite `AGENTS.md` minimally: short headings, sentence case, bullet
    lists with `-`, and links with file-path link text per
-   [docs/MARKDOWN_STYLE.md](../../docs/MARKDOWN_STYLE.md).
+   `docs/MARKDOWN_STYLE.md`.
 6. Preserve any user instruction explicitly marked as overriding defaults.
 
 ## Markdown house rules
@@ -137,18 +137,18 @@ demands action.
 
 ## References
 
-- [docs/REPO_STYLE.md](../../docs/REPO_STYLE.md): "AGENTS.md files"
+- `docs/REPO_STYLE.md`: "AGENTS.md files"
   section sets the 100-150 line target and the "concise and operational"
   rule.
-- [docs/MARKDOWN_STYLE.md](../../docs/MARKDOWN_STYLE.md): heading and
+- `docs/MARKDOWN_STYLE.md`: heading and
   link conventions used in the rewrite.
-- [skills/readme-docs/SKILL.md](../readme-docs/SKILL.md): sibling
+- `skills/readme-docs/SKILL.md`: sibling
   single-artifact standardizer with the same shape.
 
 ## Delegated execution
 
-Under `execution-manager`, this skill is assigned to a fresh subagent with
+Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagent with
 one bounded task, the relevant repo rules, and one verification step. Do
 not continue the same subagent across unrelated follow-up work; dispatch a
 new subagent for each atomic task. See
-[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
+`docs/REPO_STYLE.md`.

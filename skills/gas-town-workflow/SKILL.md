@@ -171,12 +171,12 @@ Dispatch a fresh subagent for each atomic task. Reusing a subagent across tasks
 carries stale context, encourages drift, and weakens independent judgment.
 `SendMessage` is for status only; do not use it to chain follow-on editing
 work onto a teammate that has already finished its assigned task. See
-[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
+`docs/REPO_STYLE.md`.
 
-## Boundary with execution-manager
+## Boundary with delegate-manager-to-subagents
 
-This skill and `execution-manager` both coordinate multi-agent work,
-but with different vocabularies and intent. Use `execution-manager`
+This skill and `delegate-manager-to-subagents` both coordinate multi-agent work,
+but with different vocabularies and intent. Use `delegate-manager-to-subagents`
 as the default for executing an approved plan: plain manager / coder /
 reviewer / tester / docs roles, controlled delegation, one fresh subagent
 per atomic task, and explicit review gates. Use this skill (`gas-town-workflow`)
@@ -184,7 +184,7 @@ ONLY when the user explicitly asks for Gas Town conventions: convoy-style
 work decomposition, theatrical role names (Crew, Refinery, Witness, Dogs,
 Deacon), and the repo-specific role catalog. The two skills are not
 interchangeable; do not silently substitute Gas Town vocabulary into a
-execution-manager run, and do not strip Gas Town vocabulary out of
+delegate-manager-to-subagents run, and do not strip Gas Town vocabulary out of
 a Gas Town run.
 
 ## Terminology

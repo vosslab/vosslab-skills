@@ -19,7 +19,7 @@ Skills solve the problem that agents lack procedural knowledge and domain-specif
 
 New skills authored in this repo should align with the four canonical
 philosophies anchored at
-[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies):
+`docs/REPO_STYLE.md`:
 "Long-term over short-term", "Fix the design, not the symptom",
 "Fresh subagent per task", and "Atomic task decomposition". Cite the anchor
 when relevant; do not restate the definitions in the new SKILL.md.
@@ -174,7 +174,7 @@ Only include optional fields (icons, brand_color) if explicitly provided.
 Skills in this repository follow additional patterns observed across existing skills:
 
 - **Workflow section**: Most skills define a numbered workflow the agent follows step by step.
-- **Output contract**: Skills like `python-reviewer` define a structured output format (severity levels, required sections).
+- **Output contract**: Skills like `old-python-code-review` define a structured output format (severity levels, required sections).
 - **Quality bar section**: Planning skills define explicit quality standards and anti-patterns.
 - **Reference files**: Complex skills use `references/` for definitions, capacity/sizing, naming guardrails, and quality standards.
 - **Conditional paths**: Skills check for optional repo infrastructure (e.g., `docs/active_plans/`) and skip steps when absent.
@@ -183,7 +183,7 @@ Skills in this repository follow additional patterns observed across existing sk
 
 ## Skill naming
 
-See [docs/SKILL_NAMING.md](../../docs/SKILL_NAMING.md) for repo-specific skill folder naming conventions.
+See `docs/SKILL_NAMING.md` for repo-specific skill folder naming conventions.
 
 Rules from the spec:
 
@@ -191,7 +191,7 @@ Rules from the spec:
 - Max 64 characters.
 - No leading, trailing, or consecutive hyphens.
 - Must match the parent directory name exactly.
-- Prefer short, verb-led phrases (e.g., `python-reviewer`, `arch-docs`).
+- Prefer short, verb-led phrases (e.g., `old-python-code-review`, `arch-docs`).
 - Namespace by tool when it improves clarity (e.g., `gh-address-comments`).
 
 ## What not to include
@@ -234,8 +234,8 @@ Before shipping a skill, verify:
 
 ## Delegated execution
 
-Under `execution-manager`, this skill is assigned to a fresh subagent
+Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagent
 with one bounded task, the relevant repo rules, and one verification step.
 Do not continue the same subagent across unrelated follow-up work; dispatch a
 new subagent for each atomic task. See
-[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
+`docs/REPO_STYLE.md`.

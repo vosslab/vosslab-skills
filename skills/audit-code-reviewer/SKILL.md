@@ -16,7 +16,7 @@ single concise review.
 
 ## Required behavior
 
-- Prefer design-level fixes over symptom patches; cite [docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies) when flagging this.
+- Prefer design-level fixes over symptom patches; cite `docs/REPO_STYLE.md` when flagging this.
 - Launch subagents for independent review passes. The purpose of this skill is independent review.
 - Treat the main agent as coordinator and integrator, not as the sole reviewer.
 - Keep main-agent preflight minimal. Gather only enough context to launch the subagents.
@@ -144,7 +144,7 @@ Dispatch a fresh subagent for each atomic task. Reusing a subagent across tasks
 carries stale context, encourages drift, and weakens independent judgment.
 `SendMessage` is for status only; do not use it to chain follow-on editing
 work onto a teammate that has already finished its assigned task. See
-[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
+`docs/REPO_STYLE.md`.
 
 ## Agent prompt template
 

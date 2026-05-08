@@ -13,12 +13,12 @@ execution: delegated
 
 Generate Python 3 pytest unit tests across a repo, but prefer fewer, durable
 tests over breadth. Per
-[docs/PYTEST_STYLE.md](../../docs/PYTEST_STYLE.md), delete fragile tests
+`docs/PYTEST_STYLE.md`, delete fragile tests
 rather than rewriting them, keep individual asserts short, and avoid
 asserts on dates, collection sizes, required key lists, hardcoded defaults,
 or function names. Route elaborate end-to-end scenarios to `tests/e2e/`
 instead of packing them into pytest. This skill applies the
-[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies) "Long-term
+`docs/REPO_STYLE.md` "Long-term
 over short-term" and "Fix the design, not the symptom" philosophies: a
 fragile test that needs constant rewriting is a design smell, not a
 maintenance task.
@@ -153,7 +153,7 @@ This skill can be slow and may take hours on large repos.
 
 ## Quality bar
 
-- Prefer design-level fixes over symptom patches; cite [docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies) when flagging this (delete fragile tests, do not paper over them with try/except).
+- Prefer design-level fixes over symptom patches; cite `docs/REPO_STYLE.md` when flagging this (delete fragile tests, do not paper over them with try/except).
 - Deterministic, small, and readable tests per source file.
 - Filesystem tests use `tmp_path`; network access stays out of unit tests.
 - No speculation: only write tests for behavior you can justify from the code; if
@@ -161,8 +161,8 @@ This skill can be slow and may take hours on large repos.
 
 ## Delegated execution
 
-Under `execution-manager`, this skill is assigned to a fresh subagent
+Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagent
 with one bounded task, the relevant repo rules, and one verification step.
 Do not continue the same subagent across unrelated follow-up work; dispatch a
 new subagent for each atomic task. See
-[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
+`docs/REPO_STYLE.md`.

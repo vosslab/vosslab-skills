@@ -2,6 +2,17 @@
 
 ### Additions and New Features
 
+- New pytest [tests/test_relative_paths.py](../tests/test_relative_paths.py) that forbids `..` markdown-link paths in `skills/**/*.md` whose targets resolve outside the skill folder. Internal `..` references (e.g. `../SKILL.md` from a `references/` subdir) stay allowed because the skill's own layout travels with it. Repo gate count is now 314.
+- Renamed 6 process skills and merged `delegate-manager-to-subagents/templates/` into a single `references/role-catalog.md`:
+  - `planning-manager` -> `blueprint-plan-drafter` (verb-first; first-2 "blueprint plan" anchors identity).
+  - `execution-manager` -> `delegate-manager-to-subagents` (verb-first; "subagents" as keyword token 4 for searchability; templates folder collapsed into [references/role-catalog.md](../skills/delegate-manager-to-subagents/references/role-catalog.md)).
+  - `plan-review-manager` -> `old-manager-review-existing-plan` (`old-` prefix marks deprecated; original verb-first form preserved).
+  - `milestone-manager` -> `old-orchestrate-next-milestone` (deprecated; `old-` prefix).
+  - `python-reviewer` -> `old-python-code-review` (deprecated; `old-` prefix).
+  - `web-game-parallel-builder` -> `html-game-parallel-builder` (drops the `web-` vs `webwork-` 3-char prefix collision flagged by Finding 10 of the audit; `html` is short and evergreen).
+
+### Behavior or Interface Changes
+
 - Added [docs/CODE_ARCHITECTURE.md](CODE_ARCHITECTURE.md) describing the plugin's layout, major components ([skills/](../skills/), [agents/](../agents/), [tools/](../tools/), [devel/](../devel/), [tests/](../tests/), [docs/](../docs/)), data flow, indexing flow, testing gates, and extension points. Records two `Known gaps`: missing root runtime requirements manifest and a stray `tingly-foraging-mccarthy.md` plan file at the repo root.
 - Added [docs/FILE_STRUCTURE.md](FILE_STRUCTURE.md) with an ASCII top-level layout, key-subtree notes (including the [tools/](../tools/) vs [devel/](../devel/) distinction and the centrally-maintained vs repo-specific split inside [docs/](../docs/)), generated-artifact pointers, and a `Where to add new work` section.
 - Linked [docs/CODE_ARCHITECTURE.md](CODE_ARCHITECTURE.md) and [docs/FILE_STRUCTURE.md](FILE_STRUCTURE.md) from [README.md](../README.md) Documentation list.
@@ -19,6 +30,9 @@
 
 ### Behavior or Interface Changes
 
+- Rewrote [docs/SKILL_NAMING.md](SKILL_NAMING.md) after the audit captured in [/Users/vosslab/.claude/plans/idempotent-booping-stream.md](/Users/vosslab/.claude/plans/idempotent-booping-stream.md). Retracted rule 6 (agent-form preference) and replaced with a verb-first-for-process / domain-noun-for-specialist split. Added rule 1 (first-two-tokens carry identity), rule 2 (first-3-character prefix uniqueness), rule 7 (`old-` deprecation prefix), and rule 8 (no `..` paths exiting skill folders). Updated audit table to the post-rename state (24 skills: 14 compliant, 7 accepted-rename, 3 deprecated `old-*`).
+- Repo-wide cross-reference rewrite: 253 occurrences of old skill names replaced with new names across 45 files (skills/, docs/, README.md, .claude-plugin/plugin.json, agents/openai.yaml manifests, html-game-parallel-builder templates). `docs/CHANGELOG.md` history kept old names intact.
+- Stripped 82 markdown links of the form `[name](../path)` whose targets exit the skill folder; replaced with backticked-name references (`` `audit-code-reviewer` ``, `` `docs/REPO_STYLE.md` ``). Reason: `..` paths break when a skill is loaded outside the repo (personal overlay, marketplace plugin cache). Same-skill `..` links inside `webwork-writer/references/docs/webwork/` were preserved (they stay within the skill).
 - Renamed `docset-auditor` -> `docset-updater` to better describe the skill's update-if-drifted behavior; `-updater` is the new `-docs`-adjacent suffix family entry.
 - Renamed `readme-fix` -> `readme-docs` (joins `-docs` family alongside `arch-docs` and `install-usage-docs`) and `docset-refresh` -> `docset-auditor` (agent-form `-auditor` suffix added to family table).
 - Every `skills/*/SKILL.md` (23 files) now declares `mode:` (`manager | doer | reviewer`) and `execution:` (`direct | delegated | either`) frontmatter keys.

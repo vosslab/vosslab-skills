@@ -32,7 +32,7 @@ If you only want specific skills rather than the full set, copy the skill folder
 
 ```bash
 git clone https://github.com/vosslab/vosslab-skills.git /tmp/vosslab-skills
-cp -r /tmp/vosslab-skills/skills/python-reviewer ./skills/
+cp -r /tmp/vosslab-skills/skills/old-python-code-review ./skills/
 cp -r /tmp/vosslab-skills/skills/readme-docs ./skills/
 ```
 
