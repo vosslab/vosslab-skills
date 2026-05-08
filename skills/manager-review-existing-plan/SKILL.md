@@ -1,6 +1,8 @@
 ---
 name: manager-review-existing-plan
 description: Review a specific existing implementation plan and verify whether code and tests actually satisfy the plan's goals, sequencing, and gates. Use when the user asks for plan quality review, closure validation, implementation-to-plan conformance, risk gap analysis, or go/no-go readiness on an existing plan document.
+mode: reviewer
+execution: direct
 ---
 
 # Manager Review Existing Plan
@@ -80,6 +82,7 @@ For each action include:
 - Acceptance check for completion
 
 ## What To Check
+- Prefer design-level fixes over symptom patches; cite [docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies) when flagging this.
 - Plan conformance: implementation and tests match declared scope and acceptance gates.
 - Sequence integrity: phases completed in dependency order.
 - Gate integrity: unit/integration/regression/release gates have concrete pass evidence.

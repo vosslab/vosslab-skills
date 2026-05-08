@@ -1,6 +1,8 @@
 ---
 name: manager-driven-execution
-description: Use only when the user has an approved implementation plan and wants the main agent to manage execution through subagents instead of editing files directly. The main agent dispatches coder/reviewer/tester/docs subagents for all file changes, reviews their outputs read-only, and never edits files itself including docs/CHANGELOG.md. Sequential by default; lightly parallel when the plan marks tasks as independent.
+description: "Use only when the user has an approved plan AND wants the main agent to manage execution through subagents instead of editing files directly. Use `orchestrate-next-milestone` when the user wants the main agent to deliver a single milestone end-to-end as a doer."
+mode: manager
+execution: direct
 ---
 
 # Manager-driven execution
@@ -106,6 +108,14 @@ Once every task is `completed`:
 - Dispatch one final read-only `reviewer` subagent for an overall sanity check of the diff.
 - Dispatch a docs subagent with the list of files changed, validation commands and pass/fail results, and residual risks. The docs subagent appends a single `docs/CHANGELOG.md` entry under today's `## YYYY-MM-DD` heading.
 - Manager reports a short summary in chat and does NOT commit; per [docs/REPO_STYLE.md](../../docs/REPO_STYLE.md) and [docs/CLAUDE_HOOK_USAGE_GUIDE.md](../../docs/CLAUDE_HOOK_USAGE_GUIDE.md), the human reviews staged changes via `git diff` and commits.
+
+## Subagent dispatch
+
+Dispatch a fresh subagent for each atomic task. Reusing a subagent across tasks
+carries stale context, encourages drift, and weakens independent judgment.
+`SendMessage` is for status only; do not use it to chain follow-on editing
+work onto a teammate that has already finished its assigned task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
 
 ## Not Gas Town
 

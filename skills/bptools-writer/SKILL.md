@@ -1,6 +1,8 @@
 ---
 name: bptools-writer
 description: Create, edit, and validate biology-problems bptools Python question generators and supporting YAML content. Use when requests involve authoring question scripts, updating files under problems/*-problems, tuning randomization or anti-cheat behavior, or debugging BBQ/QTI output that depends on bptools.py and qti_package_maker.
+mode: doer
+execution: either
 ---
 
 # Bptools Question Authoring
@@ -56,7 +58,7 @@ phylogenetic trees). See `references/docs.md` for the full index.
    - Check produced BBQ text for formatting and expected answer keys.
    - Run relevant tests for edited code paths.
 6) Finish cleanly
-   - Update `docs/CHANGELOG.md` in `biology-problems` for code or doc changes.
+   - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `manager-driven-execution`, dispatch a docs subagent to add the entry.
    - Keep generated artifacts out of git (`bbq-*.txt`, `qti*.zip`,
      `selftest-*.html`).
 
@@ -83,3 +85,11 @@ phylogenetic trees). See `references/docs.md` for the full index.
 - Prefer minimal, targeted changes over broad refactors.
 - Reuse existing helper utilities instead of copying formatting logic into each script.
 - When the request includes new question families (matching sets, MC statements, pedigrees, phylogenetic trees, PubChem), load the matching optional guide before editing.
+
+## Delegated execution
+
+Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+with one bounded task, the relevant repo rules, and one verification step.
+Do not continue the same subagent across unrelated follow-up work; dispatch a
+new subagent for each atomic task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).

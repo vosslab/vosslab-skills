@@ -1,6 +1,8 @@
 ---
 name: parallel-plan
-description: "Lightweight parallelization nudge for active tasks: split work so one agent does not carry everything. Use when a request has separable tracks, can benefit from help/subagents, or risks stalling in a single linear pass. Skip this skill for tightly coupled single-file edits."
+description: "In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use manager-make-new-plan for that)."
+mode: manager
+execution: direct
 ---
 
 # Parallel Plan
@@ -117,7 +119,7 @@ In this repo, the currently available root agents and their intended uses are:
 - Confirm each checkpoint has explicit verification commands.
 - Confirm all expected stream report files exist and are readable before synthesis.
 
-## Lightweight Minimum Output
+## Use only when applicable to the current task
 
 Use this minimum structure when speed matters:
 1. Milestone objective (one paragraph)
@@ -165,6 +167,14 @@ Then synthesize:
 1. Ordered unified plan
 2. Checkpoints with pass/fail criteria
 3. Integration risks and mitigations
+
+## Subagent dispatch
+
+Dispatch a fresh subagent for each atomic task. Reusing a subagent across tasks
+carries stale context, encourages drift, and weakens independent judgment.
+`SendMessage` is for status only; do not use it to chain follow-on editing
+work onto a teammate that has already finished its assigned task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
 
 ## Templates
 

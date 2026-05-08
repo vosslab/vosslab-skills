@@ -1,6 +1,8 @@
 ---
 name: ui-ux-engineer
 description: Review, improve, and engineer UI/UX quality in any framework. Covers visual hierarchy, interaction quality, accessibility, validation, error states, empty states, and design heuristics. Use when reviewing or improving the user experience of an interface, regardless of the underlying technology.
+mode: reviewer
+execution: direct
 ---
 
 # UI/UX Engineer

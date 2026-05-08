@@ -1,6 +1,8 @@
 ---
 name: orchestrate-next-milestone
 description: Implement the manager-prioritized milestone of an existing plan and carry it to closure, including adjacent fixes needed to pass gates and close the milestone cleanly. Use when a manager/reviewer says to start the next milestone and expects end-to-end delivery with evidence.
+mode: doer
+execution: either
 ---
 
 # Orchestrate Next Milestone
@@ -32,6 +34,7 @@ Prioritize finishing the milestone with passing gates and clear evidence.
 5. Current repo state (`git status --short`, `git diff`).
 
 ## Mandatory constraints
+- Decompose hard problems into atomic single-coder tasks per [docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
 - Treat the plan design philosophy near the top as binding architecture policy.
 - Do not stop at partial progress when the remaining work is directly required to close the selected milestone.
 - Do not ask for guidance before attempting concrete unblock steps.
@@ -77,7 +80,7 @@ When adjacent scope is used, record:
 - Capture residual risks and ownership.
 
 6. Close out docs:
-- Update `docs/CHANGELOG.md` with concrete changes and validation commands/results.
+- Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `manager-driven-execution`, dispatch a docs subagent to add the entry.
 - Update plan status language only when evidence supports closure.
 
 ## Implementation checklist template
@@ -98,7 +101,7 @@ When adjacent scope is used, record:
 - If gates conflict, follow the plan-defined gate hierarchy and report the conflict explicitly.
 - If blocked, report exact blocker plus attempted mitigations; do not present partial work as complete.
 
-## Manager completion report (required)
+## Use only when applicable to the current task
 Submit one manager-grade close-out report at milestone close-out using this structure.
 
 Required sections:
@@ -159,3 +162,11 @@ Return results in this order:
 4. Validation evidence (commands and outcomes).
 5. Known gaps and risks.
 6. Next action recommendation.
+
+## Delegated execution
+
+Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+with one bounded task, the relevant repo rules, and one verification step.
+Do not continue the same subagent across unrelated follow-up work; dispatch a
+new subagent for each atomic task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).

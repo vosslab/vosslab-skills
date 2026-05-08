@@ -1,6 +1,8 @@
 ---
 name: typescript-engineer
 description: Resolve TypeScript errors, eliminate `any`, and design modular, strict TypeScript types including generics, conditional types, mapped types, template literal types, branded or opaque types, and deep inference. Use for type-inference problems, `infer` or `extends` questions, utility types such as `Partial`, `Record`, `ReturnType`, `Awaited`, `NoInfer`, `satisfies`, module-boundary type design, function overloads, declaration merging, strict-mode refactors, and production-grade type-safety reviews.
+mode: doer
+execution: delegated
 ---
 
 # TypeScript Engineer
@@ -227,6 +229,14 @@ type TileKind = keyof typeof TILE_CONFIG;
 
 Read [`references/game-type-patterns.md`](references/game-type-patterns.md) and
 [`references/as-const-typeof.md`](references/as-const-typeof.md).
+
+## Delegated execution
+
+Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+with one bounded task, the relevant repo rules, and one verification step.
+Do not continue the same subagent across unrelated follow-up work; dispatch a
+new subagent for each atomic task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
 
 ### Exhaustive `never` on a `GameEvent` union
 

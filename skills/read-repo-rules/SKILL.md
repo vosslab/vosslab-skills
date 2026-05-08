@@ -5,6 +5,8 @@ description: Read specified repo rule files (AGENTS.md, docs/REPO_STYLE.md, docs
   targeted repo-rule questions, with missing-file handling and explicit-path checks. For
   docs/CHANGELOG.md, report only the latest dated entry. Use when a prompt asks for repo
   instruction answers about code execution, pytest style, Claude hook usage, or recent changes.
+mode: reviewer
+execution: direct
 ---
 
 # Read Repo Rules

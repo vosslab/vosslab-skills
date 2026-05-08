@@ -1,6 +1,8 @@
 ---
 name: skill-writing-guide
 description: "Guide for authoring Agent Skills (SKILL.md). Covers the open standard format, required frontmatter, directory layout, progressive disclosure, description writing, and best practices. Use when creating a new skill, improving an existing skill, or learning how skills work."
+mode: doer
+execution: either
 ---
 
 # Skill writing guide
@@ -12,6 +14,15 @@ A skill is a folder containing a `SKILL.md` file that gives an AI agent speciali
 The standard is maintained at [agentskills.io](https://agentskills.io/) with the source at [github.com/agentskills/agentskills](https://github.com/agentskills/agentskills).
 
 Skills solve the problem that agents lack procedural knowledge and domain-specific context. A skill packages that knowledge in a portable, version-controlled format that works across multiple agent products.
+
+## Repo philosophies for new skills
+
+New skills authored in this repo should align with the four canonical
+philosophies anchored at
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies):
+"Long-term over short-term", "Fix the design, not the symptom",
+"Fresh subagent per task", and "Atomic task decomposition". Cite the anchor
+when relevant; do not restate the definitions in the new SKILL.md.
 
 ## Directory structure
 
@@ -218,3 +229,11 @@ Before shipping a skill, verify:
 - Specification: [agentskills.io/specification](https://agentskills.io/specification)
 - What are skills: [agentskills.io/what-are-skills](https://agentskills.io/what-are-skills)
 - Quick reference: [references/SPEC_QUICK_REFERENCE.md](references/SPEC_QUICK_REFERENCE.md)
+
+## Delegated execution
+
+Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+with one bounded task, the relevant repo rules, and one verification step.
+Do not continue the same subagent across unrelated follow-up work; dispatch a
+new subagent for each atomic task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).

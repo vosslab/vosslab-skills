@@ -1,6 +1,8 @@
 ---
 name: docset-refresh
-description: Audit and refresh repo documentation sets against docs/REPO_STYLE.md, create missing docs only when supported by evidence, keep ALL CAPS doc naming under docs, and report created, updated, flagged, and known gaps.
+description: "Audit the full repo doc set under `docs/` against `docs/REPO_STYLE.md` and create or refresh stubs only when supported by evidence. Use when the doc set as a whole is missing, drifted, or unaudited. Does NOT own any single doc exclusively; defer architecture/structure stubs to `arch-docs`, install/usage stubs to `install-usage-docs`, and `README.md` to `readme-fix`."
+mode: doer
+execution: either
 ---
 
 # Docset refresh
@@ -67,9 +69,7 @@ and keep outputs concise, scannable, and evidence based.
    - Keep links relative and descriptive.
    - Use present tense, short bullets, and avoid speculation.
 10. Update changelog
-    - If `docs/CHANGELOG.md` is missing, create a minimal stub only when this run
-      created or updated docs; otherwise flag it as missing.
-    - Record doc changes in `docs/CHANGELOG.md` with a dated entry.
+    - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `manager-driven-execution`, dispatch a docs subagent to add the entry.
 11. Provide a short report
     - Created: list new docs.
     - Updated: list updated docs.
@@ -82,3 +82,11 @@ and keep outputs concise, scannable, and evidence based.
 - One paragraph describing scope and audience.
 - Sections with 2 to 6 bullets each, one idea per bullet.
 - "Known gaps" section when evidence is missing, with tasks only.
+
+## Delegated execution
+
+Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+with one bounded task, the relevant repo rules, and one verification step.
+Do not continue the same subagent across unrelated follow-up work; dispatch a
+new subagent for each atomic task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).

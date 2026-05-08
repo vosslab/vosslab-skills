@@ -1,6 +1,8 @@
 ---
 name: arch-docs
-description: Create or update docs/CODE_ARCHITECTURE.md and docs/FILE_STRUCTURE.md by inspecting a repo. Use when asked to document or refresh repository architecture, file layout, or structure docs based on current contents.
+description: "Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from current repo evidence. Use when the user asks to document or refresh repository architecture or file layout. Does NOT touch `README.md`, `docs/INSTALL.md`, `docs/USAGE.md`, or the broader doc set (use `readme-fix`, `install-usage-docs`, or `docset-refresh` for those)."
+mode: doer
+execution: either
 ---
 
 # Arch docs
@@ -86,8 +88,7 @@ mkdocs.yml
    - Save both files.
    - Ensure `README.md` links to `docs/CODE_ARCHITECTURE.md` and
      `docs/FILE_STRUCTURE.md` (add links if missing).
-   - Update `docs/CHANGELOG.md` with the change; create a minimal stub only when
-     doc changes were made and the file is missing.
+   - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `manager-driven-execution`, dispatch a docs subagent to add the entry.
    - Summarize what changed and what could not be verified.
    - Note that docs-only changes do not require tests unless otherwise requested.
 
@@ -101,3 +102,11 @@ mkdocs.yml
 - "Update the architecture and file structure docs for this repo."
 - "Create CODE_ARCHITECTURE.md and FILE_STRUCTURE.md based on current files."
 - "Refresh the docs/FILE_STRUCTURE.md map after adding new folders."
+
+## Delegated execution
+
+Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+with one bounded task, the relevant repo rules, and one verification step.
+Do not continue the same subagent across unrelated follow-up work; dispatch a
+new subagent for each atomic task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).

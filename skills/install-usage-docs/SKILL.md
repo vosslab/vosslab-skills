@@ -1,6 +1,8 @@
 ---
 name: install-usage-docs
-description: "Create or refresh minimal docs/INSTALL.md and docs/USAGE.md stubs from repo evidence. Use when these docs are missing, too thin, or stale."
+description: "Create or refresh minimal `docs/INSTALL.md` and `docs/USAGE.md` stubs from repo evidence. Use when these two docs are missing, too thin, or stale. Does NOT touch `README.md`, `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`, or the broader doc set (use `readme-fix`, `arch-docs`, or `docset-refresh` for those)."
+mode: doer
+execution: either
 ---
 
 # Install and usage docs
@@ -58,8 +60,7 @@ of guessing.
    - Do not move README content here. If README needs pruning or restructuring,
      use the readme-fix skill and keep INSTALL/USAGE focused on setup and run steps.
 9. Update changelog
-   - Record doc changes in [docs/CHANGELOG.md](docs/CHANGELOG.md) with a short,
-     dated entry describing what changed.
+   - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `manager-driven-execution`, dispatch a docs subagent to add the entry.
 
 ## docs/INSTALL.md stub template
 
@@ -117,3 +118,11 @@ One paragraph: what users do with the tool.
 
 - Updated [docs/INSTALL.md](docs/INSTALL.md) and [docs/USAGE.md](docs/USAGE.md).
 - Short report: created, updated, and known gaps.
+
+## Delegated execution
+
+Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+with one bounded task, the relevant repo rules, and one verification step.
+Do not continue the same subagent across unrelated follow-up work; dispatch a
+new subagent for each atomic task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).

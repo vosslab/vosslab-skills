@@ -1,6 +1,8 @@
 ---
 name: pyside6-engineer
 description: Design, implement, refactor, and review PySide6 desktop applications with strong widget architecture, signal-slot design, and state flow. Use when building or fixing Qt for Python windows, dialogs, forms, navigation shells, model-view tables, theming, or validation in Python GUI code.
+mode: doer
+execution: delegated
 ---
 
 # PySide6 Engineer
@@ -58,3 +60,11 @@ When using this skill, aim to produce:
 - PySide6 code that is organized by responsibility and easy to extend.
 - Explicit handling for validation, error messaging, empty states, and loading states.
 - References to the relevant official Qt for Python docs when using unfamiliar APIs or package tools.
+
+## Delegated execution
+
+Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+with one bounded task, the relevant repo rules, and one verification step.
+Do not continue the same subagent across unrelated follow-up work; dispatch a
+new subagent for each atomic task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).

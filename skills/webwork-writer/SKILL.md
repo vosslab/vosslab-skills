@@ -1,6 +1,8 @@
 ---
 name: webwork-writer
 description: Create, edit, and lint WeBWorK PG/PGML questions following docs/webwork guidance, HTML whitelist constraints, and renderer-based lint checks. Use for tasks like authoring new PGML problems, adjusting randomization or grading, fixing PGML rendering issues, and running renderer API linting.
+mode: doer
+execution: either
 ---
 
 # WebWork Question Authoring
@@ -35,8 +37,7 @@ this session before continuing.
 2) Identify the target repo and file, then read any additional relevant doc
    references from `references/docs.md` for the question type at hand.
 3) Apply the PGML structure and rules from the WebWork author guide.
-4) Make edits in the problem file and update `docs/CHANGELOG.md` in the target
-   repo.
+4) Make edits in the problem file and update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `manager-driven-execution`, dispatch a docs subagent to add the entry.
 5) Render with `-r` using the local renderer API to visually confirm layout and
    checkbox behavior (prerequisite).
 6) Lint or render with the local renderer API when the change affects PGML
@@ -93,3 +94,11 @@ Conventions:
 
 - Keep solution text plain when exporting to systems that do not render HTML.
 - For matching problems, use the PG 2.17-safe patterns documented in docs/webwork.
+
+## Delegated execution
+
+Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+with one bounded task, the relevant repo rules, and one verification step.
+Do not continue the same subagent across unrelated follow-up work; dispatch a
+new subagent for each atomic task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).

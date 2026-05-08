@@ -1,6 +1,8 @@
 ---
 name: readme-fix
-description: "Standardize README.md to match repo conventions. Brief purpose, quick start, and links to docs/. Keep content verifiable, concise, and ASCII. Use when README.md drifted or is missing key pointers."
+description: "Standardize `README.md` to match repo conventions: brief purpose, quick start, and links to `docs/`. Use when `README.md` has drifted or is missing key pointers. Does NOT touch any file under `docs/` (use `arch-docs`, `install-usage-docs`, or `docset-refresh` for those)."
+mode: doer
+execution: either
 ---
 
 # README fix
@@ -125,3 +127,11 @@ Keep deeper detail in `docs/` and link it from the README.
 - GitHub Docs: "About READMEs" for expected content and auto TOC behavior.
 - Standard Readme community spec for section ordering.
 - READMINE template for an explicit TOC example.
+
+## Delegated execution
+
+Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+with one bounded task, the relevant repo rules, and one verification step.
+Do not continue the same subagent across unrelated follow-up work; dispatch a
+new subagent for each atomic task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).

@@ -1,6 +1,8 @@
 ---
 name: web-game-parallel-build
 description: Use when building a TypeScript browser game from modular `src/*.ts` files using parallel subagents to ship good code AND reduce wall-clock build time (designed for live/podcast time pressure). Immediate live target is the locally-served preview from `run_web_server.sh`; GitHub Pages from `dist/` (via GitHub Actions) and the optional `export_single_file.sh` portable HTML are post-show release paths. The skill delegates type design to `typescript-engineer`, parallel dispatch to `superpowers:subagent-driven-development`, and lane decisions to `parallel-plan`; it owns the web-game specifics (workstream layout, batched smoke testing, web-platform gotchas, single-file export).
+mode: manager
+execution: direct
 ---
 
 # Web Game Parallel Build
@@ -613,6 +615,14 @@ removes work entirely.
 | "TypeScript slows agents down" | `tsc --noEmit` between batches catches contract drift in seconds; the JS version found the same drift only at Playwright time. |
 | "We can `as any` the tricky spot" | Forbidden outside brand constructors and save-file type guards. Route the problem to `typescript-engineer`. |
 | "Parallel means we can lower the quality bar to hit the deadline" | No. The skill exists to hit the deadline AT the quality bar. Cutting contracts, smoke tests, or `tsc --noEmit` does not buy time; it moves the same time into integration debugging at the end. |
+
+## Subagent dispatch
+
+Dispatch a fresh subagent for each atomic task. Reusing a subagent across tasks
+carries stale context, encourages drift, and weakens independent judgment.
+`SendMessage` is for status only; do not use it to chain follow-on editing
+work onto a teammate that has already finished its assigned task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
 
 ## Red flags - STOP
 

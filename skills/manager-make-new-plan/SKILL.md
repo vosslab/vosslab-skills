@@ -1,6 +1,8 @@
 ---
 name: manager-make-new-plan
 description: Create forward-looking implementation plans from scratch for coding teams without writing code. Use when the user needs a new plan document, major rewrite, milestone restructuring, acceptance gates, migration strategy, risk handling, or rollout planning for future work; do not use this skill for post-implementation audits of an existing plan.
+mode: doer
+execution: direct
 ---
 
 # Manager Make New Plan
@@ -56,6 +58,7 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 - See scrap-vs-fix decision criteria in `references/plan_quality_standard.md`.
 
 ## Mandatory Constraints
+- Decompose hard problems into atomic single-coder tasks per [docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
 - Make sure the plan has a clear design philosophy near the top to avoid drift
 - Do not perform coding tasks as part of this skill.
 - Do not include pseudo-complete promises without measurable acceptance criteria.
@@ -105,7 +108,7 @@ Specify required documentation updates per milestone (active plan, progress trac
 9. Publish manager-grade output:
 Deliver one execution-ready plan document with measurable closure criteria.
 
-## Required Output Sections
+## Use only when applicable to the current task
 - Title and objective
 - Scope and non-goals
 - Current state summary

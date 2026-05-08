@@ -1,9 +1,8 @@
 ---
 name: review-code-changes
-description: Require independent review by parallel subagents for code changes and combine their
-  findings. Use when a user asks Codex for independent review of changed code, validation of a
-  completed implementation, plan conformance review, test coverage review, or documentation-impact
-  review after a code change.
+description: "Parallel multi-reviewer audit launched before merge or release; not for single-pass review."
+mode: manager
+execution: direct
 ---
 
 # Review code changes
@@ -17,6 +16,7 @@ single concise review.
 
 ## Required behavior
 
+- Prefer design-level fixes over symptom patches; cite [docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies) when flagging this.
 - Launch subagents for independent review passes. The purpose of this skill is independent review.
 - Treat the main agent as coordinator and integrator, not as the sole reviewer.
 - Keep main-agent preflight minimal. Gather only enough context to launch the subagents.
@@ -137,6 +137,14 @@ Review focus:
 - No emoji or non-ASCII characters in comments; UTF-8 escaped where needed.
 - Overly long functions, deeply nested logic, or unclear control flow that hurts readability.
 - Stale, misleading, or redundant comments that contradict the code.
+
+## Subagent dispatch
+
+Dispatch a fresh subagent for each atomic task. Reusing a subagent across tasks
+carries stale context, encourages drift, and weakens independent judgment.
+`SendMessage` is for status only; do not use it to chain follow-on editing
+work onto a teammate that has already finished its assigned task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
 
 ## Agent prompt template
 

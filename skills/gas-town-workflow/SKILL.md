@@ -1,6 +1,8 @@
 ---
 name: gas-town-workflow
 description: "Gas Town style multi-agent coordination with role-mapped task routing and convoy-based work decomposition. Use when the user explicitly requests Gas Town workflow, convoy-style task decomposition, theatrical role-mapped coordination, or this repo's specific agent role system. Do not trigger on generic multi-agent or parallel task requests."
+mode: manager
+execution: direct
 ---
 
 # Gas Town workflow
@@ -162,6 +164,28 @@ Agents must explicitly signal their state. Silent idleness with assigned work is
 3. Mark the task `completed` via TaskUpdate.
 4. Check TaskList for the next available task matching your role.
 5. If no tasks remain, notify the team lead.
+
+## Subagent dispatch
+
+Dispatch a fresh subagent for each atomic task. Reusing a subagent across tasks
+carries stale context, encourages drift, and weakens independent judgment.
+`SendMessage` is for status only; do not use it to chain follow-on editing
+work onto a teammate that has already finished its assigned task. See
+[docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies).
+
+## Boundary with manager-driven-execution
+
+This skill and `manager-driven-execution` both coordinate multi-agent work,
+but with different vocabularies and intent. Use `manager-driven-execution`
+as the default for executing an approved plan: plain manager / coder /
+reviewer / tester / docs roles, controlled delegation, one fresh subagent
+per atomic task, and explicit review gates. Use this skill (`gas-town-workflow`)
+ONLY when the user explicitly asks for Gas Town conventions: convoy-style
+work decomposition, theatrical role names (Crew, Refinery, Witness, Dogs,
+Deacon), and the repo-specific role catalog. The two skills are not
+interchangeable; do not silently substitute Gas Town vocabulary into a
+manager-driven-execution run, and do not strip Gas Town vocabulary out of
+a Gas Town run.
 
 ## Terminology
 

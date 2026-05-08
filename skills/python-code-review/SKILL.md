@@ -1,10 +1,8 @@
 ---
 name: python-code-review
-description: Comprehensive Python code review focused on bugs, correctness, security,
-  maintainability, and actionable fixes. Use when a user asks for a review of Python files, wants
-  severity-rated findings, wants before/after fix suggestions, or wants verification that
-  implementation matches an active plan document. Start by applying read-repo-rules to requested
-  repo rule files so review guidance follows current repository rules.
+description: "Single-pass Python correctness, security, and style review on demand; not for multi-reviewer audits before merge (use review-code-changes for that)."
+mode: reviewer
+execution: direct
 ---
 
 # Python Code Review
@@ -38,6 +36,7 @@ description: Comprehensive Python code review focused on bugs, correctness, secu
   - Brief summary
 
 ## What To Check
+- Prefer design-level fixes over symptom patches; cite [docs/REPO_STYLE.md](../../docs/REPO_STYLE.md#core-philosophies) when flagging this.
 - Plan conformance: implementation and tests match active plan scope, ordering, and acceptance
   criteria.
 - Plan drift: behavior changed without corresponding plan/changelog updates, or plan claims
