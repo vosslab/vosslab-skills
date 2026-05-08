@@ -32,8 +32,8 @@ If you only want specific skills rather than the full set, copy the skill folder
 
 ```bash
 git clone https://github.com/vosslab/vosslab-skills.git /tmp/vosslab-skills
-cp -r /tmp/vosslab-skills/skills/python-code-review ./skills/
-cp -r /tmp/vosslab-skills/skills/readme-fix ./skills/
+cp -r /tmp/vosslab-skills/skills/python-reviewer ./skills/
+cp -r /tmp/vosslab-skills/skills/readme-docs ./skills/
 ```
 
 Each skill is self-contained in its `skills/<name>/` folder. The `SKILL.md` file is the entry point; some skills also include `references/` and `agents/` subdirectories.
@@ -46,7 +46,7 @@ After installing, confirm that skills are discoverable.
 
 ```bash
 claude
-# then type: /vosslab-skills:readme-fix
+# then type: /vosslab-skills:readme-docs
 ```
 
 **Local clone** -- check the generated skills index:

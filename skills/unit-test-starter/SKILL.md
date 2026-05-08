@@ -161,7 +161,7 @@ This skill can be slow and may take hours on large repos.
 
 ## Delegated execution
 
-Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+Under `execution-manager`, this skill is assigned to a fresh subagent
 with one bounded task, the relevant repo rules, and one verification step.
 Do not continue the same subagent across unrelated follow-up work; dispatch a
 new subagent for each atomic task. See

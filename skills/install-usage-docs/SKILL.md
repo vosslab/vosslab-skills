@@ -1,6 +1,6 @@
 ---
 name: install-usage-docs
-description: "Create or refresh minimal `docs/INSTALL.md` and `docs/USAGE.md` stubs from repo evidence. Use when these two docs are missing, too thin, or stale. Does NOT touch `README.md`, `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`, or the broader doc set (use `readme-fix`, `arch-docs`, or `docset-refresh` for those)."
+description: "Create or refresh minimal `docs/INSTALL.md` and `docs/USAGE.md` stubs from repo evidence. Use when these two docs are missing, too thin, or stale. Does NOT touch `README.md`, `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`, or the broader doc set (use `readme-docs`, `arch-docs`, or `docset-updater` for those)."
 mode: doer
 execution: either
 ---
@@ -58,9 +58,9 @@ of guessing.
      "Known gaps" task instead of adding unverified guidance.
 8. Keep README scope separate
    - Do not move README content here. If README needs pruning or restructuring,
-     use the readme-fix skill and keep INSTALL/USAGE focused on setup and run steps.
+     use the readme-docs skill and keep INSTALL/USAGE focused on setup and run steps.
 9. Update changelog
-   - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `manager-driven-execution`, dispatch a docs subagent to add the entry.
+   - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `execution-manager`, dispatch a docs subagent to add the entry.
 
 ## docs/INSTALL.md stub template
 
@@ -121,7 +121,7 @@ One paragraph: what users do with the tool.
 
 ## Delegated execution
 
-Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+Under `execution-manager`, this skill is assigned to a fresh subagent
 with one bounded task, the relevant repo rules, and one verification step.
 Do not continue the same subagent across unrelated follow-up work; dispatch a
 new subagent for each atomic task. See

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Code Changes"
+  short_description: "Run independent subagent review"
+  default_prompt: "Use $audit-code-reviewer to launch independent review subagents for this code change."

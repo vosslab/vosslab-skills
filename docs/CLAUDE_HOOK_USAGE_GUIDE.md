@@ -545,6 +545,37 @@ branches (`main`, `master`); allowed on agent/feature branches for local work.
 **On agent branches:** `git reset --hard` is allowed for local cleanup and rebasing
 your own work.
 
+### `git restore .` and `git checkout -- .` (wholesale discard)
+
+**Blocked:** Any `git restore` or `git checkout` invocation whose pathspec is
+`.` or `:/` (the "all tracked files" selector). Examples:
+
+- `git restore .`
+- `git restore :/`
+- `git restore --staged --worktree .`
+- `git restore --source=HEAD .`
+- `git checkout .`
+- `git checkout -- .`
+- `git checkout HEAD -- .`
+- `git checkout main -- .`
+- `git checkout :/`
+
+**Why:** These forms have the same blast radius as `git reset --hard` --
+they wipe every uncommitted change and unstage all renames in one shot.
+That destroys agent work in progress (edits, renames, staged content) with
+no recovery path other than `git reflog`.
+
+**Instead:** Discard a single file at a time:
+
+- `git restore path/to/file.py` (allowed)
+- `git restore --staged path/to/file.py` (allowed)
+- `git checkout -- one_file.py` (allowed)
+- `git checkout HEAD~1 -- file.py` (allowed)
+
+Branch switches (`git checkout main`, `git checkout -b feature/x`) remain
+allowed unchanged. If you really want to wipe everything, ask the user to
+run the command themselves.
+
 ### `git push --force` (including --force-with-lease)
 
 **Blocked:** `git push --force`, `git push origin main --force-with-lease`

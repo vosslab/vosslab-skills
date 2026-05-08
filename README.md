@@ -24,9 +24,9 @@ claude plugin add https://github.com/vosslab/vosslab-skills
 Then invoke any skill by name in a Claude Code session:
 
 ```
-/vosslab-skills:python-code-review
-/vosslab-skills:readme-fix
-/vosslab-skills:manager-make-new-plan
+/vosslab-skills:python-reviewer
+/vosslab-skills:readme-docs
+/vosslab-skills:planning-manager
 ```
 
 See [docs/INSTALL.md](docs/INSTALL.md) for local clone and individual skill import options.

@@ -1,6 +1,6 @@
 ---
 name: parallel-plan
-description: "In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use manager-make-new-plan for that)."
+description: "In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use planning-manager for that)."
 mode: manager
 execution: direct
 ---
@@ -9,7 +9,7 @@ execution: direct
 
 ## Overview
 
-Use this skill as a lightweight implementation profile of `manager-make-new-plan` for current in-flight work.
+Use this skill as a lightweight implementation profile of `planning-manager` for current in-flight work.
 Its purpose is simple: do not try to do complex tasks alone; split into independent workstreams and use help.
 Keep the same core terminology (milestone/workstream/work package/patch), but reduce process weight so teams can start quickly.
 The ultimate goal is to reduce implementation wall time, not to maximize process, parallelism theater, or document volume.
@@ -31,7 +31,7 @@ The ultimate goal is to reduce implementation wall time, not to maximize process
 
 ## Relationship to Manager Planning
 
-- `manager-make-new-plan` is the full manager-grade planning workflow.
+- `planning-manager` is the full manager-grade planning workflow.
 - `parallel-plan` is the lightweight operational version for active execution.
 - Use the same language and dependency discipline, but with less document overhead and faster dispatch.
 

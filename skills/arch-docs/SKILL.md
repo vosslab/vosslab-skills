@@ -1,6 +1,6 @@
 ---
 name: arch-docs
-description: "Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from current repo evidence. Use when the user asks to document or refresh repository architecture or file layout. Does NOT touch `README.md`, `docs/INSTALL.md`, `docs/USAGE.md`, or the broader doc set (use `readme-fix`, `install-usage-docs`, or `docset-refresh` for those)."
+description: "Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from current repo evidence. Use when the user asks to document or refresh repository architecture or file layout. Does NOT touch `README.md`, `docs/INSTALL.md`, `docs/USAGE.md`, or the broader doc set (use `readme-docs`, `install-usage-docs`, or `docset-updater` for those)."
 mode: doer
 execution: either
 ---
@@ -88,7 +88,7 @@ mkdocs.yml
    - Save both files.
    - Ensure `README.md` links to `docs/CODE_ARCHITECTURE.md` and
      `docs/FILE_STRUCTURE.md` (add links if missing).
-   - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `manager-driven-execution`, dispatch a docs subagent to add the entry.
+   - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `execution-manager`, dispatch a docs subagent to add the entry.
    - Summarize what changed and what could not be verified.
    - Note that docs-only changes do not require tests unless otherwise requested.
 
@@ -105,7 +105,7 @@ mkdocs.yml
 
 ## Delegated execution
 
-Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+Under `execution-manager`, this skill is assigned to a fresh subagent
 with one bounded task, the relevant repo rules, and one verification step.
 Do not continue the same subagent across unrelated follow-up work; dispatch a
 new subagent for each atomic task. See

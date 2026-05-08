@@ -1,0 +1,4 @@
+interface:
+  display_name: "Manager: Make New Plan"
+  short_description: "Draft forward-looking implementation plans"
+  default_prompt: "Use $planning-manager to create a new implementation plan with milestones, gates, risks, migration policy, and release checklist."

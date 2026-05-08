@@ -1,0 +1,5 @@
+version: 1
+interface:
+  display_name: "Python Code Review"
+  short_description: "Severity-ranked Python review with actionable fixes"
+  default_prompt: "Use $python-reviewer to review this Python change for bugs, security, and maintainability with severity-ranked file/line findings and fixes."

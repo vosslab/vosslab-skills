@@ -7,16 +7,16 @@ This repo provides workflow skills that guide Claude Code through structured tas
 Invoke a skill by name during a Claude Code session:
 
 ```
-/vosslab-skills:python-code-review
-/vosslab-skills:readme-fix
-/vosslab-skills:manager-make-new-plan
+/vosslab-skills:python-reviewer
+/vosslab-skills:readme-docs
+/vosslab-skills:planning-manager
 ```
 
 If the repo is loaded as a local skills directory (not a plugin), skills are invoked by their short name:
 
 ```
-/python-code-review
-/readme-fix
+/python-reviewer
+/readme-docs
 ```
 
 ## Browsing available skills
@@ -44,7 +44,7 @@ Each skill lives in `skills/<name>/` and contains:
 Copy the skill folder into your project:
 
 ```bash
-cp -r skills/python-code-review /path/to/my-project/skills/
+cp -r skills/python-reviewer /path/to/my-project/skills/
 ```
 
 The skill is self-contained. It will work in any project that supports the `SKILL.md` format.
@@ -62,6 +62,21 @@ To verify manifests are up-to-date (useful in CI):
 ```bash
 source source_me.sh && python3 tools/build_plugin_manifest.py --check
 ```
+
+## Listing loaded skills
+
+`tools/list_loaded_skills.py` enumerates currently loaded skill names from this repo, `~/.claude/skills/`, and `~/.claude/plugins/cache/`, plus harness built-ins. The tool collapses same-content duplicates (e.g. when the repo is also installed as a personal overlay) and flags genuine name collisions with a `[!]` prefix. Use it for prefix-collision checks before adding or renaming a skill. See [SKILL_NAMING.md](SKILL_NAMING.md) for the convention.
+
+Default invocation prints `<name>\t<source-list>` rows sorted by name:
+
+```bash
+source source_me.sh && python3 tools/list_loaded_skills.py
+```
+
+Useful flags:
+
+- `--names-only` (or `-n`) -- one name per line.
+- `--check <NAME>` (or `-c <NAME>`) -- prints any loaded names that share a 5+ character leading hyphen-token with `<NAME>` and exits 1 on collision.
 
 ## Inputs and outputs
 

@@ -58,7 +58,7 @@ phylogenetic trees). See `references/docs.md` for the full index.
    - Check produced BBQ text for formatting and expected answer keys.
    - Run relevant tests for edited code paths.
 6) Finish cleanly
-   - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `manager-driven-execution`, dispatch a docs subagent to add the entry.
+   - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `execution-manager`, dispatch a docs subagent to add the entry.
    - Keep generated artifacts out of git (`bbq-*.txt`, `qti*.zip`,
      `selftest-*.html`).
 
@@ -88,7 +88,7 @@ phylogenetic trees). See `references/docs.md` for the full index.
 
 ## Delegated execution
 
-Under `manager-driven-execution`, this skill is assigned to a fresh subagent
+Under `execution-manager`, this skill is assigned to a fresh subagent
 with one bounded task, the relevant repo rules, and one verification step.
 Do not continue the same subagent across unrelated follow-up work; dispatch a
 new subagent for each atomic task. See
