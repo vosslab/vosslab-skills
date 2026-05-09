@@ -1,6 +1,6 @@
 ---
 name: blueprint-plan-drafter
-description: Create forward-looking implementation plans from scratch for coding teams without writing code. Use when the user needs a new plan document, major rewrite, milestone restructuring, acceptance gates, migration strategy, risk handling, or rollout planning for future work; do not use this skill for post-implementation audits of an existing plan.
+description: Create forward-looking implementation plans from scratch for coding teams without writing code. Use when the user needs a new plan document, major rewrite, milestone restructuring, acceptance gates, migration strategy, risk handling, or rollout planning for future work; produces parallel-plan-ready milestones when work can be split across independent workstreams; do not use this skill for post-implementation audits of an existing plan.
 mode: doer
 execution: direct
 ---
@@ -8,8 +8,13 @@ execution: direct
 # Blueprint Plan Drafter
 
 ## Overview
-Build a manager-grade implementation plan that a coding team can execute with low ambiguity.
-Operate as a planning manager over multiple coders: define scope, architecture boundaries, milestone delivery, gates, risk treatment, and rollout.
+Build a manager-grade implementation plan that a coding team can execute in parallel with low ambiguity.
+Operate as a planning manager over multiple coders: define scope, architecture boundaries, milestone delivery, gates, risk treatment, and rollout, with every milestone shaped so `parallel-plan` can dispatch independent workstreams without rewriting the plan.
+
+## Parallel-first design
+- The default execution target for multi-workstream plans is `parallel-plan`. When a milestone has more than one independent lane, draft it as a set of workstreams that one or more doers can pick up concurrently.
+- Inherently serial work (one critical refactor, a schema migration that gates everything else) is the documented exception, not the default.
+- The full readiness criteria live in `## Parallel-plan readiness checklist` near the bottom of this skill; draft toward those criteria from the first milestone, not as a final pass.
 
 ## Terminology Contract
 Canonical definitions live in `references/DEFINITIONS.md`.
@@ -38,6 +43,7 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 - Think forward-first and solution-oriented.
 - Optimize for feasible execution, not defensive critique.
 - Keep ambition grounded by explicit acceptance gates and dependency-aware sequencing.
+- Parallel-first design: see the section above; serial-only milestones are the documented exception.
 
 ## Stabilization-First Rule
 - Before proposing architecture or refactor plans, assess whether the current system works
@@ -65,6 +71,7 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 - Do not collapse architecture, implementation, and release concerns into one checklist.
 - Keep milestone boundaries explicit, testable, and order-dependent.
 - Apply numeric capacity and sizing targets from the capacity reference.
+- Size patches and work packages by component boundaries and reviewability, using the ranges in `references/CAPACITY_AND_SIZING.md`. Express any size guidance the plan emits to doers as ranges (for example, "1 to 2 patches per coder per week") or as "right-sized for one coder", so doers split on natural seams rather than chasing a fixed line-count target.
 - Under Architecture Boundaries, require a mapping subsection: milestones and workstreams map to components and patches; components use durable terminology.
 - Do not encode dependencies by milestone number. Dependencies must be declared by dependency ID in `Depends on`, with a short reason.
 - Dependencies live at the work package level, not hidden inside milestone prose.
@@ -86,6 +93,7 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 8. `references/EXECUTION_RESOURCES.md`
 
 Use these inputs to match local planning style, terminology, status language, and quality bars.
+Read `references/PLAN_TEMPLATE.md` only for large or multi-workstream plans that need a fillable skeleton.
 
 ## Workflow
 1. Build context baseline:
@@ -109,8 +117,11 @@ List key risks with impact, trigger, owner, and mitigation.
 Specify required documentation updates per milestone (active plan, progress tracker, changelog, archive/closure notes). Use patch labels ("Patch 1", "Patch 2", ...) in implementation summaries and changelog-oriented sections.
 9. Publish manager-grade output:
 Deliver one execution-ready plan document with measurable closure criteria.
+For large or multi-workstream plans, start from `references/PLAN_TEMPLATE.md` and keep only the slots that apply; for small plans, write the plan directly using the section list below.
 
 ## Use only when applicable to the current task
+For plans that need a fillable form, `references/PLAN_TEMPLATE.md` is available as an optional starting skeleton. The list below is the canonical quick-scan index for every plan size.
+
 - Title and objective
 - Scope and non-goals
 - Current state summary

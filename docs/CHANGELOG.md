@@ -1,3 +1,23 @@
+## 2026-05-09
+
+### Additions and New Features
+
+- New optional reference [skills/blueprint-plan-drafter/references/PLAN_TEMPLATE.md](../skills/blueprint-plan-drafter/references/PLAN_TEMPLATE.md): fillable skeleton for large or multi-workstream plans, with explicit slots for `Workstreams:`, `Depends on:`, `Owner:`, `Acceptance criteria:`, `Verification commands:`, and `Obvious follow-ons:`. Template opens with a `Reference rules:` block pointing at `DEFINITIONS.md`, `CAPACITY_AND_SIZING.md`, `EXECUTION_RESOURCES.md`, and `NAMING_GUARDRAILS.md`; numeric ranges are not restated except as labelled examples sourced from `CAPACITY_AND_SIZING.md`, so the capacity reference stays the single source of truth. Loaded conditionally (only for plans that need a fillable form), not as a required input.
+
+### Behavior or Interface Changes
+
+- [skills/blueprint-plan-drafter/SKILL.md](../skills/blueprint-plan-drafter/SKILL.md): wired `parallel-plan` into the early reading path so it shapes the plan from the first read instead of appearing only at line 76. Frontmatter description appends "produces parallel-plan-ready milestones when work can be split across independent workstreams" (softened phrasing avoids over-triggering on simple plans). Overview rewritten to name parallel-plan readiness as a primary output. New `## Parallel-first design` section added between Overview and Terminology Contract: names `parallel-plan` as the default execution target for multi-workstream plans, marks serial-only work as the documented exception, and forward-references the existing `## Parallel-plan readiness checklist`. `## Planning Stance` gains a one-sentence pointer to the new section (no duplicate bullets). `## Inputs To Read First` gains a conditional one-line note (read `PLAN_TEMPLATE.md` only for large or multi-workstream plans). `## Workflow` step 9 (Publish) is amended to start from `PLAN_TEMPLATE.md` for large plans, write directly for small ones. `## Use only when applicable to the current task` gets a one-line lead-in noting the template option; the section list stays as the canonical quick-scan index.
+- New positive sizing-guidance bullet in [skills/blueprint-plan-drafter/SKILL.md](../skills/blueprint-plan-drafter/SKILL.md) `## Mandatory Constraints`: "Size patches and work packages by component boundaries and reviewability, using the ranges in `references/CAPACITY_AND_SIZING.md`. Express any size guidance the plan emits to doers as ranges (for example, '1 to 2 patches per coder per week') or as 'right-sized for one coder', so doers split on natural seams rather than chasing a fixed line-count target." Positive framing per repo preference (no "do not write 500-line caps"-style negative rule); aligns the skill body with ranges already in the capacity reference.
+
+### Decisions and Failures
+
+- Considered extending `references/plan_quality_standard.md` `## 9. Output Template` instead of adding a new `PLAN_TEMPLATE.md`. Rejected: the quality standard is a review checklist, not a fillable form; co-locating fillable slots with a separate template kept the two artifacts (review bar vs assignment-ready skeleton) cleanly separated.
+- Considered making `PLAN_TEMPLATE.md` a numbered always-load input. Rejected: it would force every plan run to load the template even for small plans, defeating the optional framing. Settled on a one-line conditional note at the bottom of `## Inputs To Read First`.
+
+### Developer Tests and Notes
+
+- Documentation-only change to the skill body, one new reference file, and the changelog. No code, tests, or other skills touched. Recommended pre-commit gates: `pytest tests/test_ascii_compliance.py -k blueprint_plan_drafter`, `pytest tests/test_relative_paths.py -k blueprint_plan_drafter`, `pytest tests/test_whitespace.py -k blueprint_plan_drafter`. Spot-check `tools/list_loaded_skills.py` confirms the description renders cleanly with the appended parallel-plan phrase.
+
 ## 2026-05-08
 
 ### Behavior or Interface Changes

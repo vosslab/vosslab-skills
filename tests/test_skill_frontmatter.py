@@ -60,7 +60,7 @@ def parse_frontmatter(text: str) -> dict:
 def list_skill_dirs() -> list[pathlib.Path]:
 	"""Return every direct subdirectory of skills/ as Path objects.
 
-	Hidden dot-prefixed directories like `.system/` are excluded — those
+	Hidden dot-prefixed directories like `.system/` are excluded - those
 	are local configuration/scratch areas, not skills.
 	"""
 	return sorted([
