@@ -128,6 +128,22 @@ Run with:
 node tests/playwright/my_test.mjs
 ```
 
+## Headless by default
+
+The canonical pattern above uses `chromium.launch()` with no arguments, which
+defaults to `headless: true`. Existing scripts already run headless; do not
+"fix" them.
+
+Rule for agents:
+
+- Do not pass `headless: false` to `chromium.launch()`.
+- Do not add `--headed` to invocations.
+- The default is correct.
+
+If a human is debugging locally and explicitly wants to watch the browser,
+they can pass `headless: false` themselves. Agents should not do this on
+their behalf.
+
 ## Common patterns
 
 ### Click a hood item
@@ -176,6 +192,7 @@ console.log('Button count:', result);
 | `browserType.launch: Executable doesn't exist` | Run `npx playwright install` |
 | `npx playwright` works but `node script.mjs` fails | Different issue: npx resolves packages differently than Node require |
 | Timeout clicking an element | Check the selector; use `data-item-id` not `data-item` for hood items |
+| Browser windows pop up during test runs | An agent added `headless: false` or `--headed`; remove it. Default is headless. |
 
 ## Verify install
 
