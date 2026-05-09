@@ -38,6 +38,11 @@ or shared type design.
 - Refactor a file or module toward stricter compile-time safety without changing runtime behavior.
 - Explain a TypeScript type-system concept with concrete before and after examples.
 - Validate production refactors with `tsc --noEmit` and type-level tests.
+- Resolve a narrow in-flight type contract during a parallel game build
+  (invoked by a coding subagent, not a manager). One bounded question
+  -- typically a single shared type, brand, or boundary shape -- and a
+  typed stub the caller can import. Not a full audit; see
+  `html-game-parallel-builder` for the wrapper that triggers this case.
 
 ## When not to use
 
@@ -168,91 +173,44 @@ client (keywords: game, simulation, save file, entity id, coordinate,
 | Overload, multiple signatures | [`references/function-overloads.md`](references/function-overloads.md) |
 | Type error, diagnostic, `ts(...)`, not assignable, circular reference | [`references/error-diagnosis.md`](references/error-diagnosis.md) |
 
-## Type-level smell tests
-
-### Eliminate `any` with a generic
-
-```ts
-function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
-	return obj[key];
-}
-```
-
-Read [`references/generics-basics.md`](references/generics-basics.md).
-
-### Narrow a save-file load at the boundary
-
-```ts
-function isSaveFileV1(value: unknown): value is SaveFileV1 {
-	return typeof value === "object" && value !== null
-		&& (value as { version?: unknown }).version === 1;
-}
-```
-
-Read [`references/type-narrowing.md`](references/type-narrowing.md) and
-[`references/assertion-functions.md`](references/assertion-functions.md).
-
-### Preserve literals while enforcing shape
-
-```ts
-const palette = {
-	red: [255, 0, 0],
-	green: [0, 255, 0],
-} as const satisfies Record<string, readonly [number, number, number]>;
-```
-
-Read [`references/as-const-typeof.md`](references/as-const-typeof.md).
-
-### Prove a type with `Expect<Equal<A, B>>`
-
-```ts
-type _A = Expect<Equal<ReturnType<typeof getUser>, User>>;
-```
-
-Read [`references/deep-inference.md`](references/deep-inference.md).
-
-### Cross-table key consistency with `as const satisfies`
-
-```ts
-const SPRITE_CONFIG = {
-	empty:    { src: "empty.png" },
-	infected: { src: "infected.png" },
-} as const;
-type SpriteKey = keyof typeof SPRITE_CONFIG;
-
-const TILE_CONFIG = {
-	empty:    { spriteKey: "empty" },
-	infected: { spriteKey: "infected" },
-} as const satisfies Record<string, { spriteKey: SpriteKey }>;
-type TileKind = keyof typeof TILE_CONFIG;
-```
-
-Read [`references/game-type-patterns.md`](references/game-type-patterns.md) and
-[`references/as-const-typeof.md`](references/as-const-typeof.md).
+For copy-pastable smell-test examples, see
+[`references/smell-test-examples.md`](references/smell-test-examples.md).
 
 ## Delegated execution
 
-Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagent
-with one bounded task, the relevant repo rules, and one verification step.
-Do not continue the same subagent across unrelated follow-up work; dispatch a
-new subagent for each atomic task. See
+Under `delegate-manager-to-subagents`, this skill is assigned to a fresh
+subagent with one bounded task, the relevant repo rules, and one
+verification step. Do not continue the same subagent across unrelated
+follow-up work; dispatch a new subagent for each atomic task. See
 `docs/REPO_STYLE.md`.
 
-### Exhaustive `never` on a `GameEvent` union
+Two invocation shapes exist; both apply the same return contract.
 
-```ts
-type GameEvent =
-	| { type: "turn:advanced"; turn: number }
-	| { type: "cell:infected"; cellId: CellId };
+- **Manager-level dispatch** (default): a fresh subagent receives a
+  bounded task from the manager (audit a module, design a contract,
+  remove `any` in a file).
+- **In-flight invocation by a coding subagent** (during a parallel
+  game build via `html-game-parallel-builder`): a coding subagent
+  pauses, invokes this skill with one narrow question (one shared
+  type, one brand, one boundary shape), and waits for a typed stub
+  before resuming its own work. Keep the question scoped; this is not
+  the full audit shape under "Review tasks".
 
-function handle(event: GameEvent): void {
-	switch (event.type) {
-		case "turn:advanced": return;
-		case "cell:infected": return;
-		default: { const _exhaustive: never = event; return _exhaustive; }
-	}
-}
-```
+### Return contract
 
-Read [`references/type-narrowing.md`](references/type-narrowing.md) and
-[`references/game-type-patterns.md`](references/game-type-patterns.md).
+Every delegated invocation returns:
+
+- The proposed type, contract, or fix as a code block ready to paste.
+- The exact verification command run, with its exact success line. The
+  default is `npx tsc --noEmit` (or `npx tsc --noEmit -p
+  src/tsconfig.json` in projects with a separate `src/` config); the
+  success state is `exit 0` with no diagnostic output. Quote the line
+  literally.
+- The list of files the proposed change would touch, each labelled
+  with the requirement it satisfies.
+- Any failure, warning, or skipped check, with a one-line scope
+  assessment (in scope or out of scope for this task).
+
+Do not report `DONE` without the command line and its exact output.
+"All green" without evidence is not a return; it is a false-green
+claim and the manager will re-dispatch.

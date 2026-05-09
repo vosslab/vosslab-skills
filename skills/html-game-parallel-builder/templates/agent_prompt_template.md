@@ -1,9 +1,9 @@
 # Agent prompt template
 
 Use this template for every coding subagent dispatched by the
-html-game-parallel-builder skill. The full dispatch and integration
-mechanics live in `superpowers:subagent-driven-development`; this
-template only adds the web-game specifics.
+html-game-parallel-builder skill. The manager dispatch contract lives
+in `delegate-manager-to-subagents`; this template only adds the
+web-game specifics on top.
 
 ---
 
