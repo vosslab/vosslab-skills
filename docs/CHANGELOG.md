@@ -1,5 +1,9 @@
 ## 2026-05-08
 
+### Behavior or Interface Changes
+
+- [skills/blueprint-plan-drafter/SKILL.md](../skills/blueprint-plan-drafter/SKILL.md): fixed stale H1 (`Manager Make New Plan` -> `Blueprint Plan Drafter`); added "Finish the obvious" mandatory constraint citing [docs/REPO_STYLE.md](REPO_STYLE.md) core philosophies (milestone Exit criteria must list obvious follow-ons explicitly); added parallel-plan-first design constraint (each milestone must declare 2+ independent workstreams unless inherently serial); added new `## Parallel-plan readiness checklist` section; promoted `parallel-plan` and `delegate-manager-to-subagents` in the Plan Handoff section; extended Completion Criteria to require obvious-follow-on listings and parallel-plan readiness for multi-workstream milestones.
+
 ### Additions and New Features
 
 - New pytest [tests/test_relative_paths.py](../tests/test_relative_paths.py) that forbids `..` markdown-link paths in `skills/**/*.md` whose targets resolve outside the skill folder. Internal `..` references (e.g. `../SKILL.md` from a `references/` subdir) stay allowed because the skill's own layout travels with it. Repo gate count is now 314.

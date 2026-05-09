@@ -5,7 +5,7 @@ mode: doer
 execution: direct
 ---
 
-# Manager Make New Plan
+# Blueprint Plan Drafter
 
 ## Overview
 Build a manager-grade implementation plan that a coding team can execute with low ambiguity.
@@ -72,6 +72,8 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 - A work package must be completable by one coder and result in at least one patch.
 - Work is tracked and reported as patches with cadence and sizing rules from the capacity reference.
 - In reports and changelog guidance, use "Patch 1", "Patch 2", etc.; reserve "change" for generic prose.
+- Finish the obvious: each work package must define its own obvious follow-on steps (fix the import, update `docs/CHANGELOG.md`, rerun the failed gate, apply the same edit to the next listed file) so a doer does not stop at a substep boundary. Per `docs/REPO_STYLE.md` core philosophies, stopping is reserved for real blockers (missing information, risky/irreversible action, scope change). Milestone Exit criteria must list these obvious follow-ons explicitly rather than leaving them implied.
+- Design for parallel-plan from the start. Every milestone must define at least 2 independent workstreams unless the work is inherently serial (document why). Work packages declare `Depends on` by ID so `parallel-plan` can pick up independent lanes without re-reading prose. Avoid hidden cross-workstream coupling: shared files, shared fixtures, or shared migrations belong in their own dedicated work package owned by one coder.
 
 ## Inputs To Read First
 1. `refactor_progress.md` (if present in the target repo)
@@ -133,11 +135,20 @@ Reject or rewrite plan text that is vague, non-testable, or missing gate conditi
 
 ## Plan Handoff
 After the plan is published, execution uses adjacent skills:
-- `parallel-plan` for lightweight parallelization of active work.
+- `parallel-plan` for lightweight parallelization of active work. Default handoff target: every milestone with 2+ independent workstreams should be flagged "parallel-plan ready" in its Exit criteria, listing which workstream IDs can run concurrently.
+- `delegate-manager-to-subagents` for fresh-subagent dispatch of independent work packages.
 - `old-orchestrate-next-milestone` for end-to-end milestone delivery.
 - `old-manager-review-existing-plan` for post-implementation audit.
 - `gas-town-workflow` for role-mapped multi-agent coordination.
 See `references/EXECUTION_RESOURCES.md` for the full lifecycle and agent catalog.
+
+## Parallel-plan readiness checklist
+Before publishing, verify the plan can be picked up by `parallel-plan` without rewrites:
+- Each milestone declares its parallel workstreams by ID, not prose.
+- Each work package has explicit `Depends on` IDs (use "none" when independent).
+- Shared resources (fixtures, migrations, generated artifacts) are owned by one work package, not duplicated across lanes.
+- Acceptance criteria are independently verifiable per work package, so concurrent doers do not need to coordinate mid-flight.
+- The plan names the maximum number of doers that can run in parallel within a milestone, derived from work package independence (not wishful concurrency).
 
 ## Completion Criteria
 Treat the planning task as complete only when:
@@ -147,3 +158,5 @@ Treat the planning task as complete only when:
 - Migration/deletion policy is explicit.
 - Documentation close-out requirements are explicit and assignable.
 - Open decisions are enumerated with owner or decision-needed framing.
+- Every milestone exit criterion lists obvious follow-on steps so doers finish them without stopping.
+- Parallel-plan readiness checklist above passes for every milestone with 2+ workstreams.
