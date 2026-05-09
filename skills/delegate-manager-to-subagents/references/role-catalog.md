@@ -33,17 +33,9 @@ You are implementing: [TASK NAME]
 
 [SCENE-SETTING: where this fits, dependencies, repo style summary]
 
-## Hard rules
+## Context bootstrap
 
-- Tabs only for Python indentation; never spaces.
-- Avoid `try`/`except`; if needed, keep to two lines max.
-- No `assert` statements in plain `.py` scripts or library modules; only inside `tests/` or `tests_e2e/`.
-- Use `dict[key]` when the key must exist; do not use `dict.get(key, fallback)` to hide bugs.
-- ASCII only; escape Greek letters as `&alpha;` etc.
-- Run focused pytest under `tests/` via `source source_me.sh && pytest tests/ -k <changed_file>`. Documentation-only changes do not require pytest runs.
-- Do NOT commit. Only humans run `git commit`.
-- Do NOT write outside the task scope.
-- Follow `docs/PYTHON_STYLE.md`, `docs/PYTEST_STYLE.md`, `docs/REPO_STYLE.md`, and `docs/MARKDOWN_STYLE.md`.
+Before editing files, invoke `repo-rules-reader` and follow the repository rules it returns. Treat that output, the task text, and the approved plan as the controlling instructions for implementation. If the repo rules conflict with this prompt, follow the repo rules and report the conflict in your final status.
 
 ## Self-review checklist
 
@@ -58,10 +50,11 @@ You are implementing: [TASK NAME]
 ## Report format
 
 - Status: one of `DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT`.
-- Files changed: list of absolute file paths.
-- Tests run: exact commands and pass/fail outcomes.
+- Files changed: list of absolute file paths, each labelled with the task requirement it satisfies.
+- Commands run and exact outputs: for each verification command, include the exact command line and the exact success-or-failure line from the output (for example, `pytest tests/test_foo.py -k bar` followed by `1 passed in 0.12s`).
 - Self-review findings: short summary of discipline checks (YAGNI, style, scope).
-- Concerns: blockers, ambiguity, scope creep, or missing context.
+- Failures, warnings, skipped checks: include each one with the evidence (diff line, prior-run log, upstream issue link) and a scope assessment (in scope or out of scope for this task).
+- Concerns: blockers, ambiguity, or missing context.
 ```
 
 Notes for the manager: pass `[FULL TASK TEXT]` from the plan verbatim. Do not silently rewrite or paraphrase requirements; surface ambiguity or missing context to the user before dispatching the subagent.
@@ -72,6 +65,10 @@ This is a read-only spec-compliance check. The reviewer will NOT modify any file
 
 ```text
 You are reviewing: [TASK NAME]
+
+## Context bootstrap
+
+Before reading the diff, invoke `repo-rules-reader` and ground in the current repo rules. The task text below is the source of truth for the requested behavior; repo rules define the implementation constraints that must still be satisfied.
 
 ## Task description (the spec)
 
@@ -104,6 +101,8 @@ Extra: (bullet list of additions not in the spec)
 Notes: (short remarks if any)
 - [observation about approach, assumptions, or edge cases]
 - [question for the implementer if needed]
+
+Ground each Missing or Extra item in the diff itself: cite the `file:line` where the spec gap or unrequested addition appears.
 ```
 
 Notes for the manager: pass the same `[FULL TASK TEXT]` that was given to the implementer so the reviewer compares the actual diff to the original spec. If the verdict is `SPEC_GAPS`, re-dispatch the implementer to address the `Missing` and `Extra` items, then re-dispatch the spec reviewer. Do not run quality review until the spec reviewer reports `SPEC_COMPLIANT`.
@@ -114,6 +113,10 @@ This template is for a lightweight, single-pass code-style review against vossla
 
 ```text
 You are reviewing: [TASK NAME]
+
+## Context bootstrap
+
+Before reading the diff, invoke `repo-rules-reader` and ground in the current repo rules. The checks below are anchored in the rule files `repo-rules-reader` summarizes (`docs/PYTHON_STYLE.md`, `docs/PYTEST_STYLE.md`, `docs/REPO_STYLE.md`, `docs/MARKDOWN_STYLE.md`). Use the skill's output as the canonical rule source; this prompt's check list is a focus list that highlights common pitfalls.
 
 ## Diff to review
 
@@ -132,9 +135,9 @@ You are reviewing: [TASK NAME]
 - Tabs vs spaces for Python indentation (vosslab uses tabs exclusively; PEP 8's spaces are not used).
 - try/except overuse (discouraged; max two-line cases when necessary).
 - dict.get(key, default) patterns that hide missing-required-key bugs (use dict[key] when key must exist).
-- assert statements in plain .py scripts or library modules (only tests/test_*.py and tests_e2e/ may use assert).
+- assert statements in plain .py scripts or library modules (only tests/test_*.py and tests/e2e/ may use assert).
 - Brittle pytest assertions (dates, collection sizes, required-key lists, hardcoded defaults, tunable constants, dataclass storage).
-- Pytest runtime budget (each test under one second; slower work belongs in tests_e2e/).
+- Pytest runtime budget (each test under one second; slower work belongs in tests/e2e/).
 - ASCII compliance (escape Greek letters as &alpha;, &beta;, etc.; no UTF-8 symbols).
 - Shebang policy (executable scripts only; library modules, helper files, __init__.py, and test files do not get shebangs).
 - Argparse minimalism (no flags users do not change between runs; avoid "what if someone wants to..." parameters).
@@ -145,6 +148,8 @@ You are reviewing: [TASK NAME]
 - Important: bullet list of issues likely to cause bugs or repo-rule violations, with file:line references.
 - Nit: bullet list of small style cleanups, with file:line references.
 - Notes: short remarks if any.
+
+Ground each Important or Nit item in the diff line or the exact command output it cites.
 ```
 
 Notes for the manager: run this quality review only after the spec reviewer reports SPEC_COMPLIANT. If the verdict is QUALITY_ISSUES and any issues are tagged Important, re-dispatch the implementer to fix them, then re-dispatch the quality reviewer for a second pass. Treat Nit items as optional; the manager decides whether to require a fix or let them slide.

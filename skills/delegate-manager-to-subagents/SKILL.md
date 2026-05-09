@@ -7,13 +7,9 @@ execution: direct
 
 # Manager-driven execution
 
-## Overview
-
-`delegate-manager-to-subagents` is a controlled delegation workflow for executing an approved implementation plan. The main agent acts as a manager: it reads the plan, creates tracked tasks, dispatches subagents to make all file changes, reviews their outputs read-only, sends work back for fixes when needed, and reports progress to the user. The main agent never edits code, tests, templates, or docs directly. Prefer parallel dispatch for independent ready work; use serial dispatch when dependencies, ownership conflicts, or review/integration risk require it.
-
 ## Central principle
 
-This skill is a manager-driven execution skill. The defining rule is that the main agent does not edit files. The main agent delegates all file changes to subagents, reviews their outputs read-only, and keeps the execution plan moving. The manager reduces wall time by identifying independent work that can be delegated concurrently, while preserving the rule that all file changes belong to subagents.
+The main agent manages execution, not file edits. It reads the approved plan, tracks tasks, dispatches subagents for all changes, reviews outputs read-only, and keeps work moving. Prefer parallel dispatch for independent ready work; use serial dispatch when dependencies, ownership conflicts, or review/integration risk require it. The manager reduces wall time by identifying independent work that can be delegated concurrently, while preserving the rule that all file changes belong to subagents.
 
 ## When to use
 
@@ -53,6 +49,24 @@ For the full delegation contract, see [manager_contract.md](references/manager_c
 
 The manager must pass the full original task text to each subagent verbatim. The manager may add context (repo rule file excerpts, plan summary, prior subagent findings) but must not silently rewrite requirements. Surface ambiguity, missing inputs, or scope questions to the user before dispatching.
 
+## Subagent context bootstrap
+
+For any task that touches code, tests, docs, templates, config, or generated files, every dispatched subagent invokes `repo-rules-reader` as its first action, before making changes or reviewing a diff. Treat the `repo-rules-reader` output as the current source of truth for repo rules. Keep dispatch briefs focused on the seven-part brief slots below (scope, boundaries, verification, handoff); use `repo-rules-reader` for rule content.
+
+## Canonical subagent brief
+
+Every subagent dispatch follows this seven-part structure. The parts follow the dispatch lifecycle: route the work (1-2), orient the subagent (3), define the deliverable (4-5), set the success bar (6), and close with evidence (7). The role-specific bodies in [references/role-catalog.md](references/role-catalog.md) slot in at part 4 (Scope) for implementers and at part 7 (Handoff) for reviewers; the outer structure is the same for all roles.
+
+1. **Plan reference**: `<path>#<section or task id>`.
+2. **Context bootstrap**: invoke `repo-rules-reader` before editing or reviewing.
+3. **Background**: why this task exists and what depends on it.
+4. **Scope**: numbered requirements copied from the approved plan, verbatim.
+5. **Boundaries**: files, behavior, and follow-on work owned elsewhere.
+6. **Verification**: literal commands and expected success lines.
+7. **Handoff**: files changed, commands run, exact output lines, concerns, residual risks.
+
+For filled-in dispatch examples, see [references/example-briefs.md](references/example-briefs.md).
+
 ## Role catalog and prompt templates
 
 The role-to-agent-file mapping and the verbatim prompt templates for the implementer,
@@ -70,7 +84,7 @@ without serializing ready work.
 1. Read the approved plan and repo rules.
 2. Convert the plan into tracked tasks via `TaskCreate`, with dependencies via `addBlockedBy`.
 3. Identify dependency-free tasks and independent lanes. If a `parallel-plan` output exists, use its workstream IDs, dependency graph, max-parallel-doers count, and acceptance criteria as the dispatch map. When the plan marks a milestone parallel-plan ready, treat that as the default dispatch shape unless a concrete dependency, ownership conflict, or review risk requires sequencing.
-4. Dispatch independent tasks concurrently up to the plan's safe parallelism limit; dispatch blocked or tightly coupled tasks in dependency order.
+4. Dispatch independent tasks concurrently up to the plan's safe parallelism limit; dispatch blocked or tightly coupled tasks in dependency order. Every dispatch follows the seven-part structure in `## Canonical subagent brief`.
 5. Review each subagent's report and diff read-only.
 6. Dispatch spec review.
 7. Dispatch quality review.
@@ -81,15 +95,11 @@ without serializing ready work.
 
 ## Dispatch order
 
-Default: dispatch all dependency-free tasks that can be isolated by workstream, component, file area, test layer, or documentation lane. Use `parallel-plan` when the approved plan contains independent workstreams, dependency IDs, or max-parallel-doers guidance. Serial dispatch is appropriate only when tasks are blocked, tightly coupled, share unresolved ownership, or would create review/integration risk. When dispatching only one subagent at a time, briefly state the blocker (dependency, shared file, ownership, review risk) that prevents safe parallel dispatch. Sequential dispatch of independent ready work increases wall time and should be called out with a reason.
+Default to dispatching dependency-free tasks that can be isolated by workstream, component, file area, test layer, or documentation lane. Use `parallel-plan` workstream IDs, dependency IDs, and max-parallel-doers guidance when available. Use serial dispatch when work is blocked, tightly coupled, shares unresolved ownership, or creates review/integration risk. When dispatching one subagent, state the sequencing reason.
 
 ## Reviewer disagreement rule
 
 If the spec reviewer and quality reviewer disagree, the manager resolves only by dispatching a focused follow-up reviewer or coder, never by editing code, tests, or docs directly.
-
-## Lighter than audit-code-reviewer
-
-Quality review is ONE subagent checking vosslab rules, not the 6-reviewer audit described in `audit-code-reviewer`. Defer to `/audit-code-reviewer` only if the user later asks for a full comprehensive review.
 
 ## Status handling
 
@@ -99,6 +109,18 @@ Quality review is ONE subagent checking vosslab rules, not the 6-reviewer audit 
 | DONE_WITH_CONCERNS | Read concerns; address scope/correctness issues before review; note observations and proceed. |
 | NEEDS_CONTEXT | Provide missing context; re-dispatch the same subagent. |
 | BLOCKED | Assess blocker. Re-dispatch with more context or a more capable model, break into smaller tasks, or escalate to the human. |
+
+## Evidence-first handoff
+
+Subagent reports include enough raw evidence for the manager to verify progress without rerunning work.
+
+- Include the exact command run and the exact success line from the output (for example, the actual `Passed: 25/25 steps` line).
+- Include failures, warnings, skipped checks, and their scope assessment (in scope or out of scope, with the evidence and affected files).
+- Include changed files and the task requirement each file satisfies.
+- Ground reviewer verdicts in the diff, command output, and task scope.
+- Mark a task ready for review only when the required evidence is present.
+
+For filled-in handoff examples, see [references/example-briefs.md](references/example-briefs.md).
 
 ## Closing the plan
 
@@ -120,19 +142,17 @@ work onto a teammate that has already finished its assigned task. See
 
 This skill uses disciplined manager delegation: fresh subagents per task, explicit dependencies, read-only manager review, and controlled parallel dispatch. It does not use redundant subagents or multi-reviewer workflows unless another approved plan explicitly calls for them.
 
-## Red flags
+## Review checkpoints
 
-- Manager editing any file (code, test, doc, template, changelog) instead of dispatching.
-- Manager rewriting plan task text instead of passing it verbatim.
-- Skipping spec review or running quality review before spec review is clean.
-- Dispatching in parallel without dependency, ownership, or review-path isolation.
-- Dispatching one subagent at a time without checking for independent lanes that could reduce wall time, or without stating the dependency, ownership, or review-risk reason that requires sequencing.
-- Letting a subagent commit (commits are human-only).
-- Triggering this skill for planning, brainstorming, or one-line fixes.
-- Heavyweight 6-pass reviews per task (use `/audit-code-reviewer` for that).
+- Manager dispatches all file changes to subagents.
+- Manager passes original task text verbatim.
+- Spec review completes before quality review.
+- Parallel dispatch has dependency, ownership, and review-path isolation.
+- Serial dispatch has a stated dependency, ownership, or review-risk reason.
+- Commits remain human-owned.
 
 ## Integration with other skills
 
 - Pairs with `blueprint-plan-drafter` and `old-manager-review-existing-plan` for plan authoring/audit.
-- Lighter alternative to `audit-code-reviewer` for per-task review during execution.
+- Lighter alternative to `audit-code-reviewer` for per-task review during execution; defer to `audit-code-reviewer` when the user asks for a full multi-pass audit.
 - Use `parallel-plan` as the preferred upstream dispatch map when the approved plan contains, or can be cleanly mapped to, independent workstreams. If the plan lacks workstream IDs but tasks are separable, the manager may group them into dependency-free dispatch lanes without rewriting the original task text or changing task scope.
