@@ -7,10 +7,10 @@ This reference captures planning patterns and quality gates distilled from:
 
 Use it to draft or review manager-level implementation plans for coding teams.
 
-## Capacity And Sizing Source
+## Capacity and sizing source
 Numeric targets for team capacity, workstream counts, work package counts, ready-at-start minimums, and patch cadence live in `references/CAPACITY_AND_SIZING.md`.
 
-## Terminology Contract
+## Terminology contract
 Canonical definitions live in `references/DEFINITIONS.md`.
 Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAILS.md`.
 - Milestone: timeboxed planning unit with deliverables and gates. Use in docs only.
@@ -22,13 +22,13 @@ Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAI
 - If you need a durable label in code, prefer component, module, stage, pass, feature, or contract.
 - Legacy note: older plans should use milestone terminology when updated.
 
-## 1. Plan Charter
+## Plan charter
 - State one objective in concrete terms.
 - Define scope and non-goals explicitly.
 - Describe current state before proposing future milestones.
 - Declare architecture and ownership boundaries early.
 
-## 2. Milestone Design
+## Milestone design
 - Use ordered milestones with clear dependency flow.
 - Milestone numbers are labels, not ordering. Ordering is defined by Depends on and Gates.
 - Apply workstream count and ownership/interface targets from `references/CAPACITY_AND_SIZING.md`.
@@ -44,7 +44,7 @@ Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAI
 - Mark optional milestones explicitly.
 - Keep stretch goals separate from required delivery milestones.
 
-## 2a. Workstream Breakdown Requirements
+### Workstream breakdown requirements
 - Every milestone must include a workstream breakdown section.
 - For each workstream, include:
   - Goal
@@ -54,7 +54,7 @@ Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAI
   - Expected patches (count and rough grouping)
 - Apply ready-at-start minimums and ready definition from `references/CAPACITY_AND_SIZING.md`.
 
-## 2b. Work Package Assignment Requirements
+### Work package assignment requirements
 - A work package must be completable by one coder and result in at least one patch.
 - Each workstream must be decomposed into work packages sized for one coder, following the targets in `references/CAPACITY_AND_SIZING.md`.
 - Required work package fields:
@@ -65,7 +65,7 @@ Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAI
   - Verification commands
   - Dependencies (other work packages)
 
-## 3. Acceptance and Gates
+## Acceptance and gates
 - Add measurable acceptance criteria, not qualitative intent.
 - Define explicit gates:
   - Unit/verification gate
@@ -74,7 +74,7 @@ Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAI
   - Release gate
 - Require deterministic outcomes where stability matters.
 
-## 4. Testing and Verification
+## Testing and verification
 - Map tests to each milestone.
 - Distinguish:
   - Unit checks
@@ -83,13 +83,13 @@ Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAI
   - Full regression gates
 - Include failure semantics (what blocks progression).
 
-## 5. Migration and Compatibility
+## Migration and compatibility
 - Prefer additive rollout first, destructive cleanup later.
 - State backward compatibility policy and limits.
 - Include deletion criteria for legacy paths.
 - Include rollback strategy when risk is non-trivial.
 
-## 6. Risk Register
+## Risk register
 - List top risks with:
   - Impact
   - Trigger
@@ -98,8 +98,9 @@ Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAI
 - Include drift risks (plan vs implementation mismatch).
 - Include scope creep and sequencing risks.
 
-## 7. Manager-Level Clarity Requirements
+## Manager-level clarity requirements
 - Use stable terminology consistently across sections.
+- Plan headings use sentence case per `docs/MARKDOWN_STYLE.md`; un-numbered; canonical names match [PLAN_HEADINGS.md](PLAN_HEADINGS.md) verbatim.
 - Under Architecture Boundaries, include a required mapping subsection: milestones and workstreams map to components and patches, and components use durable terminology.
 - Avoid hidden assumptions and implied dependencies.
 - Separate facts, decisions, and open questions.
@@ -108,7 +109,7 @@ Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAI
 - Apply patch cadence and patch sizing rules from `references/CAPACITY_AND_SIZING.md`.
 - Use patch reporting format: "Patch 1: [component] [intent]", "Patch 2: [component] [intent]", "Patch N: tests, migration, docs".
 
-## 8. Anti-Patterns To Reject
+## Anti-patterns to reject
 - Vague milestones without deliverables.
 - "Done" claims without test gates.
 - Mixing non-goals into in-scope tasks.
@@ -133,28 +134,10 @@ Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAI
 - Bad: `tests/test_milestone3_export.py`.
 - Good: `tests/test_export_contract.py` or `tests/test_export_regression.py`.
 
-## 9. Output Template
-Use this skeleton when drafting:
+## Output template
+For canonical heading rules (three-tier classification, casing, ordering, rejected variants, substitution rules, archetypes), see [PLAN_HEADINGS.md](PLAN_HEADINGS.md). For the fillable plan skeleton, see [PLAN_TEMPLATE.md](PLAN_TEMPLATE.md). This file does not restate heading names or the tier classification; future heading edits land in `PLAN_HEADINGS.md` first.
 
-1. Objective
-2. Scope
-3. Non-goals
-4. Current State
-5. Architecture Boundaries
-6. Mapping: Milestones and Workstreams to Components and Patches
-7. Milestone Plan
-8. Workstream Breakdown (for each workstream: Goal, Owner, Work packages [target ranges from references/CAPACITY_AND_SIZING.md], Interfaces [needs/provides], Expected patches [count/grouping])
-9. Work Package Specs (for each work package: title [verb + object], Owner, Touch points, Acceptance criteria, Verification commands, Dependencies)
-10. Per-Milestone Deliverables and Done Checks (require Depends on using dependency IDs and short reasons, plus Entry criteria and Exit criteria per milestone; use "none" if not applicable)
-11. Patch Plan and Reporting (use "Patch N: [component] [intent]" format; split any patch touching more than two components)
-12. Acceptance Criteria and Gates
-13. Test Strategy
-14. Migration and Compatibility
-15. Risks and Mitigations
-16. Rollout/Release Checklist
-17. Open Questions
-
-## Stabilization Plan Format
+## Stabilization plan format
 When the system has unresolved core failures, use this format instead of the full milestone plan:
 
 | Experiment | Hypothesis | Change | Metric | Result | Keep/Revert |
@@ -167,7 +150,7 @@ Constraints:
 - No new architecture until all experiments pass or are reverted.
 - Graduate to a full milestone plan only after stabilization succeeds.
 
-## Scrap vs Fix Decision Criteria
+## Scrap vs fix decision criteria
 When stabilization experiments accumulate, use these criteria to decide whether to keep fixing
 incrementally or scrap the approach and redesign.
 
@@ -197,7 +180,7 @@ incrementally or scrap the approach and redesign.
 **Graduation rule:** If the stabilization plan shows 3+ experiments failing for the same
 architectural reason, that is evidence for scrap.
 
-## 10. Review Scoring Heuristic
+## Review scoring heuristic
 - Blocker: missing scope boundary, no acceptance gates, no milestone done checks.
 - High risk: unclear dependencies, no migration policy, no regression strategy.
 - Medium risk: ambiguous wording, incomplete risk treatment.

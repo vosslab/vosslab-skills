@@ -16,7 +16,7 @@ Operate as a planning manager over multiple coders: define scope, architecture b
 - Inherently serial work (one critical refactor, a schema migration that gates everything else) is the documented exception, not the default.
 - The full readiness criteria live in `## Parallel-plan readiness checklist` near the bottom of this skill; draft toward those criteria from the first milestone, not as a final pass.
 
-## Terminology Contract
+## Terminology contract
 Canonical definitions live in `references/DEFINITIONS.md`.
 - Milestone: timeboxed planning unit with deliverables and gates. Use in docs only.
 - Workstream: parallel lane inside a milestone. Ownable by one coder or a small pair.
@@ -27,25 +27,25 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 - If you need a durable label in code, prefer component, module, stage, pass, feature, or contract.
 - Legacy note: update older docs to use milestone terminology consistently.
 
-## Terminology Collision
+## Terminology collision
 - Use Milestone / Workstream / Work package only in planning docs, never in code identifiers.
 - Use Stage / Pass / Step for durable pipeline or algorithm steps; these are allowed in code identifiers.
 - If a repository already has `phase3_*` filenames, treat "phase" there as legacy meaning "stage", and do not introduce new planning phases into code.
 - Apply naming guardrails from `references/NAMING_GUARDRAILS.md`.
 
-## Authority And Boundaries
+## Authority and boundaries
 - Read any repository files needed for planning context.
 - Write and update documentation artifacts (plans, progress trackers, changelog notes, review notes).
 - Do not write or modify production code, tests, or runtime configuration as part of this skill.
 - Coordinate work for multiple coders through clear ownership and handoff boundaries.
 
-## Planning Stance
+## Planning stance
 - Think forward-first and solution-oriented.
 - Optimize for feasible execution, not defensive critique.
 - Keep ambition grounded by explicit acceptance gates and dependency-aware sequencing.
 - Parallel-first design: see the section above; serial-only milestones are the documented exception.
 
-## Stabilization-First Rule
+## Stabilization-first rule
 - Before proposing architecture or refactor plans, assess whether the current system works
   reliably on its target inputs.
 - If core failures are unresolved, produce a stabilization plan instead:
@@ -63,9 +63,11 @@ Canonical definitions live in `references/DEFINITIONS.md`.
   scrap and redesign the algorithm before resuming incremental fixes.
 - See scrap-vs-fix decision criteria in `references/plan_quality_standard.md`.
 
-## Mandatory Constraints
+## Mandatory constraints
 - Decompose hard problems into atomic single-coder tasks per `docs/REPO_STYLE.md`.
-- Make sure the plan has a clear design philosophy near the top to avoid drift
+- Plan headings use sentence case (per `docs/MARKDOWN_STYLE.md`) and are un-numbered (no `## 1. Objective`-style numbering).
+- When a section is included, its name, casing, and order match `references/PLAN_HEADINGS.md` verbatim. Allowed add-on headings outside the canonical core/optional tiers are permitted but may not rename or replace canonical headings; see `references/PLAN_HEADINGS.md` for the substitution rules.
+- Include a `## Design philosophy` section in the canonical core. Write 2-4 sentences or bullets describing this plan's own trade-off and what alternative was rejected. Do not copy/paste the four core philosophies from `docs/REPO_STYLE.md`; cite them by name only when the plan actually leans on one. Empty stub bodies are rejected.
 - Do not perform coding tasks as part of this skill.
 - Do not include pseudo-complete promises without measurable acceptance criteria.
 - Do not collapse architecture, implementation, and release concerns into one checklist.
@@ -82,18 +84,19 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 - Finish the obvious: each work package must define its own obvious follow-on steps (fix the import, update `docs/CHANGELOG.md`, rerun the failed gate, apply the same edit to the next listed file) so a doer does not stop at a substep boundary. Per `docs/REPO_STYLE.md` core philosophies, stopping is reserved for real blockers (missing information, risky/irreversible action, scope change). Milestone Exit criteria must list these obvious follow-ons explicitly rather than leaving them implied.
 - Design for parallel-plan from the start. Every milestone must define at least 2 independent workstreams unless the work is inherently serial (document why). Work packages declare `Depends on` by ID so `parallel-plan` can pick up independent lanes without re-reading prose. Avoid hidden cross-workstream coupling: shared files, shared fixtures, or shared migrations belong in their own dedicated work package owned by one coder.
 
-## Inputs To Read First
-1. `refactor_progress.md` (if present in the target repo)
-2. Active plan docs in `docs/active_plans/` (if present in the target repo)
-3. Archive plan docs in `docs/archive/` (if present in the target repo)
-4. `references/plan_quality_standard.md`
-5. `references/DEFINITIONS.md`
-6. `references/CAPACITY_AND_SIZING.md`
-7. `references/NAMING_GUARDRAILS.md`
-8. `references/EXECUTION_RESOURCES.md`
+## Inputs to read first
+1. `references/PLAN_HEADINGS.md` -- canonical heading rules (three-tier table, casing, ordering, rejected variants, substitution rules, archetypes)
+2. `references/PLAN_TEMPLATE.md` -- fillable plan skeleton with archetype examples
+3. `references/plan_quality_standard.md`
+4. `references/DEFINITIONS.md`
+5. `references/CAPACITY_AND_SIZING.md`
+6. `references/NAMING_GUARDRAILS.md`
+7. `references/EXECUTION_RESOURCES.md`
+8. `refactor_progress.md` (if present in the target repo)
+9. Active plan docs in `docs/active_plans/` (if present in the target repo)
+10. Archive plan docs in `docs/archive/` (if present in the target repo)
 
 Use these inputs to match local planning style, terminology, status language, and quality bars.
-Read `references/PLAN_TEMPLATE.md` only for large or multi-workstream plans that need a fillable skeleton.
 
 ## Workflow
 1. Build context baseline:
@@ -119,32 +122,24 @@ Specify required documentation updates per milestone (active plan, progress trac
 Deliver one execution-ready plan document with measurable closure criteria.
 For large or multi-workstream plans, start from `references/PLAN_TEMPLATE.md` and keep only the slots that apply; for small plans, write the plan directly using the section list below.
 
-## Use only when applicable to the current task
-For plans that need a fillable form, `references/PLAN_TEMPLATE.md` is available as an optional starting skeleton. The list below is the canonical quick-scan index for every plan size.
+## Heading rules and template
+For canonical heading rules (three-tier classification, casing, ordering, rejected variants, substitution rules, plan archetypes), see `references/PLAN_HEADINGS.md`. For the fillable plan skeleton with worked use-case examples for each archetype, see `references/PLAN_TEMPLATE.md`.
 
-- Title and objective
-- Scope and non-goals
-- Current state summary
-- Architecture boundaries and ownership
-- Mapping: milestones and workstreams map to components and patches. Components must be named with durable terminology.
-- Milestone plan (ordered, dependency-aware)
-- Workstream breakdown (for each workstream: Goal, Owner, Work packages [target ranges from capacity reference], Interfaces [needs/provides], Expected patches [count and rough grouping])
-- Per-milestone deliverables and done checks (each milestone includes Depends on using dependency IDs with short reasons, plus Entry criteria and Exit criteria; use "none" when not applicable)
-- Work package template (required for assignment-ready chunks): Work package title [verb + object], Owner (must reference a specific agent type from `references/EXECUTION_RESOURCES.md`), Touch points [files/components], Acceptance criteria, Verification commands, Dependencies [other work packages]
-- Acceptance criteria and gates
-- Test and verification strategy
-- Migration and compatibility policy
-- Risk register and mitigations
-- Rollout and release checklist
-- Documentation close-out requirements
-- Patch plan and reporting format (required format: "Patch 1: [component] [intent]", "Patch 2: [component] [intent]", "Patch N: tests, migration, docs")
-- Open questions and decisions needed
+Canonical core (required in every plan, in this order, after the H1 title):
 
-## Quality Standard
+- Context
+- Objectives
+- Design philosophy
+- Scope
+- Non-goals
+
+The full Tier 2 (canonical optional) and Tier 3 (allowed add-on) lists, plus survey justification and rejected variants, live in `PLAN_HEADINGS.md`.
+
+## Quality standard
 Apply the checklist in `references/plan_quality_standard.md`.
 Reject or rewrite plan text that is vague, non-testable, or missing gate conditions.
 
-## Plan Handoff
+## Plan handoff
 After the plan is published, execution uses adjacent skills:
 - `parallel-plan` for lightweight parallelization of active work. Default handoff target: every milestone with 2+ independent workstreams should be flagged "parallel-plan ready" in its Exit criteria, listing which workstream IDs can run concurrently.
 - `delegate-manager-to-subagents` for fresh-subagent dispatch of independent work packages.
@@ -154,14 +149,14 @@ After the plan is published, execution uses adjacent skills:
 See `references/EXECUTION_RESOURCES.md` for the full lifecycle and agent catalog.
 
 ## Parallel-plan readiness checklist
-Before publishing, verify the plan can be picked up by `parallel-plan` without rewrites:
+Before publishing, verify the plan can be picked up by `parallel-plan` without rewrites. The visible artifact of this checklist is the per-milestone `Parallel-plan ready: <yes / no>` slot in `PLAN_TEMPLATE.md`; if `no`, the milestone must give a one-sentence reason.
 - Each milestone declares its parallel workstreams by ID, not prose.
 - Each work package has explicit `Depends on` IDs (use "none" when independent).
 - Shared resources (fixtures, migrations, generated artifacts) are owned by one work package, not duplicated across lanes.
 - Acceptance criteria are independently verifiable per work package, so concurrent doers do not need to coordinate mid-flight.
 - The plan names the maximum number of doers that can run in parallel within a milestone, derived from work package independence (not wishful concurrency).
 
-## Completion Criteria
+## Completion criteria
 Treat the planning task as complete only when:
 - All required sections exist.
 - Each milestone has concrete done checks.

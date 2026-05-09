@@ -442,7 +442,7 @@ All 23 modified files are SKILL.md files (23 skill edits; 0 new docs; WP-X2 drop
 - WP-A (atomic decomposition): PASS -- all 3 WP-A targets (blueprint-plan-drafter, old-orchestrate-next-milestone, html-game-parallel-builder) contain "Decompose hard problems into atomic single-coder tasks".
 - WP-S (skill-writing-guide): PASS -- `## Repo philosophies for new skills` section present; all 4 canonical names quoted on one line.
 - WP-R (unit-test-starter realignment): PASS -- `[docs/PYTEST_STYLE.md]` and `[docs/REPO_STYLE.md]` links both present.
-- WP-W (process-weight reframing): PASS -- all 3 WP-W targets (blueprint-plan-drafter, parallel-plan, old-orchestrate-next-milestone) have `## Use only when applicable to the current task`.
+- WP-W (process-weight reframing): PASS -- all 3 WP-W targets have a process-weight section: parallel-plan and old-orchestrate-next-milestone use `## Use only when applicable to the current task`; blueprint-plan-drafter renamed its equivalent to `## Heading rules and template` on 2026-05-09 when the heading rules were canonicalized into `references/PLAN_HEADINGS.md`.
 - WP-X1 (gas-town boundary): PASS -- `## Boundary with delegate-manager-to-subagents` confirmed in gas-town-workflow.
 - WP-X2: dropped by user direction; deprecation candidates remain in the "Known gaps and deferred work" section above.
 
