@@ -9,11 +9,11 @@ execution: direct
 
 ## Overview
 
-`delegate-manager-to-subagents` is a controlled delegation workflow for executing an approved implementation plan. The main agent acts as a manager: it reads the plan, creates tracked tasks, dispatches subagents to make all file changes, reviews their outputs read-only, sends work back for fixes when needed, and reports progress to the user. The main agent never edits code, tests, templates, or docs directly. Parallelism is optional and secondary. The primary goal is disciplined subagent execution, not maximum concurrency.
+`delegate-manager-to-subagents` is a controlled delegation workflow for executing an approved implementation plan. The main agent acts as a manager: it reads the plan, creates tracked tasks, dispatches subagents to make all file changes, reviews their outputs read-only, sends work back for fixes when needed, and reports progress to the user. The main agent never edits code, tests, templates, or docs directly. Prefer parallel dispatch for independent ready work; use serial dispatch when dependencies, ownership conflicts, or review/integration risk require it.
 
 ## Central principle
 
-This skill is not a parallel-execution skill. It is a manager-driven execution skill. The defining rule is that the main agent does not edit files. The main agent delegates all file changes to subagents, reviews their outputs read-only, and keeps the execution plan moving.
+This skill is a manager-driven execution skill. The defining rule is that the main agent does not edit files. The main agent delegates all file changes to subagents, reviews their outputs read-only, and keeps the execution plan moving. The manager reduces wall time by identifying independent work that can be delegated concurrently, while preserving the rule that all file changes belong to subagents.
 
 ## When to use
 
@@ -21,13 +21,12 @@ This skill is not a parallel-execution skill. It is a manager-driven execution s
 - The user wants controlled delegation to specialized subagents (coder, reviewer, tester, docs) instead of direct file editing.
 - Plan tasks are clear and scoped, with inputs and success criteria.
 - The user prefers tracked progress, explicit review gates, and subagent handoffs.
-- Sequential or lightly parallel execution is acceptable per the plan.
+- The plan has tasks, stages, or workstreams that can be tracked, delegated, and reviewed, including independent lanes suitable for concurrent dispatch.
 
 ## When not to use
 
 - Brainstorming, planning, or plan creation; use `blueprint-plan-drafter` or `old-manager-review-existing-plan` instead.
 - One-line fixes or small manual edits; do not use this skill.
-- User asks for "full Gas Town swarm execution"; use `gas-town-workflow` instead.
 - No approved plan exists yet.
 - Tight real-time collaboration needed; prefer direct iteration.
 
@@ -61,22 +60,28 @@ spec reviewer, and quality reviewer subagents live in
 [references/role-catalog.md](references/role-catalog.md). The manager dispatches one of
 those roles per task per the workflow below.
 
+For complex plans with multiple workstreams, see
+[references/parallel-dispatch-examples.md](references/parallel-dispatch-examples.md)
+for worked examples of assigning implementer, tester, reviewer, and docs roles
+without serializing ready work.
+
 ## Core workflow
 
 1. Read the approved plan and repo rules.
 2. Convert the plan into tracked tasks via `TaskCreate`, with dependencies via `addBlockedBy`.
-3. Dispatch one subagent per task or stage.
-4. Review each subagent's report and diff read-only.
-5. Dispatch spec review.
-6. Dispatch quality review.
-7. Send the task back to a subagent if fixes are needed.
-8. Mark the task `completed` only after both reviews pass.
-9. Dispatch a docs subagent for changelog and closeout.
-10. Report status to the user in chat.
+3. Identify dependency-free tasks and independent lanes. If a `parallel-plan` output exists, use its workstream IDs, dependency graph, max-parallel-doers count, and acceptance criteria as the dispatch map. When the plan marks a milestone parallel-plan ready, treat that as the default dispatch shape unless a concrete dependency, ownership conflict, or review risk requires sequencing.
+4. Dispatch independent tasks concurrently up to the plan's safe parallelism limit; dispatch blocked or tightly coupled tasks in dependency order.
+5. Review each subagent's report and diff read-only.
+6. Dispatch spec review.
+7. Dispatch quality review.
+8. Send the task back to a subagent if fixes are needed.
+9. Mark the task `completed` only after both reviews pass.
+10. Dispatch a docs subagent for changelog and closeout.
+11. Report status to the user in chat.
 
 ## Dispatch order
 
-Default: dispatch tasks sequentially in dependency order. Parallel dispatch is allowed only when the plan marks tasks independent OR when the manager can clearly isolate touched files and review paths without integration risk.
+Default: dispatch all dependency-free tasks that can be isolated by workstream, component, file area, test layer, or documentation lane. Use `parallel-plan` when the approved plan contains independent workstreams, dependency IDs, or max-parallel-doers guidance. Serial dispatch is appropriate only when tasks are blocked, tightly coupled, share unresolved ownership, or would create review/integration risk. When dispatching only one subagent at a time, briefly state the blocker (dependency, shared file, ownership, review risk) that prevents safe parallel dispatch. Sequential dispatch of independent ready work increases wall time and should be called out with a reason.
 
 ## Reviewer disagreement rule
 
@@ -111,24 +116,23 @@ carries stale context, encourages drift, and weakens independent judgment.
 work onto a teammate that has already finished its assigned task. See
 `docs/REPO_STYLE.md`.
 
-## Not Gas Town
+## Manager discipline boundary
 
-This skill does not maximize agent count. It does not require redundant coders, scouts, parity judges, convoys, or swarm-style execution. Use `gas-town-workflow` for that. This skill favors controlled delegation, small task handoffs, and review loops.
+This skill uses disciplined manager delegation: fresh subagents per task, explicit dependencies, read-only manager review, and controlled parallel dispatch. It does not use redundant subagents or multi-reviewer workflows unless another approved plan explicitly calls for them.
 
 ## Red flags
 
 - Manager editing any file (code, test, doc, template, changelog) instead of dispatching.
 - Manager rewriting plan task text instead of passing it verbatim.
 - Skipping spec review or running quality review before spec review is clean.
-- Dispatching in parallel when the plan does not mark tasks independent.
+- Dispatching in parallel without dependency, ownership, or review-path isolation.
+- Dispatching one subagent at a time without checking for independent lanes that could reduce wall time, or without stating the dependency, ownership, or review-risk reason that requires sequencing.
 - Letting a subagent commit (commits are human-only).
 - Triggering this skill for planning, brainstorming, or one-line fixes.
-- Using Gas Town vocabulary (orchestrator, convoy, refinery, parallel workstream) instead of plain manager/implementer/reviewer/tester/docs roles.
 - Heavyweight 6-pass reviews per task (use `/audit-code-reviewer` for that).
 
 ## Integration with other skills
 
 - Pairs with `blueprint-plan-drafter` and `old-manager-review-existing-plan` for plan authoring/audit.
 - Lighter alternative to `audit-code-reviewer` for per-task review during execution.
-- Use `parallel-plan` only if the approved plan already contains independent workstreams or the user explicitly asks for parallel execution.
-- Defers to `gas-town-workflow` only when the user explicitly invokes Gas Town conventions.
+- Use `parallel-plan` as the preferred upstream dispatch map when the approved plan contains, or can be cleanly mapped to, independent workstreams. If the plan lacks workstream IDs but tasks are separable, the manager may group them into dependency-free dispatch lanes without rewriting the original task text or changing task scope.

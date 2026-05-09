@@ -16,7 +16,7 @@ The manager dispatches one of these roles per task; the SKILL.md workflow says w
 | tester | `agents/tester.md` | Test work, only when explicitly required by the plan. |
 | docs subagent | `agents/planner.md` (or general-purpose) | All `docs/CHANGELOG.md` edits and other docs. |
 
-Other repo agents exist for different workflows: `agents/architect.md`, `agents/integrator.md`, `agents/maintainer.md`, `agents/monitor.md`, `agents/orchestrator.md`, `agents/parallelizer.md`, `agents/scheduler.md`. This skill does not use them. The skill intentionally avoids "orchestrator," "convoy," "refinery," and "parallel workstream" language; that belongs to Gas Town.
+Other repo agents exist for different workflows: `agents/architect.md`, `agents/integrator.md`, `agents/maintainer.md`, `agents/monitor.md`, `agents/orchestrator.md`, `agents/parallelizer.md`, `agents/scheduler.md`. This skill does not dispatch them. It uses plain execution terms such as lane, dependency, workstream, and parallel dispatch when reducing wall time, and uses additional redundant reviewers or multi-role coordination only when the approved plan explicitly calls for it.
 
 ## Implementer subagent prompt template
 
