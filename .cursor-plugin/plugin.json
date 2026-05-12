@@ -1,0 +1,24 @@
+{
+  "name": "vosslab-skills",
+  "displayName": "Voss Lab Skills",
+  "description": "Reusable workflow skills for refactoring plans, code review, repository maintenance, and education content production.",
+  "version": "26.05.12",
+  "author": {
+    "name": "Neil Voss",
+    "email": "prof.neil.voss@gmail.com"
+  },
+  "homepage": "https://github.com/vosslab/vosslab-skills",
+  "repository": "https://github.com/vosslab/vosslab-skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "claude-code",
+    "agent-skills",
+    "code-review",
+    "refactoring",
+    "documentation",
+    "education"
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/"
+}

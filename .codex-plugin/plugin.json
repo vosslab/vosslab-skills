@@ -1,0 +1,47 @@
+{
+  "name": "vosslab-skills",
+  "version": "26.05.12",
+  "description": "Reusable workflow skills for refactoring plans, code review, repository maintenance, and education content production.",
+  "author": {
+    "name": "Neil Voss",
+    "email": "prof.neil.voss@gmail.com",
+    "url": "https://bsky.app/profile/neilvosslab.bsky.social"
+  },
+  "homepage": "https://github.com/vosslab/vosslab-skills",
+  "repository": "https://github.com/vosslab/vosslab-skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "claude-code",
+    "agent-skills",
+    "code-review",
+    "refactoring",
+    "documentation",
+    "education"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Voss Lab Skills",
+    "shortDescription": "Planning, code review, documentation, and education workflows",
+    "longDescription": "Workflow skills for software planning, code review, repository maintenance, documentation, and education content production. Covers blueprint planning, parallel dispatch, TypeScript, computer vision, PySide6, README updates, unit tests, and more.",
+    "developerName": "Neil Voss",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Draft a blueprint plan for this repository change.",
+      "Review this code and identify maintainability issues.",
+      "Update the README and install documentation for this project."
+    ],
+    "websiteURL": "https://github.com/vosslab/vosslab-skills",
+    "privacyPolicyURL": "https://github.com/vosslab/vosslab-skills/blob/main/LICENSE",
+    "termsOfServiceURL": "https://github.com/vosslab/vosslab-skills/blob/main/LICENSE",
+    "brandColor": "#60A5FA",
+    "composerIcon": "./assets/vs_logo.svg",
+    "logo": "./assets/vs_logo.svg",
+    "screenshots": []
+  }
+}

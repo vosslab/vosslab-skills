@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1200"
+   height="1200"
+   viewBox="0 0 1200 1200"
+   role="img"
+   aria-labelledby="title desc"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="v_front_s_behind_logo.svg"
+   inkscape:version="1.4.4 (dcaf3e7, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview5"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.69333333"
+     inkscape:cx="570.43269"
+     inkscape:cy="571.875"
+     inkscape:window-width="1736"
+     inkscape:window-height="1102"
+     inkscape:window-x="0"
+     inkscape:window-y="39"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg5" />
+  <title
+     id="title1">V in front of S blue logo</title>
+  <desc
+     id="desc1">A stylized V letter in front of an S letter with a light-to-medium blue fill, subtle white glowing outline, and black background.</desc>
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient8"
+       x1="0"
+       y1="140"
+       x2="0"
+       y2="1060"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0"
+         stop-color="#9ee7ff"
+         id="stop6"
+         style="stop-color:#9ee7ff;stop-opacity:0.80000001;" />
+      <stop
+         offset="0.44999999"
+         stop-color="#4fbfff"
+         id="stop7"
+         style="stop-color:#4fbfff;stop-opacity:0.80000001;" />
+      <stop
+         offset="1"
+         stop-color="#1f74d6"
+         id="stop8"
+         style="stop-color:#1f74d6;stop-opacity:0.80000001;" />
+    </linearGradient>
+    <linearGradient
+       id="blueGradient"
+       x1="0"
+       y1="140"
+       x2="0"
+       y2="1060"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#9ee7ff"
+         id="stop1" />
+      <stop
+         offset="45%"
+         stop-color="#4fbfff"
+         id="stop2" />
+      <stop
+         offset="100%"
+         stop-color="#1f74d6"
+         id="stop3" />
+    </linearGradient>
+    <filter
+       id="whiteGlow"
+       x="-0.063489184"
+       y="-0.057599328"
+       width="1.1269784"
+       height="1.1151987">
+      <feGaussianBlur
+         stdDeviation="7"
+         result="softGlow"
+         id="feGaussianBlur3" />
+      <feFlood
+         flood-color="#ffffff"
+         flood-opacity="0.55"
+         result="glowColor"
+         id="feFlood3" />
+      <feComposite
+         in="glowColor"
+         in2="softGlow"
+         operator="in"
+         result="glow"
+         id="feComposite3" />
+      <feMerge
+         id="feMerge4">
+        <feMergeNode
+           in="glow"
+           id="feMergeNode3" />
+        <feMergeNode
+           in="SourceGraphic"
+           id="feMergeNode4" />
+      </feMerge>
+    </filter>
+    <style
+       id="style4">
+      .letter {
+        font-family: Arial Black, Impact, Helvetica, sans-serif;
+        font-weight: 900;
+        text-anchor: middle;
+        fill: url(#blueGradient);
+        stroke: #ffffff;
+        stroke-width: 20;
+        stroke-linejoin: round;
+        paint-order: stroke fill;
+        filter: url(#whiteGlow);
+      }
+      .behind {
+        opacity: 0.96;
+      }
+      .front {
+        opacity: 1;
+      }
+    </style>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient8"
+       id="linearGradient5"
+       gradientUnits="userSpaceOnUse"
+       x1="0"
+       y1="140"
+       x2="0"
+       y2="1060"
+       gradientTransform="translate(-0.95215717,182.64158)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#blueGradient"
+       id="linearGradient6"
+       gradientUnits="userSpaceOnUse"
+       x1="0"
+       y1="140"
+       x2="0"
+       y2="1060"
+       gradientTransform="translate(1.1108336,-27.358416)" />
+  </defs>
+  <rect
+     style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:3.69333;stroke-linecap:round;stroke-linejoin:round"
+     id="rect8"
+     width="1091.8269"
+     height="1084.6154"
+     x="54.086548"
+     y="57.692322"
+     ry="213.46155" />
+  <!-- S is drawn first, so it appears behind the V -->
+  <text
+     class="letter behind"
+     x="601.11084"
+     y="832.6416"
+     font-size="650px"
+     id="text4"
+     style="fill:url(#linearGradient6)"
+     transform="matrix(1.3922514,0,0,1.0918523,-235.35086,-81.072933)">S</text>
+  <text
+     class="letter front"
+     x="599.04785"
+     y="832.6416"
+     font-size="650px"
+     id="text5"
+     style="fill:url(#linearGradient5)"
+     transform="matrix(1.8758907,0,0,1.0742741,-525.53449,-27.256751)">V</text>
+</svg>
