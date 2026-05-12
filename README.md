@@ -17,28 +17,66 @@ Reusable workflow skills for refactoring plans, code review, repository maintena
 
 ## Quick start
 
-Install as a Claude Code plugin:
+Add the Voss Lab skills marketplace:
 
 ```bash
-claude plugin add https://github.com/vosslab/vosslab-skills
+claude plugin marketplace add vosslab/vosslab-skills
+```
+
+Install the plugin:
+
+```bash
+claude plugin install vosslab-skills@vosslab-skills
+```
+
+Or, inside an interactive Claude Code session:
+
+```
+/plugin marketplace add vosslab/vosslab-skills
+/plugin install vosslab-skills@vosslab-skills
+```
+
+Verify the marketplace is registered:
+
+```bash
+claude plugin marketplace list
 ```
 
 Then invoke any skill by name in a Claude Code session:
 
 ```
-/vosslab-skills:old-python-code-review
 /vosslab-skills:readme-docs
 /vosslab-skills:blueprint-plan-drafter
+/vosslab-skills:audit-code-reviewer
 ```
 
 See [docs/INSTALL.md](docs/INSTALL.md) for local clone and individual skill import options.
 
-## Skills summary
+## Skills included
 
-- Skills cover planning and execution workflows for software tasks.
-- Skills cover quality and maintenance workflows such as review, linting, and documentation updates.
-- Skills cover education-focused production workflows.
-- Full generated skill index: [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md).
+- `agents-md-fixer`: Trim AGENTS.md to a small pointer file linking into docs/*.md.
+- `arch-docs`: Create or refresh CODE_ARCHITECTURE.md and FILE_STRUCTURE.md.
+- `audit-code-reviewer`: Parallel multi-reviewer audit before merge or release.
+- `blueprint-plan-drafter`: Create forward-looking implementation plans from scratch.
+- `bptools-writer`: Create and validate biology-problems bptools Python question generators.
+- `computer-vision-expert`: Design, implement, and review computer vision systems in Python.
+- `delegate-manager-to-subagents`: Manage execution of an approved plan through subagents.
+- `docset-updater`: Audit and refresh the full repo doc set against REPO_STYLE.md.
+- `gas-town-workflow`: Gas Town style multi-agent coordination with role-mapped task routing.
+- `html-game-parallel-builder`: Build a TypeScript browser game using parallel subagents.
+- `install-usage-docs`: Create or refresh docs/INSTALL.md and docs/USAGE.md stubs.
+- `parallel-plan`: Split current work into independent tracks for parallel dispatch.
+- `pdf-guide`: Read, create, or review PDF files where rendering and layout matter.
+- `pyside6-engineer`: Design, implement, and review PySide6 desktop applications.
+- `readme-docs`: Standardize README.md to match repo conventions.
+- `repo-rules-reader`: Read repo rule files and answer targeted repo-rule questions.
+- `skill-writing-guide`: Guide for authoring Agent Skills (SKILL.md) in open standard format.
+- `typescript-engineer`: Resolve TypeScript errors and design strict TypeScript types.
+- `ui-ux-engineer`: Review and improve UI/UX quality in any framework.
+- `unit-test-starter`: Generate thorough Python 3 pytest unit tests across a repo.
+- `webwork-writer`: Create and lint WeBWorK PG/PGML questions.
+
+Full index with links: [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md).
 
 ## Related repositories and standards
 

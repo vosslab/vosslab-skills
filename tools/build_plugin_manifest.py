@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import datetime
 import json
 from pathlib import Path
 
@@ -21,44 +20,45 @@ PLUGIN_DESCRIPTION = (
 	"Reusable workflow skills for refactoring plans, code review,"
 	" repository maintenance, and education content production."
 )
+MARKETPLACE_DESCRIPTION = (
+	"Reusable workflow skills for refactoring plans, code review,"
+	" repository maintenance, documentation, and education content production."
+)
+MARKETPLACE_PLUGIN_DESCRIPTION = (
+	"Reusable workflow skills for software planning, code review,"
+	" repository maintenance, documentation, engineering,"
+	" and education content production."
+)
 AUTHOR_NAME = "Neil Voss"
+AUTHOR_EMAIL = "prof.neil.voss@gmail.com"
 AUTHOR_URL = "https://bsky.app/profile/neilvosslab.bsky.social"
 REPO_URL = "https://github.com/vosslab/vosslab-skills"
 LICENSE_ID = "MIT"
-
-
-#============================================
-def get_current_calver() -> str:
-	"""Return the current YY.MM.DD plugin version."""
-	today = datetime.date.today()
-	version = f"{today:%y.%m.%d}"
-	return version
+MARKETPLACE_SCHEMA = (
+	"https://docs.claude.com/schemas/claude-code-plugin-marketplace.schema.json"
+)
+MARKETPLACE_TAGS = [
+	"skills",
+	"claude-code",
+	"agent-skills",
+	"code-review",
+	"refactoring",
+	"documentation",
+	"education",
+]
 
 
 #============================================
 def read_version() -> str:
-	"""Read version from VERSION file, defaulting to current YY.MM.DD."""
-	if VERSION_FILE.exists():
-		text = VERSION_FILE.read_text(encoding="utf-8").strip()
-		if text:
-			return text
-	version = get_current_calver()
+	"""Read release version from repo root VERSION file.
+
+	The VERSION file is the single source of truth. Update it manually only
+	when publishing meaningful skill or plugin changes. Do not derive from
+	today's date, because the generator may run for validation, formatting,
+	or unrelated docs updates.
+	"""
+	version = VERSION_FILE.read_text(encoding="utf-8").strip()
 	return version
-
-
-#============================================
-def sync_version_file(check: bool) -> tuple[str, bool]:
-	"""Return the current YY.MM.DD version and whether VERSION already matched."""
-	version = get_current_calver()
-	existing_version = ""
-	if VERSION_FILE.exists():
-		existing_version = VERSION_FILE.read_text(encoding="utf-8").strip()
-	is_current = existing_version == version
-	if check or is_current:
-		return version, is_current
-
-	VERSION_FILE.write_text(version + "\n", encoding="utf-8")
-	return version, True
 
 
 #============================================
@@ -99,55 +99,68 @@ def collect_skill_files() -> list[Path]:
 
 
 #============================================
-def collect_keywords(skill_files: list[Path]) -> list[str]:
-	"""Extract skill names as keywords from SKILL.md frontmatter."""
-	keywords: list[str] = []
+def collect_skill_paths(skill_files: list[Path]) -> list[str]:
+	"""Collect skill folder paths as strings, excluding deprecated old-* skills."""
+	skills: list[str] = []
 	for skill_file in skill_files:
-		text = skill_file.read_text(encoding="utf-8")
-		name = extract_name(text)
-		if name:
-			keywords.append(name)
-	return sorted(keywords)
+		skill_name = skill_file.parent.name
+		# exclude deprecated old-* skills from published listings
+		if skill_name.startswith("old-"):
+			continue
+		skills.append(f"./skills/{skill_name}")
+	return skills
 
 
 #============================================
-def build_plugin_json(version: str, keywords: list[str]) -> dict:
-	"""Build the plugin.json structure."""
+def build_plugin_json(version: str, skill_paths: list[str]) -> dict:
+	"""Build the plugin.json structure, authoritative manifest for all skill paths."""
 	plugin_data = {
 		"name": PLUGIN_NAME,
 		"description": PLUGIN_DESCRIPTION,
 		"version": version,
 		"author": {
 			"name": AUTHOR_NAME,
+			"email": AUTHOR_EMAIL,
 			"url": AUTHOR_URL,
 		},
+		"homepage": REPO_URL,
 		"repository": REPO_URL,
 		"license": LICENSE_ID,
-		"keywords": keywords,
+		"keywords": MARKETPLACE_TAGS,
+		"skills": skill_paths,
 	}
 	return plugin_data
 
 
 #============================================
 def build_marketplace_json(version: str) -> dict:
-	"""Build the marketplace.json structure."""
+	"""Build the lean marketplace.json; plugin.json is the authoritative skill source."""
 	marketplace_data = {
+		"$schema": MARKETPLACE_SCHEMA,
 		"name": PLUGIN_NAME,
+		"description": MARKETPLACE_DESCRIPTION,
+		"version": version,
 		"owner": {
 			"name": AUTHOR_NAME,
-		},
-		"metadata": {
-			"description": (
-				"Workflow skills for planning, code review,"
-				" documentation, and education content."
-			),
+			"email": AUTHOR_EMAIL,
 		},
 		"plugins": [
 			{
 				"name": PLUGIN_NAME,
 				"source": "./",
-				"description": PLUGIN_DESCRIPTION,
+				"description": MARKETPLACE_PLUGIN_DESCRIPTION,
 				"version": version,
+				"author": {
+					"name": AUTHOR_NAME,
+					"email": AUTHOR_EMAIL,
+					"url": AUTHOR_URL,
+				},
+				"homepage": REPO_URL,
+				"repository": REPO_URL,
+				"license": LICENSE_ID,
+				"category": "productivity",
+				"tags": MARKETPLACE_TAGS,
+				"strict": True,
 			},
 		],
 	}
@@ -185,24 +198,22 @@ def main() -> int:
 
 	# collect data
 	skill_files = collect_skill_files()
-	keywords = collect_keywords(skill_files)
-	version, version_is_current = sync_version_file(args.check)
+	skill_paths = collect_skill_paths(skill_files)
+	version = read_version()
 
 	# build json content
-	plugin_data = build_plugin_json(version, keywords)
+	plugin_data = build_plugin_json(version, skill_paths)
 	marketplace_data = build_marketplace_json(version)
 	plugin_text = render_json(plugin_data)
 	marketplace_text = render_json(marketplace_data)
 
 	print(f"Version: {version}")
 	print(f"Skills found: {len(skill_files)}")
-	print(f"Keywords: {len(keywords)}")
+	print(f"Published skills: {len(skill_paths)}")
 
 	if args.check:
-		# verify files are up-to-date
-		all_match = version_is_current
-		if not version_is_current:
-			print(f"Out of date: {VERSION_FILE}")
+		# verify files are up-to-date without modifying anything
+		all_match = True
 		for path, expected in [
 			(PLUGIN_JSON, plugin_text),
 			(MARKETPLACE_JSON, marketplace_text),

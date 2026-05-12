@@ -1,17 +1,37 @@
 {
+  "$schema": "https://docs.claude.com/schemas/claude-code-plugin-marketplace.schema.json",
   "name": "vosslab-skills",
+  "description": "Reusable workflow skills for refactoring plans, code review, repository maintenance, documentation, and education content production.",
+  "version": "26.05.12",
   "owner": {
-    "name": "Neil Voss"
-  },
-  "metadata": {
-    "description": "Workflow skills for planning, code review, documentation, and education content."
+    "name": "Neil Voss",
+    "email": "prof.neil.voss@gmail.com"
   },
   "plugins": [
     {
       "name": "vosslab-skills",
       "source": "./",
-      "description": "Reusable workflow skills for refactoring plans, code review, repository maintenance, and education content production.",
-      "version": "26.05.08"
+      "description": "Reusable workflow skills for software planning, code review, repository maintenance, documentation, engineering, and education content production.",
+      "version": "26.05.12",
+      "author": {
+        "name": "Neil Voss",
+        "email": "prof.neil.voss@gmail.com",
+        "url": "https://bsky.app/profile/neilvosslab.bsky.social"
+      },
+      "homepage": "https://github.com/vosslab/vosslab-skills",
+      "repository": "https://github.com/vosslab/vosslab-skills",
+      "license": "MIT",
+      "category": "productivity",
+      "tags": [
+        "skills",
+        "claude-code",
+        "agent-skills",
+        "code-review",
+        "refactoring",
+        "documentation",
+        "education"
+      ],
+      "strict": true
     }
   ]
 }

@@ -51,7 +51,8 @@ Version is tracked in [VERSION](../VERSION) and mirrored in `plugin.json`.
 
 Primary use case (invoke a skill):
 
-1. The user installs the plugin (`claude plugin add ...`) or clones the repo
+1. The user installs the plugin via `claude plugin marketplace add vosslab/vosslab-skills`
+   then `claude plugin install vosslab-skills@vosslab-skills`, or clones the repo
    locally; [docs/INSTALL.md](INSTALL.md) covers both paths.
 2. Claude Code (or Codex / Gemini) discovers each `skills/<name>/SKILL.md`
    and loads its frontmatter for triggering.

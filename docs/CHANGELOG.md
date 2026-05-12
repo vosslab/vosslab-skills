@@ -1,3 +1,34 @@
+## 2026-05-12
+
+### Additions and New Features
+
+- Updated `tools/build_plugin_manifest.py`: new `collect_skill_paths()` collects 21
+  skill paths as strings (excluding `old-*`), replaces `collect_keywords()` and
+  `collect_marketplace_skills()`. Version now reads from the `VERSION` file without
+  auto-advancing; maintainers bump `VERSION` only when publishing meaningful changes.
+  Added `AUTHOR_EMAIL`, `MARKETPLACE_SCHEMA`, `MARKETPLACE_TAGS`, and three description
+  constants. Removed `datetime` import, `get_current_calver()`, `sync_version_file()`.
+
+### Behavior or Interface Changes
+
+- `build_plugin_json()` now includes `author.email`, `homepage`, `keywords` (uses
+  `MARKETPLACE_TAGS` descriptor list instead of skill names), and `skills` (list of
+  skill folder paths as strings, 21 paths excluding `old-*` skills).
+- `build_marketplace_json()` now generates a lean manifest with `$schema`, top-level
+  `description`, `owner.email`, and plugin entry with `author.url`, `homepage`,
+  `repository`, `license`, `category`, `tags`, and `strict: true`. Skill enumeration
+  moved from `marketplace.json` into `plugin.json`.
+- `README.md` Quick start updated to two-step install flow:
+  `claude plugin marketplace add vosslab/vosslab-skills` then
+  `claude plugin install vosslab-skills@vosslab-skills`. Replaces the non-existent
+  `claude plugin add` command.
+- `README.md` "Skills summary" section renamed "Skills included" and expanded from
+  four generic bullets to a per-skill list of all 21 published skills.
+- `docs/INSTALL.md` Method 1 updated to use the two-step marketplace install flow;
+  removed stale "Known gaps" item about `claude plugin add` syntax.
+- `docs/CODE_ARCHITECTURE.md` data flow step 1 updated to use the correct install
+  command sequence.
+
 ## 2026-05-09
 
 ### Additions and New Features

@@ -7,12 +7,32 @@ This repository is a Claude Code plugin that provides reusable workflow skills. 
 - [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed and working
 - Git (for clone-based methods)
 
-## Method 1: install as a Claude Code plugin
+## Method 1: install from the marketplace
 
-Point Claude Code at this repo to load all repository skills as a plugin.
+Add the marketplace, then install the plugin:
 
 ```bash
-claude plugin add https://github.com/vosslab/vosslab-skills
+claude plugin marketplace add vosslab/vosslab-skills
+claude plugin install vosslab-skills@vosslab-skills
+```
+
+Or, inside an interactive Claude Code session:
+
+```
+/plugin marketplace add vosslab/vosslab-skills
+/plugin install vosslab-skills@vosslab-skills
+```
+
+Confirm the marketplace is registered:
+
+```bash
+claude plugin marketplace list
+```
+
+Validate the plugin manifest locally from the repo root (for development):
+
+```bash
+claude plugin validate .
 ```
 
 After installing, skills are available as `/vosslab-skills:<skill-name>` in any Claude Code session.
@@ -68,5 +88,4 @@ git pull --ff-only
 
 ## Known gaps
 
-- [ ] Confirm exact `claude plugin add` syntax once Claude Code plugin marketplace is finalized.
 - [ ] Verify whether `--plugin-dir` persists across sessions or requires a settings entry.
