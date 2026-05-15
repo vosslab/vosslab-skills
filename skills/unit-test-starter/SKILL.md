@@ -141,7 +141,7 @@ This skill can be slow and may take hours on large repos.
      file -> functions tested -> functions skipped (with reasons).
 10. Record changes
    - If files were created or changed, record the change in
-     [docs/CHANGELOG.md](docs/CHANGELOG.md) when the file exists.
+     `docs/CHANGELOG.md` when the file exists.
 
 ## Output
 

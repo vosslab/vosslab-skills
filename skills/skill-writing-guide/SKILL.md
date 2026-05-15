@@ -178,8 +178,8 @@ Skills in this repository follow additional patterns observed across existing sk
 - **Quality bar section**: Planning skills define explicit quality standards and anti-patterns.
 - **Reference files**: Complex skills use `references/` for definitions, capacity/sizing, naming guardrails, and quality standards.
 - **Conditional paths**: Skills check for optional repo infrastructure (e.g., `docs/active_plans/`) and skip steps when absent.
-- Follow [docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md): sentence-case headings, ASCII only, `-` for bullets.
-- Follow [docs/REPO_STYLE.md](docs/REPO_STYLE.md): lowercase filenames with underscores in references, SCREAMING_SNAKE_CASE for Markdown docs.
+- Follow `docs/MARKDOWN_STYLE.md`: sentence-case headings, ASCII only, `-` for bullets.
+- Follow `docs/REPO_STYLE.md`: lowercase filenames with underscores in references, SCREAMING_SNAKE_CASE for Markdown docs.
 
 ## Skill naming
 

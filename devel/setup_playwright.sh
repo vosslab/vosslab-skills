@@ -24,6 +24,9 @@ npm install --save-dev @playwright/test
 echo "Downloading chromium browser for Playwright..."
 npx playwright install chromium
 
+echo "Downloading firefox browser for Playwright..."
+npx playwright install firefox
+
 echo
 echo "Playwright setup complete. See templates/playwright_smoke_test.md"
 echo "for the smoke-test recipe used between batches."

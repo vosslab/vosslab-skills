@@ -10,8 +10,8 @@ execution: either
 ## Goal
 
 Create minimal, correct stubs for:
-- [docs/INSTALL.md](docs/INSTALL.md): setup steps, dependencies, environment requirements.
-- [docs/USAGE.md](docs/USAGE.md): how to run the tool, CLI flags, practical examples.
+- `docs/INSTALL.md`: setup steps, dependencies, environment requirements.
+- `docs/USAGE.md`: how to run the tool, CLI flags, practical examples.
 
 Keep content evidence based. If evidence is missing, write a "Known gaps" task instead
 of guessing.
@@ -25,15 +25,15 @@ of guessing.
 ## Workflow
 
 1. Inspect evidence
-   - Read [README.md](README.md) and [AGENTS.md](AGENTS.md) when present
+   - Read `README.md` and `AGENTS.md` when present
      to learn purpose, constraints, and any required environment notes.
-   - Look for entry points and run commands (scripts, [pyproject.toml](pyproject.toml),
+   - Look for entry points and run commands (scripts, `pyproject.toml`,
      `setup.cfg`, `Makefile`, `tools/`, `bin/`) and note what a user actually runs.
    - Identify dependencies and install method (pip editable, requirements file, system deps),
      and only record what is confirmed by repo files.
 2. Create or update docs
    - Create missing files, or trim and correct stale ones.
-   - Keep doc naming under [docs/](docs/) consistent with repo conventions.
+   - Keep doc naming under `docs/` consistent with repo conventions.
 3. Keep stubs minimal
    - Prefer 2 to 6 bullets per section.
    - Prefer one primary path and keep alternates out unless the repo makes them explicit.
@@ -43,17 +43,17 @@ of guessing.
    - Add a "Known gaps" section with verification tasks only, written as TODO-style checks.
    - Do not invent versions, OS support, or flags; leave them as gaps instead.
 5. Require a verify step
-   - [docs/INSTALL.md](docs/INSTALL.md) must include a "Verify install" section with
+   - `docs/INSTALL.md` must include a "Verify install" section with
      one command that proves the install worked in a fresh environment.
    - If no verifiable command exists, add it as a "Known gaps" task instead of guessing.
 6. Troubleshooting only with evidence
-   - Add a troubleshooting subsection in [docs/INSTALL.md](docs/INSTALL.md) only when
+   - Add a troubleshooting subsection in `docs/INSTALL.md` only when
      you can cite it from repo evidence (existing issues, error messages in scripts,
      known env vars, CI failures).
    - Otherwise do not include troubleshooting content or speculative fixes.
 7. Document dry-run behavior when it exists
    - If scripts that modify files expose a `--dry-run` option, document it in
-     [docs/USAGE.md](docs/USAGE.md).
+     `docs/USAGE.md`.
    - Do not invent flags. If a dry-run is missing and would help, note it as a
      "Known gaps" task instead of adding unverified guidance.
 8. Keep README scope separate
@@ -116,7 +116,7 @@ One paragraph: what users do with the tool.
 
 ## Output
 
-- Updated [docs/INSTALL.md](docs/INSTALL.md) and [docs/USAGE.md](docs/USAGE.md).
+- Updated `docs/INSTALL.md` and `docs/USAGE.md`.
 - Short report: created, updated, and known gaps.
 
 ## Delegated execution

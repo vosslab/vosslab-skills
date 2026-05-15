@@ -58,9 +58,9 @@ Keep deeper detail in `docs/` and link it from the README.
    - Link text must be the file path so readers know they are clicking a file and see
      the exact filename.
    - Good:
-     - [docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md): Markdown rules for this repo.
+     - `[docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md)`: Markdown rules for this repo.
    - Bad:
-     - [Style Guide for Markdown](docs/MARKDOWN_STYLE.md)
+     - `[Style Guide for Markdown](docs/MARKDOWN_STYLE.md)`
    - Only include a backticked path when the link text is not the path.
    - Choose the documentation list format based on doc count:
      - Small docset (3 to 8): single list, each item includes path link as link text
@@ -92,12 +92,12 @@ Keep deeper detail in `docs/` and link it from the README.
    - Bullets use `-`, one idea per bullet.
    - Relative links with descriptive text.
    - When referencing files, use Markdown links so users can click through. Markdown
-     links are created using the syntax [link text](URL), where "link text" is the
+     links are created using the syntax `[link text](URL)`, where "link text" is the
      clickable text that appears in the document, and "URL" is the web address or
      file path the link points to. This allows users to navigate between different
      content easily. Use file-path link text so readers know the exact filename
-     (good: [docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md), bad:
-     [Style Guide for Markdown](docs/MARKDOWN_STYLE.md)).
+     (good: `[docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md)`, bad:
+     `[Style Guide for Markdown](docs/MARKDOWN_STYLE.md)`).
 8. Enforce REPO_STYLE documentation rules
    - Do not add banned docs (CONTRIBUTING.md, templates, SECURITY.md unless supported).
    - If a missing common doc is required to keep README concise (usually INSTALL or

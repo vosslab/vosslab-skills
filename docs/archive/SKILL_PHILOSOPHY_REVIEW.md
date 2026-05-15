@@ -1,10 +1,10 @@
 # Skill philosophy review
 
-This document applies the repo-wide philosophies defined in [REPO_STYLE.md](REPO_STYLE.md#core-philosophies) to the skill corpus.
+This document applies the repo-wide philosophies defined in [REPO_STYLE.md](../REPO_STYLE.md#core-philosophies) to the skill corpus.
 
 ## Scope and method
 
-This document is an application/audit. It cites the canonical philosophy anchor in [REPO_STYLE.md](REPO_STYLE.md#core-philosophies); it does not define or restate the four philosophies. `AGENTS.md` is referenced only for operational rules, never as a philosophy definition source.
+This document is an application/audit. It cites the canonical philosophy anchor in [REPO_STYLE.md](../REPO_STYLE.md#core-philosophies); it does not define or restate the four philosophies. `AGENTS.md` is referenced only for operational rules, never as a philosophy definition source.
 
 The 23 skills in scope (one `SKILL.md` per folder under `skills/<skill>/`):
 

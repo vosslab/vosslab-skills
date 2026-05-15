@@ -116,7 +116,6 @@ cargo fmt --check
 
 ```bash
 bash script.sh
-bash -n script.sh        # syntax check only
 ./script.sh
 ./script.py
 ./subdir/script.py
@@ -124,12 +123,15 @@ tools/runner.py          # bare relative-path scripts
 scripts/build.sh
 ```
 
+`bash -n script.sh` (syntax check) is denied -- inspect the script with the
+Read tool instead. See the denied commands section.
+
 ### Safe utilities
 
 These commands are allowed as single commands. Command substitution is blocked.
 
 **File and text processing:**
-`awk`, `cat`, `colordiff`, `comm`, `cut`, `diff`, `expand`, `file`, `fmt`, `fold`,
+`cat`, `colordiff`, `comm`, `cut`, `diff`, `expand`, `file`, `fmt`, `fold`,
 `grep`, `head`, `jq`, `mediainfo`, `nl`, `od`, `paste`, `pdftotext`, `rg`, `sed`,
 `seq`, `shuf`, `sort`, `tac`, `tail`, `tee`, `tr`, `unexpand`, `uniq`, `wc`, `xargs`
 
@@ -146,28 +148,55 @@ These commands are allowed as single commands. Command substitution is blocked.
 
 Note: Some of these (like `cat`, `grep`, `head`, `tail`) have deny rules that block
 them when used with file path arguments. See the denied commands section. Use the
-dedicated tools (Read, Grep, Glob) instead.
+dedicated tools (Read, Grep, Glob) instead. `awk` is not in this list at all -- it
+is denied entirely (see the `awk` denied section below).
 
 ### Local runtimes
 
 **Node.js:**
-`node` is allowed for running `.js`, `.mjs`, and `.cjs` files, syntax checking with
-`-c` or `--check`, inline evaluation with `-e` or `--eval`, and `--version` queries.
+To get unstuck fast: use `node <script>` or `node --test <test-file>` for
+local project files. For non-trivial inline logic, write a `_temp.js` file
+and run `node _temp.js` instead of `node -e "..."`.
+
+`node` is allowed for local script execution with a known set of dev/test
+flags. Auto-allowed shape:
+`node <flags> <path>.{js,mjs,cjs,ts,tsx} [script args...]`.
+Whitelisted flags before the script: `--test`, `--watch`, `--check`, `-c`,
+`--loader=<arg>` / `--loader <arg>`, `--import=<arg>` / `--import <arg>`, and
+any short `-<letters>` flag. Arguments **after** the script path are
+intentionally allowed -- once the script is a known local file, its own argv
+is the script's concern. The match is full-command anchored (`$`), not a
+prefix match, so nothing can hide between the extension and end-of-command.
+Bare diagnostic forms `--test`, `--version`, `--help` are also allowed.
+Inline JS (`-e` / `--eval`) and unrecognized `--long-flags` (`--inspect`,
+`--experimental-*`, etc.) **passthrough** for user approval -- `node` is a
+general-purpose interpreter (shell spawn, fs, network), so inline code is the
+dangerous shape. Command substitution (`` ` ``, `$(...)`) is blocked
+unconditionally.
 
 ```bash
-node script.js
-node -c script.js
-node -e "require('./data.json')"
-node --version
+node script.js                              # allowed
+node --test tests/test_foo.mjs              # allowed
+node --loader=tsx tests/walker.mjs          # allowed
+node --loader tsx/esm --test tests/x.ts    # allowed
+node --watch script.mjs                     # allowed
+node -c script.js                           # allowed
+node --test                                 # allowed (default test glob)
+node --version                              # allowed
+node -e "require('./data.json')"            # passthrough (inline JS)
+node --eval "console.log(1)"                # passthrough (inline JS)
+node --inspect tests/x.mjs                  # passthrough (unknown long-flag)
+node --experimental-vm-modules tests/x.mjs  # passthrough
 ```
 
 **npx (whitelisted packages):**
 `npx` is allowed for a whitelist of known-safe local dev tool packages: `tsc`,
-`eslint`, `prettier`, `playwright`, `esbuild`. Unknown packages still require
-user approval (passthrough).
+`tsx`, `eslint`, `prettier`, `playwright`, `esbuild`. Unknown packages still
+require user approval (passthrough).
 
 ```bash
 npx tsc --noEmit              # allowed
+npx tsx --test tests/x.ts     # allowed (TypeScript file runner)
 npx eslint src/               # allowed
 npx prettier --check .        # allowed
 npx playwright screenshot ... # allowed
@@ -264,6 +293,12 @@ The `rm` command is denied by default, but these specific patterns are allowed:
 | `/tmp/` paths | `rm /tmp/test_output.json` |
 | Cache directories | `rm -rf __pycache__`, `rm -r ~/Library/Caches/foo` |
 | `git rm` with relative paths | `git rm old_file.py` |
+| `rmdir` (empty-dir only) | `rmdir /tmp/empty`, `rmdir src/content/old/` |
+
+`rmdir`, including `rmdir -p` (remove the empty parent chain), is allowed
+because POSIX `rmdir` only removes empty directories. It fails when any
+target directory is non-empty (no `-r`/`-R` behavior). To clean up after a
+`git mv A/* B/` chain, run `rmdir A/` to drop the now-empty source dir.
 
 ### Package managers
 
@@ -400,6 +435,22 @@ recursive patterns directly.
 For a shell-side file listing, `ls <dir>` and `git ls-files <pathspec>` are
 both allowed.
 
+### `awk`
+
+**Blocked:** All `awk` invocations -- `awk '/pat/{print}' file`, `awk '{print $2}'`,
+`gawk`, `mawk`, absolute-path and `command`/`env`-prefixed forms, and pipeline
+leaves (`... | awk ...`). Unlike `cat`/`grep`/`sed`, there is no pipe exception:
+`awk` is denied even as a stdin filter.
+
+**Why:** Almost all agent `awk` usage is line-matching ("find lines matching X,
+print them"), which the Grep tool does directly. `awk`'s `/regex/` syntax also
+makes a reliable file-vs-stdin guard impractical, so the deny is unconditional.
+
+**Instead:** For line-matching, invoke the Grep tool with `pattern`, `path`,
+`glob`, `output_mode`, and `head_limit`. For genuine field extraction, pipe the
+source through `cut`, or read the file with the Read tool and process it in a
+`_temp.py` script.
+
 ### `sed -n` with file paths
 
 **Blocked:** `sed -n '10,20p' file.txt`
@@ -420,9 +471,12 @@ Other sed operations (substitution, etc.) are allowed.
 chained or piped, since the decomposer splits leaves before matching:
 `echo hi && Read README.md`, `cat /tmp/x | Grep foo`.
 
-A grep pattern that *contains* a tool name is not affected:
-`grep "Grep\|Read" file` is allowed (the deny anchors at start-of-leaf,
-so only the lowercase `grep` token matters).
+A grep pattern that *contains* a tool name does not hit *this* deny:
+`grep "Grep\|Read" file` is not flagged as a tool-name-in-Bash command
+(the deny anchors at start-of-leaf, so only the lowercase `grep` token
+matters). Note it is still denied by the file-`grep` rule above if a
+file path argument is present -- a file search is a file search
+regardless of what the pattern spells.
 
 **Why:** `Grep`, `Read`, `Glob`, `Edit`, `Write`, `Task`, `WebFetch`, and
 `WebSearch` are Claude Code TOOLS, not shell commands. Pasting the tool
@@ -511,11 +565,17 @@ Underscore-prefixed files can be removed freely.
 
 ### `for` and `while` loops
 
-**Blocked:** `for f in *.py; do ...`, `while read line; do ...`
+**Blocked:** `for f in *.py; do ...`, `while read line; do ...`, and pipeline
+forms like `ls *.md | while read f; do ...; done` or
+`cmd; while true; do ...; done`. The deny anchors the loop keyword at
+start-of-leaf, after a `|`, `;`, or `&` character, or after a `do ` (a loop
+nested inside a `do ... done` body).
 
 **Why:** Loop logic belongs in script files, not inline Bash.
 
-**Instead:** Write the logic in a `_temp.py` or `_temp.sh` file and execute it.
+**Instead:** Write the loop into a `_temp.py` or `_temp.sh` file, run it with
+`bash _temp.sh` (or `source source_me.sh && python3 _temp.py`), then remove
+the temp file.
 
 ### `bash -c` / `bash -lc`
 
@@ -524,7 +584,18 @@ Underscore-prefixed files can be removed freely.
 **Why:** The Bash tool already runs bash. `bash -c` is redundant bash-in-bash.
 
 **Instead:** Run the command directly: `source source_me.sh && python3 script.py`.
-Running script files (`bash script.sh`, `bash -n script.sh`) is still allowed.
+Running a script file (`bash script.sh`) is still allowed. `bash -n script.sh`
+(syntax check) is denied separately -- inspect the script with the Read tool.
+
+### `bash`/`sh`/`zsh -n` (syntax check)
+
+**Blocked:** `bash -n script.sh`, `sh -n x.sh`, `zsh -n x.sh`. Covers
+absolute-path and `command`/`env` prefixes.
+
+**Why:** Steers agents away from using the shell as a script-analysis tool.
+
+**Instead:** Inspect the script with the Read tool. If you need to run it,
+use `bash script.sh` (allowed) or ask for explicit user approval.
 
 ### `sudo`
 
@@ -660,9 +731,13 @@ useless.
 
 **Instead:** N/A. GitHub operations are not available via CLI.
 
-### Homebrew python `-c`
+### python `-c` (inline code)
 
-**Blocked:** `/opt/homebrew/bin/python3 -c "print('hello')"`
+**Blocked:** Every `python -c` form -- bare `python3 -c "print(1)"`, `python -c`,
+version-suffixed `python3.12 -c`, absolute-path binaries
+(`/opt/homebrew/bin/python3 -c`), `command`/`env` prefixes, and interpreter
+flags before `-c` (`python3 -B -c`). `python3 script.py` and `python3 -m pytest`
+are unaffected -- only the `-c` inline-code form is denied.
 
 **Why:** Inline code is hard to lint and debug.
 

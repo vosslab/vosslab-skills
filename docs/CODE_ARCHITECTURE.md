@@ -5,7 +5,7 @@
 [vosslab-skills](../README.md) is a Claude Code plugin that ships reusable
 skills, sub-agent role definitions, and small Python tooling for indexing and
 packaging. It is not a runtime application: most of the repo is content
-([skills/](../skills/), [agents/](../agents/), [docs/](../docs/)) plus a few
+([skills/](../skills/), [agents/](../agents/), [docs/](.)) plus a few
 generators in [tools/](../tools/) that keep the published index and plugin
 manifest in sync with that content.
 
@@ -43,7 +43,7 @@ Version is tracked in [VERSION](../VERSION) and mirrored in `plugin.json`.
   [docs/E2E_TESTS.md](E2E_TESTS.md)) plus shared helpers
   ([tests/git_file_utils.py](../tests/git_file_utils.py),
   [tests/conftest.py](../tests/conftest.py)).
-- [docs/](../docs/): style guides, install/usage, troubleshooting,
+- [docs/](.): style guides, install/usage, troubleshooting,
   changelog, and the generated skills index.
 - [.claude-plugin/](../.claude-plugin/): plugin and marketplace manifests.
 

@@ -1,3 +1,37 @@
+## 2026-05-14
+
+### Fixes and Maintenance
+
+- Repaired 59 real Markdown link errors flagged by `tests/test_markdown_links.py`
+  after rule relaxations A (directory targets) and B (path-like text as tail
+  suffix) landed in the vendored script. Fixes split across 4 categories:
+  (1) `docs/SKILL_PHILOSOPHY_REVIEW.md` moved to `docs/archive/` -- updated 5
+  link URLs in `docs/CHANGELOG.md` and `docs/FILE_STRUCTURE.md`, and 2 in the
+  moved file itself for its `../REPO_STYLE.md` references;
+  (2) `docs/docs/...` typo URLs in `docs/CHANGELOG.md` (2);
+  (3) redundant `..` traversal `[docs/](../docs/)` rewritten to `(.)` in
+  `docs/CHANGELOG.md`, `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`;
+  (4) cross-area Markdown links exiting skill folders rewritten to backticked
+  names per `feedback_cross_skill_links` memory: `audit-code-reviewer`,
+  `install-usage-docs`, `readme-docs`, `skill-writing-guide`,
+  `unit-test-starter`, plus literal `[link text](URL)` template examples in
+  `arch-docs` and `readme-docs` SKILL.md files. Book-placeholder `.txt`
+  references in `computer-vision-expert` and `ui-ux-engineer` are kept as
+  Markdown links pointing to `.gitignore`'d book extracts (large/copyrighted
+  files that live locally only); a separate upstream-test suggestion adds an
+  exception for `git check-ignore`-matched targets that exist on disk so the
+  test no longer flags them.
+- Replaced absolute filesystem-path link in `docs/CHANGELOG.md` to
+  `/Users/vosslab/.claude/plans/idempotent-booping-stream.md` with a backticked
+  filename (path was outside the repo and unreachable on GitHub).
+- Fixed `tests/test_plugin_manifest_drift.py`: checked the wrong manifest field
+  (`keywords`, which is a thematic tag list -- `skills`, `claude-code`,
+  `agent-skills`, etc.) instead of the `skills` array of folder paths, and did
+  not exclude `old-*` folders that `tools/build_plugin_manifest.py` explicitly
+  drops from the published manifest. Test now compares the manifest's
+  `skills` array (with `./skills/` prefix stripped) against non-deprecated
+  skill folder names.
+
 ## 2026-05-12
 
 ### Additions and New Features
@@ -126,11 +160,11 @@
 
 ### Behavior or Interface Changes
 
-- Added [docs/CODE_ARCHITECTURE.md](CODE_ARCHITECTURE.md) describing the plugin's layout, major components ([skills/](../skills/), [agents/](../agents/), [tools/](../tools/), [devel/](../devel/), [tests/](../tests/), [docs/](../docs/)), data flow, indexing flow, testing gates, and extension points. Records two `Known gaps`: missing root runtime requirements manifest and a stray `tingly-foraging-mccarthy.md` plan file at the repo root.
-- Added [docs/FILE_STRUCTURE.md](FILE_STRUCTURE.md) with an ASCII top-level layout, key-subtree notes (including the [tools/](../tools/) vs [devel/](../devel/) distinction and the centrally-maintained vs repo-specific split inside [docs/](../docs/)), generated-artifact pointers, and a `Where to add new work` section.
+- Added [docs/CODE_ARCHITECTURE.md](CODE_ARCHITECTURE.md) describing the plugin's layout, major components ([skills/](../skills/), [agents/](../agents/), [tools/](../tools/), [devel/](../devel/), [tests/](../tests/), [docs/](.)), data flow, indexing flow, testing gates, and extension points. Records two `Known gaps`: missing root runtime requirements manifest and a stray `tingly-foraging-mccarthy.md` plan file at the repo root.
+- Added [docs/FILE_STRUCTURE.md](FILE_STRUCTURE.md) with an ASCII top-level layout, key-subtree notes (including the [tools/](../tools/) vs [devel/](../devel/) distinction and the centrally-maintained vs repo-specific split inside [docs/](.)), generated-artifact pointers, and a `Where to add new work` section.
 - Linked [docs/CODE_ARCHITECTURE.md](CODE_ARCHITECTURE.md) and [docs/FILE_STRUCTURE.md](FILE_STRUCTURE.md) from [README.md](../README.md) Documentation list.
 - Added new skill `agents-md-fixer` ([skills/agents-md-fixer/SKILL.md](../skills/agents-md-fixer/SKILL.md)): trims and standardizes a repo's `AGENTS.md` to the 100-150 line target from [docs/REPO_STYLE.md](REPO_STYLE.md), moving long content into `docs/*.md` and leaving links. Introduces a new `-fixer` suffix family in [docs/SKILL_NAMING.md](SKILL_NAMING.md) for in-place trim/standardize of a single named artifact. [docs/SKILLS_INDEX.md](SKILLS_INDEX.md) updated to 24 skills.
-- Added [docs/SKILL_PHILOSOPHY_REVIEW.md](SKILL_PHILOSOPHY_REVIEW.md) applying the four canonical philosophies anchored at [docs/REPO_STYLE.md#core-philosophies](REPO_STYLE.md#core-philosophies) to all 23 vosslab skills, with per-skill diagnosis, conflict catalog, mode and execution-posture taxonomy, philosophy applicability matrix (with evidence IDs), and a Phase 3 verification appendix.
+- Added [docs/archive/SKILL_PHILOSOPHY_REVIEW.md](archive/SKILL_PHILOSOPHY_REVIEW.md) applying the four canonical philosophies anchored at [docs/REPO_STYLE.md](REPO_STYLE.md#core-philosophies) to all 23 vosslab skills, with per-skill diagnosis, conflict catalog, mode and execution-posture taxonomy, philosophy applicability matrix (with evidence IDs), and a Phase 3 verification appendix.
 - Added new `## Delegated execution` sections on 11 doer skills marked `delegated` or `either` in the matrix.
 - Added new `## Subagent dispatch` sections on 5 manager skills (`gas-town-workflow`, `manager-driven-execution`, `parallel-plan`, `review-code-changes`, `web-game-parallel-build`).
 - Added new `## Repo philosophies for new skills` section in `skills/skill-writing-guide/SKILL.md` (WP-S1).
@@ -143,7 +177,7 @@
 
 ### Behavior or Interface Changes
 
-- Rewrote [docs/SKILL_NAMING.md](SKILL_NAMING.md) after the audit captured in [/Users/vosslab/.claude/plans/idempotent-booping-stream.md](/Users/vosslab/.claude/plans/idempotent-booping-stream.md). Retracted rule 6 (agent-form preference) and replaced with a verb-first-for-process / domain-noun-for-specialist split. Added rule 1 (first-two-tokens carry identity), rule 2 (first-3-character prefix uniqueness), rule 7 (`old-` deprecation prefix), and rule 8 (no `..` paths exiting skill folders). Updated audit table to the post-rename state (24 skills: 14 compliant, 7 accepted-rename, 3 deprecated `old-*`).
+- Rewrote [docs/SKILL_NAMING.md](SKILL_NAMING.md) after the audit captured in `idempotent-booping-stream.md`. Retracted rule 6 (agent-form preference) and replaced with a verb-first-for-process / domain-noun-for-specialist split. Added rule 1 (first-two-tokens carry identity), rule 2 (first-3-character prefix uniqueness), rule 7 (`old-` deprecation prefix), and rule 8 (no `..` paths exiting skill folders). Updated audit table to the post-rename state (24 skills: 14 compliant, 7 accepted-rename, 3 deprecated `old-*`).
 - Repo-wide cross-reference rewrite: 253 occurrences of old skill names replaced with new names across 45 files (skills/, docs/, README.md, .claude-plugin/plugin.json, agents/openai.yaml manifests, html-game-parallel-builder templates). `docs/CHANGELOG.md` history kept old names intact.
 - Stripped 82 markdown links of the form `[name](../path)` whose targets exit the skill folder; replaced with backticked-name references (`` `audit-code-reviewer` ``, `` `docs/REPO_STYLE.md` ``). Reason: `..` paths break when a skill is loaded outside the repo (personal overlay, marketplace plugin cache). Same-skill `..` links inside `webwork-writer/references/docs/webwork/` were preserved (they stay within the skill).
 - Renamed `docset-auditor` -> `docset-updater` to better describe the skill's update-if-drifted behavior; `-updater` is the new `-docs`-adjacent suffix family entry.
@@ -165,7 +199,7 @@
 - Added design-not-symptom one-line reminders to 4 reviewer/audit skills (`python-code-review`, `manager-review-existing-plan`, `review-code-changes`, `unit-test-starter`).
 - Added atomic-decomposition references to 3 multi-agent / planning skills (`manager-make-new-plan`, `orchestrate-next-milestone`, `web-game-parallel-build`).
 - Repaired regression: WP-T2 / WP-T5d description-rewrite coders briefly dropped `mode:` and `execution:` from `python-code-review` and `readme-fix`; both restored.
-- Applied style fixes from the 6-reviewer audit: H1 ordering at top of [docs/SKILL_PHILOSOPHY_REVIEW.md](SKILL_PHILOSOPHY_REVIEW.md); corrected relative-depth links inside that doc; trimmed `## Repo philosophies for new skills` heading to 6 words; reformatted `web-game-parallel-build` "Subagent dispatch" to match the other 4 manager skills.
+- Applied style fixes from the 6-reviewer audit: H1 ordering at top of [docs/archive/SKILL_PHILOSOPHY_REVIEW.md](archive/SKILL_PHILOSOPHY_REVIEW.md); corrected relative-depth links inside that doc; trimmed `## Repo philosophies for new skills` heading to 6 words; reformatted `web-game-parallel-build` "Subagent dispatch" to match the other 4 manager skills.
 - Updated repo-wide cross-references (~25 files: SKILL.md bodies, agent YAMLs, plugin manifest, README, docs/INSTALL.md, docs/USAGE.md, docs/SKILL_PHILOSOPHY_REVIEW.md, dev scripts, web-game-parallel-builder templates) to use new skill names.
 - Fixed [tools/list_loaded_skills.py](../tools/list_loaded_skills.py) plugin scanner: the previous walk assumed `cache/<plugin>/<version>/skills/` (3 levels) but the actual cache layout is `cache/<marketplace>/<plugin>/<version>/skills/` (4 levels), so all 16 plugin skills (14 superpowers, 1 frontend-design, 1 skill-creator) were silently missed. Replaced filesystem-walk with `~/.claude/plugins/installed_plugins.json` lookup, which gives the active install path directly and skips stale cached versions.
 
@@ -173,9 +207,9 @@
 
 - `docs/REPO_STYLE.md` is vendored upstream; the planned `## Naming` cross-link to [docs/SKILL_NAMING.md](SKILL_NAMING.md) cannot be applied locally and is deferred to the upstream owner.
 - Codified rule 6 in [docs/SKILL_NAMING.md](SKILL_NAMING.md): prefer agent-form suffixes (`-er`/`-or`/`-ist`); verb-form `-fix`/`-refresh` deprecated; `-docs` is a documented artifact-form exception.
-- Decided mode-tag form as YAML frontmatter (top-level `mode:` and `execution:` keys), tied to evidence read from `skills/skill-writing-guide/SKILL.md`. See WP-M0 decision in [docs/SKILL_PHILOSOPHY_REVIEW.md](SKILL_PHILOSOPHY_REVIEW.md).
+- Decided mode-tag form as YAML frontmatter (top-level `mode:` and `execution:` keys), tied to evidence read from `skills/skill-writing-guide/SKILL.md`. See WP-M0 decision in [docs/archive/SKILL_PHILOSOPHY_REVIEW.md](archive/SKILL_PHILOSOPHY_REVIEW.md).
 - Held the matrix-gate rule: skills not flagged in the matrix did not receive philosophy edits, preventing corpus-wide bloat.
-- Dropped WP-X2 (separate `docs/SKILL_DEPRECATIONS.md`) by user direction during the 6-reviewer audit; deprecation candidates remain documented in the "Known gaps and deferred work" section of [docs/SKILL_PHILOSOPHY_REVIEW.md](SKILL_PHILOSOPHY_REVIEW.md). A future plan can author a deprecation doc when there is concrete deletion work.
+- Dropped WP-X2 (separate `docs/SKILL_DEPRECATIONS.md`) by user direction during the 6-reviewer audit; deprecation candidates remain documented in the "Known gaps and deferred work" section of [docs/archive/SKILL_PHILOSOPHY_REVIEW.md](archive/SKILL_PHILOSOPHY_REVIEW.md). A future plan can author a deprecation doc when there is concrete deletion work.
 - Adjusted WP-C scope from 8 to 6 actual rewrites: `python-code-review` and `readme-fix` were already compliant (they contained no CHANGELOG-edit instruction to rewrite). The plan's diagnosis was over-broad; the audit corrected this.
 - Resolved plan section 16 open questions: chose `pdf-guide` (kept the `-guide` family); kept both `-engineer` and `-expert` distinct in the suffix table; `parallel-plan` and `gas-town-workflow` left as borderline-no-change.
 - Initial pick `merge-code-reviewer` for the multi-reviewer audit was rejected as misleading ("merge-" implies the skill merges; it actually reviews before merging). Settled on `audit-code-reviewer` because the leading token `audit` matches the skill's self-description.
@@ -219,7 +253,7 @@
 - Extended `skills/review-code-changes/SKILL.md` with two more parallel reviewers: a
   legacy/dead-code auditor that flags unused code and feature drift, and a comment/readability
   auditor that checks for clear naming, comments, and docstrings against
-  [docs/PYTHON_STYLE.md](docs/PYTHON_STYLE.md).
+  [docs/PYTHON_STYLE.md](PYTHON_STYLE.md).
 
 ### Behavior or Interface Changes
 - Updated `skills/read-repo-rules/SKILL.md` and
@@ -477,7 +511,7 @@
 - Updated `AGENTS.md` Python environment guidance to include the proper-form command: `source source_me.sh && python 3 tools/*.py`.
 - Updated `tools/build_skills_index.py` to index this repository's `skills/` tree (including nested `skills/.system/*` skills), improve frontmatter description parsing, and emit repository/system skill counts.
 - Generated and added `docs/SKILLS_INDEX.md` from current `skills/**/SKILL.md` files.
-- Expanded `README.md` with a clearer grouped skills summary and linked the generated [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md) index.
+- Expanded `README.md` with a clearer grouped skills summary and linked the generated [docs/SKILLS_INDEX.md](SKILLS_INDEX.md) index.
 - Updated `README.md` quick start to run `source source_me.sh && python3 tools/build_skills_index.py` and inspect `docs/SKILLS_INDEX.md`.
 - Renamed terminology and metadata in `skills/orchestrate-next-milestone/SKILL.md` from legacy phase language to milestone/workstream/work package/patch language aligned with `skills/manager-make-new-plan`.
 - Updated `skills/orchestrate-next-milestone/agents/openai.yaml` interface labels and default prompt to use the renamed `$orchestrate-next-milestone` skill and milestone-first wording.

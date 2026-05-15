@@ -34,13 +34,13 @@ Base statements on observable files and configs, and record unknowns as verifica
    - Use present tense, concrete paths, and relative links.
    - Link file and folder names to their repo paths when mentioned, so they are
      clickable for details. Markdown links are created using the syntax
-     [link text](URL), where "link text" is the clickable text that appears in the
-     document, and "URL" is the web address or file path the link points to. This
-     allows users to navigate between different content easily. Use file-path link
-     text so readers know the exact filename (good:
-     [docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md), bad:
-     [Style Guide for Markdown](docs/MARKDOWN_STYLE.md)). Only include a backticked
-     path when the link text is not the path.
+     `[link text](URL)`, where "link text" is the clickable text that appears in
+     the document, and "URL" is the web address or file path the link points to.
+     This allows users to navigate between different content easily. Use file-path
+     link text so readers know the exact filename (good:
+     `[docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md)`, bad:
+     `[Style Guide for Markdown](docs/MARKDOWN_STYLE.md)`). Only include a
+     backticked path when the link text is not the path.
    - Prefer short, scannable bullets.
    - Only include commands verifiable from repo files.
    - Avoid non-ASCII characters unless explicitly required by existing docs.

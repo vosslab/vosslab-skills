@@ -32,10 +32,10 @@ single concise review.
    - User request and any referenced plan document.
    - `git status --short` and the relevant `git diff`.
    - Repo rule files that exist, especially `AGENTS.md`,
-     [docs/REPO_STYLE.md](docs/REPO_STYLE.md),
-     [docs/PYTHON_STYLE.md](docs/PYTHON_STYLE.md), `docs/PYTEST_STYLE.md` when present,
-     [docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md), and
-     [docs/CHANGELOG.md](docs/CHANGELOG.md).
+     `docs/REPO_STYLE.md`,
+     `docs/PYTHON_STYLE.md`, `docs/PYTEST_STYLE.md` when present,
+     `docs/MARKDOWN_STYLE.md`, and
+     `docs/CHANGELOG.md`.
    - Focused test commands already run and their results, if available.
 2. Launch six independent review subagents in parallel immediately after the minimal shared
    context is ready. Use the reviewer names below so each pass has a concrete identity and scope.
@@ -76,9 +76,9 @@ Review focus:
   model loads.
 - Flag elaborate end-to-end scenarios sitting in `tests/`: whole-script CLI runs, I/O round trips,
   real external tools. These belong in `tests_e2e/` per
-  [docs/E2E_TESTS.md](docs/E2E_TESTS.md), not in pytest. Recommend moving or deleting, not
+  `docs/E2E_TESTS.md`, not in pytest. Recommend moving or deleting, not
   rewriting in place.
-- Flag fragile assertions per [docs/PYTEST_STYLE.md](docs/PYTEST_STYLE.md): dates,
+- Flag fragile assertions per `docs/PYTEST_STYLE.md`: dates,
   collection sizes, lists of required keys, hardcoded defaults, tunable constants, dataclass
   storage, function-name strings, and over-broad or order-dependent assertions.
 - Flag tests of trivial behavior, thin stdlib wrappers, `_temp.*` files, or tests that will not
@@ -91,8 +91,8 @@ Review focus:
 Launch `Style auditor` to review changed code against implementation style guides.
 
 Review focus:
-- Python style from [docs/PYTHON_STYLE.md](docs/PYTHON_STYLE.md) when Python changed.
-- Repo-wide style from [docs/REPO_STYLE.md](docs/REPO_STYLE.md).
+- Python style from `docs/PYTHON_STYLE.md` when Python changed.
+- Repo-wide style from `docs/REPO_STYLE.md`.
 - Naming, file placement, dependency choices, command examples, and generated-output handling.
 - Maintainability issues introduced by the patch, including unclear ownership boundaries or
   unnecessary abstractions.
@@ -125,7 +125,7 @@ Review focus:
 ### Reviewer 6: Comment auditor
 
 Launch `Comment auditor` to confirm changed code is well commented and easy to read. Anchor
-the review in [docs/PYTHON_STYLE.md](docs/PYTHON_STYLE.md) commenting rules when Python
+the review in `docs/PYTHON_STYLE.md` commenting rules when Python
 changed.
 
 Review focus:

@@ -52,7 +52,7 @@ instructions are easier to scan, prioritize, and follow.
 - Error report must include: the command run and full stderr, plus a short next step: close other Git processes, remove a stale lock only if no process holds it, or fix `.git` permissions.
 
 ## Pytest failure triage
-- For pytest test-writing rules, commands, and failure triage, see [docs/PYTEST_STYLE.md](PYTEST_STYLE.md).
+- For pytest test-writing rules, commands, and failure triage, see [PYTEST_STYLE.md](PYTEST_STYLE.md).
 
 ## Changelog rotation
 - Rotate `docs/CHANGELOG.md` when it reaches about 1000 lines (`wc -l docs/CHANGELOG.md`).
@@ -95,7 +95,7 @@ instructions are easier to scan, prioritize, and follow.
   - `pytest tests/`
 - Avoid hard-coded interpreter paths in routine command examples.
 - Document shared helpers and modules in `docs/USAGE.md` when used across scripts.
-- Use `tests/test_pyflakes_code_lint.py` and `tests/test_ascii_compliance.py` for repo-wide lint checks, with `tests/check_ascii_compliance.py` for single-file ASCII/ISO-8859-1 checks and `tests/fix_ascii_compliance.py` for single-file fixes.
+- Use `tests/test_pyflakes_code_lint.py` and `tests/test_ascii_compliance.py` for repo-wide lint checks, with `tests/check_ascii_compliance.py` for single-file ASCII/ISO-8859-1 checks and `tests/fix_ascii_compliance.py` for single-file fixes. `tests/test_markdown_links.py` is the repo-wide check that every local Markdown link is GitHub-browsable and well formed.
 - For smoke tests, reuse stable output folder names (for example `output_smoke/`) instead of creating one-off output directory names; reusing/overwriting avoids repeated delete-approval prompts.
 - In test scripts that need the repository root, import and use the shared `tests/git_file_utils.py` module:
   ```python
@@ -127,7 +127,7 @@ instructions are easier to scan, prioritize, and follow.
 - Choose clear, descriptive names.
 - Keep well-known root-level docs (for example VERSION, README.md, AGENTS.md).
 - I prefer to use social media links instead of hard coding my email in repos. For example, Neil Voss, https://bsky.app/profile/neilvosslab.bsky.social
-- When referencing files, use Markdown links so users can click through. Markdown links are created using the syntax [link text](URL), where "link text" is the clickable text that appears in the document, and "URL" is the web address or file path the link points to. This allows users to navigate between different content easily. Use file-path link text so readers know the exact filename (good: [docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md), bad: [Style Guide for Markdown](docs/MARKDOWN_STYLE.md)). Only include a backticked path when the link text is not the path.
+- When referencing files, use Markdown links so users can click through. Markdown links are created using the syntax `[link text](URL)`, where "link text" is the clickable text that appears in the document, and "URL" is the web address or file path the link points to. This allows users to navigate between different content easily. Use file-path link text so readers know the exact filename (good: `[docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md)`, bad: `[Style Guide for Markdown](docs/MARKDOWN_STYLE.md)`). Only include a backticked path when the link text is not the path.
 
 
 ### Recommended common docs

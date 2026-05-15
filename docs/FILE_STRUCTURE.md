@@ -61,7 +61,7 @@ Helper modules: [tests/git_file_utils.py](../tests/git_file_utils.py),
 [tests/fix_ascii_compliance.py](../tests/fix_ascii_compliance.py),
 [tests/fix_whitespace.py](../tests/fix_whitespace.py).
 
-### [docs/](../docs/)
+### [docs/](.)
 
 Two flavors live here:
 
@@ -81,7 +81,7 @@ Two flavors live here:
   [docs/PLAYWRIGHT_USAGE.md](PLAYWRIGHT_USAGE.md),
   [docs/SKILLS_INDEX.md](SKILLS_INDEX.md),
   [docs/SKILL_NAMING.md](SKILL_NAMING.md),
-  [docs/SKILL_PHILOSOPHY_REVIEW.md](SKILL_PHILOSOPHY_REVIEW.md),
+  [docs/archive/SKILL_PHILOSOPHY_REVIEW.md](archive/SKILL_PHILOSOPHY_REVIEW.md),
   [docs/CODE_ARCHITECTURE.md](CODE_ARCHITECTURE.md),
   [docs/FILE_STRUCTURE.md](FILE_STRUCTURE.md).
 
