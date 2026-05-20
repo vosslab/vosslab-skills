@@ -19,6 +19,16 @@ Five principles guide work in this repo. Cite them by name when making judgment 
 - Keep `README.md` and `AGENTS.md` at the repo root.
 - Determine REPO_ROOT with `git rev-parse --show-toplevel`, not by deriving paths from the current working directory.
 
+## Project type marker
+
+Every repo carries `REPO_TYPE` at the repo root: one lowercase token plus newline. Tokens: `python`, `typescript`, `rust`, `other`. Missing marker defaults to `python`. `propagate_style_guides.py` reads the marker to dispatch the right file overlay; `reset_repo.py` writes it during bootstrap. `REPO_TYPE` is maintained after bootstrap; it controls future propagation behavior, not just initial scaffolding.
+
+## Template layout
+
+The starter template ships universal + Python files at the template root (their final consumer location) and type-specific overlays under `templates/<type>/`. Currently `templates/typescript/` and `templates/rust/` exist; `rust/` is a stub. The propagator resolves universal/python sources at template root and typescript/rust sources under `templates/<type>/`. The template repo refreshes its own root copies via `python3 propagate_style_guides.py --sync-self`. Template-only tooling (e.g., `tools/detect_repo_type.py`) lives under `tools/`; it never propagates and is removed by `reset_repo.py` at consumer bootstrap.
+
+- See [PROPAGATION_RULES.md](PROPAGATION_RULES.md) for the folder convention and manifest rules that route files to consumers.
+
 ## AGENTS.md files
 
 Keep `AGENTS.md` files concise and operational. They should usually be around
@@ -28,6 +38,23 @@ guidance. Put canonical explanations in the appropriate `docs/*.md` file, then
 link to that file from `AGENTS.md`.
 Concise `AGENTS.md` files help coding agents perform better because the
 instructions are easier to scan, prioritize, and follow.
+
+## README.md and GitHub About descriptions
+
+- The first paragraph of `README.md` is the source text for the GitHub About description.
+- The first paragraph must remain readable as raw Markdown source text.
+- Repository About descriptions must stay under 250 characters.
+- Agents edit only the first paragraph of `README.md`; the user copies that text into the GitHub About field.
+- Write a clear, searchable hook that helps readers quickly understand the repository.
+- Lead with the repository purpose and the main user benefit.
+- Include one distinguishing detail if space allows.
+- Prefer concrete nouns and plain language.
+- Leave workflow steps, setup instructions, framework lists, and detailed claims for the rest of `README.md`.
+- The first paragraph must be pure prose. Do not use badges, Markdown links, images, code spans, or raw URLs.
+- Avoid repeating information already obvious, do not include repo name.
+
+Preferred structure:
+`[What it is] + [who/use case] + [distinctive detail]`
 
 ## Naming
 - Use SCREAMING_SNAKE_CASE for Markdown docs filenames, with the .md extension

@@ -4,3 +4,14 @@ skills/.system/
 skills/*/references/*.txt
 skills/codex-primary-runtime/
 docs/superpowers/
+
+# === UNIVERSAL ===
+_temp*.?*
+# === PYTHON ===
+build/
+dist/
+sdist/
+*.egg
+*.egg-info/
+site/
+

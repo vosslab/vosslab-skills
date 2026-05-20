@@ -25,6 +25,14 @@ Language Model guide to Neil pytest usage.
 * Do not write tests for `_temp.*` files, ad-hoc debugging scripts, or any code intended to be deleted shortly after use.
 * Tests in `tests/` are reserved for code that will remain in the repo.
 
+## Three-tier test layout
+
+Test files are organized by execution model and scope:
+
+* **`tests/test_*.py`** - Fast, deterministic unit and integration tests. Rules: no network, no file I/O beyond `tmp_path`, no sleeps, no subprocess CLI round-trips. Examples: lint checks (pyflakes, ASCII compliance, indentation), parser correctness, round-trip invariants.
+* **`tests/e2e/`** - Non-browser end-to-end (shell or Python orchestration); excluded from pytest (outside scope of `pytest tests/`); run via explicit shell or Python runner. Examples: full bootstrap flow, multi-repo propagation with real git operations, CLI round-trip chains.
+* **`tests/playwright/`** - Browser-driven E2E; excluded from pytest; run via Playwright runner or explicit shell. Examples: full-stack web app flows, UI interaction and assertion, rendered-output verification.
+
 ## Runtime budget
 
 * Every pytest under `tests/` should finish in well under one second. `pytest tests/` is the
