@@ -3,8 +3,6 @@ name: unit-test-starter
 description: Generate thorough Python 3 pytest unit tests across a repo by scanning Python files
   and functions, writing one test module per source file, following current repo Python and pytest
   style, and documenting behavior that is unsafe or unclear to test.
-mode: doer
-execution: delegated
 ---
 
 # Unit test starter (Python3 + pytest)

@@ -1,8 +1,6 @@
 ---
 name: html-game-parallel-builder
-description: "Use when building a TypeScript browser game from modular `src/*.ts` files using parallel subagents to ship good code AND reduce wall-clock build time (designed for live/podcast time pressure). Immediate live target is the locally-served preview from `run_web_server.sh`; GitHub Pages from `dist/` (via GitHub Actions) and the optional `export_single_file.sh` portable HTML are post-show release paths. The skill delegates type design to `typescript-engineer`, manager dispatch to `delegate-manager-to-subagents`, and lane decisions to `parallel-plan`; it owns the web-game specifics (workstream layout, batched smoke testing, web-platform gotchas, single-file export)."
-mode: manager
-execution: direct
+description: "Use when building a TypeScript browser game from modular `src/*.ts` files using parallel subagents to ship good code AND reduce wall-clock build time (designed for live/podcast time pressure). Layered on top of the `starter-repo-template/templates/typescript/` scaffold: the toolchain files (`tsconfig.json`, `eslint.config.js`, `check_codebase.sh`, `package.json`, `dist_clean.sh`, `devel/setup_typescript.sh`, `devel/setup_playwright.sh`, `run_web_server.sh`, `build_github_pages.sh`, `gitignore`) are inherited byte-identical from starter; the skill owns only the game-specific overlay (workstream layout, batched smoke testing, web-platform gotchas, single-file export, GitHub Pages deploy). Immediate live target is the locally-served preview from `run_web_server.sh`; GitHub Pages from `dist/` (via GitHub Actions) and the optional `export_single_file.sh` portable HTML are post-show release paths. Delegates type design to `typescript-engineer`, manager dispatch to `delegate-manager-to-subagents`, and lane decisions to `parallel-plan`."
 ---
 
 # Web Game Parallel Build
@@ -62,6 +60,19 @@ Invoke these; do not hand-roll their work here.
 
 ## What this skill owns
 
+The toolchain scaffold (TypeScript config, ESLint config, npm scripts,
+`check_codebase.sh` gate, setup scripts, gitignore) is inherited
+byte-identical from `starter-repo-template/templates/typescript/` and
+is NOT owned here. The skill ships those files under `templates/` only
+so an orchestrator can scaffold a new game repo in one step; the
+canonical owner is the starter template, and edits to those files must
+land in starter first. See
+[`references/BUILD_ARTIFACTS.md#starter-parity`](references/BUILD_ARTIFACTS.md)
+for the parity inventory.
+
+What the skill DOES own (the game-specific overlay on top of the
+starter scaffold):
+
 - The preassigned workstream layout for browser games.
 - The `src/` module decomposition.
 - The build identity split (GitHub Pages default vs. single-file
@@ -72,7 +83,10 @@ Invoke these; do not hand-roll their work here.
   [`references/SMOKE_AND_GOTCHAS.md`](references/SMOKE_AND_GOTCHAS.md).
 - Playwright smoke testing between batches -- detail in
   [`references/SMOKE_AND_GOTCHAS.md`](references/SMOKE_AND_GOTCHAS.md).
-- Shipped script artifacts under `templates/` -- inventory in
+- Game-specific shipped artifacts under `templates/`
+  (`export_single_file.sh`, `src_index.html`, `src_layout.md`,
+  `agent_prompt_template.md`, `playwright_smoke_test.md`,
+  `deploy_pages_workflow.yml`) -- inventory in
   [`references/BUILD_ARTIFACTS.md`](references/BUILD_ARTIFACTS.md).
 
 ## Build identity
@@ -210,7 +224,7 @@ and Step 6 expand there; Step 5 has its own dispatch tables in
    come after the core loop.
 3. **Write type contracts** (~5-10 min, sequential). Real `.ts` files
    under `src/types/`, imported with `import type`, extensionless
-   paths. `npx tsc --noEmit -p src/tsconfig.json` passes before any
+   paths. `npx tsc --noEmit -p tsconfig.json` passes before any
    batch is green. See
    [`references/STEP_DETAILS.md`](references/STEP_DETAILS.md).
 4. **Configure the build** (~2-3 min, sequential). Copy templates,
@@ -280,7 +294,7 @@ rules on top of the manager dispatch contract from
 - Zero unchecked `as` casts (brand constructors and save-file type
   guards excepted; see
   `typescript-engineer/references/opaque-types.md`).
-- Run `npx tsc --noEmit -p src/tsconfig.json` before reporting done.
+- Run `npx tsc --noEmit -p tsconfig.json` before reporting done.
 
 For type-design help, the agent invokes `typescript-engineer` and
 follows its decision tree. Game-shape questions start at

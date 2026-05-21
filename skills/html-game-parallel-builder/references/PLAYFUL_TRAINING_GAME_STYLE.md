@@ -2,7 +2,7 @@
 
 Design guide for arcade-style onboarding trainers aimed at older learners
 (lab students, new hires, technical apprentices). Sibling document to
-[docs/FUN_VIBES_DESIGN_STYLE.md](FUN_VIBES_DESIGN_STYLE.md), which targets
+[FUN_VIBES_DESIGN_STYLE.md](FUN_VIBES_DESIGN_STYLE.md), which targets
 middle-school kids. Same engine. Tighter tone.
 
 ## Scope
@@ -300,10 +300,9 @@ NICE-TO-HAVE, ship after the core feels right:
 
 ## See also
 
-- [docs/FUN_VIBES_DESIGN_STYLE.md](FUN_VIBES_DESIGN_STYLE.md): sibling
+- [FUN_VIBES_DESIGN_STYLE.md](FUN_VIBES_DESIGN_STYLE.md): sibling
   doc for younger audiences. Same engine, louder tone, kid-arcade
   framing.
-- [docs/REPO_STYLE.md](REPO_STYLE.md): repo-wide conventions and the
-  five core engineering philosophies.
-- [docs/MARKDOWN_STYLE.md](MARKDOWN_STYLE.md): writing conventions for
-  this doc.
+- `docs/REPO_STYLE.md`: repo-wide conventions and the five core
+  engineering philosophies.
+- `docs/MARKDOWN_STYLE.md`: writing conventions for this doc.

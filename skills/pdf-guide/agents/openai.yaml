@@ -1,5 +1,5 @@
 interface:
-  display_name: "PDF Skill"
+  display_name: "PDF Guide"
   short_description: "Create, edit, and review PDFs"
   icon_large: "./assets/pdf.png"
-  default_prompt: "Use $pdf to create, edit, or review a PDF and summarize the key output or changes."
+  default_prompt: "Use $pdf-guide to create, edit, or review a PDF and summarize the key output or changes."

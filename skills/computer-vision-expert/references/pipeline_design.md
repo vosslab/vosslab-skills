@@ -39,6 +39,6 @@ Use this reference when deciding how much of the system should be classical CV, 
 
 ## Local reading order
 
-- Start with [`Learning_OpenCV.txt`](Learning_OpenCV.txt) for broad OpenCV techniques and baseline pipeline ideas.
-- Use [`OpenCV_Cookbook.txt`](OpenCV_Cookbook.txt) when you need a more recipe-oriented implementation pattern.
-- Use [`Video_Object_Tracking.txt`](Video_Object_Tracking.txt) when temporal identity and tracking dominate the problem.
+- Start with `Learning_OpenCV.txt` for broad OpenCV techniques and baseline pipeline ideas.
+- Use `OpenCV_Cookbook.txt` when you need a more recipe-oriented implementation pattern.
+- Use `Video_Object_Tracking.txt` when temporal identity and tracking dominate the problem.

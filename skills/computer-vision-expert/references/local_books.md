@@ -13,7 +13,7 @@ Use this reference to choose between the local computer-vision book resources bu
 
 ## Candidate resource needing verification
 
-- `Multiple-View_Geometry.txt`
+- `Multiple_View_Geometry.txt`
   Intended fit: camera geometry, epipolar geometry, stereo, homographies, triangulation, and calibration-heavy work.
   Current status: the present text extraction appears empty or unusable, so do not rely on it until the source is re-exported cleanly.
 
@@ -22,4 +22,4 @@ Use this reference to choose between the local computer-vision book resources bu
 - For general OpenCV work, start with `Learning_OpenCV.txt`.
 - For faster recipe-style implementation help, check `OpenCV_Cookbook.txt`.
 - For video tracking pipelines, read `Video_Object_Tracking.txt` first.
-- For multi-camera geometry or reconstruction, use other verified sources until `Multiple-View_Geometry.txt` is fixed.
+- For multi-camera geometry or reconstruction, use other verified sources until `Multiple_View_Geometry.txt` is fixed.

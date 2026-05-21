@@ -1,8 +1,6 @@
 ---
 name: delegate-manager-to-subagents
-description: "Use only when the user has an approved plan AND wants the main agent to manage execution through subagents instead of editing files directly. Use `old-orchestrate-next-milestone` when the user wants the main agent to deliver a single milestone end-to-end as a doer."
-mode: manager
-execution: direct
+description: "Use only when the user has an approved plan AND wants the main agent to manage execution through subagents instead of editing files directly. Skip when the user wants the main agent to deliver work directly as a doer rather than dispatching."
 ---
 
 # Manager-driven execution
@@ -21,7 +19,7 @@ The main agent manages execution, not file edits. It reads the approved plan, tr
 
 ## When not to use
 
-- Brainstorming, planning, or plan creation; use `blueprint-plan-drafter` or `old-manager-review-existing-plan` instead.
+- Brainstorming, planning, or plan creation; use `blueprint-plan-drafter` instead. For pre-merge audits of an existing plan or change, use `audit-code-reviewer`.
 - One-line fixes or small manual edits; do not use this skill.
 - No approved plan exists yet.
 - Tight real-time collaboration needed; prefer direct iteration.
@@ -153,6 +151,6 @@ This skill uses disciplined manager delegation: fresh subagents per task, explic
 
 ## Integration with other skills
 
-- Pairs with `blueprint-plan-drafter` and `old-manager-review-existing-plan` for plan authoring/audit.
+- Pairs with `blueprint-plan-drafter` for plan authoring and `audit-code-reviewer` for pre-merge audit.
 - Lighter alternative to `audit-code-reviewer` for per-task review during execution; defer to `audit-code-reviewer` when the user asks for a full multi-pass audit.
 - Use `parallel-plan` as the preferred upstream dispatch map when the approved plan contains, or can be cleanly mapped to, independent workstreams. If the plan lacks workstream IDs but tasks are separable, the manager may group them into dependency-free dispatch lanes without rewriting the original task text or changing task scope.

@@ -1,8 +1,6 @@
 ---
 name: webwork-writer
 description: Create, edit, and lint WeBWorK PG/PGML questions following docs/webwork guidance, HTML whitelist constraints, and renderer-based lint checks. Use for tasks like authoring new PGML problems, adjusting randomization or grading, fixing PGML rendering issues, and running renderer API linting.
-mode: doer
-execution: either
 ---
 
 # WebWork Question Authoring

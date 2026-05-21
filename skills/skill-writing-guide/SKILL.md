@@ -1,8 +1,6 @@
 ---
 name: skill-writing-guide
 description: "Guide for authoring Agent Skills (SKILL.md). Covers the open standard format, required frontmatter, directory layout, progressive disclosure, description writing, and best practices. Use when creating a new skill, improving an existing skill, or learning how skills work."
-mode: doer
-execution: either
 ---
 
 # Skill writing guide

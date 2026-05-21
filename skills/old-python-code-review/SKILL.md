@@ -1,11 +1,9 @@
 ---
 name: old-python-code-review
 description: "Single-pass Python correctness, security, and style review on demand; not for multi-reviewer audits before merge (use audit-code-reviewer for that)."
-mode: reviewer
-execution: direct
 ---
 
-# Python Code Review
+# Old Python Code Review
 
 ## Workflow
 1. Apply `repo-rules-reader` to the requested repo rule files. For the default review baseline, read

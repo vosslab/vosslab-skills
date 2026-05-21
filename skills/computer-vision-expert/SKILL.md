@@ -1,8 +1,6 @@
 ---
 name: computer-vision-expert
 description: Design, implement, debug, and review computer vision systems in Python, including image processing, detection, segmentation, classification, tracking, OCR, camera pipelines, and dataset-driven evaluation. Use when working with OpenCV, PyTorch vision models, video/image analysis, model-selection tradeoffs, annotation strategy, failure analysis, or CV performance and robustness problems.
-mode: reviewer
-execution: direct
 ---
 
 # Computer Vision Expert
@@ -27,9 +25,9 @@ Prefer simple, testable pipelines and evidence-driven evaluation over fashionabl
 - Prefer learned models when invariance, semantic understanding, or scale make heuristic pipelines brittle.
 - Read [`references/pipeline_design.md`](references/pipeline_design.md) when choosing between classical CV, hybrid, and model-heavy approaches.
 - Read the local OpenCV references when they match the task:
-  [`references/Learning_OpenCV.txt`](references/Learning_OpenCV.txt) for broad OpenCV techniques and feature/matching workflows;
-  [`references/OpenCV_Cookbook.txt`](references/OpenCV_Cookbook.txt) for practical implementation patterns;
-  [`references/Video_Object_Tracking.txt`](references/Video_Object_Tracking.txt) for tracking-specific tasks, datasets, and methods.
+  `references/Learning_OpenCV.txt` for broad OpenCV techniques and feature/matching workflows;
+  `references/OpenCV_Cookbook.txt` for practical implementation patterns;
+  `references/Video_Object_Tracking.txt` for tracking-specific tasks, datasets, and methods.
 
 3. Make data quality explicit.
 - Check label quality, class balance, resolution, compression artifacts, lighting, occlusion, and domain shift.

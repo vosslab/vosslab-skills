@@ -2,7 +2,26 @@
 # Shipped without a leading '.' so it is not itself ignored when the
 # skill repo is checked out.
 
+# Node
 node_modules/
+
+# Build outputs
 dist/
 dist-single/
+_site/
+*.tsbuildinfo
 _bundle.js
+
+# Lint / format caches
+.eslintcache
+.prettiercache
+
+# Test outputs
+test-results/
+playwright-report/
+blob-report/
+coverage/
+
+# Bundler artifacts
+meta.json
+stats.html

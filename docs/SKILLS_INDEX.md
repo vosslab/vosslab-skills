@@ -2,7 +2,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 24
+Total skills: 22
 
 - [agents-md-fixer/SKILL.md](../skills/agents-md-fixer/SKILL.md): Trim `AGENTS.md` aggressively to a small pointer file (prefer ~15 lines, hard cap ~50) that links into `docs/*.md` instead of restating rules.
 - [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from current repo evidence.
@@ -15,8 +15,6 @@ Total skills: 24
 - [gas-town-workflow/SKILL.md](../skills/gas-town-workflow/SKILL.md): Gas Town style multi-agent coordination with role-mapped task routing and convoy-based work decomposition.
 - [html-game-parallel-builder/SKILL.md](../skills/html-game-parallel-builder/SKILL.md): Use when building a TypeScript browser game from modular `src/*.ts` files using parallel subagents to ship good code AND reduce wall-clock build time (designed for live/podcast time pressure).
 - [install-usage-docs/SKILL.md](../skills/install-usage-docs/SKILL.md): Create or refresh minimal `docs/INSTALL.md` and `docs/USAGE.md` stubs from repo evidence.
-- [old-manager-review-existing-plan/SKILL.md](../skills/old-manager-review-existing-plan/SKILL.md): Review a specific existing implementation plan and verify whether code and tests actually satisfy the plan's goals, sequencing, and gates.
-- [old-orchestrate-next-milestone/SKILL.md](../skills/old-orchestrate-next-milestone/SKILL.md): Implement the manager-prioritized milestone of an existing plan and carry it to closure, including adjacent fixes needed to pass gates and close the milestone cleanly.
 - [old-python-code-review/SKILL.md](../skills/old-python-code-review/SKILL.md): Single-pass Python correctness, security, and style review on demand; not for multi-reviewer audits before merge (use audit-code-reviewer for that).
 - [parallel-plan/SKILL.md](../skills/parallel-plan/SKILL.md): In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that).
 - [pdf-guide/SKILL.md](../skills/pdf-guide/SKILL.md): Use when tasks involve reading, creating, or reviewing PDF files where rendering and layout matter; prefer visual checks by rendering pages (Poppler) and use Python tools such as `reportlab`, `pdfplumber`, and `pypdf` for generation and extraction.

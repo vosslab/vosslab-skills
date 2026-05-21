@@ -1,8 +1,6 @@
 ---
 name: docset-updater
 description: "Audit the full repo doc set under `docs/` against `docs/REPO_STYLE.md` and create or refresh stubs only when supported by evidence. Use when the doc set as a whole is missing, drifted, or unaudited. Does NOT own any single doc exclusively; defer architecture/structure stubs to `arch-docs`, install/usage stubs to `install-usage-docs`, and `README.md` to `readme-docs`."
-mode: doer
-execution: either
 ---
 
 # Docset refresh

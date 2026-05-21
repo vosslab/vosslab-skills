@@ -28,7 +28,7 @@ vosslab-skills/
 ### [skills/](../skills/)
 
 One folder per skill, each containing a `SKILL.md` with frontmatter
-(`name`, `description`, `mode`, `execution`) and skill instructions.
+(`name`, `description`) and skill instructions.
 Folder name matches the skill name. New skill folders should follow
 [docs/SKILL_NAMING.md](SKILL_NAMING.md). The full one-line summary list
 is in [docs/SKILLS_INDEX.md](SKILLS_INDEX.md).
@@ -84,6 +84,13 @@ Two flavors live here:
   [docs/archive/SKILL_PHILOSOPHY_REVIEW.md](archive/SKILL_PHILOSOPHY_REVIEW.md),
   [docs/CODE_ARCHITECTURE.md](CODE_ARCHITECTURE.md),
   [docs/FILE_STRUCTURE.md](FILE_STRUCTURE.md).
+- Archived skill folders live under [docs/archive/skills/](archive/skills/):
+  currently [docs/archive/skills/old-manager-review-existing-plan/](archive/skills/old-manager-review-existing-plan/)
+  and [docs/archive/skills/old-orchestrate-next-milestone/](archive/skills/old-orchestrate-next-milestone/).
+  Archived skills are no longer indexed in `skills/` and are excluded from
+  the plugin manifest; historical content is preserved for reference.
+  See [docs/archive/skills/README.md](archive/skills/README.md) for
+  retirement context and replacements.
 
 ### [.claude-plugin/](../.claude-plugin/)
 

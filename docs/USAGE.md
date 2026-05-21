@@ -7,7 +7,7 @@ This repo provides workflow skills that guide Claude Code through structured tas
 Invoke a skill by name during a Claude Code session:
 
 ```
-/vosslab-skills:old-python-code-review
+/vosslab-skills:audit-code-reviewer
 /vosslab-skills:readme-docs
 /vosslab-skills:blueprint-plan-drafter
 ```
@@ -15,7 +15,7 @@ Invoke a skill by name during a Claude Code session:
 If the repo is loaded as a local skills directory (not a plugin), skills are invoked by their short name:
 
 ```
-/old-python-code-review
+/audit-code-reviewer
 /readme-docs
 ```
 
@@ -44,7 +44,7 @@ Each skill lives in `skills/<name>/` and contains:
 Copy the skill folder into your project:
 
 ```bash
-cp -r skills/old-python-code-review /path/to/my-project/skills/
+cp -r skills/audit-code-reviewer /path/to/my-project/skills/
 ```
 
 The skill is self-contained. It will work in any project that supports the `SKILL.md` format.

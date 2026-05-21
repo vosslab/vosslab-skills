@@ -13,10 +13,10 @@ Use this reference when a PySide6 interface needs stronger visual judgment, bett
 
 - `Refactoring UI` by Adam Wathan and Steve Schoger
   Use for practical fixes to spacing, visual hierarchy, color usage, layout density, and component polish.
-  Local file available: [`references/Refactoring_UI.txt`](Refactoring_UI.txt)
+  Local file available: `Refactoring_UI.txt`
 - `Practical UI` by Adham Dannaway
   Use for logic-driven rules that map well to implementation work and design critique.
-  Local file available: [`references/Practical_UI.txt`](Practical_UI.txt)
+  Local file available: `Practical_UI.txt`
 - `How to Design Better UI Components` by Adrian Kuleszo
   Use for concrete component-level improvements and visual examples.
 - `UI Design Principles` by Michael Filipiuk
@@ -53,7 +53,7 @@ Use this reference when a PySide6 interface needs stronger visual judgment, bett
 
 - `About Face` by Alan Cooper, Robert Reimann, David Cronin, and Christopher Noessel
   Use for interaction design framing, task flows, and goal-directed behavior.
-  Local file available: [`references/About_Face.txt`](About_Face.txt)
+  Local file available: `About_Face.txt`
 - `UI is Communication` by Everett N McKay
   Use when wording, control meaning, and screen communication are weak.
 - `Universal Principles of Design` by William Lidwell, Kritina Holden, and Jill Butler

@@ -1,8 +1,6 @@
 ---
 name: blueprint-plan-drafter
 description: Create forward-looking implementation plans from scratch for coding teams without writing code. Use when the user needs a new plan document, major rewrite, milestone restructuring, acceptance gates, migration strategy, risk handling, or rollout planning for future work; produces parallel-plan-ready milestones when work can be split across independent workstreams; do not use this skill for post-implementation audits of an existing plan.
-mode: doer
-execution: direct
 ---
 
 # Blueprint Plan Drafter
@@ -143,8 +141,7 @@ Reject or rewrite plan text that is vague, non-testable, or missing gate conditi
 After the plan is published, execution uses adjacent skills:
 - `parallel-plan` for lightweight parallelization of active work. Default handoff target: every milestone with 2+ independent workstreams should be flagged "parallel-plan ready" in its Exit criteria, listing which workstream IDs can run concurrently.
 - `delegate-manager-to-subagents` for fresh-subagent dispatch of independent work packages.
-- `old-orchestrate-next-milestone` for end-to-end milestone delivery.
-- `old-manager-review-existing-plan` for post-implementation audit.
+- `audit-code-reviewer` for parallel multi-reviewer audit before merge or release.
 - `gas-town-workflow` for role-mapped multi-agent coordination.
 See `references/EXECUTION_RESOURCES.md` for the full lifecycle and agent catalog.
 

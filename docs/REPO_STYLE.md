@@ -27,7 +27,7 @@ Every repo carries `REPO_TYPE` at the repo root: one lowercase token plus newlin
 
 The starter template ships universal + Python files at the template root (their final consumer location) and type-specific overlays under `templates/<type>/`. Currently `templates/typescript/` and `templates/rust/` exist; `rust/` is a stub. The propagator resolves universal/python sources at template root and typescript/rust sources under `templates/<type>/`. The template repo refreshes its own root copies via `python3 propagate_style_guides.py --sync-self`. Template-only tooling (e.g., `tools/detect_repo_type.py`) lives under `tools/`; it never propagates and is removed by `reset_repo.py` at consumer bootstrap.
 
-- See [PROPAGATION_RULES.md](PROPAGATION_RULES.md) for the folder convention and manifest rules that route files to consumers.
+- See `docs/PROPAGATION_RULES.md` (in `starter-repo-template`) for the folder convention and manifest rules that route files to consumers.
 
 ## AGENTS.md files
 

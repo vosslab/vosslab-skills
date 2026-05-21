@@ -36,7 +36,7 @@ in this repo and any sibling vosslab repos that ship skills.
      `bptools-writer`, `typescript-engineer`, `computer-vision-expert`.
    - Long names are fine when the extra tokens add searchable keywords
      (`delegate-manager-to-subagents`, `blueprint-plan-drafter`,
-     `old-manager-review-existing-plan`). What matters is that the first
+     `html-game-parallel-builder`). What matters is that the first
      two tokens carry identity; tokens 3+ are bonus keywords.
 7. **`old-` prefix marks deprecated skills.** Use `old-<original-name>` for
    skills retained for occasional reference but no longer recommended for
@@ -83,7 +83,7 @@ be re-audited whenever the harness updates its built-in skill set.
 ## Plugin tokens to avoid
 
 Loaded `superpowers:*` plugin skills (and similar marketplace plugins) carry
-their own leading tokens. As of 2026-05-08 the loaded set includes:
+their own leading tokens. As of 2026-05-20 the loaded set includes:
 `brainstorming`, `dispatching-parallel-agents`, `executing-plans`,
 `finishing-a-development-branch`, `receiving-code-review`,
 `requesting-code-review`, `subagent-driven-development`,
@@ -126,8 +126,6 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `gas-town-workflow` | borderline-no-change | (unchanged) | Repo-specific brand name; leading token unique. |
 | `html-game-parallel-builder` | accepted-rename | web-game-parallel-builder | Drops `web-` collision with `webwork-`; `html` is short, evergreen. |
 | `install-usage-docs` | compliant | (unchanged) | Clean `-docs` suffix, unique compound leading token. |
-| `old-manager-review-existing-plan` | deprecated | plan-review-manager / manager-review-existing-plan | `old-` prefix marks for occasional use; original verb-first form preserved. |
-| `old-orchestrate-next-milestone` | deprecated | milestone-manager / orchestrate-next-milestone | `old-` prefix marks for occasional use. |
 | `old-python-code-review` | deprecated | python-reviewer / python-code-review | `old-` prefix marks for occasional use. |
 | `parallel-plan` | borderline-no-change | (unchanged) | Leading token distinct; in-flight nudge skill. |
 | `pdf-guide` | compliant | pdf-skill | Drops redundant `-skill` token. |
@@ -140,7 +138,12 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `unit-test-starter` | compliant | (unchanged) | Unique leading token, `-starter` suffix. |
 | `webwork-writer` | compliant | (unchanged) | Domain token plus `-writer` suffix. |
 
-Counts (24 active skills): 14 compliant or borderline-no-change, 7
-accepted-rename, 3 deprecated (`old-` prefix). The post-rename canonical
+Counts (22 active skills): 14 compliant or borderline-no-change, 7
+accepted-rename, 1 deprecated (`old-` prefix). The post-rename canonical
 record matches the output of
-`tools/list_loaded_skills.py --names-only` on the repo.
+`tools/list_loaded_skills.py --names-only` on the repo. Two additional
+`old-*` skills (`old-manager-review-existing-plan`,
+`old-orchestrate-next-milestone`) were archived to
+[docs/archive/skills/](archive/skills/) and are no longer indexed under
+`skills/`; see [docs/archive/skills/README.md](archive/skills/README.md)
+for retirement context.

@@ -11,7 +11,7 @@ table read between batches when something breaks.
 After each batch, follow
 [`../templates/playwright_smoke_test.md`](../templates/playwright_smoke_test.md):
 
-1. `npx tsc --noEmit -p src/tsconfig.json` passes.
+1. `npx tsc --noEmit -p tsconfig.json` passes.
 2. `./build_github_pages.sh` succeeds.
 3. `python3 -m http.server 8123 --directory dist &`.
 4. Navigate to `http://localhost:8123/`, snapshot, click one element

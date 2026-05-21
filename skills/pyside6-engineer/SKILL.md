@@ -1,8 +1,6 @@
 ---
 name: pyside6-engineer
 description: Design, implement, refactor, and review PySide6 desktop applications with strong widget architecture, signal-slot design, and state flow. Use when building or fixing Qt for Python windows, dialogs, forms, navigation shells, model-view tables, theming, or validation in Python GUI code.
-mode: doer
-execution: delegated
 ---
 
 # PySide6 Engineer

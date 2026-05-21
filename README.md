@@ -1,6 +1,6 @@
 # vosslab-skills
 
-Reusable workflow skills for refactoring plans, code review, repository maintenance, and education content production. Intended for maintainers who curate skill definitions and for users who inspect or reuse `SKILL.md` instructions across Claude and Codex environments.
+Reusable workflow skills that guide Claude and Codex through code review, plan drafting, doc maintenance, and education content production. Aimed at maintainers curating skill definitions and users who reuse them across coding environments.
 
 ## Documentation
 
@@ -65,6 +65,7 @@ See [docs/INSTALL.md](docs/INSTALL.md) for local clone and individual skill impo
 - `gas-town-workflow`: Gas Town style multi-agent coordination with role-mapped task routing.
 - `html-game-parallel-builder`: Build a TypeScript browser game using parallel subagents.
 - `install-usage-docs`: Create or refresh docs/INSTALL.md and docs/USAGE.md stubs.
+- `old-python-code-review` (deprecated): Single-pass Python correctness/security/style review; kept frozen, excluded from the published plugin.
 - `parallel-plan`: Split current work into independent tracks for parallel dispatch.
 - `pdf-guide`: Read, create, or review PDF files where rendering and layout matter.
 - `pyside6-engineer`: Design, implement, and review PySide6 desktop applications.

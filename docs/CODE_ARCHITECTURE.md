@@ -16,9 +16,9 @@ Version is tracked in [VERSION](../VERSION) and mirrored in `plugin.json`.
 ## Major components
 
 - [skills/](../skills/): one folder per skill, each containing a `SKILL.md`
-  with frontmatter (`name`, `description`, `mode`, `execution`) and skill
+  with frontmatter (`name`, `description`) and skill
   instructions. These are the user-invocable units (for example
-  `/vosslab-skills:old-python-code-review`).
+  `/vosslab-skills:audit-code-reviewer`).
 - [agents/](../agents/): per-role markdown files (`architect.md`,
   `coder.md`, `integrator.md`, `maintainer.md`, `monitor.md`,
   `orchestrator.md`, `parallelizer.md`, `planner.md`, `reviewer.md`,

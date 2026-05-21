@@ -28,8 +28,8 @@ Each stage of the plan lifecycle is handled by a different skill.
 | --- | --- | --- |
 | Plan creation | blueprint-plan-drafter | Build plan from scratch |
 | Plan execution (parallel) | parallel-plan | Lightweight parallelization for active work |
-| Milestone execution | old-orchestrate-next-milestone | Execute a milestone to closure with evidence |
-| Plan audit | old-manager-review-existing-plan | Verify code satisfies plan goals and gates |
+| Subagent dispatch | delegate-manager-to-subagents | Fresh-subagent dispatch of independent work packages |
+| Pre-merge audit | audit-code-reviewer | Parallel multi-reviewer audit before merge or release |
 | Multi-agent coordination | gas-town-workflow | Role-mapped task routing with convoy patterns |
 
 ## Assignment Guidelines

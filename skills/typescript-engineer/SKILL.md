@@ -1,8 +1,6 @@
 ---
 name: typescript-engineer
 description: Resolve TypeScript errors, eliminate `any`, and design modular, strict TypeScript types including generics, conditional types, mapped types, template literal types, branded or opaque types, and deep inference. Use for type-inference problems, `infer` or `extends` questions, utility types such as `Partial`, `Record`, `ReturnType`, `Awaited`, `NoInfer`, `satisfies`, module-boundary type design, function overloads, declaration merging, strict-mode refactors, and production-grade type-safety reviews.
-mode: doer
-execution: delegated
 ---
 
 # TypeScript Engineer

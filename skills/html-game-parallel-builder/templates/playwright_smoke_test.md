@@ -9,7 +9,7 @@ Run `setup_playwright.sh` once per machine before the first smoke test.
 
 ## Between batches
 
-1. Run `npx tsc --noEmit -p src/tsconfig.json`. Fix any errors before
+1. Run `npx tsc --noEmit -p tsconfig.json`. Fix any errors before
    continuing; `tsc` is cheaper than browser load time.
 2. Build: `./build_github_pages.sh`.
 3. Start a static server in the background:

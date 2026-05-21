@@ -5,8 +5,6 @@ description: Read specified repo rule files (AGENTS.md, docs/REPO_STYLE.md, docs
   targeted repo-rule questions, with missing-file handling and explicit-path checks. For
   docs/CHANGELOG.md, report only the latest dated entry. Use when a prompt asks for repo
   instruction answers about code execution, pytest style, Claude hook usage, or recent changes.
-mode: reviewer
-execution: direct
 ---
 
 # Read Repo Rules
@@ -21,7 +19,9 @@ conditions.
 2. Read only the requested repo rule files. For the default repo-rule output, read:
    AGENTS.md, docs/REPO_STYLE.md, docs/PYTHON_STYLE.md, docs/PYTEST_STYLE.md,
    docs/CLAUDE_HOOK_USAGE_GUIDE.md, and docs/CHANGELOG.md.
-3. Read normal rule files with bounded commands such as `sed -n "1,200p"`.
+3. Read normal rule files with the Read tool, using `file_path` and optional `offset`/`limit`
+   (e.g. `Read(file_path=..., limit=200)`). Do not use `sed -n` or `head`/`tail` on file paths;
+   the Claude hook denies those forms.
 4. For docs/CHANGELOG.md, identify the latest dated entry and read only that entry section, from
    its heading to the line before the next dated heading or the end of file.
 5. Answer the prompt's exact questions when provided. When the prompt asks for the default

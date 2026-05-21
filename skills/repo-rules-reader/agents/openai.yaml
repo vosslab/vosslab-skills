@@ -1,4 +1,4 @@
 interface:
-  display_name: "Read Repo Rules"
+  display_name: "Repo Rules Reader"
   short_description: "Answer targeted repo-rule questions"
   default_prompt: "Use $repo-rules-reader to read AGENTS.md, docs/REPO_STYLE.md, docs/PYTHON_STYLE.md, docs/PYTEST_STYLE.md, docs/CLAUDE_HOOK_USAGE_GUIDE.md, and docs/CHANGELOG.md; answer how to run code, what makes pytest fragile, how Claude should search or grep files, and the latest CHANGELOG change."

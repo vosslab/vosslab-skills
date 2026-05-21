@@ -1,5 +1,14 @@
 # Skill philosophy review
 
+> **Archived note (2026-05-20):** the `mode:` and `execution:` frontmatter
+> keys described as PASS-verdict markers in this review (see WP-V1 row and
+> the "All N SKILL.md files carry mode and execution markers" conclusion)
+> were subsequently removed from every active SKILL.md. They were never
+> wired into any loader, do not appear in the Agent Skills open standard,
+> and trigger semantics already live in `description:`. This document is
+> preserved for historical context; do not re-introduce the keys based on
+> the verdicts here.
+
 This document applies the repo-wide philosophies defined in [REPO_STYLE.md](../REPO_STYLE.md#core-philosophies) to the skill corpus.
 
 ## Scope and method

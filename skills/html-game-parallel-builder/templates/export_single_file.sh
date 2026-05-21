@@ -23,7 +23,7 @@ OUTDIR="${OUTDIR:-dist-single}"
 OUTPUT="${OUTDIR}/game.html"
 mkdir -p "${OUTDIR}"
 
-npx tsc --noEmit -p src/tsconfig.json
+npx tsc --noEmit -p tsconfig.json
 
 npx esbuild src/init.ts \
 	--bundle \

@@ -1,17 +1,33 @@
 {
-	"name": "html-game-parallel-builder-project",
+	"name": "game-project",
 	"version": "0.0.1",
+	"type": "module",
 	"private": true,
-	"description": "Scaffold for a html-game-parallel-builder TypeScript project.",
 	"scripts": {
-		"setup": "./setup_game.sh",
-		"setup:playwright": "./setup_playwright.sh",
+		"setup": "./devel/setup_typescript.sh",
+		"setup:playwright": "./devel/setup_playwright.sh",
 		"build": "./build_github_pages.sh",
-		"export:single": "./export_single_file.sh",
-		"serve": "./run_web_server.sh"
+		"serve": "./run_web_server.sh",
+		"check": "./check_codebase.sh",
+		"clean": "./dist_clean.sh",
+		"typecheck": "tsc --noEmit -p tsconfig.json",
+		"typecheck:lint": "tsc --noEmit -p tsconfig.lint.json",
+		"lint": "eslint --max-warnings 0 'src/**/*.ts' 'tests/**/*.ts' '*.ts'",
+		"format": "prettier --write 'src/**/*.{ts,css,html,json}' 'tests/**/*.ts'",
+		"format:check": "prettier --check 'src/**/*.{ts,css,html,json}' 'tests/**/*.ts'",
+		"test:node": "node --test 'tests/test_*.mjs'",
+		"test:playwright": "playwright test",
+		"export:single": "./export_single_file.sh"
 	},
 	"devDependencies": {
-		"esbuild": "^0.24.0",
-		"typescript": "^5.6.0"
+		"esbuild": "*",
+		"typescript": "*",
+		"eslint": ">=9",
+		"@eslint/js": "*",
+		"typescript-eslint": "*",
+		"globals": "*",
+		"playwright": "*",
+		"prettier": "*",
+		"@playwright/test": "*"
 	}
 }

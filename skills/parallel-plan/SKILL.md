@@ -1,8 +1,6 @@
 ---
 name: parallel-plan
 description: "In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that)."
-mode: manager
-execution: direct
 ---
 
 # Parallel Plan

@@ -35,26 +35,45 @@ The three driver scripts have distinct, non-overlapping jobs:
 ## Shipped artifacts
 
 The skill ships real files under `templates/` an orchestrator can copy
-verbatim:
+verbatim. The toolchain set is layered on top of the
+`starter-repo-template/templates/typescript/` scaffold; see
+[Starter parity](#starter-parity) below.
 
-- `templates/setup_game.sh` -- one-time `npm install` + initial build.
-- `templates/setup_playwright.sh` -- one-time Playwright + chromium
-  install (separate from `setup_game.sh` because the chromium download
-  is heavier and may be skipped on machines that already have it).
-- `templates/run_web_server.sh` -- local dev preview.
+Toolchain (inherited byte-identical from starter):
+
+- `templates/devel/setup_typescript.sh` -- one-time `npm install` +
+  initial build. Replaces the retired `setup_game.sh`.
+- `templates/devel/setup_playwright.sh` -- one-time Playwright
+  chromium + firefox install (separate from `setup_typescript.sh`
+  because browser downloads are heavier and may be skipped on
+  machines that already have them).
+- `templates/check_codebase.sh` -- single pre-push gate:
+  typecheck + eslint + prettier + node --test + playwright + build.
 - `templates/build_github_pages.sh` -- canonical release build.
-- `templates/export_single_file.sh` -- optional portable export.
-- `templates/check_codebase.sh` -- type-check and unit test runner.
+- `templates/run_web_server.sh` -- local dev preview.
+- `templates/dist_clean.sh` -- wipes `dist/`, `_site/`, caches.
 - `templates/tsconfig.json` -- strict baseline (`strict` +
   `noUncheckedIndexedAccess` + `exactOptionalPropertyTypes` and a few
   others; the canonical owner is
   `typescript-engineer/references/strict-mode-flags.md`).
-- `templates/package.json` -- minimal dev dependencies (`typescript`,
-  `esbuild`).
+- `templates/eslint.config.js` -- ESLint flat config wired to
+  `typescript-eslint`.
+- `templates/package.json` -- full canonical script set
+  (`setup`, `setup:playwright`, `build`, `serve`, `check`, `clean`,
+  `typecheck`, `typecheck:lint`, `lint`, `format`, `format:check`,
+  `test:node`, `test:playwright`, `export:single`) and the canonical
+  devDeps (`esbuild`, `typescript`, `eslint`, `@eslint/js`,
+  `typescript-eslint`, `globals`, `playwright`, `prettier`,
+  `@playwright/test`).
+- `templates/gitignore` -- copy to `.gitignore`.
+
+Game-specific overlay (skill-only, no starter counterpart):
+
+- `templates/export_single_file.sh` -- optional portable single-file
+  HTML export to `dist-single/`.
 - `templates/src_index.html` -- entry HTML copied to `dist/index.html`.
 - `templates/src_layout.md` -- one-page `src/` skeleton.
 - `templates/agent_prompt_template.md` -- per-agent prompt skeleton.
-- `templates/gitignore` -- copy to `.gitignore`.
 - `templates/playwright_smoke_test.md` -- between-batch smoke recipe.
 - `templates/deploy_pages_workflow.yml` -- GitHub Actions deploy
   workflow. Copy to `.github/workflows/deploy-pages.yml` (the
@@ -63,3 +82,34 @@ verbatim:
   same pattern as `gitignore` -> `.gitignore`).
 - [GITHUB_PAGES_DEPLOY.md](GITHUB_PAGES_DEPLOY.md) -- step-by-step
   deploy guide.
+
+## Starter parity
+
+The following files are kept byte-identical with
+`starter-repo-template/templates/typescript/`. Update both when
+editing either; do not let them drift.
+
+- `templates/tsconfig.json`
+- `templates/eslint.config.js`
+- `templates/check_codebase.sh`
+- `templates/build_github_pages.sh`
+- `templates/run_web_server.sh`
+- `templates/dist_clean.sh`
+- `templates/gitignore` (copy of `gitignore.typescript`)
+- `templates/devel/setup_typescript.sh`
+- `templates/devel/setup_playwright.sh`
+- `templates/package.json` (concrete instantiation of starter's
+  `noexist/package.json.template` with `__REPO_NAME__` and
+  `__REPO_VERSION__` substituted plus the skill's `export:single`
+  script appended).
+
+This skill layers game-specific orchestration (workstreams, batches,
+smoke recipe, single-file export, GitHub Pages deploy) on top of the
+canonical TypeScript scaffold. Consumer-side starter tests
+(`test_package_json_schema.py`, `test_tsconfig_canonical.py`,
+`test_eslint_config_present.py`, `test_typescript_tsc.py`,
+`test_typescript_eslint.py`, `test_smoke.mjs`,
+`playwright/repo_root.mjs`, `docs/PLAYWRIGHT_USAGE.md`,
+`docs/TYPESCRIPT_STYLE.md`) are NOT shipped here; they propagate to
+consumers via `propagate_style_guides.py`. The skill relies on
+propagation rather than duplicating those files.

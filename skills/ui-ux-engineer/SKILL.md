@@ -1,8 +1,6 @@
 ---
 name: ui-ux-engineer
 description: Review, improve, and engineer UI/UX quality in any framework. Covers visual hierarchy, interaction quality, accessibility, validation, error states, empty states, and design heuristics. Use when reviewing or improving the user experience of an interface, regardless of the underlying technology.
-mode: reviewer
-execution: direct
 ---
 
 # UI/UX Engineer
@@ -41,9 +39,9 @@ It applies equally to desktop, web, and mobile surfaces.
 5. Reference design heuristics when needed.
 - Read [`references/design_books.md`](references/design_books.md) when you need durable design heuristics, typography guidance, grid and layout thinking, or design-system perspective.
 - Read the local design resources in this order when they match the problem:
-  [`references/Refactoring_UI.txt`](references/Refactoring_UI.txt) for visual hierarchy, spacing, typography, color, and component polish;
-  [`references/Practical_UI.txt`](references/Practical_UI.txt) for logic-driven accessibility, interaction, and usability rules;
-  [`references/About_Face.txt`](references/About_Face.txt) for flow, task structure, dialog behavior, and interaction model decisions.
+  `references/Refactoring_UI.txt` for visual hierarchy, spacing, typography, color, and component polish;
+  `references/Practical_UI.txt` for logic-driven accessibility, interaction, and usability rules;
+  `references/About_Face.txt` for flow, task structure, dialog behavior, and interaction model decisions.
 
 ## Quality bar
 

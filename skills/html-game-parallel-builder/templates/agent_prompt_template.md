@@ -52,7 +52,7 @@ the orchestrator.
 - Zero unchecked `as` casts. Brand constructors (`src/brands.ts`) and
   documented save-file type guards are the only exceptions; see
   `<typescript-engineer skill>/references/opaque-types.md` (load via the skill loader, not a filesystem path).
-- Run `npx tsc --noEmit -p src/tsconfig.json` before reporting done.
+- Run `npx tsc --noEmit -p tsconfig.json` before reporting done.
 
 ## Web platform rules
 

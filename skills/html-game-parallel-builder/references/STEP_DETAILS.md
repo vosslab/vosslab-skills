@@ -87,7 +87,7 @@ are upstream):
   matching the default `tsconfig.json`.
 - Missing cross-module types go back to the contract owner; agents must
   not locally redeclare a contract shape.
-- `npx tsc --noEmit -p src/tsconfig.json` passes before a batch is
+- `npx tsc --noEmit -p tsconfig.json` passes before a batch is
   considered green.
 
 Minimal example showing the orchestration shape only (a generator and
@@ -115,16 +115,23 @@ Copy the relevant templates into the project. Do not invent new build
 scripts; the shipped ones are the contract.
 
 ```sh
+mkdir -p devel
 cp -R skills/html-game-parallel-builder/templates/. .
 mv gitignore .gitignore
-chmod +x setup_game.sh setup_playwright.sh run_web_server.sh \
-         build_github_pages.sh export_single_file.sh check_codebase.sh
+chmod +x devel/setup_typescript.sh devel/setup_playwright.sh \
+         run_web_server.sh build_github_pages.sh \
+         export_single_file.sh check_codebase.sh dist_clean.sh
 mv src_index.html src/index.html
 mv src_layout.md docs/SRC_LAYOUT.md   # or wherever the project keeps docs
-mv tsconfig.json src/tsconfig.json
+# tsconfig.json, eslint.config.js, package.json stay at repo root
 mkdir -p .github/workflows
 mv deploy_pages_workflow.yml .github/workflows/deploy-pages.yml
 ```
+
+After copying, run `./devel/setup_typescript.sh` (or `npm run setup`) to
+install dependencies and produce the initial `dist/` build.
+Optionally run `./devel/setup_playwright.sh` to install browsers for
+the between-batch smoke test.
 
 Do not overwrite an existing `.github/workflows/deploy-pages.yml`; if
 one already exists, leave it alone and patch minimally.
@@ -144,14 +151,14 @@ for the three remediations in order of "least annoying".
 
 The build pipeline:
 
-- `npx tsc --noEmit -p src/tsconfig.json` typechecks (no emit).
+- `npx tsc --noEmit -p tsconfig.json` typechecks (no emit).
 - `npx esbuild src/init.ts --bundle --format=esm --target=es2020
   --platform=browser --outfile=dist/main.js` emits the bundle.
 - `src/index.html` and `src/style.css` are copied into `dist/`.
 - `dist/.nojekyll` is created.
 
 `tsc` is the type-check gate only; esbuild is the bundler. Do not
-remove `noEmit: true` from `src/tsconfig.json`.
+remove `noEmit: true` from `tsconfig.json`.
 
 ## Step 6: Integration fix loop
 

@@ -1,8 +1,6 @@
 ---
 name: audit-code-reviewer
 description: "Parallel multi-reviewer audit launched before merge or release; not for single-pass review."
-mode: manager
-execution: direct
 ---
 
 # Review code changes
@@ -75,7 +73,7 @@ Review focus:
   subprocess calls, real filesystem trees beyond `tmp_path`, network calls, large fixtures, or
   model loads.
 - Flag elaborate end-to-end scenarios sitting in `tests/`: whole-script CLI runs, I/O round trips,
-  real external tools. These belong in `tests_e2e/` per
+  real external tools. These belong in `tests/e2e/` per
   `docs/E2E_TESTS.md`, not in pytest. Recommend moving or deleting, not
   rewriting in place.
 - Flag fragile assertions per `docs/PYTEST_STYLE.md`: dates,

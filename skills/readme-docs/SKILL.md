@@ -1,8 +1,6 @@
 ---
 name: readme-docs
 description: "Standardize `README.md` to match repo conventions: brief purpose, quick start, and links to `docs/`. Use when `README.md` has drifted or is missing key pointers. Does NOT touch any file under `docs/` (use `arch-docs`, `install-usage-docs`, or `docset-updater` for those)."
-mode: doer
-execution: either
 ---
 
 # README fix

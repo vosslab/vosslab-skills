@@ -32,12 +32,14 @@ The skill runs the type check at two different layers; do not conflate
 them:
 
 - **Per-agent gate (subagent's responsibility before reporting DONE):**
-  `npx tsc --noEmit -p src/tsconfig.json`. The subagent must run this
+  `npx tsc --noEmit -p tsconfig.json`. The subagent must run this
   on its own changes and quote the exact success line in its report
   (`exit 0`, no diagnostic output). This is the agent's own evidence.
 - **Per-batch gate (manager's responsibility after all agents in the
-  batch report DONE):** `./check_codebase.sh`. The manager runs this
-  once per batch as the integration check. Failure here triggers a
+  batch report DONE):** `./check_codebase.sh` (the canonical
+  starter-template gate: typecheck + eslint + prettier --check + node
+  --test + playwright + production build). The manager runs this once
+  per batch as the integration check. Failure here triggers a
   fix-agent dispatch, not just a re-run.
 
 The agent's `tsc` run inside its own scope is not the integration
@@ -51,7 +53,7 @@ batch slot) must contain:
 
 - Files changed: absolute path list, each labelled with the batch-slot
   requirement it satisfies.
-- Exact command run: literally `npx tsc --noEmit -p src/tsconfig.json`.
+- Exact command run: literally `npx tsc --noEmit -p tsconfig.json`.
 - Exact success line: `exit 0` with no diagnostic output. Quote it.
 - Cross-module type imports used: list the `import type` lines from
   `src/types/*.ts` the agent relied on. Confirms the agent did not
