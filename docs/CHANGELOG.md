@@ -1,3 +1,17 @@
+## 2026-05-21
+
+### Behavior or Interface Changes
+
+- Added "Do the fixes that make sense" directive to
+  `skills/audit-code-reviewer/SKILL.md`. New Required-behavior bullet plus
+  new Workflow step 7 turn the audit coordinator from pure reporter into
+  reporter-then-fixer: after merging findings and delivering the review,
+  apply obvious low-risk fixes directly (typos, missing comments, stale
+  doc lines, dead imports, fragile pytest deletions flagged by Test
+  auditor). Blockers, contested fixes, and architecture-level changes
+  still belong to the user. Scope-bounding language prevents directive
+  from becoming license for unbounded edits.
+
 ## 2026-05-20
 
 ### Additions and New Features

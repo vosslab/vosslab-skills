@@ -23,6 +23,8 @@ single concise review.
 - Wait for the subagent results before delivering the final review.
 - If subagents are unavailable, state that independent review could not be performed and stop with
   the gathered context plus the reason.
+- Do the fixes that make sense. After merging findings, apply obvious low-risk fixes directly;
+  leave blockers, contested fixes, and architecture-level changes for the user.
 
 ## Workflow
 
@@ -47,6 +49,9 @@ single concise review.
    dissent when reviewers disagree.
 6. Deliver a code-review response: findings first, then open questions or assumptions, then a brief
    test/documentation summary.
+7. Do the fixes that make sense. After delivering findings, apply the obvious low-risk fixes
+   (typos, missing comments, stale doc lines, dead imports, fragile pytest deletions flagged by
+   Test auditor). Skip fixes that require design judgment, cross-file coordination, or user input.
 
 ## Review agents
 
