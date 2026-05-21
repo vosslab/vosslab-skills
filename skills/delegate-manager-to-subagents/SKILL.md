@@ -154,3 +154,4 @@ This skill uses disciplined manager delegation: fresh subagents per task, explic
 - Pairs with `blueprint-plan-drafter` for plan authoring and `audit-code-reviewer` for pre-merge audit.
 - Lighter alternative to `audit-code-reviewer` for per-task review during execution; defer to `audit-code-reviewer` when the user asks for a full multi-pass audit.
 - Use `parallel-plan` as the preferred upstream dispatch map when the approved plan contains, or can be cleanly mapped to, independent workstreams. If the plan lacks workstream IDs but tasks are separable, the manager may group them into dependency-free dispatch lanes without rewriting the original task text or changing task scope.
+- Use `stay-busy` when the manager workflow would otherwise idle and safe evidence-producing follow-on work exists. `stay-busy` generates parallel workstreams sized to the project, each with a blocked fallback, and hands the task list back to this skill for dispatch.

@@ -2,6 +2,23 @@
 
 ### Additions and New Features
 
+- Added new `skills/stay-busy/` skill (manager/orchestrator anti-idle).
+  Three files: `SKILL.md`, `references/workstream_templates.md`,
+  `references/boundaries.md`. Core anchor phrase: "Stay busy by producing
+  evidence, not by creating motion." Skill activates when an active
+  `delegate-manager-to-subagents` workflow is about to idle and safe
+  evidence-producing follow-on work exists. Generates parallel
+  workstreams sized to a tier (small 2-3, medium 4-6, large 7-10,
+  stress 10+), each carrying an explicit blocked fallback. Vocabulary
+  matches the manager skill (task / workstream / subagent / dispatch /
+  `DONE | DONE_WITH_CONCERNS | NEEDS_CONTEXT | BLOCKED`) so output
+  composes natively. Hard contracts: finish-before-expand (close
+  near-done workstreams before launching new ones), evidence-required
+  handoff (status label + inspectable artifact path), ask-only
+  boundaries (contract/migration/deletion/architecture only), and a
+  metric-gaming forbidden list (do not weaken tests, hide failures, or
+  claim success without artifacts). Design grounded in two reviewer
+  rounds plus user tweaks.
 - Wired the long-promised gitignore exemption into `tests/test_markdown_links.py`
   via new `build_ignored_set()` helper. A Markdown link target that is both
   matched by gitignore AND present on disk in the local checkout is now

@@ -72,6 +72,7 @@ See [docs/INSTALL.md](docs/INSTALL.md) for local clone and individual skill impo
 - `readme-docs`: Standardize README.md to match repo conventions.
 - `repo-rules-reader`: Read repo rule files and answer targeted repo-rule questions.
 - `skill-writing-guide`: Guide for authoring Agent Skills (SKILL.md) in open standard format.
+- `stay-busy`: Generate parallel workstreams when a delegate-manager-to-subagents workflow would idle.
 - `typescript-engineer`: Resolve TypeScript errors and design strict TypeScript types.
 - `ui-ux-engineer`: Review and improve UI/UX quality in any framework.
 - `unit-test-starter`: Generate thorough Python 3 pytest unit tests across a repo.
