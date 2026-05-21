@@ -11,12 +11,10 @@ Use this reference when a PySide6 interface needs stronger visual judgment, bett
 
 ## Best immediate references
 
-- `Refactoring UI` by Adam Wathan and Steve Schoger
+- "Refactoring UI" by Adam Wathan and Steve Schoger
   Use for practical fixes to spacing, visual hierarchy, color usage, layout density, and component polish.
-  Local file available: `Refactoring_UI.txt`
-- `Practical UI` by Adham Dannaway
+- "Practical UI" by Adham Dannaway
   Use for logic-driven rules that map well to implementation work and design critique.
-  Local file available: `Practical_UI.txt`
 - `How to Design Better UI Components` by Adrian Kuleszo
   Use for concrete component-level improvements and visual examples.
 - `UI Design Principles` by Michael Filipiuk
@@ -51,9 +49,8 @@ Use this reference when a PySide6 interface needs stronger visual judgment, bett
 
 ## Interaction and behavior references
 
-- `About Face` by Alan Cooper, Robert Reimann, David Cronin, and Christopher Noessel
+- "About Face" by Alan Cooper, Robert Reimann, David Cronin, and Christopher Noessel
   Use for interaction design framing, task flows, and goal-directed behavior.
-  Local file available: `About_Face.txt`
 - `UI is Communication` by Everett N McKay
   Use when wording, control meaning, and screen communication are weak.
 - `Universal Principles of Design` by William Lidwell, Kritina Holden, and Jill Butler
@@ -74,7 +71,7 @@ Use this reference when a PySide6 interface needs stronger visual judgment, bett
 
 ## Practical mapping to PySide6 work
 
-- If the interface feels cluttered or visually uneven, start with the local trio: `Refactoring UI`, `Practical UI`, and `About Face`.
+- If the interface feels cluttered or visually uneven, start with the local trio: "Refactoring UI", "Practical UI", and "About Face".
 - If text hierarchy feels weak, start with `Better Web Typography for a Better Web` and `Thinking with Type`.
 - If a component library or reusable widget set is emerging, start with `Atomic Design`, `Design Systems`, and `UI Design Systems Mastery`.
 - If layouts feel inconsistent, start with `Grid Systems in Graphic Design`.

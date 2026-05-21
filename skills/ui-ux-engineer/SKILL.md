@@ -38,10 +38,10 @@ It applies equally to desktop, web, and mobile surfaces.
 
 5. Reference design heuristics when needed.
 - Read [`references/design_books.md`](references/design_books.md) when you need durable design heuristics, typography guidance, grid and layout thinking, or design-system perspective.
-- Read the local design resources in this order when they match the problem:
-  `references/Refactoring_UI.txt` for visual hierarchy, spacing, typography, color, and component polish;
-  `references/Practical_UI.txt` for logic-driven accessibility, interaction, and usability rules;
-  `references/About_Face.txt` for flow, task structure, dialog behavior, and interaction model decisions.
+- Reach for these books when they match the problem:
+  - "Refactoring UI" for visual hierarchy, spacing, typography, color, and component polish.
+  - "Practical UI" for logic-driven accessibility, interaction, and usability rules.
+  - "About Face" for flow, task structure, dialog behavior, and interaction model decisions.
 
 ## Quality bar
 

@@ -24,10 +24,10 @@ Prefer simple, testable pipelines and evidence-driven evaluation over fashionabl
 - Prefer classical CV when the task is geometric, threshold-driven, template-based, or small-data.
 - Prefer learned models when invariance, semantic understanding, or scale make heuristic pipelines brittle.
 - Read [`references/pipeline_design.md`](references/pipeline_design.md) when choosing between classical CV, hybrid, and model-heavy approaches.
-- Read the local OpenCV references when they match the task:
-  `references/Learning_OpenCV.txt` for broad OpenCV techniques and feature/matching workflows;
-  `references/OpenCV_Cookbook.txt` for practical implementation patterns;
-  `references/Video_Object_Tracking.txt` for tracking-specific tasks, datasets, and methods.
+- Reach for these books when they match the task:
+  - "Learning OpenCV" for broad OpenCV techniques, feature detection, and matching workflows.
+  - "OpenCV Cookbook" for practical implementation patterns and utility code.
+  - "Video Object Tracking" for tracking-specific tasks, datasets, and methods.
 
 3. Make data quality explicit.
 - Check label quality, class balance, resolution, compression artifacts, lighting, occlusion, and domain shift.
