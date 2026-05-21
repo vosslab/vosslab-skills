@@ -26,7 +26,7 @@ tests/
 ## How to run
 
 - Fast pytest lane: `pytest tests/`
-- Single browser test: `node tests/playwright/test_<name>.mjs` (see `templates/typescript/docs/PLAYWRIGHT_USAGE.md` in `starter-repo-template`)
+- Single browser test: `node tests/playwright/test_<name>.mjs` (TypeScript repos include `PLAYWRIGHT_USAGE.md` in their propagated `docs/` folder)
 - Single non-browser E2E: `bash tests/e2e/e2e_<name>.sh` or `source source_me.sh && python3 tests/e2e/e2e_<name>.py` (see [../docs/E2E_TESTS.md](../docs/E2E_TESTS.md))
 - Bulk non-browser E2E: `bash tests/e2e/run_all.sh` (if present)
 
@@ -49,4 +49,4 @@ Important: `collect_ignore` only affects pytest test collection. The repo's lint
 
 - [../docs/PYTEST_STYLE.md](../docs/PYTEST_STYLE.md) -- pytest test-writing rules and fast-lane discipline
 - [../docs/E2E_TESTS.md](../docs/E2E_TESTS.md) -- non-browser whole-system E2E conventions
-- `templates/typescript/docs/PLAYWRIGHT_USAGE.md` (in `starter-repo-template`) -- browser-driven test conventions
+- Browser-driven test conventions: TypeScript repos include `PLAYWRIGHT_USAGE.md` in their propagated `docs/` folder

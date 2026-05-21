@@ -21,13 +21,7 @@ Five principles guide work in this repo. Cite them by name when making judgment 
 
 ## Project type marker
 
-Every repo carries `REPO_TYPE` at the repo root: one lowercase token plus newline. Tokens: `python`, `typescript`, `rust`, `other`. Missing marker defaults to `python`. `propagate_style_guides.py` reads the marker to dispatch the right file overlay; `reset_repo.py` writes it during bootstrap. `REPO_TYPE` is maintained after bootstrap; it controls future propagation behavior, not just initial scaffolding.
-
-## Template layout
-
-The starter template ships universal + Python files at the template root (their final consumer location) and type-specific overlays under `templates/<type>/`. Currently `templates/typescript/` and `templates/rust/` exist; `rust/` is a stub. The propagator resolves universal/python sources at template root and typescript/rust sources under `templates/<type>/`. The template repo refreshes its own root copies via `python3 propagate_style_guides.py --sync-self`. Template-only tooling (e.g., `tools/detect_repo_type.py`) lives under `tools/`; it never propagates and is removed by `reset_repo.py` at consumer bootstrap.
-
-- See `docs/PROPAGATION_RULES.md` (in `starter-repo-template`) for the folder convention and manifest rules that route files to consumers.
+Every repo carries `REPO_TYPE` at the repo root: one lowercase token plus newline. Tokens: `python`, `typescript`, `rust`, `other`. Missing marker triggers detection via `tools/detect_repo_type.py`; if detection is unavailable or ambiguous, falls back to `LANG_UNKNOWN`. Files gated by `ROUTING_OVERRIDES` (language- or `requires_repo_file`-tagged) do not ship to `LANG_UNKNOWN` repos; universal walker-routed files (`docs/`, `tests/`, `devel/`) still ship. The propagator (`propagate_style_guides.py` entry script + `propagate/` package: `repo.read_repo_type` reads the marker, `files.compute_propagation_plan` dispatches overlays) routes files by repo type; `reset_repo.py` writes the marker during bootstrap. `REPO_TYPE` is maintained after bootstrap; it controls future propagation behavior, not just initial scaffolding. Note: `other`-typed repos no longer receive `docs/PYTHON_STYLE.md`, as this historical exception was removed when `ROUTING_OVERRIDES` replaced the legacy language-file manifest.
 
 ## AGENTS.md files
 
@@ -101,6 +95,7 @@ Preferred structure:
 - Categories are not required when they would be empty, but every changelog entry must belong to one category.
 - Changelog entries are never removed, but they may be rephrased for accuracy and clarity.
 - Legacy archives that use the older `CHANGELOG_ARCHIVE_NN.md` form must be renamed to the documented `CHANGELOG-YYYY-MM[a-z].md` form. The new name follows the most-recent-month-in-range rule above (use the most recent `## YYYY-MM-DD` heading inside the archive). Use `git mv` so history is preserved. Only one archive naming style should exist in the repo at any time.
+- Automation: [devel/rotate_changelog.py](../devel/rotate_changelog.py) enforces this rotation policy (keeps the two newest day blocks, archives the rest into `docs/CHANGELOG-YYYY-MM[a-z].md`, refuses to clobber boundary dates). [devel/query_changelog.py](../devel/query_changelog.py) searches the active changelog and archives by date range, category, keyword, or source. [devel/commit_changelog.py](../devel/commit_changelog.py) drafts the seed commit message from changelog entries dated at or after the last commit that touched `docs/CHANGELOG.md`. All three share [devel/changelog_lib.py](../devel/changelog_lib.py) (parser/serializer, git helpers, console + prompt helpers).
 
 ## Versioning
 - Prefer `pyproject.toml` as the single source of truth when the repo is a single Python package with a single `pyproject.toml`.

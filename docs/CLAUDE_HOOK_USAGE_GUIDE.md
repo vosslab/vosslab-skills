@@ -1,5 +1,13 @@
 # Claude hook usage guide
 
+_Last updated: 2026-05-21 19:06 UTC. Source of truth: `claude-code-permissions-hook`
+repo. Mirrors in sibling repos (e.g. `starter-repo-template`) are copies; do not
+edit mirrors directly._
+
+Timestamp format: `YYYY-MM-DD HH:MM UTC` (ISO 8601 date + 24-hour clock, UTC).
+Regenerate on every audit; derive from the latest `## YYYY-MM-DD` heading in
+`docs/CHANGELOG.md` plus current commit time.
+
 Best practices for AI agents working in repos that use the `claude-code-permissions-hook`.
 This guide covers what commands are allowed, denied, and passed through, along with
 preferred alternatives for denied patterns.
@@ -142,7 +150,7 @@ in this list at all -- it is denied entirely (see the `awk` denied section below
 ### Local runtimes
 
 **Node.js:**
-Use `node <script>` or `node --test <test-file>` for local project files; write `_temp.js` and run it instead of `node -e "..."`. Auto-allowed shape: `node <flags> <path>.{js,mjs,cjs,ts,tsx} [script args...]`. Whitelisted flags: `--test`, `--watch`, `--check`, `-c`, `--loader=<arg>` / `--loader <arg>`, `--import=<arg>` / `--import <arg>`, any short `-<letters>`. Bare diagnostic forms `--test`, `--version`, `--help` are allowed. Inline JS (`-e` / `--eval`) and unrecognized `--long-flags` passthrough. Command substitution is blocked.
+Use `node <script>` or `node --test <test-file>` for local project files; write `_temp.mjs` and run `node _temp.mjs` instead of `node -e "..."`. Auto-allowed shape: `node <flags> <path>.{js,mjs,cjs,ts,tsx} [script args...]`. Whitelisted flags: `--test`, `--watch`, `--check`, `-c`, `--loader=<arg>` / `--loader <arg>`, `--import=<arg>` / `--import <arg>`, any short `-<letters>`. Bare diagnostic forms `--test`, `--version`, `--help` are allowed. Inline JS (`-e` / `--eval`) is **denied** (see the `node -e` section under denied commands). Unrecognized `--long-flags` passthrough. Command substitution is blocked.
 
 ```bash
 node script.js                              # allowed
@@ -153,8 +161,8 @@ node --watch script.mjs                     # allowed
 node -c script.js                           # allowed
 node --test                                 # allowed (default test glob)
 node --version                              # allowed
-node -e "require('./data.json')"            # passthrough (inline JS)
-node --eval "console.log(1)"                # passthrough (inline JS)
+node -e "require('./data.json')"            # denied (inline JS)
+node --eval "console.log(1)"                # denied (inline JS)
 node --inspect tests/x.mjs                  # passthrough (unknown long-flag)
 node --experimental-vm-modules tests/x.mjs  # passthrough
 ```
@@ -672,6 +680,22 @@ version-suffixed `python3.12 -c`, absolute-path binaries
 flags before `-c` (`python3 -B -c`). `python3 script.py` and `python3 -m pytest`
 are unaffected -- only the `-c` inline-code form is denied.
 
+### `node -e` / `node --eval` (inline JS)
+
+Write `_temp.mjs` and run with `node _temp.mjs`. Inline JS is hard to lint and debug, can hide command substitution (`node -e "$(curl ...)"`), and can spawn child processes (`require('child_process').execSync(...)`). Same rule shape as `python -c`.
+
+**Blocked:** Every `node -e` / `node --eval` form -- bare `node -e console.log(1)`,
+`node --eval "..."`, absolute-path binaries (`/usr/local/bin/node -e`),
+`command`/`env` prefixes, and interpreter flags before `-e`/`--eval`
+(`node -B -e "1+1"`). `node script.js`, `node --test`, and `node --version` are
+unaffected -- only the `-e` / `--eval` inline-code forms are denied.
+
+### `printf` with file redirect (Write-tool replacement)
+
+Use the Write tool for new files or the Edit tool for appends. Using `printf` to assemble file content bypasses the Write/Edit tools that provide diffs, line counts, and proper change tracking.
+
+**Blocked:** `printf '...' > FILE`, `printf '...' >> FILE`, `printf '...' | tee FILE`, `printf '...' | tee -a FILE`. Bare `printf '...'` for stdout formatting (no redirect, no `tee`) stays allowed.
+
 ## Path existence pre-check
 
 Before evaluating allow or deny rules, the hook stats the target path of `Read`, `Edit`, `MultiEdit`, `Glob`, and `Grep` calls and denies if the path is missing or unusable, immediately catching the common "hallucinated path" failure mode.
@@ -787,6 +811,8 @@ Use `Read`, `Edit`, `Write` as tool calls; file discovery via `git ls-files`, `l
 | Rename file | `mv old.py new.py` | `git mv old.py new.py` |
 | Loop over files | `for f in *.py; do ...` | Write `_temp.sh` with the loop, run `bash _temp.sh` |
 | Inline Python | `python3 -c "print(1)"` | Write `_temp.py`, run with source_me.sh |
+| Inline JS | `node -e "console.log(1)"` | Write `_temp.mjs`, run with `node _temp.mjs` |
+| Write file via printf | `printf '...' > FILE` | Use the Write tool (or Edit for appends) |
 | Set env + run | `REPO_ROOT=/x && python3 s.py` | `REPO_ROOT=/x python3 s.py` (one line) |
 | Run heredoc | `python3 - <<EOF ...` | Write `_temp.py`, run with source_me.sh |
 | GitHub CLI | `gh pr list` | Not available (`gh` not installed) |
