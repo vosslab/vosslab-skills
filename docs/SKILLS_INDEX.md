@@ -13,7 +13,7 @@ Total skills: 23
 - [delegate-manager-to-subagents/SKILL.md](../skills/delegate-manager-to-subagents/SKILL.md): Use only when the user has an approved plan AND wants the main agent to manage execution through subagents instead of editing files directly.
 - [docset-updater/SKILL.md](../skills/docset-updater/SKILL.md): Audit the full repo doc set under `docs/` against `docs/REPO_STYLE.md` and create or refresh stubs only when supported by evidence.
 - [gas-town-workflow/SKILL.md](../skills/gas-town-workflow/SKILL.md): Gas Town style multi-agent coordination with role-mapped task routing and convoy-based work decomposition.
-- [html-game-parallel-builder/SKILL.md](../skills/html-game-parallel-builder/SKILL.md): Use when building a TypeScript browser game from modular `src/*.ts` files using parallel subagents to ship good code AND reduce wall-clock build time (designed for live/podcast time pressure).
+- [html-game-parallel-builder/SKILL.md](../skills/html-game-parallel-builder/SKILL.md): Use when building a TypeScript browser game from modular `src/*.ts` files with parallel subagents to reduce wall-clock time.
 - [install-usage-docs/SKILL.md](../skills/install-usage-docs/SKILL.md): Create or refresh minimal `docs/INSTALL.md` and `docs/USAGE.md` stubs from repo evidence.
 - [old-python-code-review/SKILL.md](../skills/old-python-code-review/SKILL.md): Single-pass Python correctness, security, and style review on demand; not for multi-reviewer audits before merge (use audit-code-reviewer for that).
 - [parallel-plan/SKILL.md](../skills/parallel-plan/SKILL.md): In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that).

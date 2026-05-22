@@ -17,6 +17,7 @@ REPO_ROOT = git_file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 
 REQUIRED_KEYS = ("name", "description")
+MAX_DESCRIPTION_CHARS = 1024
 
 
 #============================================
@@ -114,4 +115,26 @@ def test_required_frontmatter_keys_present():
 	assert not missing_keys, (
 		f"{len(missing_keys)} frontmatter violation(s):\n" +
 		"\n".join(missing_keys)
+	)
+
+
+#============================================
+def test_description_at_most_1024_chars():
+	"""Every SKILL.md frontmatter description must fit the loader limit."""
+	too_long = []
+	for skill_dir in list_skill_dirs():
+		skill_md = skill_dir / "SKILL.md"
+		if not skill_md.is_file():
+			continue
+		fm = parse_frontmatter(skill_md.read_text(encoding="utf-8"))
+		description = fm.get("description", "")
+		length = len(description)
+		if length > MAX_DESCRIPTION_CHARS:
+			too_long.append(
+				f"{skill_dir.name}: {length} characters; limit: {MAX_DESCRIPTION_CHARS}"
+			)
+	assert not too_long, (
+		"SKILL.md frontmatter descriptions must be 1024 Python characters "
+		"or fewer (len(description)):\n" +
+		"\n".join(too_long)
 	)

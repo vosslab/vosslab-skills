@@ -12,6 +12,13 @@
   still belong to the user. Scope-bounding language prevents directive
   from becoming license for unbounded edits.
 
+### Fixes and Maintenance
+
+- Added a `tests/test_skill_frontmatter.py` guard that keeps SKILL.md
+  frontmatter descriptions within the 1024-character loader limit.
+  Shortened the `skills/html-game-parallel-builder/SKILL.md`
+  description while leaving the long-form skill body intact.
+
 ## 2026-05-20
 
 ### Additions and New Features
