@@ -12,15 +12,20 @@ files, message review, and final commit confirmation.
 # Standard Library
 import os
 import re
-import shlex
-import subprocess
 import sys
+import time
+import shlex
 import tempfile
+import subprocess
+
+# PIP3 modules
+import rich.panel
 
 # local repo modules
 import changelog_lib
 
 CHANGELOG_PATHSPEC = "docs/CHANGELOG.md"
+VERSION_PATHSPEC = "VERSION"
 # upper bound on body lines emitted into the seed editor buffer (covers
 # date headings, title bullets, and indented continuations together)
 MAX_BODY_LINES = 25
@@ -28,6 +33,70 @@ MAX_BODY_LINES = 25
 SUBJECT_BUDGET = 72
 # body bullets wrap at ~100 chars for scannability; not a hard git rule
 BODY_LINE_BUDGET = 100
+
+#============================================
+
+def read_version_file() -> str:
+	"""Read VERSION file relative to repo_root and return stripped contents.
+
+	Returns:
+		Stripped contents of the VERSION file.
+
+	Raises:
+		RuntimeError: When the VERSION file does not exist or cannot be read.
+	"""
+	repo_root = changelog_lib.get_git_root()
+	version_path = os.path.join(repo_root, VERSION_PATHSPEC)
+	try:
+		with open(version_path, "r", encoding="utf-8") as f:
+			version_contents = f.read().strip()
+	except FileNotFoundError:
+		raise RuntimeError(f"VERSION file not found at {version_path}.")
+	except IOError as e:
+		raise RuntimeError(f"Failed to read VERSION file: {e}")
+	if not version_contents:
+		raise RuntimeError(f"VERSION file is empty: {version_path}.")
+	return version_contents
+
+#============================================
+
+def current_calver_month() -> str:
+	"""Return the current calendar month in CalVer format (YY.MM).
+
+	Returns:
+		Current month as a zero-padded string in the format YY.MM
+		(for example "26.05").
+	"""
+	return time.strftime("%y.%m")
+
+#============================================
+
+def check_version_freshness() -> bool:
+	"""Check if VERSION file matches the current calendar month.
+
+	Returns the result of a user confirmation prompt when the month
+	does not match. Returns True immediately when the month matches.
+
+	Returns:
+		True if VERSION month matches current month or user confirms to continue.
+		False if user declines to continue.
+	"""
+	version_value = read_version_file()
+	current_month = current_calver_month()
+
+	# Extract the first two dotted segments (YY.MM)
+	version_parts = version_value.split(".")
+	if len(version_parts) < 2:
+		raise RuntimeError(f"VERSION format unrecognized: {version_value}")
+	version_month = f"{version_parts[0]}.{version_parts[1]}"
+
+	# If months match, freshness is confirmed
+	if version_month == current_month:
+		return True
+
+	# Months don't match; prompt the user
+	prompt = f"VERSION is {version_value}, but current month is {current_month}. Continue?"
+	return changelog_lib.confirm(prompt)
 
 #============================================
 
@@ -229,31 +298,6 @@ def strip_git_style_comments(message: str) -> str:
 
 #============================================
 
-def print_diff_to_stderr(diff_text: str, path: str) -> None:
-	"""Print a diff to stderr with a header."""
-	if not diff_text:
-		return
-	changelog_lib.ERR_CONSOLE.print(f"Diff for {path}:", style="bold")
-	for line in diff_text.splitlines():
-		if line.startswith("+++"):
-			changelog_lib.ERR_CONSOLE.print(line, style="bold cyan", markup=False)
-			continue
-		if line.startswith("---"):
-			changelog_lib.ERR_CONSOLE.print(line, style="bold cyan", markup=False)
-			continue
-		if line.startswith("@@"):
-			changelog_lib.ERR_CONSOLE.print(line, style="bold yellow", markup=False)
-			continue
-		if line.startswith("+"):
-			changelog_lib.ERR_CONSOLE.print(line, style="green", markup=False)
-			continue
-		if line.startswith("-"):
-			changelog_lib.ERR_CONSOLE.print(line, style="red", markup=False)
-			continue
-		sys.stderr.write(line + "\n")
-
-#============================================
-
 def get_diff(path: str) -> str:
 	"""Get diff for a path with minimal context and no color."""
 	result = changelog_lib.run_git(["diff", "--no-color", "--unified=0", "--", path])
@@ -274,39 +318,68 @@ def get_cached_diff(path: str) -> str:
 
 #============================================
 
-def get_last_changelog_commit_date() -> str | None:
-	"""Return YYYY-MM-DD of the last commit touching docs/CHANGELOG.md.
+def get_last_changelog_commit_sha() -> str | None:
+	"""Return the full SHA of the last commit touching docs/CHANGELOG.md.
 
-	Uses ``git log -1 --format=%cI`` (committer date, ISO 8601). Returns
-	``None`` when the changelog has no prior commit (first-time use).
+	Returns ``None`` when the changelog has no prior commit (first-time
+	use).
 	"""
 	result = changelog_lib.run_git(
-		["log", "-1", "--format=%cI", "--", CHANGELOG_PATHSPEC]
+		["log", "-1", "--format=%H", "--", CHANGELOG_PATHSPEC]
 	)
 	if result.returncode != 0:
 		raise RuntimeError(result.stderr.strip() or "git log failed.")
 	stdout = result.stdout.strip()
 	if not stdout:
 		return None
-	# leading 10 chars of ISO timestamp is the YYYY-MM-DD calendar day
-	return stdout[:10]
+	return stdout
 
 #============================================
 
-def select_new_entries(cutoff_date: str | None) -> tuple[list, list[str]]:
-	"""Parse docs/CHANGELOG.md and return entries dated >= cutoff_date.
+def get_changelog_text_at(sha: str) -> str:
+	"""Return docs/CHANGELOG.md contents at ``sha`` via git show.
+
+	Raises:
+		RuntimeError: When git show fails (missing object, shallow
+			clone that does not contain the SHA, etc.). The caller
+			must not silently fall back to "all entries are new" --
+			that would resurrect the bug this helper exists to fix.
+	"""
+	result = changelog_lib.run_git(
+		["show", f"{sha}:{CHANGELOG_PATHSPEC}"]
+	)
+	if result.returncode != 0:
+		raise RuntimeError(
+			result.stderr.strip()
+			or f"git show failed for {sha}:{CHANGELOG_PATHSPEC}"
+		)
+	return result.stdout
+
+#============================================
+
+def select_new_entries(prior_sha: str | None) -> tuple[list, list[str]]:
+	"""Return entries present in current CHANGELOG but not at ``prior_sha``.
+
+	Replaces the prior date-window filter (which re-emitted bullets that
+	had already been committed earlier the same day when the user added
+	more bullets under the same ``## YYYY-MM-DD`` heading). Selection
+	now diffs the parsed entry set against the entry set in the file at
+	the last changelog-touching commit, keyed by ``(date, title)``.
 
 	Args:
-		cutoff_date: YYYY-MM-DD string or None. When None, every entry
-			is returned (first-time use case).
+		prior_sha: Full SHA of the last commit touching
+			docs/CHANGELOG.md, or ``None`` for first-time use.
 
 	Returns:
 		A tuple ``(entries, warnings)``. ``entries`` is a list of
-		``changelog_lib.Entry`` records. ``warnings`` is the
-		deduplicated list of warning messages emitted by the library
-		parser; caller prints them once.
+		``changelog_lib.Entry`` records in current-file order.
+		``warnings`` is the deduplicated list of parser warnings on the
+		CURRENT file; prior-file warnings are intentionally suppressed
+		(they would re-print stale parse complaints on every commit).
 	"""
-	_blocks, entries, warnings = changelog_lib.parse_file(CHANGELOG_PATHSPEC)
+	_blocks, current_entries, warnings = changelog_lib.parse_file(
+		CHANGELOG_PATHSPEC
+	)
 	# deduplicate warning messages on identical text
 	seen: set[str] = set()
 	unique_warnings: list[str] = []
@@ -315,11 +388,32 @@ def select_new_entries(cutoff_date: str | None) -> tuple[list, list[str]]:
 			continue
 		seen.add(warning)
 		unique_warnings.append(warning)
-	if cutoff_date is None:
-		return (entries, unique_warnings)
-	# YYYY-MM-DD strings sort lexicographically the same as calendar dates
-	new_entries = [entry for entry in entries if entry.date >= cutoff_date]
+	if prior_sha is None:
+		return (current_entries, unique_warnings)
+	prior_text = get_changelog_text_at(prior_sha)
+	_p_blocks, prior_entries, _p_warnings = changelog_lib.parse_text(
+		prior_text, source=f"{prior_sha[:8]}:{CHANGELOG_PATHSPEC}"
+	)
+	new_entries = compute_new_entries(current_entries, prior_entries)
 	return (new_entries, unique_warnings)
+
+#============================================
+
+def compute_new_entries(current_entries: list, prior_entries: list) -> list:
+	"""Return current_entries whose (date, title) is not in prior_entries.
+
+	Preserves current-entry order. Identity key is ``(date, title)``;
+	bullets may be rephrased per repo norms, so a title edit looks "new"
+	here and the user prunes in the editor buffer.
+	"""
+	prior_keys: set[tuple[str, str]] = {
+		(entry.date, entry.title) for entry in prior_entries
+	}
+	new_entries = [
+		entry for entry in current_entries
+		if (entry.date, entry.title) not in prior_keys
+	]
+	return new_entries
 
 #============================================
 
@@ -405,30 +499,40 @@ def make_seed_message_from_entries(entries: list) -> str | None:
 	emit_date_headings = len(distinct_dates) > 1
 
 	body_lines: list[str] = []
-	for entry in entries:
-		if len(body_lines) >= MAX_BODY_LINES:
-			break
-		if emit_date_headings:
-			# entries may arrive interleaved by date; scan all prior body
-			# lines (not just the last) to ensure exactly one `## DATE`
-			# heading per distinct date across the whole body
-			heading = f"## {entry.date}"
-			prior_heading_present = any(
-				line.startswith(heading) for line in body_lines
-			)
-			if not prior_heading_present:
-				body_lines.append(heading)
-				if len(body_lines) >= MAX_BODY_LINES:
-					break
-		# title line
-		title_line = "- " + clean_entry_text(entry.title, BODY_LINE_BUDGET)
-		body_lines.append(title_line)
-		if len(body_lines) >= MAX_BODY_LINES:
-			break
-		# body continuation, if present
-		if entry.body:
-			body_line = "  " + clean_entry_text(entry.body, BODY_LINE_BUDGET)
-			body_lines.append(body_line)
+	# single-entry special case: the subject already states the title, so
+	# repeating it as a `- title` bullet is pure noise. Emit only the
+	# entry body (when present) as a wrapped paragraph; otherwise no body
+	# block at all. Multi-entry seeds keep the bulleted list shape so each
+	# entry is individually scannable in the editor buffer.
+	if num_entries == 1:
+		only_entry = entries[0]
+		if only_entry.body:
+			body_lines.append(clean_entry_text(only_entry.body, BODY_LINE_BUDGET))
+	else:
+		for entry in entries:
+			if len(body_lines) >= MAX_BODY_LINES:
+				break
+			if emit_date_headings:
+				# entries may arrive interleaved by date; scan all prior body
+				# lines (not just the last) to ensure exactly one `## DATE`
+				# heading per distinct date across the whole body
+				heading = f"## {entry.date}"
+				prior_heading_present = any(
+					line.startswith(heading) for line in body_lines
+				)
+				if not prior_heading_present:
+					body_lines.append(heading)
+					if len(body_lines) >= MAX_BODY_LINES:
+						break
+			# title line
+			title_line = "- " + clean_entry_text(entry.title, BODY_LINE_BUDGET)
+			body_lines.append(title_line)
+			if len(body_lines) >= MAX_BODY_LINES:
+				break
+			# body continuation, if present
+			if entry.body:
+				body_line = "  " + clean_entry_text(entry.body, BODY_LINE_BUDGET)
+				body_lines.append(body_line)
 
 	body = "\n".join(body_lines).strip()
 	if body:
@@ -517,6 +621,10 @@ def main() -> None:
 			changelog_lib.print_warning("Aborted.")
 			return
 
+	if not check_version_freshness():
+		changelog_lib.print_warning("Aborted.")
+		return
+
 	# short-circuit on a clean tree before parsing the whole changelog:
 	# if there is nothing in the working tree or the index for
 	# docs/CHANGELOG.md, there is nothing to commit regardless of which
@@ -529,32 +637,45 @@ def main() -> None:
 		changelog_lib.CONSOLE.print(message, style="yellow")
 		return
 
-	# parse-based new-entry selection: build the seed from changelog_lib's
-	# Entry records dated on or after the last changelog-touching commit
-	cutoff_date = get_last_changelog_commit_date()
-	new_entries, warnings = select_new_entries(cutoff_date)
+	# parse-based new-entry selection: build the seed from current entries
+	# whose (date, title) does not appear in the changelog at the last
+	# commit that touched it. This avoids re-emitting bullets that were
+	# already committed earlier the same day when more bullets land under
+	# the same ## YYYY-MM-DD heading.
+	prior_sha = get_last_changelog_commit_sha()
+	new_entries, warnings = select_new_entries(prior_sha)
 	# print parse warnings once (deduplicated upstream)
 	for warning in warnings:
 		changelog_lib.print_warning(warning)
 
 	if not new_entries:
-		if cutoff_date is None:
+		if prior_sha is None:
 			message = f"No entries in {changelog_path}. Nothing to commit."
 		else:
 			message = (
-				f"No new entries since last commit (cutoff {cutoff_date}). "
+				f"No new entries since commit {prior_sha[:8]}. "
 				"Nothing to commit."
 			)
 		changelog_lib.CONSOLE.print(message, style="yellow")
 		return
 
-	# show the diff for the user's pre-commit visual check; the seed
-	# message itself is built from parsed entries, not from the diff text
-	print_diff_to_stderr(diff_text, changelog_path)
-
+	# build the seed message from parsed entries before any preview output
 	seed_message = make_seed_message_from_entries(new_entries)
 	if seed_message is None:
 		return
+
+	# show the seed message in a bordered panel so the editor preview
+	# is visually distinct from surrounding console output (warnings,
+	# git status, prompts). title="Seed commit message"; rstrip on the
+	# panel body to prevent rich from rendering a trailing blank row.
+	panel = rich.panel.Panel(
+		seed_message.rstrip("\n"),
+		title="Seed commit message",
+		title_align="left",
+		border_style="cyan",
+		expand=False,
+	)
+	changelog_lib.CONSOLE.print(panel, markup=False)
 
 	action = prompt_message_action("Add to the commit message?")
 	if action == "no":

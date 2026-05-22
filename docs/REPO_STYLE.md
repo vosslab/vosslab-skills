@@ -95,7 +95,21 @@ Preferred structure:
 - Categories are not required when they would be empty, but every changelog entry must belong to one category.
 - Changelog entries are never removed, but they may be rephrased for accuracy and clarity.
 - Legacy archives that use the older `CHANGELOG_ARCHIVE_NN.md` form must be renamed to the documented `CHANGELOG-YYYY-MM[a-z].md` form. The new name follows the most-recent-month-in-range rule above (use the most recent `## YYYY-MM-DD` heading inside the archive). Use `git mv` so history is preserved. Only one archive naming style should exist in the repo at any time.
-- Automation: [devel/rotate_changelog.py](../devel/rotate_changelog.py) enforces this rotation policy (keeps the two newest day blocks, archives the rest into `docs/CHANGELOG-YYYY-MM[a-z].md`, refuses to clobber boundary dates). [devel/query_changelog.py](../devel/query_changelog.py) searches the active changelog and archives by date range, category, keyword, or source. [devel/commit_changelog.py](../devel/commit_changelog.py) drafts the seed commit message from changelog entries dated at or after the last commit that touched `docs/CHANGELOG.md`. All three share [devel/changelog_lib.py](../devel/changelog_lib.py) (parser/serializer, git helpers, console + prompt helpers).
+- Automation: [devel/rotate_changelog.py](../devel/rotate_changelog.py) enforces this rotation policy (keeps the two newest day blocks, archives the rest into `docs/CHANGELOG-YYYY-MM[a-z].md`, refuses to clobber boundary dates). [devel/query_changelog.py](../devel/query_changelog.py) searches the active changelog and archives by date range, category, keyword, or source. [devel/commit_changelog.py](../devel/commit_changelog.py) drafts the seed commit message from changelog entries that are absent from the prior version of `docs/CHANGELOG.md` (identified by the SHA of the last commit that touched that file), keyed on `(date, title)` so same-day second commits do not re-emit already-shipped bullets. All three share [devel/changelog_lib.py](../devel/changelog_lib.py) (parser/serializer, git helpers, console + prompt helpers).
+
+## Active plans folder organization
+- Working planning artifacts under `docs/active_plans/` are filed into a closed set of subdirectories by kind.
+- The five subdirectories are the closed set; adding a new category requires editing this section first.
+  - `docs/active_plans/active/` for in-flight plans currently being acted on.
+  - `docs/active_plans/audits/` for diagnostic and audit reports.
+  - `docs/active_plans/reports/` for status reports and visual-acceptance reports.
+  - `docs/active_plans/decisions/` for decision records and clarifications.
+  - `docs/active_plans/workstreams/` for agent workstream artifacts.
+- Forward-only by default: new files go directly into the matching subdirectory at creation time.
+- Existing root-level files under `docs/active_plans/` stay in place; do not relocate them without an explicit, one-time sweep approved by the user.
+- Topic-tag filename prefixes are retained inside each subdirectory (for example `no_crop_*`, `css_native_*`) so related artifacts cluster by name.
+- Use snake_case filenames for these working docs, not SCREAMING_SNAKE_CASE; the all-caps rule covers durable `docs/*.md` reference docs, not active-plans scratch.
+- When a plan is complete and no longer being acted on, close it by moving the file with `git mv` to `docs/archive/` so history is preserved.
 
 ## Versioning
 - Prefer `pyproject.toml` as the single source of truth when the repo is a single Python package with a single `pyproject.toml`.

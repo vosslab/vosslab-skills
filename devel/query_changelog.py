@@ -35,6 +35,11 @@ CATEGORY_ALIASES = {
 	"remove": "Removals and Deprecations",
 	"decision": "Decisions and Failures",
 	"test": "Developer Tests and Notes",
+	# legacy flat changelogs assign Uncategorized to bullets that appear under
+	# a day heading with no preceding ### Category. Surface them as a
+	# first-class --category target.
+	"uncategorized": "Uncategorized",
+	"uncat": "Uncategorized",
 }
 
 ERR_CONSOLE = rich.console.Console(stderr=True, highlight=False)
@@ -181,10 +186,26 @@ def category_sort_key(category: str) -> int:
 
 #============================================
 
-def format_text(entries: list) -> str:
-	"""Render entries as grouped text, reverse-chron by date, canonical category."""
+def format_text(entries: list, lead_text_blocks: list = None) -> str:
+	"""Render entries as grouped text, reverse-chron by date, canonical category.
+
+	If ``lead_text_blocks`` is provided (a list of ``DayBlock`` records with
+	non-empty ``lead_text``), the captured lead text is rendered as ``>``
+	blockquote lines under the matching date heading. Lead text is human
+	context (author attributions, etc.) and is intentionally only emitted
+	in text output, never in JSON or CSV.
+	"""
 	if not entries:
 		return ""
+	# build (date -> [lead_text lines]) map from supplied blocks
+	lead_by_date: dict = {}
+	if lead_text_blocks:
+		for blk in lead_text_blocks:
+			if not blk.lead_text:
+				continue
+			lead_by_date.setdefault(blk.date, []).append(
+				(blk.lead_text, blk.source, blk.lineno)
+			)
 	# group by date desc
 	by_date = {}
 	for entry in entries:
@@ -193,6 +214,12 @@ def format_text(entries: list) -> str:
 	for date_str in sorted(by_date.keys(), reverse=True):
 		out_lines.append(f"## {date_str}")
 		out_lines.append("")
+		# emit captured lead-text lines (if any) as blockquote context
+		for lead_text, lead_source, lead_lineno in lead_by_date.get(date_str, []):
+			for lead_line in lead_text.split("\n"):
+				out_lines.append(f"> {lead_line}")
+			out_lines.append(f"> (lead text from {lead_source}:{lead_lineno})")
+			out_lines.append("")
 		# group by category in canonical order
 		day_entries = by_date[date_str]
 		by_cat = {}
@@ -362,12 +389,17 @@ def main() -> int:
 	# parse all files via the shared library
 	all_entries = []
 	all_warnings = []
+	all_lead_blocks = []
 	for path in files:
 		_blocks, entries, warnings = changelog_lib.parse_file(
 			path, strict=args.strict,
 		)
 		all_entries.extend(entries)
 		all_warnings.extend(warnings)
+		# stash blocks with captured lead_text for text rendering
+		for blk in _blocks:
+			if blk.lead_text:
+				all_lead_blocks.append(blk)
 
 	# emit any library warnings to stderr unless suppressed
 	if not args.quiet:
@@ -394,7 +426,12 @@ def main() -> int:
 	elif args.format == "csv":
 		sys.stdout.write(format_csv(matched))
 	else:
-		sys.stdout.write(format_text(matched))
+		# pass lead-text blocks for human-context rendering; filter by the
+		# dates that survived entry filtering so we don't print lead text
+		# for blocks whose entries were filtered out.
+		matched_dates = {e.date for e in matched}
+		visible_lead_blocks = [b for b in all_lead_blocks if b.date in matched_dates]
+		sys.stdout.write(format_text(matched, lead_text_blocks=visible_lead_blocks))
 	return 0
 
 #============================================

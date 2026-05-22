@@ -80,11 +80,22 @@ class DayBlock:
 			caller did not supply a source path.
 		lineno: 1-based line number of the ``## YYYY-MM-DD`` heading in
 			``source``.
+		lead_text: Concatenation of non-blank, non-bullet, non-heading
+			lines that appear AFTER the ``## YYYY-MM-DD`` heading and
+			BEFORE the first ``### Category`` heading or first ``- ``
+			bullet. Captures author-attribution lines such as
+			``Neil Voss <vossman77@yahoo.com>`` or ``OpenAI Codex``
+			that would otherwise be silently dropped by entry-view
+			consumers. Empty string when no such line exists. NOT the
+			same as the file-level "preamble" returned by
+			``parse_day_blocks``, which is text BEFORE the first day
+			block.
 	"""
 	date: str
 	raw_text: str
 	source: str
 	lineno: int
+	lead_text: str = ""
 
 #============================================
 
@@ -348,7 +359,34 @@ def parse_day_blocks(text: str, source: str = "<unknown>",
 		else:
 			seen_dates[date_str] = lineno
 		raw_text = "".join(lines[line_index:end_index])
-		block = DayBlock(date=date_str, raw_text=raw_text, source=source, lineno=lineno)
+		# compute lead_text: non-blank, non-bullet, non-heading lines between
+		# the ## heading (lines[line_index]) and the first ### or - line. This
+		# captures author-attribution day-block annotations that would
+		# otherwise be silently dropped by entry-view consumers.
+		lead_text_parts: list = []
+		for scan_idx in range(line_index + 1, end_index):
+			scan_line = lines[scan_idx]
+			if BULLET_RE.match(scan_line) or CATEGORY_RE.match(scan_line):
+				break
+			if DATE_RE.match(scan_line):
+				break
+			scan_stripped = scan_line.strip()
+			if scan_stripped:
+				lead_text_parts.append(scan_stripped)
+		lead_text = "\n".join(lead_text_parts)
+		if lead_text:
+			# excerpt: first line only, truncated, for the warning preview
+			first_line = lead_text.split("\n", 1)[0]
+			excerpt = first_line if len(first_line) <= 80 else first_line[:77] + "..."
+			warning = (
+				f"{source}:{lineno}: lead text under day heading: "
+				f"{excerpt}"
+			)
+			warnings.append(warning)
+		block = DayBlock(
+			date=date_str, raw_text=raw_text, source=source, lineno=lineno,
+			lead_text=lead_text,
+		)
 		blocks.append(block)
 
 	return (preamble, blocks, warnings)
@@ -361,7 +399,22 @@ def split_day_block(block: DayBlock, strict: bool = False) -> tuple:
 	Walks the block's raw text and emits one ``Entry`` per ``- ``
 	bullet. Bullets are grouped by the most recent ``### Category``
 	heading; bullets that appear before any category heading are
-	classified ``"Uncategorized"`` with one warning per block.
+	classified ``"Uncategorized"``.
+
+	Two warning shapes are emitted, at most one per block:
+
+	- ``LEGACY_FLAT`` -- ``"legacy flat block (no category heading)"``
+	  fires once when the block contains zero ``### Category`` headings
+	  AND at least one bullet. ``parse_file`` post-processes these into
+	  a single per-file summary line.
+	- ``ORPHAN_BULLETS`` -- ``"orphan bullets before first category
+	  heading"`` fires once when the block has at least one ``###``
+	  heading but a bullet appears before the first one. Per-block
+	  actionable; never collapsed.
+
+	The third warning shape (``"lead text under day heading"``) is
+	emitted by ``parse_day_blocks`` when it captures ``DayBlock.lead_text``;
+	this function does not emit it.
 
 	Bullet body collection rule: a bullet starts at a line matching
 	``BULLET_RE``. Continuation lines belong to the bullet if they
@@ -384,6 +437,22 @@ def split_day_block(block: DayBlock, strict: bool = False) -> tuple:
 
 	# split into lines without keepends; we are emitting structured data, not bytes
 	raw_lines = block.raw_text.splitlines()
+
+	# pre-scan: count categories and find first-category vs first-bullet positions
+	# so we can decide which uncategorized warning shape (if any) to emit
+	pre_first_cat_idx = None
+	pre_first_bullet_idx = None
+	pre_cat_count = 0
+	for pre_idx, pre_line in enumerate(raw_lines):
+		if pre_idx == 0 and DATE_RE.match(pre_line):
+			continue
+		if CATEGORY_RE.match(pre_line):
+			pre_cat_count += 1
+			if pre_first_cat_idx is None:
+				pre_first_cat_idx = pre_idx
+		elif BULLET_RE.match(pre_line):
+			if pre_first_bullet_idx is None:
+				pre_first_bullet_idx = pre_idx
 
 	# state machine: current_category, current_bullet
 	current_category: str | None = None
@@ -444,14 +513,22 @@ def split_day_block(block: DayBlock, strict: bool = False) -> tuple:
 			bullet_title = bullet_match.group(1).rstrip()
 			bullet_body_lines = []
 			bullet_lineno = file_lineno
-			# emit a single per-block warning the first time a bullet appears
-			# without any preceding ### heading
+			# emit a single per-block uncategorized warning at the first such bullet.
+			# warning text depends on whether ANY ### Category exists in the block:
+			#   - zero categories -> LEGACY_FLAT (collapsed per-file by parse_file)
+			#   - at least one category -> ORPHAN_BULLETS (per-block actionable)
 			if current_category is None and not uncategorized_warned:
 				uncategorized_warned = True
-				warnings.append(
-					f"{block.source}:{block.lineno}: bullets before any category; "
-					f"using Uncategorized"
-				)
+				if pre_cat_count == 0:
+					warnings.append(
+						f"{block.source}:{block.lineno}: "
+						f"legacy flat block (no category heading)"
+					)
+				else:
+					warnings.append(
+						f"{block.source}:{block.lineno}: "
+						f"orphan bullets before first category heading"
+					)
 			continue
 
 		# continuation candidate for the current bullet
@@ -482,9 +559,63 @@ def split_day_block(block: DayBlock, strict: bool = False) -> tuple:
 #============================================
 # Convenience
 
+def parse_text(text: str, source: str = "<unknown>", strict: bool = False,
+		duplicate_policy: str = "warn") -> tuple:
+	"""Parse and split a changelog from an in-memory string.
+
+	Same return shape as ``parse_file``. Use this when the source text
+	comes from somewhere other than a filesystem path (for example
+	``git show <sha>:docs/CHANGELOG.md`` output).
+
+	Args:
+		text: Full changelog file contents.
+		source: Label used in warning messages and on each resulting
+			record. Defaults to ``"<unknown>"``.
+		strict: Passed to ``split_day_block``.
+		duplicate_policy: Passed to ``parse_day_blocks``.
+
+	Returns:
+		A tuple ``(blocks, entries, warnings)``. ``warnings`` is the
+		concatenation of the parse-time warnings and every block's
+		split-time warnings. Legacy-flat per-block warnings are
+		collapsed into a single per-source summary line.
+
+	Raises:
+		ValueError: Passthrough from ``parse_day_blocks`` when
+			``duplicate_policy='raise'`` and a duplicate
+			``## YYYY-MM-DD`` heading is encountered.
+	"""
+	_preamble, blocks, parse_warnings = parse_day_blocks(
+		text, source=source, duplicate_policy=duplicate_policy,
+	)
+	entries: list = []
+	split_warnings: list = []
+	for block in blocks:
+		block_entries, block_warnings = split_day_block(block, strict=strict)
+		entries.extend(block_entries)
+		split_warnings.extend(block_warnings)
+	# collapse per-block LEGACY_FLAT warnings into one per-file summary line.
+	# the dominant corpus shape (94%+ of the old "bullets before any category"
+	# warnings) is legacy flat changelogs; surfacing one summary per file keeps
+	# signal-to-noise reasonable. Other warning shapes survive untouched.
+	legacy_marker = "legacy flat block (no category heading)"
+	non_legacy = [w for w in split_warnings if legacy_marker not in w]
+	legacy_count = len(split_warnings) - len(non_legacy)
+	combined_warnings = parse_warnings + non_legacy
+	if legacy_count > 0:
+		combined_warnings.append(
+			f"{source}: legacy flat changelog: {legacy_count} day blocks have "
+			f"bullets with no category heading (treated as Uncategorized)"
+		)
+	return (blocks, entries, combined_warnings)
+
+#============================================
+
 def parse_file(path: str, strict: bool = False,
 		duplicate_policy: str = "warn") -> tuple:
 	"""Read, parse, and split a changelog file in a single call.
+
+	Thin wrapper around ``parse_text``: reads ``path``, then delegates.
 
 	Args:
 		path: Path to the changelog file.
@@ -495,19 +626,16 @@ def parse_file(path: str, strict: bool = False,
 		A tuple ``(blocks, entries, warnings)``. ``warnings`` is the
 		concatenation of the parse-time warnings and every block's
 		split-time warnings.
+
+	Raises:
+		FileNotFoundError: When ``path`` does not exist.
+		ValueError: Passthrough from ``parse_day_blocks`` when
+			``duplicate_policy='raise'`` and a duplicate
+			``## YYYY-MM-DD`` heading is encountered.
 	"""
 	text = read_changelog(path)
-	_preamble, blocks, parse_warnings = parse_day_blocks(
-		text, source=path, duplicate_policy=duplicate_policy,
-	)
-	entries: list = []
-	split_warnings: list = []
-	for block in blocks:
-		block_entries, block_warnings = split_day_block(block, strict=strict)
-		entries.extend(block_entries)
-		split_warnings.extend(block_warnings)
-	warnings = parse_warnings + split_warnings
-	return (blocks, entries, warnings)
+	return parse_text(text, source=path, strict=strict,
+		duplicate_policy=duplicate_policy)
 
 #============================================
 
