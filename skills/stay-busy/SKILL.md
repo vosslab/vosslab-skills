@@ -10,6 +10,13 @@ description: "Use when the user invokes /stay-busy, asks to keep a manager/orche
 One-line principle: **when stuck, find a solution.** When the manager has
 no obvious next plan task, the answer is more dispatched work, not idle.
 
+**Finish the obvious comes first.** This skill is layered on top of the
+"Finish the obvious" core philosophy in `docs/REPO_STYLE.md`. If a plan
+task, in-flight workstream, or open verification step still has obvious
+next actions, the manager takes those FIRST. stay-busy fires only after
+the obvious queue is empty. See `## Finish before expanding` for the gate
+that enforces this, and Workflow step 2 for where the gate runs.
+
 The failure this skill prevents: the manager spends a few minutes making a
 plan, then sits idle for hours or days. A short task gets finished and the
 manager stops, even though the user wanted continued exploration.
@@ -120,10 +127,29 @@ obvious options instead of continuing.
   remains. Finish the milestone first, THEN propose follow-on workstreams.
   stay-busy must not be used to avoid finishing.
 
+## Finish before expanding
+
+This gate runs before every stay-busy invocation, and before any tier
+bump or scope expansion described in the sections that follow:
+
+- Inspect every already-running or paused workstream in the current plan.
+- If a workstream needs only verification, documentation, or final
+  handoff, queue THAT workstream first.
+- Do not launch new workstreams when existing workstreams can be closed.
+- Staying busy must not create abandoned partial work.
+
+This is the "Finish the obvious" core philosophy from
+`docs/REPO_STYLE.md` applied to the stay-busy lifecycle. Away mode,
+Manager decision authority, Tier signals, and Workstream scale all
+apply ONLY after this gate is clean.
+
 ## Away mode
 
 When the user signals they are stepping away (sleeping, leaving,
-unattended session), workstream defaults shift:
+unattended session), workstream defaults shift. Away mode does NOT
+bypass `## Finish before expanding`: if obvious in-flight work remains,
+finish that first; the expansion below applies only after the obvious
+queue is empty.
 
 - Default workstream scope widens: prefer expansive multi-methodology
   suites over small concrete recovery tasks. A "small, concrete recovery
@@ -221,16 +247,6 @@ lifts the cap (see `## Away mode`).
 | Plan has 6-15 tasks; one or two milestones | medium (4-6) | large (7-10) |
 | Plan has 16+ tasks or multi-day request | large (7-10) | stress (10+) |
 | Explicit "keep busy for N days" or "going to bed" | stress (10+) | stress (10+) |
-
-## Finish before expanding
-
-Before generating any new workstream:
-
-- Inspect every already-running or paused workstream in the current plan.
-- If a workstream needs only verification, documentation, or final handoff,
-  queue THAT workstream first.
-- Do not launch new workstreams when existing workstreams can be closed.
-- Staying busy must not create abandoned partial work.
 
 ## Side quest discipline
 
