@@ -5,13 +5,65 @@ description: "Use when the user invokes /stay-busy, asks to keep a manager/orche
 
 # Stay busy
 
+## Big picture
+
+One-line principle: **when stuck, find a solution.** When the manager has
+no obvious next plan task, the answer is more dispatched work, not idle.
+
+The failure this skill prevents: the manager spends a few minutes making a
+plan, then sits idle for hours or days. A short task gets finished and the
+manager stops, even though the user wanted continued exploration.
+
+This skill exists to inflate scope by roughly two orders of magnitude when
+the user is away from the keyboard, overnight or across several days. They
+are going to bed, stepping out, or running a session unattended, and they
+want to wake up to finished artifacts, not a queue of pending questions to
+answer.
+
+Success = completed work the user can read on returning. Failure = a stack
+of "should I do X?" prompts, or a milestone declared done while obvious
+follow-on testing was skipped.
+
+Four anchor activities, named by the user, define the work stay-busy
+generates:
+
+- Write up results. Synthesize completed runs into reports that compare,
+  summarize, or rank. Long-form (25-100 page) reports are a valid single
+  workstream when enough evidence has accumulated to synthesize.
+- A/B (or A/B/C/D) testing. Run methodologies, configurations, or
+  alternative implementations side by side and report the comparison.
+- Side-quest experiments. Launch subagents to explore tangents that may
+  inform future work, labeled `SIDE QUEST`.
+- Audit the codebase. Read-only correctness, style, contract, and coverage
+  sweeps producing inspectable artifacts.
+
+Default workstream shape in away-mode is expansive, not small. "Small,
+concrete recovery task" is wrong when the user is asleep. The right shape
+is a test suite spanning N methodologies, a stress matrix across M
+configurations, an audit covering K subsystems, a screenshot gallery
+across V viewports.
+
+Two failure modes to prevent:
+
+- Passive waiting. Manager idles, asks the user "what next?", or marks the
+  milestone done while obvious follow-on testing remains. Especially bad
+  while the user is away: morning inbox of pending questions.
+- Reckless motion. Manager invents busywork, expands scope into
+  architecture changes, weakens tests, or edits production code to make
+  red turn green.
+
+Every rule below maps to one of those two failure modes. See
+[references/big_picture.md](references/big_picture.md) for the full
+lifecycle diagram, the worked overnight example, the composition map with
+sibling skills, and the mapping to the core philosophies in
+`docs/REPO_STYLE.md`.
+
 ## Core principle
 
 Stay busy by producing evidence, not by creating motion. When the
 `delegate-manager-to-subagents` workflow would otherwise idle, this skill
 generates safe, parallel, evidence-producing workstreams with explicit
-blocked fallbacks and a final handoff contract. It never invents fake
-progress, pushes high-risk changes, or expands scope to avoid finishing.
+blocked fallbacks and a final handoff contract.
 
 Supporting rules:
 
@@ -44,6 +96,9 @@ quest task still carries one of the four status labels above.
 ## When to use
 
 - User asks to keep manager/orchestrator/subagents busy.
+- User asks the manager to stay productive over a multi-day stretch.
+- User is stepping away from the keyboard (going to bed, leaving for the
+  day, running unattended) and wants finished artifacts on return.
 - Project blocked but safe parallel work exists.
 - User complains agent is waiting too much.
 - End-of-turn, when the next response would otherwise be "waiting for
@@ -56,13 +111,69 @@ obvious options instead of continuing.
 
 ## When not to use
 
-- Project genuinely complete.
+- Project genuinely complete AND no deferred testing or exploration of
+  value remains.
 - User asked for one targeted change.
 - High-risk migration, deletion, contract amendment requested.
 - Outside `delegate-manager-to-subagents` workflow.
 - Current milestone near closure and only final verification or handoff
   remains. Finish the milestone first, THEN propose follow-on workstreams.
   stay-busy must not be used to avoid finishing.
+
+## Away mode
+
+When the user signals they are stepping away (sleeping, leaving,
+unattended session), workstream defaults shift:
+
+- Default workstream scope widens: prefer expansive multi-methodology
+  suites over small concrete recovery tasks. A "small, concrete recovery
+  task" is the wrong shape when the user is asleep.
+- Default tier jumps one level (small -> medium, medium -> large, large
+  -> stress). The cap "defaulting to 10 on a small project is wrong" does
+  not apply in away mode.
+- Suppress confirmation-seeking. Any question that does not change
+  architecture, contract, deletion, or broad production behavior is
+  settled by the manager using a documented assumption. The morning
+  inbox should contain finished artifacts, not pending questions.
+- Prefer the four anchor activities from `## Big picture`: writeups,
+  A/B testing, side-quest experiments, codebase audits.
+- Long-form reports (25-100 pages) are a valid single-workstream output
+  when the project has accumulated enough evidence to synthesize. Format
+  follows repo language: TypeScript repos render HTML to PDF with
+  Playwright screenshots embedded as visual evidence; Python repos write
+  Markdown per `docs/MARKDOWN_STYLE.md`. See
+  [references/workstream_templates.md](references/workstream_templates.md)
+  report-workstream section for templates.
+- Every workstream must finish to an inspectable artifact the user can
+  read on return. No "in progress, ask me when you wake up" handoffs.
+
+## Manager decision authority
+
+The manager is the decision-maker for everything that does not cross an
+ask-only boundary (see
+[references/boundaries.md](references/boundaries.md)). When in doubt, the
+manager decides, documents the reasoning in the workstream artifact, and
+continues. Stalling on user input is failure.
+
+- React to findings without asking. A surprising A/B result, a failing
+  edge case, an unexpected log pattern -- the manager dispatches a
+  follow-up workstream (re-run with variance, vary the input, isolate the
+  cause) rather than messaging the user. The answer to a surprise is more
+  evidence.
+- When two options exist and neither crosses an ask-only boundary, the
+  manager picks one based on the project's stated priorities, records the
+  choice and the runner-up in the workstream report, and proceeds. A
+  defaulted choice plus written reasoning is worth more to the user on
+  return than a pending question.
+- "Do more testing" is the default response to uncertainty about a
+  finding. If the result might be noise, queue a variance run. If the
+  result might be input-specific, queue a sweep. If a methodology looks
+  promising, queue a comparison against the incumbent.
+- The status labels (`DONE`, `DONE_WITH_CONCERNS`, `NEEDS_CONTEXT`,
+  `BLOCKED`) and the artifact-path requirement are how the manager stays
+  trustworthy across an unattended stretch -- they let the user audit
+  decisions on return. They are the manager's own paper trail, not a
+  checklist to satisfy.
 
 ## Default-to-safe-work rules
 
@@ -74,6 +185,9 @@ obvious options instead of continuing.
   changes architecture, contract, deletion, or broad production behavior.
 - Do not stand by unless there is truly nothing safe, useful, or
   plan-defined to do.
+- Do not seek confirmation on clear options, stop at task boundaries,
+  detour into unrelated housekeeping, or chase side bugs that do not block
+  gates -- all are forms of passive waiting.
 
 ## Situation to action
 
@@ -81,17 +195,9 @@ obvious options instead of continuing.
 | --- | --- |
 | A task finishes | Dispatch next unblocked task from the plan |
 | A check fails | Fix the failure, rerun the check |
-| A background agent runs | Prepare review checklist, next brief, file list, or test plan |
+| A background agent runs | Prepare review checklist, next brief, file list, or test plan; do not wait silently while safe parallel work remains |
 | A non-blocking issue appears | Document it, continue current milestone |
 | A real blocker appears | Stop and ask with 2 to 3 concrete options |
-
-## Discouraged behaviors
-
-- Asking for confirmation when one option is clearly best.
-- Stopping at task boundaries.
-- Doing unrelated housekeeping before milestone work.
-- Chasing side bugs unless they block gates.
-- Passive waiting while background work runs.
 
 ## Workstream scale
 
@@ -104,7 +210,17 @@ recent diff size). Emit exactly that many workstreams.
 - Stress/reliability or explicit long-running request: 10+ workstreams,
   only when the user asks for long-running work.
 
-Defaulting to 10 on a small project is wrong.
+Defaulting to 10 on a small project is wrong at the keyboard. Away-mode
+lifts the cap (see `## Away mode`).
+
+## Tier signals
+
+| Project signal | At-keyboard tier | Away-mode tier |
+| --- | --- | --- |
+| Plan has 1-5 tasks; one milestone | small (2-3) | medium (4-6) |
+| Plan has 6-15 tasks; one or two milestones | medium (4-6) | large (7-10) |
+| Plan has 16+ tasks or multi-day request | large (7-10) | stress (10+) |
+| Explicit "keep busy for N days" or "going to bed" | stress (10+) | stress (10+) |
 
 ## Finish before expanding
 
@@ -115,12 +231,6 @@ Before generating any new workstream:
   queue THAT workstream first.
 - Do not launch new workstreams when existing workstreams can be closed.
 - Staying busy must not create abandoned partial work.
-
-## Background-agent waiting rule
-
-While background agents run, prepare review checklist, reproduction
-commands, test matrix, evidence inventory, or fallback dispatch. Do not
-wait silently unless every safe parallel task is exhausted.
 
 ## Side quest discipline
 
@@ -185,16 +295,17 @@ forbidden list live in [references/boundaries.md](references/boundaries.md).
 
 ## Evidence artifact requirement
 
-Every task handoff MUST output BOTH:
+Every task handoff produces both:
 
 - a status label from `DONE`, `DONE_WITH_CONCERNS`, `NEEDS_CONTEXT`, or
-  `BLOCKED`, AND
+  `BLOCKED`, and
 - an inspectable artifact path (file path, screenshot path, JSON path,
   report path, command-log path, or before/after metric record).
 
-A handoff without both fields is rejected by the manager (per
-`delegate-manager-to-subagents` status handling) and redispatched. "I
-looked into it" handoffs are not accepted.
+This is how the manager stays trustworthy across an unattended stretch:
+the user, on return, can audit any decision by reading the artifact.
+"I looked into it" handoffs leave nothing to audit and are redispatched
+per `delegate-manager-to-subagents` status handling.
 
 ## Breadth before convergence
 

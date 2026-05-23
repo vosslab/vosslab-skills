@@ -1,3 +1,86 @@
+## 2026-05-23
+
+### Additions and New Features
+
+- Split `skills/stay-busy/references/workstream_templates.md` from a
+  single 286-line file into a one-file-per-template layout under
+  `skills/stay-busy/references/workstreams/`. The legacy filename
+  `workstream_templates.md` becomes an overview / catalog file
+  (preserves all incoming links from SKILL.md, big_picture.md, and
+  boundaries.md) carrying a Markdown table that maps each workstream
+  name to its purpose and template file path. Each template's body
+  moves into `workstreams/<name>.md` (one H1 file per template,
+  consistent Purpose / Templates / Artifact / Blocked-fallback
+  structure) so a subagent dispatched for one workstream can load
+  only the template it needs instead of the full catalog. The 12
+  pre-existing templates split with content preserved verbatim.
+  Added 8 new template files:
+  `workstreams/coverage_gap.md` (rank uncovered code by risk),
+  `workstreams/dead_code.md` (unused imports/functions/files
+  deletion proposal),
+  `workstreams/spec_conformance.md` (spec-vs-implementation
+  divergence sweep),
+  `workstreams/data_quality.md` (malformed-input / encoding /
+  schema-drift scan),
+  `workstreams/performance_regression.md` (re-run committed
+  benchmarks vs baseline, alert on slowdowns),
+  `workstreams/release_readiness.md` (version-sync / changelog /
+  README first-paragraph / license pre-release gate),
+  `workstreams/documentation_example_refresh.md` (re-run every doc
+  code example, flag broken),
+  `workstreams/release_notes_summary.md` (parse changelog window,
+  synthesize user-facing release notes with breaking-changes
+  section). Overview file adds a "Common composition patterns"
+  section showing how the workstreams chain (coverage_gap -> test,
+  performance_regression -> regression_and_bisect,
+  audit/dead_code/data_quality -> implementation, all -> report).
+  Updated the audit-code-reviewer composition row in
+  `skills/stay-busy/references/big_picture.md` to link directly to
+  the new `workstreams/audit.md` template path.
+
+### Behavior or Interface Changes
+
+- Reframed `skills/stay-busy/SKILL.md` around the originating
+  user-stated scenario (manager spends 2 minutes planning then sits
+  idle for 2 days while a stretch of unattended runtime remains).
+  Added new `## Big picture` section at the top of SKILL.md that names
+  the one-line principle ("when stuck, find a solution"), the failure
+  mode prevented, the two-orders-of-magnitude scope inflation in
+  away-mode, success-vs-failure criterion (finished artifacts vs
+  pending questions on user return), the four anchor activities
+  (writeups, A/B testing, side-quest experiments, codebase audits),
+  and the passive-waiting vs reckless-motion failure-mode pair. Added
+  `## Away mode` section to flip default workstream scope from small
+  recovery tasks to expansive multi-methodology suites when the user
+  signals away-from-keyboard, lifting the tier cap one level. Added
+  `## Manager decision authority` section to grant the manager
+  flexibility to react to findings, decide between equivalent options,
+  and queue more testing rather than messaging the user; softened
+  evidence-artifact wording from rigid "MUST output" contract to "how
+  the manager stays trustworthy across an unattended stretch." Added
+  `## Tier signals` table mapping concrete project signals to
+  at-keyboard vs away-mode tier choices. Updated `## When to use` to
+  name multi-day and away-from-keyboard triggers. Compressed
+  `## Discouraged behaviors` and `## Background-agent waiting rule`
+  into existing sections. Added new
+  `skills/stay-busy/references/big_picture.md` (~250 lines) carrying
+  the deep narrative: origin story (with the user's seed paragraph
+  preserved verbatim), why the skill exists, ASCII lifecycle diagram
+  of where stay-busy fires inside the
+  `delegate-manager-to-subagents` loop, a worked overnight example
+  with abstract project placeholders showing 8 generated workstreams
+  plus a manager-initiated follow-up dispatched without asking,
+  anchor-activity-to-workstream-type mapping table, rule-by-rule
+  passive-waiting vs reckless-motion classification, sibling-skill
+  composition map, and mapping to three of the five core philosophies
+  in `docs/REPO_STYLE.md`. Expanded the `## Report workstream` section
+  of `skills/stay-busy/references/workstream_templates.md` with a
+  fourth template for long-form 25-100 page findings reports and a
+  new "Format selection" subsection naming the per-language
+  conventions (TypeScript = HTML rendered to PDF via Playwright with
+  embedded screenshots; Python = Markdown per
+  `docs/MARKDOWN_STYLE.md`).
+
 ## 2026-05-21
 
 ### Behavior or Interface Changes
