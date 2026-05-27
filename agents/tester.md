@@ -1,6 +1,6 @@
 ---
 name: tester
-model: haiku
+model: sonnet
 description: "Test engineer that generates tests, extends coverage, and validates behavior."
 tools: Bash, Glob, Grep, Read, Edit, Write, TaskGet, TaskUpdate, TaskList, SendMessage
 ---

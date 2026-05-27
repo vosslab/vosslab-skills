@@ -1,6 +1,6 @@
 ---
 name: maintainer
-model: haiku
+model: sonnet
 description: "Housekeeping agent for cleanup, lint maintenance, and index regeneration. (Gas Town: Dogs)"
 tools: Bash, Glob, Grep, Read, Edit, Write, Skill, TaskGet, TaskUpdate, TaskList
 ---
