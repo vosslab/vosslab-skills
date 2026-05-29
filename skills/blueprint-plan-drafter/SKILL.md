@@ -76,7 +76,7 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 - Do not encode dependencies by milestone number. Dependencies must be declared by dependency ID in `Depends on`, with a short reason.
 - Dependencies live at the work package level, not hidden inside milestone prose.
 - Exception: if work is inherently serial (for example, one critical refactor), document why, and still create parallel work packages for tests, tooling, docs, and migration.
-- A work package must be completable by one coder and result in at least one patch.
+- A work package must be completable by one coder and result in at least one patch. The work package owner may be `coder` (sonnet, default) or `expert_coder` (opus, for hard or design-sensitive packages); see `references/EXECUTION_RESOURCES.md`.
 - Work is tracked and reported as patches with cadence and sizing rules from the capacity reference.
 - In reports and changelog guidance, use "Patch 1", "Patch 2", etc.; reserve "change" for generic prose.
 - Finish the obvious: each work package must define its own obvious follow-on steps (fix the import, update `docs/CHANGELOG.md`, rerun the failed gate, apply the same edit to the next listed file) so a doer does not stop at a substep boundary. Per `docs/REPO_STYLE.md` core philosophies, stopping is reserved for real blockers (missing information, risky/irreversible action, scope change). Milestone Exit criteria must list these obvious follow-ons explicitly rather than leaving them implied.

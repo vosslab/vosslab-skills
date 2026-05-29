@@ -13,3 +13,8 @@ Verify implementation matches the approved plan.
 Check for architectural drift from plan.
 Confirm tests exist for changed code.
 Confirm there is an approved plan for non-trivial changes; block freestyle coding.
+
+Review against `docs/REPO_STYLE.md` on every change. When the change involves
+Python, also review against `docs/PYTHON_STYLE.md` and `docs/PYTEST_STYLE.md`.
+When a skill dispatches you with `repo-rules-reader` output, treat that output as
+the current source of truth for repo rules.

@@ -106,7 +106,7 @@ If the spec reviewer and quality reviewer disagree, the manager resolves only by
 | DONE | Proceed to spec review. |
 | DONE_WITH_CONCERNS | Read concerns; address scope/correctness issues before review; note observations and proceed. |
 | NEEDS_CONTEXT | Provide missing context; re-dispatch the same subagent. |
-| BLOCKED | Assess blocker. Re-dispatch with more context or a more capable model, break into smaller tasks, or escalate to the human. |
+| BLOCKED | Assess blocker. Re-dispatch with more context, escalate to a more capable tier (`coder` -> `expert_coder`, opus), break into smaller tasks, or escalate to the human. |
 
 ## Evidence-first handoff
 

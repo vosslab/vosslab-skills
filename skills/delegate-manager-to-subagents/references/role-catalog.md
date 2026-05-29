@@ -10,7 +10,8 @@ The manager dispatches one of these roles per task; the SKILL.md workflow says w
 | Role | Agent file | Responsibility |
 | --- | --- | --- |
 | manager | (the main agent itself) | No file edits. Dispatches and reviews. |
-| implementer | `agents/coder.md` | Writes production code or docs per task spec. |
+| implementer (default) | `agents/coder.md` | Sonnet tier. Writes production code or docs per task spec. |
+| expert implementer | `agents/expert_coder.md` | Opus tier. Hard, ambiguous, or design-sensitive code; `BLOCKED` escalations. |
 | spec reviewer | `agents/reviewer.md` | Read-only check that code matches the supplied task spec. |
 | quality reviewer | `agents/reviewer.md` | Read-only lightweight repo-style check. |
 | tester | `agents/tester.md` | Test work, only when explicitly required by the plan. |
@@ -18,9 +19,23 @@ The manager dispatches one of these roles per task; the SKILL.md workflow says w
 
 Other repo agents exist for different workflows: `agents/architect.md`, `agents/integrator.md`, `agents/maintainer.md`, `agents/monitor.md`, `agents/orchestrator.md`, `agents/parallelizer.md`, `agents/scheduler.md`. This skill does not dispatch them. It uses plain execution terms such as lane, dependency, workstream, and parallel dispatch when reducing wall time, and uses additional redundant reviewers or multi-role coordination only when the approved plan explicitly calls for it.
 
+## Choosing coder vs expert_coder
+
+Default every implementation task to `coder` (sonnet). Escalate to
+`expert_coder` (opus) only when the task warrants the heavier tier:
+
+- Complex algorithms or subtle correctness, concurrency, or numerical concerns.
+- Ambiguous or under-specified requirements that need strong judgment.
+- Cross-cutting or design-sensitive implementation within the approved plan.
+- Any task a `coder` returned as `BLOCKED` for capability reasons (see the
+  `## Status handling` BLOCKED row in `SKILL.md`).
+
+Do not route routine, well-scoped work to `expert_coder`; the default `coder`
+tier is correct for the bulk of work packages.
+
 ## Implementer subagent prompt template
 
-Paste this prompt to the dispatched `coder` subagent (or `general-purpose` if `coder` is unavailable). Replace `[FULL TASK TEXT]` and `[CONTEXT]` verbatim from the plan. Do not paraphrase or summarize. The manager launches the subagent with this exact prompt so the implementer has complete, unambiguous requirements and understands their task boundaries.
+Paste this prompt to the dispatched implementer subagent. Pick the tier first per `## Choosing coder vs expert_coder` above: `coder` (sonnet) by default, `expert_coder` (opus) for hard or design-sensitive tasks; use `general-purpose` only if neither is available. Replace `[FULL TASK TEXT]` and `[CONTEXT]` verbatim from the plan. Do not paraphrase or summarize. The manager launches the subagent with this exact prompt so the implementer has complete, unambiguous requirements and understands their task boundaries.
 
 ```text
 You are implementing: [TASK NAME]

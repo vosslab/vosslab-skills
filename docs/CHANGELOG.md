@@ -1,3 +1,42 @@
+## 2026-05-28
+
+### Additions and New Features
+
+- Added a two-tier coder model. `agents/expert_coder.md` is now the opus
+  implementer tier for hard, ambiguous, or design-sensitive tasks, alongside
+  the default sonnet `agents/coder.md`. The expert tier is reachable by managers
+  using `delegate-manager-to-subagents`, `blueprint-plan-drafter`, and
+  `parallel-plan`.
+
+### Behavior or Interface Changes
+
+- Taught the planning and dispatch skills about both coder tiers.
+  `delegate-manager-to-subagents/references/role-catalog.md` gains an "expert
+  implementer" role row plus a "Choosing coder vs expert_coder" guidance section
+  (default to `coder`; escalate to `expert_coder` for complex work or `BLOCKED`
+  returns); the SKILL.md `BLOCKED` status row now names the `coder -> expert_coder`
+  escalation explicitly. `blueprint-plan-drafter/references/EXECUTION_RESOURCES.md`
+  adds an `expert_coder` (opus) agent-catalog row and assignment guideline, and
+  the SKILL.md work-package constraint notes the owner may be `coder` or
+  `expert_coder`. `parallel-plan/SKILL.md` lists `expert_coder` in its repo agent
+  awareness section and workflow step 2.
+- Added a repo-style awareness pointer to six agent files (`coder`,
+  `expert_coder`, `tester`, `reviewer`, `maintainer`, `architect`). Each now
+  follows `docs/REPO_STYLE.md` on every task and additionally applies
+  `docs/PYTHON_STYLE.md` (and `docs/PYTEST_STYLE.md` for tests) when the work
+  involves Python, while still deferring to `repo-rules-reader` output when a
+  skill injects it.
+
+### Fixes and Maintenance
+
+- Fixed a name-collision bug in `agents/expert_coder.md`: its frontmatter
+  `name:` read `coder` and its body was byte-identical to `agents/coder.md`,
+  making the two tiers indistinguishable. Corrected to `name: expert_coder` and
+  differentiated the body.
+- Corrected the stale `coder` model in
+  `blueprint-plan-drafter/references/EXECUTION_RESOURCES.md` from `haiku` to
+  `sonnet`, matching the agent file.
+
 ## 2026-05-23
 
 ### Additions and New Features

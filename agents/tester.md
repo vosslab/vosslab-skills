@@ -12,3 +12,8 @@ If no test entrypoint is documented, report the missing test entrypoint.
 
 Detect regressions by running the full test suite after changes.
 Report failures with output and affected file paths via task updates.
+
+Follow `docs/REPO_STYLE.md` on every task. When the task involves Python, also
+follow `docs/PYTHON_STYLE.md` and `docs/PYTEST_STYLE.md`. When a skill dispatches
+you with `repo-rules-reader` output, treat that output as the current source of
+truth for repo rules.

@@ -8,7 +8,8 @@ Planning-oriented summary of available agent types. The Owner field in work pack
 
 | Agent | Model | Capability | Cannot do | Best for |
 | --- | --- | --- | --- | --- |
-| coder | haiku | Production code, small doc updates | Architectural redesign, self-review | Code work packages |
+| coder | sonnet | Production code, small doc updates | Architectural redesign, self-review | Default code work packages |
+| expert_coder | opus | Hard, ambiguous, or design-sensitive code | Architectural redesign, self-review | Complex code work packages, `BLOCKED` escalations |
 | tester | haiku | Tests, coverage, validation | Production code | Test work packages |
 | planner | -- | Plans and docs | Code or tests | Doc-only work packages |
 | architect | -- | Cross-cutting design approval | Implementation | Architecture decisions, design gates |
@@ -36,7 +37,8 @@ Each stage of the plan lifecycle is handled by a different skill.
 
 Rules for mapping work packages to agent owners:
 
-- Assign code work packages to `coder`.
+- Assign code work packages to `coder` (sonnet) by default.
+- Assign hard, ambiguous, or design-sensitive code work packages to `expert_coder` (opus); keep routine work packages on `coder`.
 - Assign test work packages to `tester`.
 - Assign doc-only work packages to `planner`.
 - Architecture decisions and design gates require `architect` approval.

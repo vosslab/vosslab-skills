@@ -66,7 +66,8 @@ In this repo, the currently available root agents and their intended uses are:
 - `parallelizer`: coordinate parallel teams with messaging; good for active multi-stream execution.
 - `planner`: write plans and docs only; never production code or tests.
 - `architect`: approve or reject cross-cutting design changes and resolve design disputes.
-- `coder`: implement production code from approved plans; no self-approval and no architectural redesign.
+- `coder`: implement production code from approved plans (sonnet, default tier); no self-approval and no architectural redesign.
+- `expert_coder`: implement hard, ambiguous, or design-sensitive production code (opus tier); same boundaries as `coder`, used when the default tier is not enough.
 - `integrator`: merge completed work, resolve conflicts, and maintain branch stability.
 - `reviewer`: read-only review and plan auditing; cannot modify production files.
 - `tester`: create and run tests; only modify files under `tests/`.
@@ -85,7 +86,7 @@ In this repo, the currently available root agents and their intended uses are:
 - Assign each stream a clear goal, scope boundary, and owned files/directories.
 - Give each stream a named owner and, when available, an explicit agent role selected from the repo-root `agents/` directory.
 - Merge or re-scope any streams that would modify the same files.
-- Prefer `coder` for production implementation streams.
+- Prefer `coder` (sonnet) for production implementation streams by default; prefer `expert_coder` (opus) for streams with complex, ambiguous, or design-sensitive implementation.
 - Prefer `tester` only for test work under `tests/`.
 - Prefer `reviewer` for read-only code review, audit, and plan-conformance checks.
 - Prefer `integrator` for merge sequencing, conflict resolution, and stabilization after streams complete.
