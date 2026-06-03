@@ -72,7 +72,8 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 - Keep milestone boundaries explicit, testable, and order-dependent.
 - Apply numeric capacity and sizing targets from the capacity reference.
 - Size patches and work packages by component boundaries and reviewability, using the ranges in `references/CAPACITY_AND_SIZING.md`. Express any size guidance the plan emits to doers as ranges (for example, "1 to 2 patches per coder per week") or as "right-sized for one coder", so doers split on natural seams rather than chasing a fixed line-count target.
-- Under Architecture Boundaries, require a mapping subsection: milestones and workstreams map to components and patches; components use durable terminology.
+- Under Milestone plan, lead with a human-review milestone summary table (`M / Title / Summary / Goal`); plain what/why only, no workstream IDs, dependency IDs, or patch counts.
+- Under Architecture Boundaries, require a mapping subsection: milestones and workstreams map to components and patches; components use durable terminology. This execution-routing table is distinct from the human-review milestone summary table.
 - Do not encode dependencies by milestone number. Dependencies must be declared by dependency ID in `Depends on`, with a short reason.
 - Dependencies live at the work package level, not hidden inside milestone prose.
 - Exception: if work is inherently serial (for example, one critical refactor), document why, and still create parallel work packages for tests, tooling, docs, and migration.

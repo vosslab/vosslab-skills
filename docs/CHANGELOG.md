@@ -1,3 +1,17 @@
+## 2026-06-02
+
+### Additions and New Features
+
+- Added a human-review milestone summary table to `blueprint-plan-drafter`.
+  The `## Milestone plan` section now leads with an at-a-glance table
+  (`M / Title / Summary / Goal`) for human readers, separate from the existing
+  execution-routing mapping table under `## Architecture boundaries and
+  ownership`. `references/PLAN_TEMPLATE.md` gains the table plus lead-in text
+  contrasting the two tables; `references/PLAN_HEADINGS.md` row 8 documents the
+  lead-with-summary rule; `references/plan_quality_standard.md` and `SKILL.md`
+  add matching mandatory constraints so the summary table carries the same
+  enforcement weight as the mapping table.
+
 ## 2026-05-28
 
 ### Additions and New Features

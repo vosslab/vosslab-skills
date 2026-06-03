@@ -101,7 +101,8 @@ Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAI
 ## Manager-level clarity requirements
 - Use stable terminology consistently across sections.
 - Plan headings use sentence case per `docs/MARKDOWN_STYLE.md`; un-numbered; canonical names match [PLAN_HEADINGS.md](PLAN_HEADINGS.md) verbatim.
-- Under Architecture Boundaries, include a required mapping subsection: milestones and workstreams map to components and patches, and components use durable terminology.
+- Under Milestone plan, lead with a human-review milestone summary table (`M / Title / Summary / Goal`) so a reader grasps the whole milestone arc; keep it to plain what/why content with no workstream IDs, dependency IDs, or patch counts.
+- Under Architecture Boundaries, include a required mapping subsection: milestones and workstreams map to components and patches, and components use durable terminology. This execution-routing table is distinct from the human-review milestone summary table above.
 - Avoid hidden assumptions and implied dependencies.
 - Separate facts, decisions, and open questions.
 - Maintain a status tracker for active vs complete vs future work.

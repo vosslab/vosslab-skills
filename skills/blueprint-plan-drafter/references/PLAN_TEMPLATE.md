@@ -55,11 +55,31 @@ archetype.
 
 ### Mapping (milestones / workstreams -> components / patches)
 
+This mapping table is for execution routing, not human review: it ties each
+milestone/workstream to the durable code component it touches and the expected
+patch count. The plain-language what/why overview lives in the separate
+milestone summary table under `## Milestone plan`.
+
 | Milestone / Workstream | Component | Expected patches |
 | --- | --- | --- |
 | `<M1 / WS-A>` | `<component name>` | `<count, see CAPACITY_AND_SIZING.md>` |
 
 ## Milestone plan
+
+Lead with this at-a-glance milestone summary table, then give the detailed
+per-milestone subsections below it. This table is for human review: a reader
+should grasp the whole milestone arc from it alone. Keep the columns to plain
+what/why content only -- no workstream IDs, dependency IDs, or patch counts.
+That routing detail belongs to the separate milestone mapping table under
+`## Architecture boundaries and ownership` (`### Mapping (milestones /
+workstreams -> components / patches)`), which exists for execution, not review.
+
+Milestone summary table (human review):
+
+| M | Title | Summary | Goal |
+| --- | --- | --- | --- |
+| `<M1>` | `<short title>` | `<one-line what this milestone does>` | `<the done outcome and why it matters>` |
+| `<M2>` | `<short title>` | `<one-line what this milestone does>` | `<the done outcome and why it matters>` |
 
 ### Milestone `<N>`: `<title>`
 

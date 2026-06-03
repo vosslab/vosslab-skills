@@ -16,6 +16,9 @@ INLINE_CODE_RE = re.compile(r"`[^`]*`")
 WINDOWS_PATH_RE = re.compile(r"^[A-Za-z]:[\\/]")
 
 EXTERNAL_PREFIXES = ("http://", "https://", "mailto:", "ftp://")
+# A URI scheme of 2+ chars (mailto:, tel:, bitcoin:, dash:, ...). Single-letter
+# "schemes" are excluded so Windows drive paths (C:/...) are not misread.
+SCHEME_RE = re.compile(r"^([a-z][a-z0-9+.\-]+):", re.IGNORECASE)
 # Leading-slash links whose first segment is one of these are filesystem
 # paths, not repo-root-relative GitHub links.
 SYSTEM_ROOTS = {"home", "Users", "root", "private", "tmp", "var"}
@@ -96,6 +99,12 @@ def classify_url(url: str) -> str:
 		return "external"
 	if url.startswith("#"):
 		return "anchor"
+	# Non-file URI schemes (tel:, bitcoin:, dash:, ...) render as links on
+	# GitHub and are not repo-local paths. Exclude file: so it still trips the
+	# filesystem-path check as a local link.
+	scheme_match = SCHEME_RE.match(url)
+	if scheme_match and scheme_match.group(1).lower() != "file":
+		return "external"
 	return "local"
 
 

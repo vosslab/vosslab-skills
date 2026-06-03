@@ -1,6 +1,6 @@
 # Claude hook usage guide
 
-_Last updated: 2026-05-21 19:06 UTC. Source of truth: `claude-code-permissions-hook`
+_Last updated: 2026-05-29 02:20 UTC. Source of truth: `claude-code-permissions-hook`
 repo. Mirrors in sibling repos (e.g. `starter-repo-template`) are copies; do not
 edit mirrors directly._
 
@@ -8,13 +8,9 @@ Timestamp format: `YYYY-MM-DD HH:MM UTC` (ISO 8601 date + 24-hour clock, UTC).
 Regenerate on every audit; derive from the latest `## YYYY-MM-DD` heading in
 `docs/CHANGELOG.md` plus current commit time.
 
-Best practices for AI agents working in repos that use the `claude-code-permissions-hook`.
-This guide covers what commands are allowed, denied, and passed through, along with
-preferred alternatives for denied patterns.
-
-This doc is Claude-specific and does not apply to Codex.
-
-This guide documents current Claude hook behavior. Repo style conventions live in
+Best practices for AI agents in repos using the `claude-code-permissions-hook`:
+what is allowed, denied, and passed through, with preferred alternatives for denied
+patterns. Claude-specific (not Codex). Repo style conventions live in
 [docs/REPO_STYLE.md](REPO_STYLE.md) and [docs/PYTHON_STYLE.md](PYTHON_STYLE.md).
 
 ## Trust model
@@ -49,12 +45,12 @@ Commands with more than **5** chained sub-commands are denied automatically.
 
 ### Bash-side reference for redirected commands
 
-`Read`, `Edit`, and `Write` are first-class Claude Code tool calls. For file discovery and content search, use `git ls-files`, `ls`, the Read tool, piped `grep`/`rg`, and `_temp.py` helpers. File-path `grep`/`rg` is denied (scope-control rule); pipeline forms stay allowed. `find` is partially allowed: read-only in safe path zones (relative paths, `/tmp`, `~/<workspace>/...`, `~/.claude/agents|commands|skills`) are auto-allowed. The columns below show denied Bash forms, preferred recovery paths, and Bash forms that remain allowed.
+`Read`, `Edit`, and `Write` are first-class Claude Code tool calls. The Grep/Glob tools are not exposed in this agent context, so Bash `grep`/`rg` is the primary file-search path. `grep`/`rg` against a file path is **allowed in safe zones** (CWD-relative, workspace, `/tmp`, narrow `~/.claude` subtrees) and denied only when the path escapes them (out-of-zone absolute, bare `~`, `..`). `find` is likewise allowed read-only in those safe zones. The columns below show denied Bash forms, preferred recovery paths, and Bash forms that remain allowed.
 
 | Denied Bash form | Preferred recovery | Allowed Bash forms |
 | --- | --- | --- |
 | `cat /path/to/file`, `head -20 /path`, `tail -20 /path` | Read tool with `file_path`, `offset`, `limit` | `... \| cat`, `... \| head -5`, `... \| tail -5` (pipeline, no file arg) |
-| `grep pat /path`, `/usr/bin/grep ...`, `rg pat dir/`, `egrep`, `fgrep` | `git ls-files <pathspec>` to list candidates, then use the Read tool on targeted files; piped `grep`/`rg` on bounded stdout; `_temp.py` (bounded candidate list) for broad search | `... \| grep pat`, `... \| rg pat` (pipeline, no file arg) for stdout filtering |
+| `grep root /etc/passwd`, `rg pat /usr/...` (out-of-zone), `/usr/bin/grep ...` (abs binary), `egrep`/`fgrep` | read a known file with the Read tool, or narrow to a relative/workspace path | `grep -n pat src/file`, `rg pat docs/`, `grep foo /tmp/x`, `grep -n foo ~/<workspace>/repo/x`, `... \| grep pat` |
 | `find /etc -name '*.conf'`, `find . -delete`, `find /Users` (unsafe shapes) | Use bounded read-only `find` in a safe path zone (`.`, `/tmp`, `~/<workspace>/...`, `/Users/<me>/<workspace>/...`). For repo content, `git ls-files <pathspec>` is still preferred. | `find . -name '*.py'`, `find /tmp -type f`, `find ~/<workspace>/repo -type f` |
 | `sed -n '10,20p' file.txt` | Read tool with `offset=10`, `limit=11` | `... \| sed -n '10,20p'` (pipeline) |
 
@@ -359,21 +355,31 @@ this harness.
 
 **Blocked:** `cat /path/to/file`, `head -20 /abs/path/file.txt`.
 
+<a name="grep-recovery"></a>
 ### `grep`/`rg` with file paths
 
-Recovery: `git ls-files <pathspec>` then Read tool on targets; piped `grep`/`rg` on bounded stdout for filtering; `_temp.py` for broad searches.
+`grep` and `rg` against a file path are **allowed** when the path is in a safe zone, denied only when it escapes that zone. The Grep/Glob tools are not exposed in this agent context, so Bash `grep`/`rg` is the primary file-search path -- search files directly, no `git ls-files` dance required.
 
-Scope control prevents unbounded scans and hallucination; piped `grep`/`rg` on bounded stdout is encouraged.
+**Allowed** (path in a safe zone):
 
-**Blocked:** `grep pattern /path/to/file`, `rg pattern /abs/search/dir`, `/usr/bin/grep ...`, `/opt/homebrew/.../grep ...`, `egrep`, `fgrep`.
+- CWD-relative paths: `grep -n foo src/main.rs`, `rg pattern docs/`
+- workspace absolute: `grep -n foo ~/<workspace>/repo/x`, `rg pat /Users/<me>/<workspace>/repo/src`
+- `/tmp`, `/private/tmp`: `grep foo /tmp/x.log`
+- narrow `~/.claude/{agents,commands,skills,plugins,plans,projects}` subtrees
+
+**Blocked** (escapes the safe zone -- can flood context with an unbounded scan):
+
+- out-of-zone absolute: `grep root /etc/passwd`, `rg pattern /usr/lib/x`, arbitrary `/Users/<me>/<non-workspace>/...`
+- bare `~` (whole home) and `..` traversal: `grep foo ../secrets`, `rg foo ~/Documents/x`
+- absolute **binary** path regardless of target: `/usr/bin/grep ...`, `/opt/homebrew/bin/rg ...` -- use the bare PATH form (`grep`, `rg`)
+- `egrep`/`fgrep` with any file path -- deprecated; use `grep -E` / `grep -F`
+- `pcregrep`/`ack`/`ag` with a file path; `less <file>` (route to the Read tool)
+
+To search an out-of-zone path: read a known file with the Read tool, or narrow to a relative/workspace path. Pipeline filters (`... | grep pat`, no file arg) stay allowed and are unaffected. For bulk content search a `git ls-files <pathspec> | xargs grep PAT` pipeline is still allowed end-to-end if you prefer it.
 
 ### `git grep`
 
-Recovery: `git ls-files <pathspec>` then Read tool on targets; piped `grep`/`rg` on bounded stdout for filtering; `_temp.py` for broad searches.
-
-Scope control enforces bounded-input discipline; list candidates first, then inspect targeted files.
-
-**Blocked:** `git grep <pattern>`, including all git invocation forms (`/usr/bin/git grep`, `command git grep`, `env X=y git grep`, `git -c core.pager=cat grep`, `git -C <path> grep`, `git --git-dir=<dir> grep`, `git --work-tree=<dir> grep`).
+**Blocked:** `git grep <pattern>`, including all git invocation forms (`/usr/bin/git grep`, `command git grep`, `env X=y git grep`, `git -c core.pager=cat grep`, `git -C <path> grep`, `git --git-dir=<dir> grep`, `git --work-tree=<dir> grep`). Recovery: see [grep/rg with file paths](#grep-recovery).
 
 ### `find`
 
@@ -504,8 +510,10 @@ These have a "use dedicated tool" deny with file paths, but stay allowed as pipe
 | Command | Denied (lead) | Allowed (in pipe) |
 | --- | --- | --- |
 | `cat`, `head`, `tail` | `cat /tmp/x.txt` | `... \| head -5` |
-| `grep`, `egrep`, `fgrep`, `rg` | `grep pat /tmp/x.txt` | `... \| grep pat` |
+| `egrep`, `fgrep` | `egrep pat /tmp/x.txt` (deprecated; use `grep -E`/`-F`) | `... \| grep pat` |
 | `sed -n` | `sed -n '10,20p' /tmp/x.txt` | `... \| sed -n '10,20p'` |
+
+(`grep`/`rg` are no longer in this table -- file-path forms are allowed in safe zones; see [grep/rg with file paths](#grep-recovery).)
 
 ### `tsc` via `node_modules` paths
 
@@ -788,7 +796,8 @@ interactive UI dialogs, causing blank answers or skipped consent screens.
 
 - Always use `source source_me.sh && python3` for Python execution
 - Use the Read tool for file inspection (offset / limit available)
-- Use `git ls-files <pathspec>` or `ls <dir>` for file discovery
+- Search file contents with `grep`/`rg` directly on a relative or workspace path (`grep -rn pat src/`); the Grep tool is not available here
+- Use `ls <dir>` or `git ls-files <pathspec>` to list files
 - Write scratch code to `_temp.py` or `_temp.sh` (underscore prefix = safe to delete)
 - Keep compound commands under 5 chained sub-commands
 - Destructive `xargs` pipelines (`xargs rm`, `xargs chmod`, `xargs chown`, `xargs mv`, `xargs sudo`) stay denied
@@ -797,14 +806,14 @@ interactive UI dialogs, causing blank answers or skipped consent screens.
 
 ## Common patterns
 
-Use `Read`, `Edit`, `Write` as tool calls; file discovery via `git ls-files`, `ls`, and the Read tool; `grep`/`rg` as pipeline filters on bounded output.
+Use `Read`, `Edit`, `Write` as tool calls; search file contents with `grep`/`rg` directly on a relative or workspace path; list files with `ls` or `git ls-files`.
 
 | Task | Wrong | Right |
 | --- | --- | --- |
 | Run Python | `python3 script.py` | `source source_me.sh && python3 script.py` |
 | Read a file | `cat /path/to/file.py` | Read tool: `file_path="/path/to/file.py"` |
-| Search files | `grep -r "pattern" src/` | `git ls-files <pathspec>` to list candidates, then use the Read tool on targeted files; piped `grep`/`rg` on bounded stdout; `_temp.py` (bounded candidates) for broad/structured search |
-| Tool name as Bash | `Grep -n "^## " docs/CHANGELOG.md` | Invoke the actual tool. For search, use `git ls-files` + Read |
+| Search files | `grep -r pat /etc` (out-of-zone); `Grep` tool (not available) | `grep -rn pat src/`, `rg pat docs/` (CWD-relative or workspace path, allowed directly) |
+| Tool name as Bash | `Grep -n "^## " docs/CHANGELOG.md` | Bash `grep -n "^## " docs/CHANGELOG.md` (relative path, allowed) |
 | Find files | `find / -name "*.py"` (system root); `find . -delete` (destructive) | Bounded read-only: `find <safe-root> -type f -name PAT` (relative paths, `/tmp`, `~/<workspace>/...`); or `git ls-files <pathspec>` for tracked-only repo content |
 | Read lines 10-20 | `sed -n '10,20p' file.txt` | Read tool: `offset=10`, `limit=11` |
 | Delete temp file | `rm temp.py` | Name it `_temp.py`, then `rm _temp.py` |

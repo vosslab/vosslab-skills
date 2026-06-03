@@ -60,7 +60,7 @@ they appear in this order, after the canonical core:
 | --- | --- | --- |
 | 6 | Current state summary | rejects `Current state` |
 | 7 | Architecture boundaries and ownership | with `### Mapping (milestones / workstreams -> components / patches)` subsection |
-| 8 | Milestone plan | per-milestone `Parallel-plan ready: yes/no` slot inside |
+| 8 | Milestone plan | leads with a human-review milestone summary table (`M / Title / Summary / Goal`), then per-milestone subsections with a `Parallel-plan ready: yes/no` slot |
 | 9 | Workstream breakdown | |
 | 10 | Work packages | |
 | 11 | Acceptance criteria and gates | rejects bare `Acceptance` |

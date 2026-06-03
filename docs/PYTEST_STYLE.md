@@ -2,6 +2,30 @@
 
 Language Model guide to Neil pytest usage.
 
+## Is this a good pytest?
+
+Run this checklist before writing a new pytest or approving one in review. Any unchecked item is a reason to reconsider, delete, or rewrite the test. A missing pytest is cheaper than a fragile one.
+
+- [ ] Tests logic that could plausibly be wrong (parser, math, round-trip, behavioral property).
+- [ ] Not a trivial wrapper around a stdlib call.
+- [ ] Will still pass next week without code changes.
+- [ ] Independent of today's date, current time, or "now".
+- [ ] Asserts meaningful output, not collection length (`len(items) == 7`).
+- [ ] Asserts required behavior, not required-key lists (`set(d) == {"a", "b"}`).
+- [ ] Asserts callable behavior, not function or attribute name lists.
+- [ ] Asserts user-visible behavior, not hardcoded defaults or tunable constants (timeouts, thresholds, magic numbers).
+- [ ] Asserts object behavior, not dataclass field assignment (`obj.x == 5` right after `obj = C(x=5)`).
+- [ ] Works offline (no network, no real subprocess CLI round-trips).
+- [ ] Uses deterministic timing and fixed seeds (no sleeps, no unseeded randomness).
+- [ ] Writes only inside `tmp_path`.
+- [ ] Finishes in well under one second.
+- [ ] Slower tests live in `tests/e2e/` or `tests/playwright/` (see [E2E_TESTS.md](E2E_TESTS.md)).
+- [ ] One or two assertions per function (not five on a simple function).
+- [ ] Test body free of complex logic; complex logic moved to a helper and tested there.
+- [ ] Targets code that will remain in the repo (not `_temp.*` or ad-hoc debugging scripts).
+
+See [Good tests](#good-tests) for examples of stable assertion shapes and [Brittle tests](#brittle-tests) for the rationale behind each red flag above.
+
 ## Test structure
 
 * Prefer pytest for automated tests when a repo has more than a few simple asserts.
