@@ -140,6 +140,9 @@ Review focus:
 - No emoji or non-ASCII characters in comments; UTF-8 escaped where needed.
 - Overly long functions, deeply nested logic, or unclear control flow that hurts readability.
 - Stale, misleading, or redundant comments that contradict the code.
+- No references to temporary planning scaffolding in comments: workstream tags
+  (WS, WS#) and milestone tags (M#) are execution-time artifacts and must not
+  appear in permanent code comments.
 
 ## Subagent dispatch
 

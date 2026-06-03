@@ -1,3 +1,13 @@
+## 2026-06-03
+
+### Additions and New Features
+
+- Added a Comment-auditor check to the `audit-code-reviewer` skill (Reviewer 6
+  in `skills/audit-code-reviewer/SKILL.md`). The auditor now flags references
+  to temporary planning scaffolding in permanent comments: workstream tags
+  (WS, WS#) and milestone tags (M#) are execution-time artifacts and must not
+  appear in code comments.
+
 ## 2026-06-02
 
 ### Additions and New Features
