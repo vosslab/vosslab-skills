@@ -1,5 +1,14 @@
 ## 2026-06-03
 
+### Behavior or Interface Changes
+
+- `blueprint-plan-drafter` now requires strict binary scope classification with
+  no middle category: In scope (work the plan must complete) vs Out of scope /
+  Non-goal (work the plan will not complete). Bans "defer"/"deferred" as an
+  undecided third category that can read as an incomplete or blocked plan. Added
+  to `SKILL.md` (charter step), `references/PLAN_TEMPLATE.md` (Non-goals
+  comment), and `references/plan_quality_standard.md` (anti-pattern).
+
 ### Additions and New Features
 
 - Added a Comment-auditor check to the `audit-code-reviewer` skill (Reviewer 6

@@ -42,6 +42,12 @@ archetype.
 
 ## Non-goals
 
+<!-- Strict binary classification, no middle category. In scope = work this
+plan must complete; Out of scope / Non-goal = work this plan will not complete.
+Every item is one or the other. Do not write "defer" or "deferred": it implies
+an undecided third category and can sound like the plan is incomplete or
+blocked. -->
+
 - `<verb-first intentional exclusion, with one-clause reason>`
 - `<verb-first intentional exclusion, with one-clause reason>`
 

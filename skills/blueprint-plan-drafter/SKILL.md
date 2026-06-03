@@ -104,6 +104,10 @@ If the repo has `refactor_progress.md`, read it to map active, completed, and pe
 If the repo has `docs/active_plans/` or `docs/archive/`, read the most relevant plans and extract reusable structure and known pitfalls. Otherwise, skip this step.
 3. Define plan charter:
 State objective, scope, non-goals, assumptions, constraints, and ownership boundaries.
+Use a strict binary classification with no middle category:
+- In scope: work this plan must complete.
+- Out of scope / Non-goal: work this plan will not complete.
+Classify every item into exactly one of these two. Do not use "defer" or "deferred": it implies a third, undecided category and can sound like the plan is incomplete or blocked.
 4. Design milestone execution:
 Define ordered milestones with dependencies, deliverables, and explicit done checks.
 Milestone numbers are labels, not ordering. Ordering is defined by Depends on and Gates.

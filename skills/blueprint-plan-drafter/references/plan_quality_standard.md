@@ -114,6 +114,7 @@ Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAI
 - Vague milestones without deliverables.
 - "Done" claims without test gates.
 - Mixing non-goals into in-scope tasks.
+- Any third scope category beyond In scope (must complete) and Out of scope / Non-goal (will not complete); "defer"/"deferred" implies an undecided middle and can read as an incomplete or blocked plan.
 - No compatibility or migration section.
 - No explicit ownership boundaries.
 - No risk/rollback treatment for high-impact changes.
