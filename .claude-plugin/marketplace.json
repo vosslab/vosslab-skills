@@ -2,7 +2,7 @@
   "$schema": "https://docs.claude.com/schemas/claude-code-plugin-marketplace.schema.json",
   "name": "vosslab-skills",
   "description": "Reusable workflow skills for refactoring plans, code review, repository maintenance, documentation, and education content production.",
-  "version": "26.05.12",
+  "version": "26.06",
   "owner": {
     "name": "Neil Voss",
     "email": "prof.neil.voss@gmail.com"
@@ -12,7 +12,7 @@
       "name": "vosslab-skills",
       "source": "./",
       "description": "Reusable workflow skills for software planning, code review, repository maintenance, documentation, engineering, and education content production.",
-      "version": "26.05.12",
+      "version": "26.06",
       "author": {
         "name": "Neil Voss",
         "email": "prof.neil.voss@gmail.com",

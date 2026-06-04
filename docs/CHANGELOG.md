@@ -1,5 +1,24 @@
 ## 2026-06-03
 
+### Additions and New Features
+
+- Added `solid-js-expert` skill distilling the official SolidJS documentation
+  (`solidjs/solid-docs`, cloned locally as `temp-solid-docs/` for extraction;
+  the clone is scratch and is not committed) into a `SKILL.md` keyword routing
+  table plus 15 reference files:
+  core reactivity (`reactivity-mental-model`, `signals-effects-memos`,
+  `props-and-components`, `control-flow`, `stores`, `context`, `refs-lifecycle`,
+  `jsx-attributes`, `api-cheatsheet`), ecosystem (`solid-router`, `solid-start`,
+  `solid-meta`), guides (`guides-and-patterns`, `styling-and-deployment`), and a
+  cross-cutting `gotchas` file. Every reference is under 40k characters,
+  ASCII-clean, MDX stripped. Draft-only; no eval loop.
+
+- Added a Comment-auditor check to the `audit-code-reviewer` skill (Reviewer 6
+  in `skills/audit-code-reviewer/SKILL.md`). The auditor now flags references
+  to temporary planning scaffolding in permanent comments: workstream tags
+  (WS, WS#) and milestone tags (M#) are execution-time artifacts and must not
+  appear in code comments.
+
 ### Behavior or Interface Changes
 
 - `blueprint-plan-drafter` now requires strict binary scope classification with
@@ -8,14 +27,6 @@
   undecided third category that can read as an incomplete or blocked plan. Added
   to `SKILL.md` (charter step), `references/PLAN_TEMPLATE.md` (Non-goals
   comment), and `references/plan_quality_standard.md` (anti-pattern).
-
-### Additions and New Features
-
-- Added a Comment-auditor check to the `audit-code-reviewer` skill (Reviewer 6
-  in `skills/audit-code-reviewer/SKILL.md`). The auditor now flags references
-  to temporary planning scaffolding in permanent comments: workstream tags
-  (WS, WS#) and milestone tags (M#) are execution-time artifacts and must not
-  appear in code comments.
 
 ## 2026-06-02
 

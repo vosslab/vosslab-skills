@@ -1,0 +1,4 @@
+interface:
+  display_name: "SolidJS Expert"
+  short_description: "Build and debug full-stack SolidJS apps"
+  default_prompt: "Use $solid-js-expert to write or fix SolidJS, Solid Router, SolidStart, or Solid Meta code, especially reactivity, stores, control-flow, and the server/client boundary."

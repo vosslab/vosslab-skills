@@ -2,7 +2,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 23
+Total skills: 24
 
 - [agents-md-fixer/SKILL.md](../skills/agents-md-fixer/SKILL.md): Trim `AGENTS.md` aggressively to a small pointer file (prefer ~15 lines, hard cap ~50) that links into `docs/*.md` instead of restating rules.
 - [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from current repo evidence.
@@ -22,6 +22,7 @@ Total skills: 23
 - [readme-docs/SKILL.md](../skills/readme-docs/SKILL.md): Standardize `README.md` to match repo conventions: brief purpose, quick start, and links to `docs/`.
 - [repo-rules-reader/SKILL.md](../skills/repo-rules-reader/SKILL.md): Read specified repo rule files (AGENTS.md, docs/REPO_STYLE.md, docs/PYTHON_STYLE.md,.
 - [skill-writing-guide/SKILL.md](../skills/skill-writing-guide/SKILL.md): Guide for authoring Agent Skills (SKILL.md).
+- [solid-js-expert/SKILL.md](../skills/solid-js-expert/SKILL.md): Design, build, debug, and review SolidJS applications and their full stack -- core reactivity (`createSignal`, `createMemo`, `createEffect`, `createResource`), stores, control-flow components (`<For>`, `<Show>`, `<Switch>`), Solid Router, SolidStart, and Solid Meta.
 - [stay-busy/SKILL.md](../skills/stay-busy/SKILL.md): Use when the user invokes /stay-busy, asks to keep a manager/orchestrator/subagents busy, complains that an agent is waiting too much, or when an active delegate-manager-to-subagents workflow is about to idle despite safe evidence-producing follow-on work.
 - [typescript-engineer/SKILL.md](../skills/typescript-engineer/SKILL.md): Resolve TypeScript errors, eliminate `any`, and design modular, strict TypeScript types including generics, conditional types, mapped types, template literal types, branded or opaque types, and deep inference.
 - [ui-ux-engineer/SKILL.md](../skills/ui-ux-engineer/SKILL.md): Review, improve, and engineer UI/UX quality in any framework.
