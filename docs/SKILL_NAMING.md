@@ -56,7 +56,7 @@ in this repo and any sibling vosslab repos that ship skills.
 | Suffix | Role | Example skills |
 | --- | --- | --- |
 | `-builder` | Builds or assembles a deliverable end to end | `html-game-parallel-builder` |
-| `-docs` | Creates or refreshes documentation artifacts | `arch-docs`, `install-usage-docs`, `readme-docs` |
+| `-docs` | Creates or refreshes documentation artifacts | `arch-docs`, `readme-docs`, `setup-install-usage-docs` |
 | `-drafter` | Authors a first-pass artifact (plan, spec, blueprint) | `blueprint-plan-drafter` |
 | `-engineer` | Implements or refactors code in a domain | `typescript-engineer`, `pyside6-engineer`, `ui-ux-engineer` |
 | `-expert` | Designs and reviews work in a specialized field | `computer-vision-expert` |
@@ -125,7 +125,7 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `docset-updater` | compliant | docset-refresh | Agent-form suffix matches update-if-drifted behavior. |
 | `gas-town-workflow` | borderline-no-change | (unchanged) | Repo-specific brand name; leading token unique. |
 | `html-game-parallel-builder` | accepted-rename | web-game-parallel-builder | Drops `web-` collision with `webwork-`; `html` is short, evergreen. |
-| `install-usage-docs` | compliant | (unchanged) | Clean `-docs` suffix, unique compound leading token. |
+| `install-usage-docs` | accepted-rename | setup-install-usage-docs | Both `install` and `usage` collide with built-in CLI args; `setup-` lead token clears the collision while keeping `install`/`usage` mid-name for discoverability, with the `-docs` suffix. |
 | `old-python-code-review` | deprecated | python-reviewer / python-code-review | `old-` prefix marks for occasional use. |
 | `parallel-plan` | borderline-no-change | (unchanged) | Leading token distinct; in-flight nudge skill. |
 | `pdf-guide` | compliant | pdf-skill | Drops redundant `-skill` token. |

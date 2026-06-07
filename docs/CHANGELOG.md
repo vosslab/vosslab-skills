@@ -1,3 +1,38 @@
+## 2026-06-06
+
+### Behavior or Interface Changes
+
+- Renamed skill `install-usage-docs` -> `setup-install-usage-docs` (both
+  `install` and `usage` collide with built-in CLI args; `setup-` lead token
+  clears the collision while keeping `install`/`usage` mid-name for
+  discoverability). `git mv` the skill dir, updated the `SKILL.md` frontmatter
+  `name` and heading, the four sibling doc-skill cross-references (`arch-docs`,
+  `docset-updater`, `readme-docs`, `agents-md-fixer`), `README.md`, and
+  `docs/SKILL_NAMING.md` (suffix table + verdict row). Regenerated
+  `.claude-plugin/plugin.json` and `docs/SKILLS_INDEX.md` via
+  `tools/build_plugin_manifest.py` and `tools/build_skills_index.py`. Historical
+  `docs/CHANGELOG.md` and `docs/archive/` references left intact.
+
+- Reworked `docset-updater` from a self-contained doc auditor into an
+  orchestrator: it now invokes the per-doc skills in dependency order
+  (`arch-docs` -> `setup-install-usage-docs` -> `readme-docs` -> `agents-md-fixer`), then audits
+  only the remaining `docs/` files no per-doc skill owns (`CHANGELOG`, `NEWS`,
+  `ROADMAP`, etc.). Updated its `SKILL.md` workflow and description.
+
+- `agents-md-fixer` now requires bare doc paths in `AGENTS.md`, not Markdown
+  links. Rationale: `AGENTS.md` is agent-facing, not human-browsed, so
+  clickability is not a goal and a plain path keeps the file lean. Updated the
+  skill's Goal, required-content, workflow, Markdown house rules, quality bar,
+  and description; `docs/MARKDOWN_STYLE.md` link rules remain for human-facing
+  docs only.
+
+### Additions and New Features
+
+- Added a `## Generated files` section to `AGENTS.md` noting that `tools/*.py`
+  generate repo files (`build_plugin_manifest.py` -> plugin manifests,
+  `build_skills_index.py` -> `docs/SKILLS_INDEX.md`); edit the source SKILL.md
+  and regenerate rather than hand-editing the output.
+
 ## 2026-06-03
 
 ### Additions and New Features

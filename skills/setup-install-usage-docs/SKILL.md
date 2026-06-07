@@ -1,9 +1,9 @@
 ---
-name: install-usage-docs
+name: setup-install-usage-docs
 description: "Create or refresh minimal `docs/INSTALL.md` and `docs/USAGE.md` stubs from repo evidence. Use when these two docs are missing, too thin, or stale. Does NOT touch `README.md`, `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`, or the broader doc set (use `readme-docs`, `arch-docs`, or `docset-updater` for those)."
 ---
 
-# Install and usage docs
+# Setup, install, and usage docs
 
 ## Goal
 

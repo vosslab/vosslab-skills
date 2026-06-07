@@ -1,18 +1,23 @@
 ---
 name: agents-md-fixer
-description: "Trim `AGENTS.md` aggressively to a small pointer file (prefer ~15 lines, hard cap ~50) that links into `docs/*.md` instead of restating rules. Use when `AGENTS.md` is bloated, philosophical, or duplicates style content already in `docs/*.md`. Does NOT touch `README.md` or files under `docs/` (use `readme-docs`, `arch-docs`, `install-usage-docs`, or `docset-updater` for those)."
+description: "Trim `AGENTS.md` aggressively to a small pointer file (prefer ~15 lines, hard cap ~50) that points into `docs/*.md` with bare paths instead of restating rules. Use when `AGENTS.md` is bloated, philosophical, or duplicates style content already in `docs/*.md`. Does NOT touch `README.md` or files under `docs/` (use `readme-docs`, `arch-docs`, `setup-install-usage-docs`, or `docset-updater` for those)."
 ---
 
 # AGENTS.md fixer
 
 ## Goal
 
-Make `AGENTS.md` a tiny pointer file. It should mostly be links into
-`docs/*.md`, not prose. The longer `AGENTS.md` grows, the worse AI coding
+Make `AGENTS.md` a tiny pointer file. It should mostly be bare path pointers
+into `docs/*.md`, not prose. The longer `AGENTS.md` grows, the worse AI coding
 agents perform: they skim, prioritize poorly, and miss the load-bearing
 rules. This skill audits `AGENTS.md` and returns an aggressively tightened
 version, with the manager (the invoking agent) exercising judgment about
 what is important for *this* repo versus frivolous.
+
+`AGENTS.md` is written for AI agents, not humans. Do NOT use Markdown links
+(`[text](path)`); reference docs by bare path (`docs/PYTHON_STYLE.md`) so the
+file stays plain for the agents that read it. Clickability on GitHub is a
+human concern and is not a goal here.
 
 Size guidance (line count is a rough proxy, not a contract; "line" means a
 non-blank text line in the rendered Markdown):
@@ -23,15 +28,15 @@ non-blank text line in the rendered Markdown):
 - The shorter the better. A 10-line `AGENTS.md` that links to the right
   docs is better than a 40-line one that restates them.
 
-If a rule has a canonical home in `docs/*.md`, link, do not restate. The
-`docs/REPO_STYLE.md` "AGENTS.md files" section
-describes the philosophy.
+If a rule has a canonical home in `docs/*.md`, point to it by path, do not
+restate. The `docs/REPO_STYLE.md` "AGENTS.md files" section describes the
+philosophy.
 
 ## Required content (keep)
 
 Keep only items that are repo-specific and load-bearing:
 
-- Pointer links to canonical style docs that exist in this repo, for example
+- Bare path pointers to canonical style docs that exist in this repo, for example
   `docs/REPO_STYLE.md`,
   `docs/PYTHON_STYLE.md`,
   `docs/MARKDOWN_STYLE.md`,
@@ -87,10 +92,11 @@ demands action.
 4. For `move-to-docs` items, identify the right `docs/*.md` target using
    the recommended common docs list in `docs/REPO_STYLE.md`. If the target
    doc does not exist yet, do not create it here. Note it as a follow-up
-   for `docset-updater`, `install-usage-docs`, or `arch-docs`.
+   for `docset-updater`, `setup-install-usage-docs`, or `arch-docs`.
 5. Rewrite `AGENTS.md` minimally: short headings, sentence case, bullet
-   lists with `-`, and links with file-path link text per
-   `docs/MARKDOWN_STYLE.md`.
+   lists with `-`, and bare doc paths (no Markdown links). `AGENTS.md` is
+   agent-facing; `docs/MARKDOWN_STYLE.md` link rules apply to human-facing
+   docs, not here.
 6. Preserve any user instruction explicitly marked as overriding defaults.
 
 ## Markdown house rules
@@ -98,19 +104,22 @@ demands action.
 - ASCII only; escape symbols like `&alpha;` if needed.
 - Sentence case headings, short headings (3-6 words).
 - Bullets use `-`, one idea per bullet.
-- Use Markdown links with file-path link text. Good:
-  `[docs/REPO_STYLE.md](docs/REPO_STYLE.md)`. Bad:
-  `[Repo style](docs/REPO_STYLE.md)`.
-- Only include a backticked path when the link text is not the path.
+- Reference docs by bare path, NOT Markdown links. Good:
+  `docs/REPO_STYLE.md`. Bad: `[docs/REPO_STYLE.md](docs/REPO_STYLE.md)`.
+  `AGENTS.md` is read by AI agents, not browsed by humans, so clickability
+  is not a goal; a plain path keeps the file lean and unambiguous.
+- A bare path may be wrapped in backticks for readability; do not wrap it in
+  link syntax.
 
 ## Quality bar
 
 - Final `AGENTS.md` is small: prefer about 15 non-blank lines, hard cap
   about 50. Smaller is always better. If you cannot get under 50, more
   content belongs in `docs/*.md`.
-- Most of the file is links into `docs/*.md`, not prose.
+- Most of the file is bare path pointers into `docs/*.md`, not prose.
+- No Markdown links; docs are referenced by bare path.
 - No duplication of canonical `docs/*.md` content.
-- Every external concept is linked, not restated.
+- Every external concept is referenced by path, not restated.
 - No deletion of genuinely repo-specific operational rules.
 - No new sections with content that has no enforcement or no concrete
   action.
@@ -127,10 +136,10 @@ demands action.
 - A proposed `AGENTS.md` patch with minimal edits, ready for review.
 - A change log with three short lists:
   - `moved`: each chunk moved into `docs/*.md`, with the destination file.
-  - `linked`: each chunk replaced by a link, with the link target.
+  - `linked`: each chunk replaced by a bare path pointer, with the target.
   - `deleted`: each chunk deleted, with one sentence of justification.
 - A short follow-up list of `docs/*.md` stubs that should exist, naming
-  the skill that owns each one (`docset-updater`, `install-usage-docs`,
+  the skill that owns each one (`docset-updater`, `setup-install-usage-docs`,
   `arch-docs`, or `readme-docs`).
 
 ## References

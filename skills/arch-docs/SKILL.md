@@ -1,6 +1,6 @@
 ---
 name: arch-docs
-description: "Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from current repo evidence. Use when the user asks to document or refresh repository architecture or file layout. Does NOT touch `README.md`, `docs/INSTALL.md`, `docs/USAGE.md`, or the broader doc set (use `readme-docs`, `install-usage-docs`, or `docset-updater` for those)."
+description: "Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from current repo evidence. Use when the user asks to document or refresh repository architecture or file layout. Does NOT touch `README.md`, `docs/INSTALL.md`, `docs/USAGE.md`, or the broader doc set (use `readme-docs`, `setup-install-usage-docs`, or `docset-updater` for those)."
 ---
 
 # Arch docs

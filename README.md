@@ -64,7 +64,6 @@ See [docs/INSTALL.md](docs/INSTALL.md) for local clone and individual skill impo
 - `docset-updater`: Audit and refresh the full repo doc set against REPO_STYLE.md.
 - `gas-town-workflow`: Gas Town style multi-agent coordination with role-mapped task routing.
 - `html-game-parallel-builder`: Build a TypeScript browser game using parallel subagents.
-- `install-usage-docs`: Create or refresh docs/INSTALL.md and docs/USAGE.md stubs.
 - `old-python-code-review` (deprecated): Single-pass Python correctness/security/style review; kept frozen, excluded from the published plugin.
 - `parallel-plan`: Split current work into independent tracks for parallel dispatch.
 - `pdf-guide`: Read, create, or review PDF files where rendering and layout matter.
@@ -77,6 +76,7 @@ See [docs/INSTALL.md](docs/INSTALL.md) for local clone and individual skill impo
 - `typescript-engineer`: Resolve TypeScript errors and design strict TypeScript types.
 - `ui-ux-engineer`: Review and improve UI/UX quality in any framework.
 - `unit-test-starter`: Generate thorough Python 3 pytest unit tests across a repo.
+- `setup-install-usage-docs`: Create or refresh docs/INSTALL.md and docs/USAGE.md stubs.
 - `webwork-writer`: Create and lint WeBWorK PG/PGML questions.
 
 Full index with links: [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md).
