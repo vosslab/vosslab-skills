@@ -74,6 +74,8 @@ In this repo, the currently available root agents and their intended uses are:
 - `monitor`: detect stalls, crashes, and deadlocks; read-only on code.
 - `scheduler`: trigger recurring workflows and retries; not for implementation or diagnosis.
 - `maintainer`: cleanup, lint maintenance, and index regeneration; not for feature work or architecture.
+- `image_evaluator`: evaluate images and screenshots against manager criteria and return structured assessment reports (opus tier); evaluation output only.
+- `playwright_operator`: drive webpages with Playwright, capture screenshots and page state for a manager; reports and artifacts only.
 
 ## Workflow
 

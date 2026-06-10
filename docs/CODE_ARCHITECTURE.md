@@ -20,8 +20,9 @@ Version is tracked in [VERSION](../VERSION) and mirrored in `plugin.json`.
   instructions. These are the user-invocable units (for example
   `/vosslab-skills:audit-code-reviewer`).
 - [agents/](../agents/): per-role markdown files (`architect.md`,
-  `coder.md`, `integrator.md`, `maintainer.md`, `monitor.md`,
-  `orchestrator.md`, `parallelizer.md`, `planner.md`, `reviewer.md`,
+  `coder.md`, `expert_coder.md`, `image_evaluator.md`, `integrator.md`,
+  `maintainer.md`, `monitor.md`, `orchestrator.md`, `parallelizer.md`,
+  `planner.md`, `playwright_operator.md`, `reviewer.md`,
   `scheduler.md`, `tester.md`) used by orchestration skills such as
   [skills/gas-town-workflow/SKILL.md](../skills/gas-town-workflow/SKILL.md)
   and [skills/delegate-manager-to-subagents/SKILL.md](../skills/delegate-manager-to-subagents/SKILL.md).

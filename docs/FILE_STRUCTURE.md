@@ -36,8 +36,9 @@ is in [docs/SKILLS_INDEX.md](SKILLS_INDEX.md).
 ### [agents/](../agents/)
 
 Per-role markdown files used by orchestration skills. Current roles:
-`architect.md`, `coder.md`, `integrator.md`, `maintainer.md`,
-`monitor.md`, `orchestrator.md`, `parallelizer.md`, `planner.md`,
+`architect.md`, `coder.md`, `expert_coder.md`, `image_evaluator.md`,
+`integrator.md`, `maintainer.md`, `monitor.md`, `orchestrator.md`,
+`parallelizer.md`, `planner.md`, `playwright_operator.md`,
 `reviewer.md`, `scheduler.md`, `tester.md`.
 
 ### [tools/](../tools/) vs [devel/](../devel/)

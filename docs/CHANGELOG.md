@@ -1,3 +1,33 @@
+## 2026-06-10
+
+### Additions and New Features
+
+- Added two sub-agent roles: `agents/image_evaluator.md` (opus; evaluates
+  images against manager-provided criteria and returns or saves a structured
+  assessment report) and `agents/playwright_operator.md` (sonnet; uses
+  Playwright to interact with webpages and capture screenshots and page state
+  for a manager). Both are portable role contracts: inspect local repo
+  patterns first, report blockers with attempted command and next safe
+  option, change code or dependencies only when explicitly assigned. Added
+  catalog rows and assignment bullets (including the capture-then-judge
+  visual-acceptance pairing) to
+  `skills/blueprint-plan-drafter/references/EXECUTION_RESOURCES.md`, extended
+  the other-repo-agents line in
+  `skills/delegate-manager-to-subagents/references/role-catalog.md`, updated
+  the role lists in `docs/FILE_STRUCTURE.md` and `docs/CODE_ARCHITECTURE.md`,
+  and added both roles to the root-agent list in
+  `skills/parallel-plan/SKILL.md` (audit finding: a third enumeration the
+  original pass missed).
+
+### Fixes and Maintenance
+
+- Role lists in `docs/FILE_STRUCTURE.md` and `docs/CODE_ARCHITECTURE.md` were
+  missing `expert_coder.md`; added it while updating those lists.
+- Reworded the visual-acceptance pairing bullet in
+  `skills/blueprint-plan-drafter/references/EXECUTION_RESOURCES.md` so the
+  Playwright setup paths read as examples, not repo-locked facts (the file
+  propagates to other repos).
+
 ## 2026-06-06
 
 ### Behavior or Interface Changes

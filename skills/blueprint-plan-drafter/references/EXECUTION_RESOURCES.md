@@ -20,6 +20,8 @@ Planning-oriented summary of available agent types. The Owner field in work pack
 | maintainer | haiku | Cleanup, lint, index regen | Features, arch decisions | Housekeeping work packages |
 | monitor | haiku | Observe progress, detect stalls | Code modification | Operational oversight |
 | scheduler | haiku | Trigger workflows, retry tasks | Diagnosis, code | Recurring workflow triggers |
+| image_evaluator | opus | Image and screenshot evaluation writeups | Production code | Visual acceptance, design QA work packages |
+| playwright_operator | sonnet | Browser automation and screenshots via Playwright | Production code | Web capture and UI walkthrough work packages |
 
 ## Skill Lifecycle
 
@@ -49,3 +51,6 @@ Rules for mapping work packages to agent owners:
 - Use `orchestrator` to coordinate multi-stream milestones with parallel workstreams.
 - Use `parallelizer` when dispatching independent teams that need messaging.
 - When a work package spans code and tests, split it into separate packages for `coder` and `tester`.
+- Assign image and screenshot evaluation to `image_evaluator`; reserve its opus tier for substantive writeups, not trivial image reads.
+- Assign browser capture and UI walkthroughs to `playwright_operator`.
+- The two pair for visual-acceptance loops: `playwright_operator` captures, `image_evaluator` judges. The operator follows local repo patterns first (for example a `devel/setup_playwright.sh` helper or `tests/playwright/` conventions when the repo provides them).
