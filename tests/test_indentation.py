@@ -1,34 +1,15 @@
+# Standard Library
 import pathlib
 import tokenize
 
+# PIP3 modules
 import pytest
 
-import git_file_utils
+# local repo modules
+import file_utils
 
-REPO_ROOT = pathlib.Path(git_file_utils.get_repo_root())
-
-
-#============================================
-def list_tracked_python_files() -> list[pathlib.Path]:
-	"""
-	List tracked Python files in the repo.
-
-	Returns:
-		list[pathlib.Path]: Absolute paths to tracked .py files.
-	"""
-	paths: list[pathlib.Path] = []
-	for line in git_file_utils.list_tracked_files(
-		str(REPO_ROOT),
-		patterns=["*.py"],
-		error_message="Failed to list tracked Python files.",
-	):
-		if line.startswith("old_shell_folder/"):
-			continue
-		path = REPO_ROOT / line
-		if not path.exists():
-			continue
-		paths.append(path)
-	return paths
+REPO_ROOT = pathlib.Path(file_utils.get_repo_root())
+REPORT_NAME = file_utils.report_name(__file__)
 
 
 #============================================
@@ -131,12 +112,24 @@ def summarize_indentation(path: pathlib.Path) -> tuple[int, int] | None:
 	return None
 
 
-_FILES = sorted(list_tracked_python_files())
+FILES = [
+	pathlib.Path(p)
+	for p in file_utils.discover_files(extensions=(".py",), test_key="indentation")
+]
+
+
+#============================================
+@pytest.fixture(scope="module", autouse=True)
+def reset_indentation_report() -> None:
+	"""
+	Remove stale report file before this module runs.
+	"""
+	file_utils.purge_report(REPORT_NAME)
 
 
 #============================================
 @pytest.mark.parametrize(
-	"file_path", _FILES,
+	"file_path", FILES,
 	ids=lambda p: str(p.relative_to(REPO_ROOT)),
 )
 def test_indentation_style(file_path: pathlib.Path) -> None:
@@ -145,11 +138,16 @@ def test_indentation_style(file_path: pathlib.Path) -> None:
 	bad_lines = inspect_file(file_path)
 	if bad_lines:
 		details = [f"{display_path}:{ln}: mixed indentation within line" for ln in bad_lines[:5]]
-		raise AssertionError("\n".join(details))
+		report_file = file_utils.append_report_block(REPORT_NAME, "indentation violations", details)
+		report_rel = file_utils.rel_to_root(report_file)
+		raise AssertionError("\n".join(details) + f"\n See {report_rel}.")
 	indent_lines = summarize_indentation(file_path)
 	if indent_lines is not None:
 		tab_line, space_line = indent_lines
-		raise AssertionError(
+		msg = (
 			f"{display_path}: tabs and spaces in file "
 			f"(tab line {tab_line}, space line {space_line})"
 		)
+		report_file = file_utils.append_report_block(REPORT_NAME, "indentation violations", [msg])
+		report_rel = file_utils.rel_to_root(report_file)
+		raise AssertionError(msg + f"\n See {report_rel}.")

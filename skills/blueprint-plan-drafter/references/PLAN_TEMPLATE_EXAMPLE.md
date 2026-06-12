@@ -1,6 +1,9 @@
-# Plan Template
+# Plan Template Examples
 
-Fillable skeleton for plans drafted under this skill.
+Annotated skeleton plus worked archetype examples, for learning the plan shape.
+To start a real plan, copy the clean blank in `PLAN_TEMPLATE_BLANK.md`; that
+file is the pure form with no examples. This file teaches; that file is what you
+copy.
 For naming, casing, ordering, tier classification, and rejected variants,
 see `PLAN_HEADINGS.md` -- this file is the form, that file is the rules.
 

@@ -96,7 +96,7 @@ Design-level fix: explicit ownership wording in description (owns INSTALL and US
 Role: manager.
 Trigger crispness: clear; recently extended with the old-orchestrate-next-milestone boundary, per repo CHANGELOG.
 Top design issue: skill embodies "Fresh subagent per task" operationally but does not cite the philosophy anchor for that rule, so future readers may not connect the rule to its source.
-Design-level fix: add a one-paragraph subagent-dispatch promotion that links `[docs/REPO_STYLE.md](REPO_STYLE.md#core-philosophies)` (handled in MS-PROMO).
+Design-level fix: add a one-paragraph subagent-dispatch promotion that links `[REPO_STYLE.md](../REPO_STYLE.md#core-philosophies)` (handled in MS-PROMO).
 
 ### blueprint-plan-drafter
 
@@ -279,7 +279,7 @@ Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagen
 with one bounded task, the relevant repo rules, and one verification step.
 Do not continue the same subagent across unrelated follow-up work; dispatch a
 new subagent for each atomic task. See
-[docs/REPO_STYLE.md](REPO_STYLE.md#core-philosophies).
+[REPO_STYLE.md](../REPO_STYLE.md#core-philosophies).
 ```
 
 ## CHANGELOG handling restatement

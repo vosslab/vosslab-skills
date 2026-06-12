@@ -10,9 +10,9 @@ ordering or descriptions, so cosmetic edits to the index don't fail.
 import re
 import pathlib
 
-import git_file_utils
+import file_utils
 
-REPO_ROOT = git_file_utils.get_repo_root()
+REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 INDEX_PATH = pathlib.Path(REPO_ROOT) / "docs" / "SKILLS_INDEX.md"
 
@@ -21,7 +21,7 @@ INDEX_ENTRY_RE = re.compile(r"\[([a-z0-9][a-z0-9-]*)/SKILL\.md\]")
 
 
 #============================================
-def test_skills_index_lists_every_skill():
+def test_skills_index_lists_every_skill() -> None:
 	"""
 	Every skill folder under skills/ must appear in docs/SKILLS_INDEX.md,
 	and every name listed there must correspond to a real skill folder.

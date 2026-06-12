@@ -3,24 +3,20 @@ import os
 import random
 import re
 import sys
+import types
 
-import git_file_utils
+import pytest
 
-SCOPE_ENV = "REPO_HYGIENE_SCOPE"
-FAST_ENV = "FAST_REPO_HYGIENE"
-SKIP_ENV = "SKIP_REPO_HYGIENE"
-REPO_ROOT = git_file_utils.get_repo_root()
+import file_utils
+
+REPO_ROOT = file_utils.get_repo_root()
+REPORT_NAME = file_utils.report_name(__file__)
 ERROR_RE = re.compile(r":[0-9]+:[0-9]+:")
 CODEPOINT_RE = re.compile(r"non-ISO-8859-1 character U\+([0-9A-Fa-f]{4,6})")
-SKIP_FILE_PATTERNS = [
-	r"mkdocs.yml",
-	r"^human_readable-.*\.html$",
-]
-SKIP_FILE_REGEXES = [re.compile(pattern) for pattern in SKIP_FILE_PATTERNS]
 ERROR_SAMPLE_COUNT = 5
 PROGRESS_EVERY = 1
 
-EXTENSIONS = {
+ASCII_EXTENSIONS = {
 	".md",
 	".txt",
 	".py",
@@ -58,14 +54,9 @@ EXTENSIONS = {
 	".rs",
 	".swift",
 }
-SKIP_DIRS = {".git", ".venv", "old_shell_folder"}
-SKIP_FILES = {
-	os.path.join("CODEX", "skills", ".system", "skill-creator", "SKILL.md"),
-}
-
 
 #============================================
-def load_module(name: str, path: str):
+def load_module(name: str, path: str) -> types.ModuleType:
 	"""
 	Load a module from a file path without sys.path edits.
 
@@ -82,23 +73,7 @@ def load_module(name: str, path: str):
 
 
 #============================================
-def resolve_scope() -> str:
-	"""
-	Resolve the scan scope from environment.
-
-	Returns:
-		str: "all" or "changed".
-	"""
-	scope = os.environ.get(SCOPE_ENV, "").strip().lower()
-	if not scope and os.environ.get(FAST_ENV) == "1":
-		scope = "changed"
-	if scope in ("all", "changed"):
-		return scope
-	return "all"
-
-
-#============================================
-def resolve_fix(pytestconfig) -> bool:
+def resolve_fix(pytestconfig: pytest.Config) -> bool:
 	"""
 	Resolve whether fixes should be applied.
 	"""
@@ -117,74 +92,11 @@ def is_emoji_codepoint(codepoint: int) -> bool:
 	return False
 
 
-#============================================
-def path_has_skip_dir(repo_root: str, path: str) -> bool:
-	"""
-	Check whether a path includes a skipped directory.
-	"""
-	rel_path = os.path.relpath(path, repo_root)
-	if rel_path.startswith(".."):
-		return True
-	parts = rel_path.split(os.sep)
-	for part in parts:
-		if part in SKIP_DIRS:
-			return True
-	return False
-
-
-#============================================
-def filter_files(repo_root: str, paths: list[str]) -> list[str]:
-	"""
-	Filter candidate paths by extension and skip rules.
-	"""
-	matches = []
-	seen = set()
-	for path in paths:
-		abs_path = path
-		if not os.path.isabs(abs_path):
-			abs_path = os.path.join(repo_root, path)
-		abs_path = os.path.abspath(abs_path)
-		if abs_path in seen:
-			continue
-		seen.add(abs_path)
-		rel_path = os.path.relpath(abs_path, repo_root)
-		if rel_path in SKIP_FILES:
-			continue
-		if path_has_skip_dir(repo_root, abs_path):
-			continue
-		if not os.path.isfile(abs_path):
-			continue
-		base_name = os.path.basename(abs_path)
-		if any(regex.match(base_name) for regex in SKIP_FILE_REGEXES):
-			continue
-		ext = os.path.splitext(abs_path)[1].lower()
-		if ext not in EXTENSIONS:
-			continue
-		matches.append(abs_path)
-	matches.sort()
-	return matches
-
-
-#============================================
-def gather_files(repo_root: str) -> list[str]:
-	"""
-	Collect tracked files to scan.
-	"""
-	tracked_paths = []
-	for path in git_file_utils.list_tracked_files(repo_root):
-		tracked_paths.append(os.path.join(repo_root, path))
-	return filter_files(repo_root, tracked_paths)
-
-
-#============================================
-def gather_changed_files(repo_root: str) -> list[str]:
-	"""
-	Collect changed files using git diff and index lists.
-	"""
-	changed_paths = []
-	for path in git_file_utils.list_changed_files(repo_root):
-		changed_paths.append(os.path.join(repo_root, path))
-	return filter_files(repo_root, changed_paths)
+# Module-level file list built once at import time for the ascii compliance scan.
+FILES = file_utils.discover_files(
+	extensions=ASCII_EXTENSIONS,
+	test_key="ascii_compliance",
+)
 
 
 #============================================
@@ -292,12 +204,20 @@ def format_issue_line(
 #============================================
 def scan_file(
 	file_path: str,
-	check_module,
-	fix_module,
+	check_module: types.ModuleType,
 	apply_fix: bool,
 ) -> tuple[int, list[str], bool]:
 	"""
 	Check a file and optionally apply fixes.
+
+	Args:
+		file_path: Absolute path to the file to scan.
+		check_module: Loaded check_ascii_compliance module.
+		apply_fix: Whether to run the fixer script on non-compliant files.
+
+	Returns:
+		tuple[int, list[str], bool]: Status code (0=clean, 1=errors, 2=fixed),
+			list of error lines, and whether a fix was applied.
 	"""
 	if is_ascii_bytes(file_path):
 		return 0, [], False
@@ -310,19 +230,18 @@ def scan_file(
 	if not issues:
 		return 0, [], False
 
+	# Run the shared fixer script in-place; raises AssertionError on failure.
 	changed = False
-	text_to_check = content
 	if apply_fix:
-		fixed_text, changed = fix_module.fix_ascii_compliance(content)
-		if changed:
-			fix_module.write_text(file_path, fixed_text)
-		text_to_check = fixed_text
-
-	issues = fix_module.find_non_latin1_chars(text_to_check)
-	if not issues:
-		if changed:
+		file_utils.run_fixer_script("fix_ascii_compliance.py", file_path)
+		changed = True
+		# Re-read and re-check the file after the fixer has written it.
+		content, read_error = check_module.read_text(file_path)
+		if read_error:
+			return 1, [read_error], True
+		issues = check_module.find_non_latin1_chars(content)
+		if not issues:
 			return 2, [], True
-		return 0, [], False
 
 	error_lines = []
 	for line_number, column_number, codepoint in issues:
@@ -335,35 +254,20 @@ def scan_file(
 
 
 #============================================
-def test_ascii_compliance(pytestconfig) -> None:
+def test_ascii_compliance(pytestconfig: pytest.Config) -> None:
 	"""
 	Run ASCII compliance checks across the repo.
 	"""
-	if os.environ.get(SKIP_ENV) == "1":
-		return
-
 	check_path = os.path.join(REPO_ROOT, "tests", "check_ascii_compliance.py")
-	fix_path = os.path.join(REPO_ROOT, "tests", "fix_ascii_compliance.py")
 	if not os.path.isfile(check_path):
 		raise AssertionError(f"Missing script: {check_path}")
-	if not os.path.isfile(fix_path):
-		raise AssertionError(f"Missing script: {fix_path}")
 
 	check_module = load_module("check_ascii_compliance", check_path)
-	fix_module = load_module("fix_ascii_compliance", fix_path)
-
-	scope = resolve_scope()
-	if scope == "changed":
-		files = gather_changed_files(REPO_ROOT)
-	else:
-		files = gather_files(REPO_ROOT)
 
 	# Delete old report file before running
-	ascii_out = os.path.join(REPO_ROOT, "report_ascii_compliance.txt")
-	if os.path.exists(ascii_out):
-		os.remove(ascii_out)
+	file_utils.purge_report(REPORT_NAME)
 
-	if not files:
+	if not FILES:
 		print("No files matched the requested scope.")
 		print("No errors found!!!")
 		return
@@ -371,14 +275,13 @@ def test_ascii_compliance(pytestconfig) -> None:
 	apply_fix = resolve_fix(pytestconfig)
 	progress_enabled = sys.stderr.isatty()
 	if progress_enabled:
-		print(f"ascii_compliance: scanning {len(files)} files...", file=sys.stderr)
+		print(f"ascii_compliance: scanning {len(FILES)} files...", file=sys.stderr)
 
 	all_lines = []
-	for index, file_path in enumerate(files, start=1):
+	for index, file_path in enumerate(FILES, start=1):
 		status, file_lines, _ = scan_file(
 			file_path,
 			check_module,
-			fix_module,
 			apply_fix,
 		)
 		all_lines.extend(file_lines)
@@ -399,9 +302,8 @@ def test_ascii_compliance(pytestconfig) -> None:
 		print("No errors found!!!")
 		return
 
-	with open(ascii_out, "w", encoding="utf-8") as handle:
-		for line in all_lines:
-			handle.write(f"{line}\n")
+	report_text = "".join(f"{line}\n" for line in all_lines)
+	file_utils.write_report(REPORT_NAME, report_text)
 
 	error_lines = [line for line in all_lines if ERROR_RE.search(line)]
 
@@ -437,7 +339,7 @@ def test_ascii_compliance(pytestconfig) -> None:
 		print(f"Files with errors ({error_file_count})")
 		for path in error_files:
 			count = file_counts.get(path, 0)
-			print(f"{os.path.relpath(path, REPO_ROOT)}: {count}")
+			print(f"{file_utils.rel_to_root(path)}: {count}")
 		print("")
 	else:
 		print(f"Files with errors: {error_file_count}")
@@ -446,7 +348,7 @@ def test_ascii_compliance(pytestconfig) -> None:
 			print("")
 			print("Top 5 files by error count")
 			for path, count in top_files:
-				display_path = os.path.relpath(path, REPO_ROOT)
+				display_path = file_utils.rel_to_root(path)
 				print(f"{display_path}: {count}")
 	top_codepoints = top_items(codepoint_counts, ERROR_SAMPLE_COUNT)
 	if top_codepoints:

@@ -120,6 +120,122 @@ pytest tests/ -x
 `tests/conftest.py` handles the pytest environment setup. Do not duplicate that setup in the
 pytest command.
 
+## Hygiene file discovery
+
+Repo-hygiene tests (ascii, whitespace, pyflakes, shebangs, and similar enumerating tests) must
+get their file list from one shared helper, `file_utils.discover_files`. It is the canonical
+discovery API: it owns git scope selection, absolute-path join, dedupe, skip-dir filtering,
+extension filtering, the `isfile` check, and the sort. Use `file_utils.discover_files` as the
+single source of file discovery; the shared `SKIP_DIRS` and `path_has_skip_dir` live only in
+`file_utils.py`.
+
+Signature:
+
+```python
+discover_files(extensions=None, extra_filter=None, *, test_key=None, repo_root=None) -> list[str]
+```
+
+`test_key` and `repo_root` are keyword-only (note the bare `*`). The module-level discovered list
+in a hygiene test is named `FILES` (not `_FILES`).
+
+Three contracts:
+
+- Returns ABSOLUTE paths, sorted ascending.
+- `extra_filter` receives a REPO-RELATIVE POSIX path (for example `tests/foo.py`) and returns
+  `True` to keep the file. `None` keeps all files.
+- `extensions=None` means all files; otherwise extension match is case-insensitive (pass
+  lowercase suffixes like `(".py",)`).
+
+Normal hygiene tests call `discover_files(extensions=..., test_key="<stem>")`; `discover_files`
+resolves the repo root itself via `get_repo_root()` (a negligible extra call). Pass `repo_root=`
+only in `file_utils` regression tests that point discovery at a temporary directory.
+
+### Three exclusion layers
+
+Discovery filters files through three layers, in order:
+
+- Layer 1, `SKIP_DIRS` (vendored, `file_utils.py`): universal directory exclusions.
+  Identical across all repos.
+- Layer 2, `REPO_HYGIENE_FILTERS` (repo-local, `tests/conftest.py`): per-test repo-local
+  file/glob exclusions. This is the only home for repo-specific exclusions, because `conftest.py`
+  survives propagation while vendored files (`file_utils.py` and every `tests/test_*.py`) are
+  overwritten. It is a dict keyed by `"all"` or a vendored test key, with values that are lists of
+  repo-relative POSIX glob patterns matched via `fnmatch.fnmatchcase`. A match excludes the file.
+  A test key is the test filename stem with the leading `test_` removed (for example
+  `test_pyflakes_code_lint.py` -> `"pyflakes_code_lint"`). Recursive subtree exclusion needs an
+  explicit trailing `/**` (for example `"temp_scripts/**"`).
+- Layer 3, `extra_filter` (vendored call site): a universal per-test SELECTION mechanism only
+  (for example keep only `__init__.py`). Keep all repo-specific exclusions in
+  `tests/conftest.py REPO_HYGIENE_FILTERS`; vendored files hold only universal logic.
+
+A normal hygiene test calls `discover_files` with its `test_key` so Layer 2 can target it:
+
+```python
+FILES = file_utils.discover_files(extensions=(".py",), test_key="pyflakes_code_lint")
+```
+
+The repo-local `tests/conftest.py` declares any repo-specific exclusions:
+
+```python
+# tests/conftest.py
+REPO_HYGIENE_FILTERS = {
+	"all": ["temp_scripts/**", "TEMPLATE.py"],
+	"ascii_compliance": ["human_readable-*.html"],
+}
+```
+
+Usage example (normal hygiene test):
+
+```python
+FILES = file_utils.discover_files(extensions=(".py",), test_key="ascii_compliance")
+```
+
+Pass `repo_root=` in `file_utils` regression tests that point discovery at a temporary
+directory:
+
+```python
+# Regression test: point discovery at a controlled temporary root.
+result = file_utils.discover_files(extensions=(".py",), repo_root=tmp_root)
+```
+
+### Additional helpers in file_utils.py
+
+Three shared helpers complement `discover_files`:
+
+- `iter_imports(tree: ast.Module)` -- yields every `ast.Import` and `ast.ImportFrom` node from
+  a parsed module tree. Use in import-checking tests instead of local AST-walk loops.
+- `rel_to_root(path, repo_root=None)` -- returns a repo-relative POSIX string suitable for
+  parametrize ids and assertion messages (for example `tests/foo.py`).
+- `run_fixer_script(name, target)` -- shared subprocess wrapper: runs `tests/<name> -i target`
+  and raises on failure. Used by the ASCII and whitespace auto-fix tests; avoids duplicated
+  inline subprocess calls.
+- `report_path(name)` / `purge_report(name)` / `write_report(name, text)` / `append_report(name, text)`
+  -- centralize the repo-root report-file path, stale-file purge, truncate-write, and append flow.
+  Hygiene tests build the full report text first, then call one helper. Used by the ascii, bandit,
+  pyflakes, markdown_links, shebangs, and init_files tests.
+- `report_name(test_file: str) -> str` -- derive the canonical report filename from a test module
+  path. Pass `__file__` and get back the matching `report_<stem>.txt` name (for example
+  `report_name(__file__)` in `test_bandit_security.py` returns `"report_bandit_security.txt"`).
+  Every hygiene test sets `REPORT_NAME = file_utils.report_name(__file__)` so the name is always
+  derived from the filename, never hardcoded.
+- `append_report_block(name: str, header: str, lines: list[str]) -> str` -- append a
+  header-guarded block of lines to a report file. Writes the header once on first creation, then
+  appends each element of `lines` as a separate line. Use in parametrized hygiene tests where
+  each case contributes one violation block; the caller passes the current test's `REPORT_NAME`,
+  a one-line section header, and the list of violation strings.
+
+### Hygiene guard tests
+
+Two vendored hygiene tests keep the discovery scaffold clean:
+
+- `tests/test_function_typing.py` -- AST-based guard that enforces the typing rule repo-wide:
+  the `typing` module is not used, and every `def` carries param and return type annotations.
+  Use builtin generics (`list`, `dict`, `tuple`, `set`) and PEP 604 unions (`X | None`).
+  Use `collections.abc` (for example `collections.abc.Callable`) for callable and iterable params.
+- `tests/test_pytest_hygiene.py` -- AST guard ensuring hygiene tests keep all file-discovery
+  logic in `file_utils` (the shared `SKIP_DIRS`, `path_has_skip_dir`, and `gather_*` discovery
+  live there). See the "discovery lives in file_utils" guidance above.
+
 ## Failure triage
 
 * If you are unsure whether a failing pytest result is pre-existing or introduced by your

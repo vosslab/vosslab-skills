@@ -134,7 +134,7 @@ def redact_jwt(text: str) -> str:
 
 
 #============================================
-def strip_jwt_tree(value):
+def strip_jwt_tree(value: object) -> object:
 	"""
 	Walk a decoded JSON tree and delete any dict key in JWT_KEYS_TO_DROP.
 	Exact-match, case-sensitive. Recurses into remaining dicts and lists.
@@ -158,7 +158,7 @@ def strip_jwt_tree(value):
 
 
 #============================================
-def redact_tree(value):
+def redact_tree(value: object) -> object:
 	"""
 	Walk a decoded JSON tree and apply redact_jwt to every string value.
 	Non-string values (numbers, None, bools, nested containers) pass through.
@@ -202,7 +202,7 @@ def request_render(base_url: str, payload: dict) -> dict:
 
 
 #============================================
-def normalize_messages(value) -> list[str]:
+def normalize_messages(value: object) -> list[str]:
 	"""
 	Normalize response fields into a list of strings.
 	"""

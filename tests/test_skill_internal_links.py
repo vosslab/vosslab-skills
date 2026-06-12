@@ -27,9 +27,9 @@ import os
 import pathlib
 import subprocess
 
-import git_file_utils
+import file_utils
 
-REPO_ROOT = git_file_utils.get_repo_root()
+REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 
 # Inline markdown links: [text](url)
@@ -134,7 +134,7 @@ def is_skill_internal_target(url_path: str) -> bool:
 
 
 #============================================
-def test_internal_links_resolve():
+def test_internal_links_resolve() -> None:
 	"""
 	For every markdown link inside a skill folder whose URL starts with a
 	recognised skill-internal prefix and ends in a recognised file

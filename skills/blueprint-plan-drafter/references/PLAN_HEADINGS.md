@@ -1,7 +1,8 @@
 # Plan Headings Reference
 
 Single source of truth for the canonical heading rules used by every plan
-written under this skill. Every other artifact in the skill (`PLAN_TEMPLATE.md`,
+written under this skill. Every other artifact in the skill
+(`PLAN_TEMPLATE_BLANK.md`, `PLAN_TEMPLATE_EXAMPLE.md`,
 `plan_quality_standard.md`, `SKILL.md`) cites this file rather than restating
 the rules. Future heading edits land here first.
 
@@ -13,7 +14,8 @@ the rules. Future heading edits land here first.
   Case, spelling, and order are locked.
 - Allowed add-on headings are permitted for plan-specific shapes, but they may
   not rename or replace canonical headings (see `## Substitution rules`).
-- The fillable skeleton lives in `PLAN_TEMPLATE.md`. This file is the rules.
+- The clean skeleton to copy lives in `PLAN_TEMPLATE_BLANK.md`; worked examples
+  live in `PLAN_TEMPLATE_EXAMPLE.md`. This file is the rules.
 
 ## Title and casing rules
 

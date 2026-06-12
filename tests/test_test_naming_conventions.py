@@ -1,9 +1,12 @@
 import os
 import fnmatch
 
-import git_file_utils
+import pytest
 
-REPO_ROOT = git_file_utils.get_repo_root()
+import file_utils
+
+REPO_ROOT = file_utils.get_repo_root()
+REPORT_NAME = file_utils.report_name(__file__)
 
 
 #============================================
@@ -71,6 +74,32 @@ def list_playwright_files() -> list[str]:
 
 
 #============================================
+@pytest.fixture(scope="module", autouse=True)
+def reset_test_naming_report() -> None:
+	"""
+	Remove stale report file before this module runs.
+	"""
+	file_utils.purge_report(REPORT_NAME)
+
+
+#============================================
+def record_naming_violations(label: str, violations: list[str]) -> str:
+	"""
+	Append labeled naming violations to the shared report file.
+
+	Args:
+		label: Short description of the check, used as section header.
+		violations: List of violation strings to record.
+
+	Returns:
+		str: Absolute path to the report file.
+	"""
+	# Prepend the label so violations are grouped under their check name.
+	lines = [label] + violations
+	return file_utils.append_report_block(REPORT_NAME, "test naming convention violations", lines)
+
+
+#============================================
 def test_no_test_prefix_in_e2e() -> None:
 	"""
 	Verify no test_*.py files exist under tests/e2e/.
@@ -88,9 +117,12 @@ def test_no_test_prefix_in_e2e() -> None:
 		if fnmatch.fnmatch(basename, "test_*.py"):
 			violations.append(filename)
 	if violations:
+		report_file = record_naming_violations("test_no_test_prefix_in_e2e", violations)
+		report_rel = file_utils.rel_to_root(report_file)
 		raise AssertionError(
 			f"Found test_*.py files under tests/e2e/ "
 			f"(silently skipped by pytest): {violations}"
+			f" See {report_rel}."
 		)
 
 
@@ -113,9 +145,12 @@ def test_no_test_prefix_in_playwright() -> None:
 		if fnmatch.fnmatch(basename, "test_*.py"):
 			violations.append(filename)
 	if violations:
+		report_file = record_naming_violations("test_no_test_prefix_in_playwright", violations)
+		report_rel = file_utils.rel_to_root(report_file)
 		raise AssertionError(
 			f"Found test_*.py files under tests/playwright/ "
 			f"(silently skipped by pytest): {violations}"
+			f" See {report_rel}."
 		)
 
 
@@ -137,9 +172,12 @@ def test_python_files_use_e2e_prefix() -> None:
 			if not fnmatch.fnmatch(filename, "e2e_*.py"):
 				violations.append(filename)
 	if violations:
+		report_file = record_naming_violations("test_python_files_use_e2e_prefix", violations)
+		report_rel = file_utils.rel_to_root(report_file)
 		raise AssertionError(
 			f"Python files under tests/e2e/ must use e2e_*.py prefix: "
 			f"{violations}"
+			f" See {report_rel}."
 		)
 
 
@@ -160,9 +198,12 @@ def test_shell_files_use_e2e_prefix() -> None:
 			if not fnmatch.fnmatch(filename, "e2e_*.sh"):
 				violations.append(filename)
 	if violations:
+		report_file = record_naming_violations("test_shell_files_use_e2e_prefix", violations)
+		report_rel = file_utils.rel_to_root(report_file)
 		raise AssertionError(
 			f"Shell files under tests/e2e/ must use e2e_*.sh prefix: "
 			f"{violations}"
+			f" See {report_rel}."
 		)
 
 
@@ -235,7 +276,12 @@ def test_playwright_imports_in_playwright_folder() -> None:
 		if has_playwright_import(full_path):
 			violations.append(mjs_file)
 	if violations:
+		report_file = record_naming_violations(
+			"test_playwright_imports_in_playwright_folder", violations
+		)
+		report_rel = file_utils.rel_to_root(report_file)
 		raise AssertionError(
 			f"Playwright imports found in .mjs files outside tests/playwright/. "
 			f"Move these files to tests/playwright/: {violations}"
+			f" See {report_rel}."
 		)

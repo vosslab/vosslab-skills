@@ -27,9 +27,9 @@ import re
 import os
 import pathlib
 
-import git_file_utils
+import file_utils
 
-REPO_ROOT = git_file_utils.get_repo_root()
+REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 
 # Match standard markdown inline links: [text](url). The url is captured.
@@ -115,7 +115,7 @@ def find_external_dotdot_links(text: str, md_path: pathlib.Path) -> list[tuple[i
 
 
 #============================================
-def test_no_dotdot_paths_exiting_skill():
+def test_no_dotdot_paths_exiting_skill() -> None:
 	"""
 	Skill markdown files must not contain markdown links whose target
 	resolves outside the skill's own folder.

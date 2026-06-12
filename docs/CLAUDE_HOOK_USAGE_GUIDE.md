@@ -1,6 +1,6 @@
 # Claude hook usage guide
 
-_Last updated: 2026-05-29 02:20 UTC. Source of truth: `claude-code-permissions-hook`
+_Last updated: 2026-06-03 19:30 UTC. Source of truth: `claude-code-permissions-hook`
 repo. Mirrors in sibling repos (e.g. `starter-repo-template`) are copies; do not
 edit mirrors directly._
 
@@ -119,7 +119,7 @@ Read tool instead. See the denied commands section.
 
 ### Safe utilities
 
-These commands are allowed as single commands. Command substitution is blocked.
+These commands are allowed as single commands. Command substitution is blocked (exception: a backtick or `$(` inside a single-quoted `grep`/`rg`/`find` pattern is literal and allowed -- see the `grep`/`rg` section).
 
 **File and text processing:**
 `cat`, `colordiff`, `comm`, `cut`, `diff`, `expand`, `file`, `fmt`, `fold`,
@@ -377,17 +377,17 @@ this harness.
 
 To search an out-of-zone path: read a known file with the Read tool, or narrow to a relative/workspace path. Pipeline filters (`... | grep pat`, no file arg) stay allowed and are unaffected. For bulk content search a `git ls-files <pathspec> | xargs grep PAT` pipeline is still allowed end-to-end if you prefer it.
 
+Flags never block: `-n`, `-rn`, `-r`, `--include=` ride through. A command-substitution character (backtick, `$(`, `${`) inside a SINGLE-QUOTED pattern is literal and allowed (`` grep -n '`references/' src/x ``, `grep '${.*}' src/main.ts`). Only an UNQUOTED backtick or `$(` in a grep/rg/find leaf is denied (real shell evaluation, e.g. `` grep `whoami` x ``) -- single-quote the pattern or run the substitution as a separate, reviewed command.
+
 ### `git grep`
 
 **Blocked:** `git grep <pattern>`, including all git invocation forms (`/usr/bin/git grep`, `command git grep`, `env X=y git grep`, `git -c core.pager=cat grep`, `git -C <path> grep`, `git --git-dir=<dir> grep`, `git --work-tree=<dir> grep`). Recovery: see [grep/rg with file paths](#grep-recovery).
 
 ### `find`
 
-Recovery: bounded read-only `find` in safe path zones (`.`, `/tmp`, `~/<workspace>/...`); or `git ls-files <pathspec>` inside a git repo.
+Read-only forms in safe path zones are allowed; destructive predicates, unsafe roots, and command substitution are denied. Recovery: bounded read-only `find` in a safe path zone, or `git ls-files <pathspec>` inside a git repo.
 
-Read-only forms in safe path zones are allowed. Destructive predicates, unsafe roots, and command substitution are denied.
-
-**Instead:** Use bounded read-only `find` in a safe path zone:
+**Safe path zones:**
 
 - relative paths: `.`, `docs`, `src/sub`, `tests`
 - `/tmp`, `/tmp/...`, `/private/tmp/...`
@@ -427,11 +427,8 @@ step.
 - Destructive / output-file predicates (hard deny): `-delete`,
   `-exec`, `-execdir`, `-ok`, `-okdir`, `-fprint`, `-fprintf`,
   `-fls`.
-- Advanced filters not yet supported in this pass (conservative
-  deny -- ask for a focused rule + fixtures if needed): `-printf`,
-  `-print0`, `-prune`, `-newer`, `-mtime`, `-atime`, `-user`,
-  `-group`, `-perm`, `-size`, `-links`, `-inum`, `-samefile`,
-  `-fstype`, `-mount`, `-xdev`, `-regex`, `-iregex`.
+- The "Not in this pass" filters listed above (conservative deny --
+  ask for a focused rule + fixtures if needed).
 - Destructive xargs pipelines: `find ... | xargs rm`,
   `find ... | xargs -0 rm`, `xargs chmod`, `xargs chown`,
   `xargs mv`, `xargs sudo`.
@@ -445,8 +442,9 @@ step.
   `/var/folders`. The narrow Claude allowlist
   (`~/.claude/agents`, `~/.claude/commands`, `~/.claude/skills`)
   is allowed.
-- Command substitution: `find . -name "$(...)"`,
-  `VAR=$(find ...)`.
+- Command substitution, unquoted or double-quoted: `find . -name "$(...)"`,
+  `VAR=$(find ...)`. A single-quoted `'$(...)'`/backtick in an arg is literal
+  and allowed.
 - Path traversal: `find ../`, `find docs/../`.
 
 Residual passthrough: a non-standard home subdir like
@@ -455,9 +453,12 @@ non-workspace denylist (`Downloads`, `Documents`, `Desktop`,
 `Library`, `Movies`, `Music`, `Pictures`, `Public`, `Applications`)
 nor in the safe-zone allow. It falls through to user approval.
 
-Quoted path roots (`find "docs" -name '*.md'`, `find './src' -type f`)
-are out of scope in this pass and passthrough. Drop the quotes
-to auto-allow.
+Quoted or escaped path SEGMENTS are allowed: the safe-path char class
+includes `'`, `"`, `\`, `(`, and `)`, so a directory literally named
+`(0)concepts` matches whether written `'(0)concepts'` or `\(0\)concepts`
+(common with SolidJS route groups). A whole path ARG wrapped in leading
+quotes (`find "docs" -name '*.md'`) still passthroughs -- drop the outer
+quotes to auto-allow. `..` traversal stays denied regardless of quoting.
 
 ### `awk`
 
@@ -806,24 +807,10 @@ interactive UI dialogs, causing blank answers or skipped consent screens.
 
 ## Common patterns
 
-Use `Read`, `Edit`, `Write` as tool calls; search file contents with `grep`/`rg` directly on a relative or workspace path; list files with `ls` or `git ls-files`.
-
-| Task | Wrong | Right |
-| --- | --- | --- |
-| Run Python | `python3 script.py` | `source source_me.sh && python3 script.py` |
-| Read a file | `cat /path/to/file.py` | Read tool: `file_path="/path/to/file.py"` |
-| Search files | `grep -r pat /etc` (out-of-zone); `Grep` tool (not available) | `grep -rn pat src/`, `rg pat docs/` (CWD-relative or workspace path, allowed directly) |
-| Tool name as Bash | `Grep -n "^## " docs/CHANGELOG.md` | Bash `grep -n "^## " docs/CHANGELOG.md` (relative path, allowed) |
-| Find files | `find / -name "*.py"` (system root); `find . -delete` (destructive) | Bounded read-only: `find <safe-root> -type f -name PAT` (relative paths, `/tmp`, `~/<workspace>/...`); or `git ls-files <pathspec>` for tracked-only repo content |
-| Read lines 10-20 | `sed -n '10,20p' file.txt` | Read tool: `offset=10`, `limit=11` |
-| Delete temp file | `rm temp.py` | Name it `_temp.py`, then `rm _temp.py` |
-| Rename file | `mv old.py new.py` | `git mv old.py new.py` |
-| Loop over files | `for f in *.py; do ...` | Write `_temp.sh` with the loop, run `bash _temp.sh` |
-| Inline Python | `python3 -c "print(1)"` | Write `_temp.py`, run with source_me.sh |
-| Inline JS | `node -e "console.log(1)"` | Write `_temp.mjs`, run with `node _temp.mjs` |
-| Write file via printf | `printf '...' > FILE` | Use the Write tool (or Edit for appends) |
-| Set env + run | `REPO_ROOT=/x && python3 s.py` | `REPO_ROOT=/x python3 s.py` (one line) |
-| Run heredoc | `python3 - <<EOF ...` | Write `_temp.py`, run with source_me.sh |
-| GitHub CLI | `gh pr list` | Not available (`gh` not installed) |
-| Probe media | `ffprobe -show_streams f.m4b` | `mediainfo --Output=JSON f.m4b` (ffprobe only for chapters/packets/frames/lavfi) |
-| Encode audio | `ffmpeg -i in.wav out.m4a` | Stage to `/tmp`: `ffmpeg -i /tmp/in.wav /tmp/out.m4a` |
+Quick rules of thumb (each is detailed in the per-command sections above):
+use `Read`/`Edit`/`Write` tool calls, not `cat`/`sed`/`printf`; search with
+`grep`/`rg` on a relative or workspace path (not `/etc`, not the `Grep` tool);
+list with `ls` or `git ls-files`; run Python via `source source_me.sh &&
+python3 script.py` (no `-c`); write loops/inline code to `_temp.py`/`_temp.sh`;
+rename with `git mv`; delete only `_temp*`/`/tmp` paths; stage to `/tmp` for
+`ffmpeg`/`convert` and prefer `mediainfo` over `ffprobe`.

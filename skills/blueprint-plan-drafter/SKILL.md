@@ -67,14 +67,14 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 - When a section is included, its name, casing, and order match `references/PLAN_HEADINGS.md` verbatim. Allowed add-on headings outside the canonical core/optional tiers are permitted but may not rename or replace canonical headings; see `references/PLAN_HEADINGS.md` for the substitution rules.
 - Include a `## Design philosophy` section in the canonical core. Write 2-4 sentences or bullets describing this plan's own trade-off and what alternative was rejected. Do not copy/paste the four core philosophies from `docs/REPO_STYLE.md`; cite them by name only when the plan actually leans on one. Empty stub bodies are rejected.
 - Do not perform coding tasks as part of this skill.
-- Do not include pseudo-complete promises without measurable acceptance criteria.
-- Do not collapse architecture, implementation, and release concerns into one checklist.
+- Pair every completion claim with measurable acceptance criteria.
+- Keep architecture, implementation, and release concerns in separate sections.
 - Keep milestone boundaries explicit, testable, and order-dependent.
 - Apply numeric capacity and sizing targets from the capacity reference.
 - Size patches and work packages by component boundaries and reviewability, using the ranges in `references/CAPACITY_AND_SIZING.md`. Express any size guidance the plan emits to doers as ranges (for example, "1 to 2 patches per coder per week") or as "right-sized for one coder", so doers split on natural seams rather than chasing a fixed line-count target.
 - Under Milestone plan, lead with a human-review milestone summary table (`M / Title / Summary / Goal`); plain what/why only, no workstream IDs, dependency IDs, or patch counts.
 - Under Architecture Boundaries, require a mapping subsection: milestones and workstreams map to components and patches; components use durable terminology. This execution-routing table is distinct from the human-review milestone summary table.
-- Do not encode dependencies by milestone number. Dependencies must be declared by dependency ID in `Depends on`, with a short reason.
+- Declare dependencies by dependency ID in `Depends on` with a short reason; treat milestone numbers as labels only, never as ordering.
 - Dependencies live at the work package level, not hidden inside milestone prose.
 - Exception: if work is inherently serial (for example, one critical refactor), document why, and still create parallel work packages for tests, tooling, docs, and migration.
 - A work package must be completable by one coder and result in at least one patch. The work package owner may be `coder` (sonnet, default) or `expert_coder` (opus, for hard or design-sensitive packages); see `references/EXECUTION_RESOURCES.md`.
@@ -85,15 +85,16 @@ Canonical definitions live in `references/DEFINITIONS.md`.
 
 ## Inputs to read first
 1. `references/PLAN_HEADINGS.md` -- canonical heading rules (three-tier table, casing, ordering, rejected variants, substitution rules, archetypes)
-2. `references/PLAN_TEMPLATE.md` -- fillable plan skeleton with archetype examples
-3. `references/plan_quality_standard.md`
-4. `references/DEFINITIONS.md`
-5. `references/CAPACITY_AND_SIZING.md`
-6. `references/NAMING_GUARDRAILS.md`
-7. `references/EXECUTION_RESOURCES.md`
-8. `refactor_progress.md` (if present in the target repo)
-9. Active plan docs in `docs/active_plans/` (if present in the target repo)
-10. Archive plan docs in `docs/archive/` (if present in the target repo)
+2. `references/PLAN_TEMPLATE_BLANK.md` -- the clean copy-paste skeleton; every plan starts as a copy of this file
+3. `references/PLAN_TEMPLATE_EXAMPLE.md` -- the same skeleton annotated with three worked archetype examples, for learning the shape
+4. `references/plan_quality_standard.md`
+5. `references/DEFINITIONS.md`
+6. `references/CAPACITY_AND_SIZING.md`
+7. `references/NAMING_GUARDRAILS.md`
+8. `references/EXECUTION_RESOURCES.md`
+9. `refactor_progress.md` (if present in the target repo)
+10. Active plan docs in `docs/active_plans/` (if present in the target repo)
+11. Archive plan docs in `docs/archive/` (if present in the target repo)
 
 Use these inputs to match local planning style, terminology, status language, and quality bars.
 
@@ -122,11 +123,10 @@ List key risks with impact, trigger, owner, and mitigation.
 8. Define documentation execution:
 Specify required documentation updates per milestone (active plan, progress tracker, changelog, archive/closure notes). Use patch labels ("Patch 1", "Patch 2", ...) in implementation summaries and changelog-oriented sections.
 9. Publish manager-grade output:
-Deliver one execution-ready plan document with measurable closure criteria.
-For large or multi-workstream plans, start from `references/PLAN_TEMPLATE.md` and keep only the slots that apply; for small plans, write the plan directly using the section list below.
+Begin every plan by copying `references/PLAN_TEMPLATE_BLANK.md` verbatim into the plan file, then fill each `<...>` placeholder and delete the slots the chosen archetype does not use. Starting from this copied skeleton keeps the structure on milestones and workstreams. Deliver one execution-ready plan document with measurable closure criteria.
 
 ## Heading rules and template
-For canonical heading rules (three-tier classification, casing, ordering, rejected variants, substitution rules, plan archetypes), see `references/PLAN_HEADINGS.md`. For the fillable plan skeleton with worked use-case examples for each archetype, see `references/PLAN_TEMPLATE.md`.
+For canonical heading rules (three-tier classification, casing, ordering, rejected variants, substitution rules, plan archetypes), see `references/PLAN_HEADINGS.md`. Copy `references/PLAN_TEMPLATE_BLANK.md` to start a plan; see `references/PLAN_TEMPLATE_EXAMPLE.md` for the same skeleton with worked use-case examples for each archetype.
 
 Canonical core (required in every plan, in this order, after the H1 title):
 
@@ -151,7 +151,7 @@ After the plan is published, execution uses adjacent skills:
 See `references/EXECUTION_RESOURCES.md` for the full lifecycle and agent catalog.
 
 ## Parallel-plan readiness checklist
-Before publishing, verify the plan can be picked up by `parallel-plan` without rewrites. The visible artifact of this checklist is the per-milestone `Parallel-plan ready: <yes / no>` slot in `PLAN_TEMPLATE.md`; if `no`, the milestone must give a one-sentence reason.
+Before publishing, verify the plan can be picked up by `parallel-plan` without rewrites. The visible artifact of this checklist is the per-milestone `Parallel-plan ready: <yes / no>` slot in `PLAN_TEMPLATE_BLANK.md`; if `no`, the milestone must give a one-sentence reason.
 - Each milestone declares its parallel workstreams by ID, not prose.
 - Each work package has explicit `Depends on` IDs (use "none" when independent).
 - Shared resources (fixtures, migrations, generated artifacts) are owned by one work package, not duplicated across lanes.

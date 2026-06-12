@@ -42,7 +42,7 @@ MIN_PREFIX_CHARS = 3
 # Helper functions
 #============================================================
 
-def get_repo_root():
+def get_repo_root() -> str | None:
 	"""Return the git toplevel directory or None if git is unavailable.
 
 	Returns:
@@ -61,7 +61,7 @@ def get_repo_root():
 	return None
 
 
-def read_installed_plugins():
+def read_installed_plugins() -> list:
 	"""Return active plugin install paths from ~/.claude/plugins/installed_plugins.json.
 
 	The JSON keys are "<plugin>@<marketplace>"; we keep just the plugin part
@@ -85,7 +85,7 @@ def read_installed_plugins():
 	return result
 
 
-def collect_skills():
+def collect_skills() -> list:
 	"""Collect skills from all sources (repo, personal, plugins, harness)."""
 	skills = []
 	repo_root = get_repo_root()
@@ -132,7 +132,7 @@ def collect_skills():
 	return skills
 
 
-def hash_skill_md(skill_md_path):
+def hash_skill_md(skill_md_path: str | None) -> str | None:
 	"""Compute SHA256 hash of SKILL.md content."""
 	if skill_md_path is None:
 		return None
@@ -140,7 +140,7 @@ def hash_skill_md(skill_md_path):
 		return hashlib.sha256(skill_file.read()).hexdigest()
 
 
-def dedupe_skills(skills):
+def dedupe_skills(skills: list) -> list:
 	"""
 	Collapse duplicate skills by name, resolving via symlink paths first,
 	then content hash, then flagging collisions.
@@ -199,7 +199,7 @@ def dedupe_skills(skills):
 	return result
 
 
-def longest_common_prefix_len(string_a, string_b):
+def longest_common_prefix_len(string_a: str, string_b: str) -> int:
 	"""Return the length of the longest common prefix of two strings."""
 	count = 0
 	for char_a, char_b in zip(string_a, string_b):
@@ -209,7 +209,7 @@ def longest_common_prefix_len(string_a, string_b):
 	return count
 
 
-def find_prefix_collisions(name, all_names):
+def find_prefix_collisions(name: str, all_names: list) -> list:
 	"""Return sorted list of skill names sharing a MIN_PREFIX_CHARS+ prefix with `name`.
 
 	old-* skills are exempt on both sides: they don't get flagged themselves and
@@ -229,7 +229,7 @@ def find_prefix_collisions(name, all_names):
 	return sorted(collisions)
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
 	"""Parse command-line arguments."""
 	parser = argparse.ArgumentParser(description="List loaded skills from repo and personal/plugin sources.")
 	parser.add_argument(
@@ -267,7 +267,7 @@ def parse_args():
 # Main
 #============================================================
 
-def main():
+def main() -> None:
 	"""Main entry point."""
 	args = parse_args()
 

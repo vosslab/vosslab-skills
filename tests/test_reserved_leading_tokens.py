@@ -9,9 +9,9 @@ change.
 
 import pathlib
 
-import git_file_utils
+import file_utils
 
-REPO_ROOT = git_file_utils.get_repo_root()
+REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 
 # Harness built-in slash commands. Update when the harness changes.
@@ -67,7 +67,7 @@ def active_skill_names() -> list[str]:
 
 
 #============================================
-def test_no_skill_uses_harness_reserved_leading_token():
+def test_no_skill_uses_harness_reserved_leading_token() -> None:
 	"""Active skill names must not lead with a harness-reserved token."""
 	violations = []
 	for name in active_skill_names():
@@ -80,7 +80,7 @@ def test_no_skill_uses_harness_reserved_leading_token():
 
 
 #============================================
-def test_no_skill_uses_plugin_reserved_leading_token():
+def test_no_skill_uses_plugin_reserved_leading_token() -> None:
 	"""
 	Active skill names must not lead with a token already used by a loaded
 	plugin skill (per the frozen PLUGIN_LEADING_TOKENS list above).

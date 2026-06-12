@@ -2,10 +2,12 @@ import os
 import re
 import random
 
-import git_file_utils
+import file_utils
 
-REPO_ROOT = git_file_utils.get_repo_root()
-REPORT_NAME = "report_markdown_links.txt"
+REPO_ROOT = file_utils.get_repo_root()
+# Module-level file list built once at import time for the markdown link scan.
+FILES = file_utils.discover_files(extensions=(".md",), test_key="markdown_links")
+REPORT_NAME = file_utils.report_name(__file__)
 ERROR_SAMPLE_COUNT = 5
 
 # Inline link and image: optional leading !, [text](url), url ends at ) or space.
@@ -341,31 +343,12 @@ def scan_file(
 
 
 #============================================
-def gather_all(repo_root: str) -> list[str]:
-	"""
-	List all tracked markdown files.
-	"""
-	return git_file_utils.list_tracked_files(repo_root, ["*.md"])
-
-
-#============================================
-def gather_changed(repo_root: str) -> list[str]:
-	"""
-	List changed markdown files.
-	"""
-	changed = git_file_utils.list_changed_files(repo_root)
-	return [path for path in changed if path.endswith(".md")]
-
-
-#============================================
 def report_issues(all_issues: list[str]) -> None:
 	"""
 	Write the report file and print samples, then fail.
 	"""
-	report_path = os.path.join(REPO_ROOT, REPORT_NAME)
-	with open(report_path, "w", encoding="utf-8") as handle:
-		for line in all_issues:
-			handle.write(f"{line}\n")
+	report_text = "".join(f"{line}\n" for line in all_issues)
+	file_utils.write_report(REPORT_NAME, report_text)
 
 	print("")
 	print(f"First {ERROR_SAMPLE_COUNT} errors")
@@ -408,19 +391,19 @@ def test_markdown_links() -> None:
 	"""
 	Check every local markdown link is GitHub-browsable and well formed.
 	"""
-	files = git_file_utils.collect_files(REPO_ROOT, gather_all, gather_changed)
+	# FILES holds the markdown source-file list (absolute paths) built at import;
+	# scan_file consumes a repo-relative POSIX path, so convert each here.
+	files = [to_posix(os.path.relpath(abs_path, REPO_ROOT)) for abs_path in FILES]
 
 	# Delete any stale report before running.
-	report_path = os.path.join(REPO_ROOT, REPORT_NAME)
-	if os.path.exists(report_path):
-		os.remove(report_path)
+	file_utils.purge_report(REPORT_NAME)
 
 	if not files:
 		print("No files matched the requested scope.")
 		print("No errors found!!!")
 		return
 
-	tracked_set = set(git_file_utils.list_tracked_files(REPO_ROOT))
+	tracked_set = set(file_utils.list_tracked_files(REPO_ROOT))
 	tracked_dirs = build_tracked_dirs(tracked_set)
 
 	all_issues = []

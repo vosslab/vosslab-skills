@@ -16,16 +16,16 @@ forgot to run `tools/build_plugin_manifest.py`.
 import json
 import pathlib
 
-import git_file_utils
+import file_utils
 
-REPO_ROOT = git_file_utils.get_repo_root()
+REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 MANIFEST_PATH = pathlib.Path(REPO_ROOT) / ".claude-plugin" / "plugin.json"
 SKILL_PATH_PREFIX = "./skills/"
 
 
 #============================================
-def test_plugin_manifest_skills_match_skill_dirs():
+def test_plugin_manifest_skills_match_skill_dirs() -> None:
 	"""
 	The `skills` array in `.claude-plugin/plugin.json` must list every
 	non-deprecated skill directory under `skills/`, and only those.

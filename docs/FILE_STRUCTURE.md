@@ -57,7 +57,7 @@ Repo-wide pytest gates plus helpers. Run with `pytest tests/`. The
 [tests/playwright/](../tests/playwright/) subtree is excluded from pytest
 collection by [tests/conftest.py](../tests/conftest.py); see
 [docs/PLAYWRIGHT_USAGE.md](PLAYWRIGHT_USAGE.md).
-Helper modules: [tests/git_file_utils.py](../tests/git_file_utils.py),
+Helper modules: [tests/file_utils.py](../tests/file_utils.py),
 [tests/check_ascii_compliance.py](../tests/check_ascii_compliance.py),
 [tests/fix_ascii_compliance.py](../tests/fix_ascii_compliance.py),
 [tests/fix_whitespace.py](../tests/fix_whitespace.py).

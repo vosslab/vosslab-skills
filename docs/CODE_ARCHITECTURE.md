@@ -42,7 +42,7 @@ Version is tracked in [VERSION](../VERSION) and mirrored in `plugin.json`.
 - [tests/](../tests/): repo-wide lint and convention enforcement (see
   [docs/PYTEST_STYLE.md](PYTEST_STYLE.md) and
   [docs/E2E_TESTS.md](E2E_TESTS.md)) plus shared helpers
-  ([tests/git_file_utils.py](../tests/git_file_utils.py),
+  ([tests/file_utils.py](../tests/file_utils.py),
   [tests/conftest.py](../tests/conftest.py)).
 - [docs/](.): style guides, install/usage, troubleshooting,
   changelog, and the generated skills index.

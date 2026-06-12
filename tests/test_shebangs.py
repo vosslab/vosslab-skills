@@ -1,60 +1,15 @@
 import os
 import stat
-from typing import Optional
 
-import git_file_utils
+import file_utils
 
 
-REPO_ROOT = git_file_utils.get_repo_root()
-SKIP_DIRS = {
-	".git",
-	".venv",
-	"__pycache__",
-	".pytest_cache",
-	".mypy_cache",
-	"old_shell_folder",
-}
+REPO_ROOT = file_utils.get_repo_root()
 PYTHON_SHEBANG = "#!/usr/bin/env python3"
-REPORT_NAME = "report_shebang.txt"
-
-
-#============================================
-def iter_repo_files() -> list[str]:
-	"""
-	Collect tracked, non-deleted regular files under the repo root.
-
-	Returns:
-		list[str]: Absolute file paths.
-	"""
-	paths = []
-	for rel_path in git_file_utils.list_tracked_files(REPO_ROOT):
-		if path_has_skip_dir(rel_path):
-			continue
-		path = os.path.join(REPO_ROOT, rel_path)
-		if os.path.islink(path):
-			continue
-		if not os.path.isfile(path):
-			continue
-		paths.append(path)
-	return paths
-
-
-#============================================
-def path_has_skip_dir(rel_path: str) -> bool:
-	"""
-	Check whether a relative path includes a skipped directory.
-
-	Args:
-		rel_path: Path relative to the repo root.
-
-	Returns:
-		bool: True if any skipped directory is part of the path.
-	"""
-	parts = rel_path.split(os.sep)
-	for part in parts:
-		if part in SKIP_DIRS:
-			return True
-	return False
+REPORT_NAME = file_utils.report_name(__file__)
+# discover_files excludes symlinks via isfile; no extension filter -- shebangs
+# apply to any file type tracked in the repo.
+FILES = file_utils.discover_files(test_key="shebangs")
 
 
 #============================================
@@ -175,7 +130,7 @@ def categorize_errors() -> dict[str, list[str]]:
 		"test_file_has_shebang": [],
 		"test_file_is_executable": [],
 	}
-	for path in iter_repo_files():
+	for path in FILES:
 		shebang = read_shebang(path)
 		exec_flag = is_executable(path)
 		is_python = path.endswith(".py")
@@ -207,7 +162,7 @@ def categorize_errors() -> dict[str, list[str]]:
 
 
 #============================================
-def format_errors(errors: dict[str, list[str]], limit: Optional[int] = 10) -> str:
+def format_errors(errors: dict[str, list[str]], limit: int | None = 10) -> str:
 	"""
 	Format error categories for assertion output.
 
@@ -238,18 +193,18 @@ def write_error_report(errors: dict[str, list[str]]) -> str:
 	"""
 	Write a full shebang report to a repo file.
 
+	Builds the full report text (every category, no per-category limit,
+	with a trailing newline) and writes it through the shared report helper.
+
 	Args:
 		errors: Error categories and paths.
 
 	Returns:
 		str: Absolute path to the report file.
 	"""
-	report_path = os.path.join(REPO_ROOT, REPORT_NAME)
-	content = format_errors(errors, limit=None)
-	with open(report_path, "w", encoding="utf-8") as handle:
-		handle.write(content)
-		handle.write("\n")
-	return report_path
+	# Build the full report body, then append the single trailing newline.
+	content = format_errors(errors, limit=None) + "\n"
+	return file_utils.write_report(REPORT_NAME, content)
 
 
 #============================================
@@ -258,16 +213,14 @@ def test_shebang_executable_alignment() -> None:
 	Ensure shebangs and executable bits are aligned.
 	"""
 	# Delete old report file before running
-	report_path = os.path.join(REPO_ROOT, REPORT_NAME)
-	if os.path.exists(report_path):
-		os.remove(report_path)
+	file_utils.purge_report(REPORT_NAME)
 
 	errors = categorize_errors()
 	if all(not values for values in errors.values()):
 		return
 	report_path = write_error_report(errors)
 	message = format_errors(errors, limit=10)
-	display_report = os.path.relpath(report_path, REPO_ROOT)
+	display_report = file_utils.rel_to_root(report_path, REPO_ROOT)
 	raise AssertionError(
 		"Shebang issues found:\n"
 		f"{message}\n"

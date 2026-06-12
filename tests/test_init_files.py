@@ -1,88 +1,27 @@
 import ast
 import os
-import tokenize
 
 import pytest
 
-import git_file_utils
+import file_utils
 
-REPO_ROOT = git_file_utils.get_repo_root()
-SKIP_DIRS = {".git", ".venv", "__pycache__", "old_shell_folder"}
-REPORT_NAME = "report_init.txt"
+REPO_ROOT = file_utils.get_repo_root()
+REPORT_NAME = file_utils.report_name(__file__)
 _MIN_SUBSTANTIVE_LINES = 20
 _MIN_CONTENT_CHARS = 100
 
 
 #============================================
-def path_has_skip_dir(path: str) -> bool:
+def _keep_init_py(rel_path: str) -> bool:
 	"""
-	Check whether a relative path includes a skipped directory.
-	"""
-	parts = path.split(os.sep)
-	for part in parts:
-		if part in SKIP_DIRS:
-			return True
-	return False
+	Keep only files whose basename is exactly __init__.py.
 
-
-#============================================
-def filter_init_files(paths: list[str]) -> list[str]:
+	discover_files passes a repo-relative POSIX path to extra_filter.
+	A single extension like ".py" cannot express this basename constraint,
+	so an extra_filter is needed.
 	"""
-	Filter candidate paths to tracked __init__.py files that exist.
-	"""
-	matches = []
-	seen = set()
-	for path in paths:
-		if path in seen:
-			continue
-		seen.add(path)
-		if path_has_skip_dir(path):
-			continue
-		if "TEMPLATE" in path:
-			continue
-		if os.path.basename(path) != "__init__.py":
-			continue
-		if not os.path.isfile(path):
-			continue
-		matches.append(path)
-	matches.sort()
-	return matches
-
-
-#============================================
-def gather_files(repo_root: str) -> list[str]:
-	"""
-	Collect tracked __init__.py files.
-	"""
-	paths = []
-	for path in git_file_utils.list_tracked_files(
-		repo_root,
-		patterns=["**/__init__.py", "__init__.py"],
-		error_message="Failed to list tracked __init__.py files.",
-	):
-		paths.append(os.path.join(repo_root, path))
-	return filter_init_files(paths)
-
-
-#============================================
-def gather_changed_files(repo_root: str) -> list[str]:
-	"""
-	Collect changed __init__.py files.
-	"""
-	paths = []
-	for path in git_file_utils.list_changed_files(repo_root):
-		paths.append(os.path.join(repo_root, path))
-	return filter_init_files(paths)
-
-
-#============================================
-def read_source(path: str) -> str:
-	"""
-	Read Python source using tokenize.open for encoding correctness.
-	"""
-	with tokenize.open(path) as handle:
-		text = handle.read()
-	return text
+	# Use posixpath-style split to get the basename from a POSIX rel path.
+	return rel_path.split("/")[-1] == "__init__.py"
 
 
 #============================================
@@ -151,12 +90,11 @@ def find_init_issues(path: str) -> list[tuple[int, str]]:
 	"""
 	Return line-numbered style violations in one __init__.py file.
 	"""
-	source = read_source(path)
+	source = file_utils.read_source(path)
 	if not should_check_file(source):
 		return []
-	try:
-		tree = ast.parse(source, filename=path)
-	except SyntaxError as error:
+	tree, error = file_utils.parse_source(path)
+	if error is not None:
 		line_no = getattr(error, "lineno", 1) or 1
 		return [(line_no, "syntax error in __init__.py")]
 	body = list(tree.body)
@@ -206,9 +144,9 @@ def format_issue(rel_path: str, line_no: int, message: str) -> str:
 	return f"{rel_path}:{line_no}: {message}"
 
 
-_FILES = git_file_utils.collect_files(REPO_ROOT, gather_files, gather_changed_files)
+FILES = file_utils.discover_files(extra_filter=_keep_init_py, test_key="init_files")
 _PARAMS = []
-for path in _FILES:
+for path in FILES:
 	_PARAMS.append(pytest.param(path, id=os.path.relpath(path, REPO_ROOT)))
 if not _PARAMS:
 	_PARAMS.append(pytest.param("", id="no-init-files"))
@@ -220,25 +158,7 @@ def reset_init_report() -> None:
 	"""
 	Remove stale report file before this module runs.
 	"""
-	report_path = os.path.join(REPO_ROOT, REPORT_NAME)
-	if os.path.exists(report_path):
-		os.remove(report_path)
-
-
-#============================================
-def append_init_report(issues: list[str]) -> str:
-	"""
-	Append __init__.py violations to the dedicated report file.
-	"""
-	report_path = os.path.join(REPO_ROOT, REPORT_NAME)
-	file_exists = os.path.exists(report_path)
-	with open(report_path, "a", encoding="utf-8") as handle:
-		if not file_exists:
-			handle.write("__init__.py style report\n")
-			handle.write("Violations:\n")
-		for issue in issues:
-			handle.write(issue + "\n")
-	return report_path
+	file_utils.purge_report(REPORT_NAME)
 
 
 #============================================
@@ -255,8 +175,8 @@ def test_init_files(file_path: str) -> None:
 	rel_path = os.path.relpath(file_path, REPO_ROOT)
 	issues = [format_issue(rel_path, line_no, message) for line_no, message in matches]
 	issues = sorted(set(issues))
-	report_path = append_init_report(issues)
-	display_report = os.path.relpath(report_path, REPO_ROOT)
+	report_path = file_utils.append_report_block(REPORT_NAME, "__init__.py style report\nViolations:", issues)
+	display_report = file_utils.rel_to_root(report_path, REPO_ROOT)
 	raise AssertionError(
 		"__init__.py style violations detected:\n"
 		+ "\n".join(issues)

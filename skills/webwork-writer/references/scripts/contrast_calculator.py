@@ -308,7 +308,7 @@ def parse_args() -> argparse.Namespace:
 	return args
 
 #============================================
-def main():
+def main() -> None:
 	"""Main entry point."""
 	args = parse_args()
 

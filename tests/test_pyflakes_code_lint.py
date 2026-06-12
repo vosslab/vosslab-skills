@@ -6,80 +6,18 @@ import subprocess
 
 import pytest
 
-import git_file_utils
+import file_utils
 
-REPO_ROOT = git_file_utils.get_repo_root()
+REPO_ROOT = file_utils.get_repo_root()
+REPORT_NAME = file_utils.report_name(__file__)
 ERROR_RE = re.compile(r":[0-9]+:[0-9]+:")
 ERROR_SAMPLE_COUNT = 5
 CHUNK_SIZE = 200
-SKIP_DIRS = {".git", ".venv", "old_shell_folder"}
 # Show the full summary report when this many files have errors
 SUMMARY_THRESHOLD = 4
 _PYFLAKES_READY = False
 _PYFLAKES_LINES: list[str] = []
 _PYFLAKES_BY_FILE: dict[str, list[str]] = {}
-
-
-#============================================
-def path_has_skip_dir(path: str) -> bool:
-	"""
-	Check whether a relative path includes a skipped directory.
-	"""
-	parts = path.split(os.sep)
-	for part in parts:
-		if part in SKIP_DIRS:
-			return True
-	return False
-
-
-#============================================
-def filter_py_files(paths: list[str]) -> list[str]:
-	"""
-	Filter candidate paths to Python files that exist.
-	"""
-	matches = []
-	seen = set()
-	for path in paths:
-		if path in seen:
-			continue
-		seen.add(path)
-		if path_has_skip_dir(path):
-			continue
-		if "TEMPLATE" in path:
-			continue
-		if not path.endswith(".py"):
-			continue
-		if not os.path.isfile(path):
-			continue
-		matches.append(path)
-	matches.sort()
-	return matches
-
-
-#============================================
-def gather_files(repo_root: str) -> list[str]:
-	"""
-	Collect tracked Python files.
-	"""
-	paths = []
-	for path in git_file_utils.list_tracked_files(
-		repo_root,
-		patterns=["*.py"],
-		error_message="Failed to list tracked Python files.",
-	):
-		paths.append(os.path.join(repo_root, path))
-	return filter_py_files(paths)
-
-
-#============================================
-def gather_changed_files(repo_root: str) -> list[str]:
-	"""
-	Collect changed Python files.
-	"""
-	paths = []
-	for path in git_file_utils.list_changed_files(repo_root):
-		paths.append(os.path.join(repo_root, path))
-	return filter_py_files(paths)
 
 
 #============================================
@@ -253,18 +191,27 @@ def get_pyflakes_results() -> tuple[list[str], dict[str, list[str]]]:
 	global _PYFLAKES_LINES
 	global _PYFLAKES_BY_FILE
 	if not _PYFLAKES_READY:
-		_PYFLAKES_LINES = run_pyflakes(REPO_ROOT, _FILES)
+		_PYFLAKES_LINES = run_pyflakes(REPO_ROOT, FILES)
 		_PYFLAKES_BY_FILE = index_output_lines(_PYFLAKES_LINES)
 		_PYFLAKES_READY = True
 	return _PYFLAKES_LINES, _PYFLAKES_BY_FILE
 
 
-_FILES = git_file_utils.collect_files(REPO_ROOT, gather_files, gather_changed_files)
+FILES = file_utils.discover_files(extensions=(".py",), test_key="pyflakes_code_lint")
+
+
+#============================================
+@pytest.fixture(scope="module", autouse=True)
+def reset_pyflakes_report() -> None:
+	"""
+	Remove stale report file before this module runs.
+	"""
+	file_utils.purge_report(REPORT_NAME)
 
 
 #============================================
 @pytest.mark.parametrize(
-	"file_path", _FILES,
+	"file_path", FILES,
 	ids=lambda p: os.path.relpath(p, REPO_ROOT),
 )
 def test_pyflakes(file_path: str) -> None:
@@ -286,7 +233,7 @@ def test_pyflakes_summary() -> None:
 	Only produces detailed output when more than SUMMARY_THRESHOLD files
 	have errors; otherwise the per-file tests are sufficient.
 	"""
-	if not _FILES:
+	if not FILES:
 		return
 
 	lines, line_index = get_pyflakes_results()
@@ -302,10 +249,8 @@ def test_pyflakes_summary() -> None:
 		return
 
 	# Write full report to disk
-	pyflakes_out = os.path.join(REPO_ROOT, "report_pyflakes.txt")
-	with open(pyflakes_out, "w", encoding="utf-8") as handle:
-		for line in lines:
-			handle.write(f"{line}\n")
+	report_text = "".join(f"{line}\n" for line in lines)
+	file_utils.write_report(REPORT_NAME, report_text)
 
 	error_lines = [line for line in lines if ERROR_RE.search(line)]
 
@@ -346,8 +291,8 @@ def test_pyflakes_summary() -> None:
 	print("")
 
 	print(f"Found {result_count} pyflakes errors across {len(error_files)} files")
-	print("Full report written to REPO_ROOT/report_pyflakes.txt")
+	print("Full report written to REPO_ROOT/report_pyflakes_code_lint.txt")
 	raise AssertionError(
 		f"Pyflakes errors in {len(error_files)} files "
-		f"({result_count} total lines). See report_pyflakes.txt."
+		f"({result_count} total lines). See report_pyflakes_code_lint.txt."
 	)

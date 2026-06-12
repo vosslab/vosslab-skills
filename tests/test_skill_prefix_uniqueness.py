@@ -12,9 +12,9 @@ rather than only on demand.
 
 import pathlib
 
-import git_file_utils
+import file_utils
 
-REPO_ROOT = git_file_utils.get_repo_root()
+REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 
 PREFIX_LEN = 3
@@ -30,7 +30,7 @@ def active_skill_names() -> list[str]:
 
 
 #============================================
-def test_active_skills_have_unique_3char_prefix():
+def test_active_skills_have_unique_3char_prefix() -> None:
 	"""
 	No two active skills may share the same first 3 characters.
 

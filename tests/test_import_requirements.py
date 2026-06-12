@@ -2,17 +2,12 @@ import ast
 import os
 import re
 import sys
-import tokenize
 
-import git_file_utils
+import file_utils
 
-SCOPE_ENV = "REPO_HYGIENE_SCOPE"
-FAST_ENV = "FAST_REPO_HYGIENE"
-SKIP_ENV = "SKIP_REPO_HYGIENE"
 CHECK_OPTIONAL_IMPORTS_ENV = "CHECK_OPTIONAL_IMPORTS"
-REPO_ROOT = git_file_utils.get_repo_root()
-SKIP_DIRS = {".git", ".venv", "__pycache__", "old_shell_folder"}
-REPORT_NAME = "report_import_requirements.txt"
+REPO_ROOT = file_utils.get_repo_root()
+REPORT_NAME = file_utils.report_name(__file__)
 REQUIREMENT_FILES = (
 	"pip_requirements.txt",
 	"pip_requirements-dev.txt",
@@ -51,96 +46,11 @@ REQ_NAME_RE = re.compile(r"^[A-Za-z0-9._-]+")
 
 
 #============================================
-def resolve_scope() -> str:
-	"""
-	Resolve the scan scope from environment.
-	"""
-	scope = os.environ.get(SCOPE_ENV, "").strip().lower()
-	if not scope and os.environ.get(FAST_ENV) == "1":
-		scope = "changed"
-	if scope in ("all", "changed"):
-		return scope
-	return "all"
-
-
-#============================================
 def resolve_check_optional_imports() -> bool:
 	"""
 	Resolve whether to enforce imports guarded by ImportError handling.
 	"""
 	return os.environ.get(CHECK_OPTIONAL_IMPORTS_ENV) == "1"
-
-
-#============================================
-def path_has_skip_dir(path: str) -> bool:
-	"""
-	Check whether a relative path includes a skipped directory.
-	"""
-	parts = path.split(os.sep)
-	for part in parts:
-		if part in SKIP_DIRS:
-			return True
-	return False
-
-
-#============================================
-def filter_py_files(paths: list[str]) -> list[str]:
-	"""
-	Filter candidate paths to Python files that exist.
-	"""
-	matches = []
-	seen = set()
-	for path in paths:
-		if path in seen:
-			continue
-		seen.add(path)
-		if path_has_skip_dir(path):
-			continue
-		if "TEMPLATE" in path:
-			continue
-		if not path.endswith(".py"):
-			continue
-		if not os.path.isfile(path):
-			continue
-		matches.append(path)
-	matches.sort()
-	return matches
-
-
-#============================================
-def gather_files(repo_root: str) -> list[str]:
-	"""
-	Collect tracked Python files.
-	"""
-	paths = []
-	for path in git_file_utils.list_tracked_files(
-		repo_root,
-		patterns=["*.py"],
-		error_message="Failed to list tracked Python files.",
-	):
-		paths.append(os.path.join(repo_root, path))
-	return filter_py_files(paths)
-
-
-#============================================
-def gather_changed_files(repo_root: str) -> list[str]:
-	"""
-	Collect changed Python files.
-	"""
-	paths = []
-	for path in git_file_utils.list_changed_files(repo_root):
-		paths.append(os.path.join(repo_root, path))
-	return filter_py_files(paths)
-
-
-#============================================
-def read_source(path: str) -> str:
-	"""
-	Read Python source using tokenize.open for encoding correctness.
-	"""
-	with tokenize.open(path) as handle:
-		text = handle.read()
-	return text
 
 
 #============================================
@@ -204,7 +114,7 @@ def collect_repo_module_names(paths: list[str]) -> set[str]:
 	"""
 	module_names = set()
 	for path in paths:
-		rel_path = os.path.relpath(path, REPO_ROOT)
+		rel_path = file_utils.rel_to_root(path)
 		for part in rel_path.split(os.sep)[:-1]:
 			if part:
 				module_names.add(part)
@@ -310,10 +220,9 @@ def collect_import_roots(path: str) -> tuple[list[tuple[int, str, bool, str]], s
 	"""
 	Collect imported root module names for one file.
 	"""
-	source = read_source(path)
-	try:
-		tree = ast.parse(source, filename=path)
-	except SyntaxError as error:
+	source = file_utils.read_source(path)
+	tree, error = file_utils.parse_source(path)
+	if error is not None:
 		line_no = getattr(error, "lineno", 0) or 0
 		message = error.msg or "Syntax error while parsing imports."
 		return [], f"{line_no}: {message}"
@@ -337,7 +246,6 @@ def normalize_statement_for_report(statement_text: str) -> str:
 
 #============================================
 def write_import_report(
-	repo_root: str,
 	requirement_source: str,
 	check_optional_imports: bool,
 	parse_errors: list[str],
@@ -346,7 +254,6 @@ def write_import_report(
 	"""
 	Write import-policy findings to the import-requirements report file.
 	"""
-	report_path = os.path.join(repo_root, REPORT_NAME)
 	lines = [
 		"Import requirements report",
 		f"Requirements source: {requirement_source}",
@@ -360,10 +267,8 @@ def write_import_report(
 		lines.append("Violations:")
 		for item in import_issues:
 			lines.append(item)
-	with open(report_path, "w", encoding="utf-8") as handle:
-		handle.write("\n".join(lines))
-		handle.write("\n")
-	return report_path
+	text = "\n".join(lines) + "\n"
+	return file_utils.write_report(REPORT_NAME, text)
 
 
 #============================================
@@ -405,26 +310,21 @@ def is_allowed_module(
 	return False
 
 
+FILES = file_utils.discover_files(extensions=(".py",), test_key="import_requirements")
+
+
 #============================================
 def test_import_requirements() -> None:
 	"""
 	Validate imports against stdlib, repo modules, requirements, and whitelist.
 	"""
-	if os.environ.get(SKIP_ENV) == "1":
-		return
-	report_path = os.path.join(REPO_ROOT, REPORT_NAME)
-	if os.path.exists(report_path):
-		os.remove(report_path)
+	file_utils.purge_report(REPORT_NAME)
 
-	scope = resolve_scope()
 	check_optional_imports = resolve_check_optional_imports()
-	if scope == "changed":
-		paths = gather_changed_files(REPO_ROOT)
-	else:
-		paths = gather_files(REPO_ROOT)
+	paths = FILES
 
 	if not paths:
-		print(f"import-requirements: no Python files matched scope {scope}.")
+		print("import-requirements: no Python files found.")
 		return
 
 	repo_modules = collect_repo_module_names(paths)
@@ -435,7 +335,7 @@ def test_import_requirements() -> None:
 	import_issues = []
 	for path in paths:
 		import_roots, parse_error = collect_import_roots(path)
-		rel_path = os.path.relpath(path, REPO_ROOT)
+		rel_path = file_utils.rel_to_root(path)
 		if parse_error:
 			parse_errors.append(f"{rel_path}:{parse_error}")
 			continue
@@ -456,13 +356,12 @@ def test_import_requirements() -> None:
 
 	if parse_errors:
 		report_path = write_import_report(
-			REPO_ROOT,
 			requirement_source,
 			check_optional_imports,
 			parse_errors,
 			[],
 		)
-		display_report = os.path.relpath(report_path, REPO_ROOT)
+		display_report = file_utils.rel_to_root(report_path)
 		raise AssertionError(
 			"Import rule parse errors:\n"
 			+ "\n".join(parse_errors)
@@ -472,13 +371,12 @@ def test_import_requirements() -> None:
 	if import_issues:
 		import_issues = sorted(set(import_issues))
 		report_path = write_import_report(
-			REPO_ROOT,
 			requirement_source,
 			check_optional_imports,
 			[],
 			import_issues,
 		)
-		display_report = os.path.relpath(report_path, REPO_ROOT)
+		display_report = file_utils.rel_to_root(report_path)
 		report_lines = [
 			"Import policy violations found.",
 			f"Requirements source: {requirement_source}",

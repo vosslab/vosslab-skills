@@ -11,9 +11,9 @@ drift if the user forgets to run it.
 
 import pathlib
 
-import git_file_utils
+import file_utils
 
-REPO_ROOT = git_file_utils.get_repo_root()
+REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 
 REQUIRED_KEYS = ("name", "description")
@@ -71,7 +71,7 @@ def list_skill_dirs() -> list[pathlib.Path]:
 
 
 #============================================
-def test_every_skill_has_skill_md():
+def test_every_skill_has_skill_md() -> None:
 	"""Every skill directory must contain a SKILL.md file."""
 	missing = []
 	for skill_dir in list_skill_dirs():
@@ -83,7 +83,7 @@ def test_every_skill_has_skill_md():
 
 
 #============================================
-def test_frontmatter_name_matches_directory():
+def test_frontmatter_name_matches_directory() -> None:
 	"""The frontmatter `name:` field must equal the skill's directory name."""
 	mismatches = []
 	for skill_dir in list_skill_dirs():
@@ -101,7 +101,7 @@ def test_frontmatter_name_matches_directory():
 
 
 #============================================
-def test_required_frontmatter_keys_present():
+def test_required_frontmatter_keys_present() -> None:
 	"""Every SKILL.md must declare the required frontmatter keys."""
 	missing_keys = []
 	for skill_dir in list_skill_dirs():
@@ -119,7 +119,7 @@ def test_required_frontmatter_keys_present():
 
 
 #============================================
-def test_description_at_most_1024_chars():
+def test_description_at_most_1024_chars() -> None:
 	"""Every SKILL.md frontmatter description must fit the loader limit."""
 	too_long = []
 	for skill_dir in list_skill_dirs():

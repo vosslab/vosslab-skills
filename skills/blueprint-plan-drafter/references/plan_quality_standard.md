@@ -137,7 +137,7 @@ Naming guardrails and legacy naming handling live in `references/NAMING_GUARDRAI
 - Good: `tests/test_export_contract.py` or `tests/test_export_regression.py`.
 
 ## Output template
-For canonical heading rules (three-tier classification, casing, ordering, rejected variants, substitution rules, archetypes), see [PLAN_HEADINGS.md](PLAN_HEADINGS.md). For the fillable plan skeleton, see [PLAN_TEMPLATE.md](PLAN_TEMPLATE.md). This file does not restate heading names or the tier classification; future heading edits land in `PLAN_HEADINGS.md` first.
+For canonical heading rules (three-tier classification, casing, ordering, rejected variants, substitution rules, archetypes), see [PLAN_HEADINGS.md](PLAN_HEADINGS.md). For the clean plan skeleton to copy, see [PLAN_TEMPLATE_BLANK.md](PLAN_TEMPLATE_BLANK.md); for the same skeleton with worked examples, see [PLAN_TEMPLATE_EXAMPLE.md](PLAN_TEMPLATE_EXAMPLE.md). This file does not restate heading names or the tier classification; future heading edits land in `PLAN_HEADINGS.md` first.
 
 ## Stabilization plan format
 When the system has unresolved core failures, use this format instead of the full milestone plan:
