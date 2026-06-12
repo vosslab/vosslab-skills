@@ -1,7 +1,5 @@
 <!-- Copy everything below the rule into your plan file and fill each field. Heading rules: PLAN_HEADINGS.md. Worked examples and reasoning: PLAN_TEMPLATE_EXAMPLE.md. Delete sections the archetype does not use. -->
 
----
-
 # Plan:
 
 ## Context
