@@ -1,3 +1,16 @@
+## 2026-06-12
+
+### Fixes and Maintenance
+
+- Synced vendored [skills/html-game-parallel-builder/templates/run_web_server.sh](../skills/html-game-parallel-builder/templates/run_web_server.sh)
+  with canonical `starter-repo-template/templates/typescript/run_web_server.sh` (md5 afad7f39).
+  The hardened version adds an own-child-only cleanup trap (kills only `server_pid` and
+  `opener_pid` started by this script; no pkill/pgrep/ps), initializes PID vars before
+  the trap installs so `set -u` is safe on early exit, and auto-runs
+  `devel/setup_typescript.sh` when `node_modules` is missing instead of immediately
+  exiting. The server now runs in the background with its PID captured so the trap can
+  kill it cleanly on INT/TERM/HUP.
+
 ## 2026-06-11
 
 ### Additions and New Features
