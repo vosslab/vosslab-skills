@@ -1,92 +1,109 @@
-# Usage
+# USAGE.md
 
-This repo provides workflow skills that guide Claude Code through structured tasks like code review, documentation updates, and plan creation. Each skill is a `SKILL.md` file with instructions, constraints, and references.
+How to run the tools in this repository.
 
-## Quick start
+## reset_repo.py
 
-Invoke a skill by name during a Claude Code session:
+`reset_repo.py` is the bootstrap entry point for a new consumer repo cloned from this
+template. It runs an interactive interview (project type, code license, docs license,
+PyPI intent, stage, commit), writes the `REPO_TYPE` marker, installs license files,
+seeds `pyproject.toml` when PyPI is requested, runs propagation, and removes
+template-meta paths.
 
-```
-/vosslab-skills:audit-code-reviewer
-/vosslab-skills:readme-docs
-/vosslab-skills:blueprint-plan-drafter
-```
-
-If the repo is loaded as a local skills directory (not a plugin), skills are invoked by their short name:
-
-```
-/audit-code-reviewer
-/readme-docs
-```
-
-## Browsing available skills
-
-The generated index lists every skill with a one-line description:
-
-- [docs/SKILLS_INDEX.md](SKILLS_INDEX.md)
-
-To regenerate the index after adding or editing skills:
+### Normal use (interactive)
 
 ```bash
-source source_me.sh && python3 tools/build_skills_index.py
+source source_me.sh && python3 reset_repo.py
 ```
 
-## Skill structure
+The script interviews you in your terminal. No flags are required for normal use.
 
-Each skill lives in `skills/<name>/` and contains:
+### CLI flags
 
-- `SKILL.md` -- the skill definition with YAML frontmatter (`name`, `description`) and workflow instructions.
-- `references/` (optional) -- supporting documents, style guides, or examples the skill references.
-- `agents/` (optional) -- agent configuration files (for example, `openai.yaml`).
+| Flag | Description |
+| --- | --- |
+| `--config <file>` | Supply interview answers from a JSON file (testing/reproducibility mode) |
+| `--dry-run` | Log planned actions without writing any files |
+| `-h` | Show help and exit |
 
-## Importing a single skill
+### Config mode (testing/reproducibility interface)
 
-Copy the skill folder into your project:
+`--config` is intended for automated testing and reproducible resets, not for
+routine human use. Pass a JSON file with the interview answers:
 
 ```bash
-cp -r skills/audit-code-reviewer /path/to/my-project/skills/
+source source_me.sh && python3 reset_repo.py --config my_config.json
 ```
 
-The skill is self-contained. It will work in any project that supports the `SKILL.md` format.
+Config mode is non-interactive: the script reads answers from the file and proceeds
+without prompting. This replaces the interactive interview for the run.
 
-## Maintaining the plugin manifest
+#### JSON schema
 
-The plugin manifest files in `.claude-plugin/` are generated from skill frontmatter. After adding, removing, or renaming skills, regenerate them:
+| Key | Required | Values | Notes |
+| --- | --- | --- | --- |
+| `project_type` | YES | `python` / `p`, `typescript` / `t`, `rust` / `r`, `other` / `o` | Short alias or full token |
+| `code_license` | YES | SPDX identifier or alias (e.g. `MIT`, `m`, `GPL-3.0`, `g`) | Resolved via `resolve_license` |
+| `docs_license` | no | SPDX identifier or alias | Default: `CC-BY-4.0` |
+| `pypi` | no | `true` / `false` | Default: `false`; Python-only |
+| `stage` | no | `true` / `false` | Default: `true` |
+| `commit` | no | `true` / `false` | Default: `false` |
+
+#### Minimal example
+
+```json
+{
+  "project_type": "python",
+  "code_license": "GPL-3.0"
+}
+```
+
+#### Full example
+
+```json
+{
+  "project_type": "typescript",
+  "code_license": "MIT",
+  "docs_license": "CC-BY-4.0",
+  "stage": false,
+  "commit": false
+}
+```
+
+### Folder-name guard
+
+The script refuses to run when the repo root directory is named exactly
+`starter-repo-template`. This protects the template development checkout from
+accidental destruction.
+
+If you see this error, clone or rename the repo to your project name first:
+
+```
+This repo is named starter-repo-template. Clone or rename it to the consumer project name before running reset.
+```
+
+The guard checks the folder name only; it does not inspect remotes or origin URLs.
+
+### Outside a git repo
+
+Running `reset_repo.py` outside a git repository exits with a clear message
+instead of a raw subprocess traceback.
+
+## E2E test harness
+
+For the clone-based reset E2E harness (LOCAL and REMOTE modes), see
+[E2E_TESTS.md](E2E_TESTS.md) and the inline documentation in
+`tests/meta/e2e/e2e_reset_routing.py`. The harness is template-meta:
+it lives under `tests/meta/e2e/` and is removed by reset.
+
+Run all offline E2E tests:
 
 ```bash
-source source_me.sh && python3 tools/build_plugin_manifest.py
+bash tests/meta/e2e/run_all.sh
 ```
 
-To verify manifests are up-to-date (useful in CI):
+Run a single E2E test:
 
 ```bash
-source source_me.sh && python3 tools/build_plugin_manifest.py --check
+source source_me.sh && python3 tests/meta/e2e/e2e_reset_routing.py
 ```
-
-## Listing loaded skills
-
-`tools/list_loaded_skills.py` enumerates currently loaded skill names from this repo, `~/.claude/skills/`, and `~/.claude/plugins/cache/`, plus harness built-ins. The tool collapses same-content duplicates (e.g. when the repo is also installed as a personal overlay) and flags genuine name collisions with a `[!]` prefix. Use it for prefix-collision checks before adding or renaming a skill. See [SKILL_NAMING.md](SKILL_NAMING.md) for the convention.
-
-Default invocation prints `<name>\t<source-list>` rows sorted by name:
-
-```bash
-source source_me.sh && python3 tools/list_loaded_skills.py
-```
-
-Useful flags:
-
-- `--names-only` (or `-n`) -- one name per line.
-- `--check <NAME>` (or `-c <NAME>`) -- prints any loaded names that share a 5+ character leading hyphen-token with `<NAME>` and exits 1 on collision.
-
-## Inputs and outputs
-
-- **Inputs**: skill definitions in `skills/*/SKILL.md` with YAML frontmatter.
-- **Outputs**:
-  - [docs/SKILLS_INDEX.md](SKILLS_INDEX.md) -- generated by `tools/build_skills_index.py`.
-  - `.claude-plugin/plugin.json` -- plugin metadata, generated by `tools/build_plugin_manifest.py`.
-  - `.claude-plugin/marketplace.json` -- marketplace entry, generated by `tools/build_plugin_manifest.py`.
-
-## Known gaps
-
-- [ ] Document how skills interact with Claude Code permission modes.
-- [ ] Add examples of combining multiple skills in a single session.

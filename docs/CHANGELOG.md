@@ -9,6 +9,16 @@
   `description` values, kebab-case skill names, name length, and description
   length before generated skill metadata ships.
 
+- Raised the `html-game-parallel-builder` template esbuild dependency floor from
+  `>=0.28.0` to `>=0.28.1` so generated projects avoid the vulnerable esbuild
+  Deno-module release range flagged by GHSA-gv7w-rqvm-qjhr, even though this
+  skill uses Node/npm `npx esbuild` rather than the affected Deno module path.
+
+- Updated `tests/test_init_files.py` and `tests/test_test_naming_conventions.py`
+  for the current `tests/file_utils.py` report API, replacing removed
+  `purge_report` / append-block usage with `clear_stale_reports()` and complete
+  `write_report_lines()` calls.
+
 ## 2026-06-12
 
 ### Fixes and Maintenance

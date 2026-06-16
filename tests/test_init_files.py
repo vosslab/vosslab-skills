@@ -156,9 +156,9 @@ if not _PARAMS:
 @pytest.fixture(scope="module", autouse=True)
 def reset_init_report() -> None:
 	"""
-	Remove stale report file before this module runs.
+	Remove stale report files before this module runs.
 	"""
-	file_utils.purge_report(REPORT_NAME)
+	file_utils.clear_stale_reports()
 
 
 #============================================
@@ -175,7 +175,8 @@ def test_init_files(file_path: str) -> None:
 	rel_path = os.path.relpath(file_path, REPO_ROOT)
 	issues = [format_issue(rel_path, line_no, message) for line_no, message in matches]
 	issues = sorted(set(issues))
-	report_path = file_utils.append_report_block(REPORT_NAME, "__init__.py style report\nViolations:", issues)
+	report_lines = ["__init__.py style report", "Violations:"] + issues
+	report_path = file_utils.write_report_lines(REPORT_NAME, report_lines)
 	display_report = file_utils.rel_to_root(report_path, REPO_ROOT)
 	raise AssertionError(
 		"__init__.py style violations detected:\n"

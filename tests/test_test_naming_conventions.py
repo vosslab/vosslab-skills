@@ -77,15 +77,15 @@ def list_playwright_files() -> list[str]:
 @pytest.fixture(scope="module", autouse=True)
 def reset_test_naming_report() -> None:
 	"""
-	Remove stale report file before this module runs.
+	Remove stale report files before this module runs.
 	"""
-	file_utils.purge_report(REPORT_NAME)
+	file_utils.clear_stale_reports()
 
 
 #============================================
 def record_naming_violations(label: str, violations: list[str]) -> str:
 	"""
-	Append labeled naming violations to the shared report file.
+	Write labeled naming violations to the shared report file.
 
 	Args:
 		label: Short description of the check, used as section header.
@@ -95,8 +95,8 @@ def record_naming_violations(label: str, violations: list[str]) -> str:
 		str: Absolute path to the report file.
 	"""
 	# Prepend the label so violations are grouped under their check name.
-	lines = [label] + violations
-	return file_utils.append_report_block(REPORT_NAME, "test naming convention violations", lines)
+	lines = ["test naming convention violations", label] + violations
+	return file_utils.write_report_lines(REPORT_NAME, lines)
 
 
 #============================================

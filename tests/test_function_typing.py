@@ -11,17 +11,14 @@ FILES = file_utils.discover_files(extensions=(".py",), test_key="function_typing
 
 REPORT_NAME = file_utils.report_name(__file__)
 
+HEADER = "function typing violations"
+
+# Module-level dict of repo-relative POSIX key -> list of violation lines.
+# Populated by the autouse collect_report fixture before any test runs.
+VIOLATIONS_BY_FILE: dict[str, list[str]] = {}
+
 # Args that never require an annotation (implicit type from the call protocol).
 IMPLICIT_ARG_NAMES = frozenset({"self", "cls"})
-
-
-#============================================
-@pytest.fixture(scope="module", autouse=True)
-def reset_function_typing_report() -> None:
-	"""
-	Remove stale report file before this module runs.
-	"""
-	file_utils.purge_report(REPORT_NAME)
 
 
 #============================================
@@ -150,25 +147,57 @@ def check_function_annotations(tree: ast.Module, rel: str) -> list[str]:
 
 
 #============================================
-@pytest.mark.parametrize(
-	"path", FILES,
-	ids=lambda p: file_utils.rel_to_root(p),
-)
+def check_file(rel: str, tree: ast.Module) -> list[str]:
+	"""
+	Run every typing check on one parsed module and combine the violations.
+
+	Thin module-specific combiner over check_no_typing_import and
+	check_function_annotations. Receives a real ast.Module: the shared
+	file_utils.collect_python_violations owns parsing and SyntaxError capture, so
+	this is only reached for files that parsed cleanly.
+
+	Args:
+		rel: Repo-relative POSIX path for error messages.
+		tree: Parsed ast.Module for the file.
+
+	Returns:
+		list[str]: Combined violation lines (empty when the file is clean).
+	"""
+	# Accumulate violations from each typing rule check.
+	violations = check_no_typing_import(tree, rel)
+	violations += check_function_annotations(tree, rel)
+	return violations
+
+
+#============================================
+@pytest.fixture(scope="module", autouse=True)
+def collect_report() -> None:
+	"""
+	Autouse fixture: clear stale reports, populate VIOLATIONS_BY_FILE, write report.
+
+	Runs the guarded once-per-process cleanup first, rebuilds the module-level
+	violations dict via the shared harness, then writes the report only when
+	there are violations. Cleanup owns removal of clean-run reports, so a clean
+	module writes nothing.
+	"""
+	# Once-per-process guarded cleanup of repo-root report_*.txt (no-op after first call).
+	file_utils.clear_stale_reports()
+	# Clear any state left from a previous collection in the same process.
+	VIOLATIONS_BY_FILE.clear()
+	VIOLATIONS_BY_FILE.update(file_utils.collect_python_violations(FILES, check_file))
+	lines = file_utils.format_violation_report(HEADER, VIOLATIONS_BY_FILE)
+	# Write only when there are violations; cleanup already removed stale reports.
+	if lines:
+		file_utils.write_report_lines(REPORT_NAME, lines)
+
+
+#============================================
+@pytest.mark.parametrize("path", FILES, ids=file_utils.rel_id)
 def test_function_typing(path: str) -> None:
 	"""Enforce no typing-module imports and full function annotations repo-wide."""
 	rel = file_utils.rel_to_root(path)
-	tree, error = file_utils.parse_source(path)
-	if tree is None:
-		raise AssertionError(f"{rel}: SyntaxError: {error}")
-	violations = check_no_typing_import(tree, rel)
-	violations += check_function_annotations(tree, rel)
-	if violations:
-		report_file = file_utils.append_report_block(
-			REPORT_NAME, "function typing violations", violations
-		)
-		report_rel = file_utils.rel_to_root(report_file)
-		raise AssertionError(
-			f"{len(violations)} annotation/typing violation(s) in {rel}:\n"
-			+ "\n".join(violations)
-			+ f"\n See {report_rel}."
-		)
+	# Python evaluates an assert's message expression ONLY when the assert fails,
+	# so format_violation_assert_message runs on the failing path only -- not per pass.
+	assert rel not in VIOLATIONS_BY_FILE, file_utils.format_violation_assert_message(
+		rel, VIOLATIONS_BY_FILE.get(rel, []), REPORT_NAME
+	)
