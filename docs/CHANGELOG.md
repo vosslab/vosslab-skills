@@ -1,3 +1,14 @@
+## 2026-06-16
+
+### Fixes and Maintenance
+
+- Quoted the `solid-js-expert` skill frontmatter description so strict YAML loaders
+  accept the embedded `Solid Meta: signals...` phrase. Added
+  `tests/test_codex_yaml_skill_parse.py` as a separate Codex-facing skill metadata
+  check that validates strict YAML frontmatter, required string `name` and
+  `description` values, kebab-case skill names, name length, and description
+  length before generated skill metadata ships.
+
 ## 2026-06-12
 
 ### Fixes and Maintenance
