@@ -1,3 +1,13 @@
+## 2026-06-17
+
+### Additions and New Features
+
+- Added `xquik-source-research`, a source-grounded X research skill for planning
+  Xquik evidence collection, pinning `x-developer@2.4.16` examples, preserving
+  provenance fields, and reporting sample limits without exposing credentials or
+  private implementation details. Updated the README skill list and regenerated
+  plugin manifests and the skills index.
+
 ## 2026-06-16
 
 ### Fixes and Maintenance
