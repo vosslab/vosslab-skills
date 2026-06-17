@@ -4,7 +4,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 39
+Total skills: 40
 
 ## Orient
 
@@ -52,6 +52,7 @@ Domain-specialist implementation workflows governed by expert-skill guidance.
 - [experts/vision-expert/SKILL.md](../skills/experts/vision-expert/SKILL.md): Design, implement, debug, and review Python computer-vision systems.
 - [experts/wasm-rust-expert/SKILL.md](../skills/experts/wasm-rust-expert/SKILL.md): WebAssembly, wasm-bindgen, wasm-pack, web-sys, wasm32 targets, WASI, browser Canvas, and Wasm performance engineering.
 - [experts/webwork-writer-expert/SKILL.md](../skills/experts/webwork-writer-expert/SKILL.md): Create, edit, and lint WeBWorK PG/PGML questions.
+- [experts/xquik-source-research-expert/SKILL.md](../skills/experts/xquik-source-research-expert/SKILL.md): Design and review source-grounded X research with Xquik REST, MCP, the x-developer SDK, evidence logs, and reproducible sampling.
 
 ## Docs
 

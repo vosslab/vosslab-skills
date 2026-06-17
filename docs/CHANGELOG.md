@@ -1,5 +1,11 @@
 ## 2026-08-13
 
+### Additions and New Features
+
+- Added `xquik-source-research-expert` for bounded X research through current
+  Xquik public contracts. Its task routing, project paths, and replayable
+  evidence checks keep observations separate from derived analysis.
+
 ### Behavior or Interface Changes
 
 - Organized every tracked public and deprecated skill under one of six
