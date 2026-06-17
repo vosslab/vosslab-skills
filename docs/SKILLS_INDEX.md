@@ -2,7 +2,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 24
+Total skills: 25
 
 - [agents-md-fixer/SKILL.md](../skills/agents-md-fixer/SKILL.md): Trim `AGENTS.md` aggressively to a small pointer file (prefer ~15 lines, hard cap ~50) that points into `docs/*.md` with bare paths instead of restating rules.
 - [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from current repo evidence.
@@ -28,3 +28,4 @@ Total skills: 24
 - [ui-ux-engineer/SKILL.md](../skills/ui-ux-engineer/SKILL.md): Review, improve, and engineer UI/UX quality in any framework.
 - [unit-test-starter/SKILL.md](../skills/unit-test-starter/SKILL.md): Generate thorough Python 3 pytest unit tests across a repo by scanning Python files.
 - [webwork-writer/SKILL.md](../skills/webwork-writer/SKILL.md): Create, edit, and lint WeBWorK PG/PGML questions following docs/webwork guidance, HTML whitelist constraints, and renderer-based lint checks.
+- [xquik-source-research/SKILL.md](../skills/xquik-source-research/SKILL.md): Design source-grounded X research workflows with Xquik public docs, the x-developer SDK, evidence logs, and reproducible sampling.

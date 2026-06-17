@@ -78,6 +78,7 @@ See [docs/INSTALL.md](docs/INSTALL.md) for local clone and individual skill impo
 - `unit-test-starter`: Generate thorough Python 3 pytest unit tests across a repo.
 - `setup-install-usage-docs`: Create or refresh docs/INSTALL.md and docs/USAGE.md stubs.
 - `webwork-writer`: Create and lint WeBWorK PG/PGML questions.
+- `xquik-source-research`: Design source-grounded X research workflows with Xquik public docs and reproducible evidence logs.
 
 Full index with links: [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md).
 
