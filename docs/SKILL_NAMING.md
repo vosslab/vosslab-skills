@@ -33,7 +33,7 @@ in this repo and any sibling vosslab repos that ship skills.
      `computer-vision`): use agent-form suffix (`-writer`, `-engineer`,
      `-expert`, `-builder`). The domain token at position 1 already carries
      identity; the suffix names what the skill is. Examples:
-     `bptools-writer`, `typescript-engineer`, `computer-vision-expert`.
+     `bptools-writer`, `typescript-engineer`, `vision-expert`.
    - Long names are fine when the extra tokens add searchable keywords
      (`delegate-manager-to-subagents`, `blueprint-plan-drafter`,
      `html-game-parallel-builder`). What matters is that the first
@@ -59,7 +59,7 @@ in this repo and any sibling vosslab repos that ship skills.
 | `-docs` | Creates or refreshes documentation artifacts | `arch-docs`, `readme-docs`, `setup-install-usage-docs` |
 | `-drafter` | Authors a first-pass artifact (plan, spec, blueprint) | `blueprint-plan-drafter` |
 | `-engineer` | Implements or refactors code in a domain | `typescript-engineer`, `pyside6-engineer`, `ui-ux-engineer` |
-| `-expert` | Designs and reviews work in a specialized field | `computer-vision-expert` |
+| `-expert` | Designs and reviews work in a specialized field | `vision-expert` |
 | `-fixer` | Trims and standardizes a single named artifact in place | `agents-md-fixer` |
 | `-guide` | Reads or explains rules and reference material | `skill-writing-guide`, `pdf-guide` |
 | `-manager-to-X` / `-manager` | Coordinates plans, milestones, or delegated execution. Verb-first variants encode WHAT the manager does (`delegate-`, `draft-`, `review-`); only one skill may lead with a bare `manager-` token. | `delegate-manager-to-subagents` |
@@ -120,10 +120,11 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `audit-code-reviewer` | compliant | review-code-changes | First-2 "audit code" reads as the activity; user-confirmed acceptable. |
 | `blueprint-plan-drafter` | accepted-rename | planning-manager / manager-make-new-plan | Verb-first; first-2 "blueprint plan" carries the artifact + domain; `manager-` lead retired. |
 | `bptools-writer` | compliant | (unchanged) | Domain-specific leading token, `-writer` suffix. |
-| `computer-vision-expert` | compliant | (unchanged) | Distinct domain token, `-expert` suffix. |
+| `vision-expert` | accepted-rename | computer-vision-expert | Domain-noun-first; `vis` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `delegate-manager-to-subagents` | accepted-rename | execution-manager / manager-driven-execution | Verb-first; first-2 "delegate manager"; "subagents" keyword in token 4 for searchability. |
 | `docset-updater` | compliant | docset-refresh | Agent-form suffix matches update-if-drifted behavior. |
 | `gas-town-workflow` | borderline-no-change | (unchanged) | Repo-specific brand name; leading token unique. |
+| `geometry-expert` | compliant | (new) | Domain-noun-first; `geo` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `html-game-parallel-builder` | accepted-rename | web-game-parallel-builder | Drops `web-` collision with `webwork-`; `html` is short, evergreen. |
 | `install-usage-docs` | accepted-rename | setup-install-usage-docs | Both `install` and `usage` collide with built-in CLI args; `setup-` lead token clears the collision while keeping `install`/`usage` mid-name for discoverability, with the `-docs` suffix. |
 | `old-python-code-review` | deprecated | python-reviewer / python-code-review | `old-` prefix marks for occasional use. |
@@ -138,7 +139,7 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `unit-test-starter` | compliant | (unchanged) | Unique leading token, `-starter` suffix. |
 | `webwork-writer` | compliant | (unchanged) | Domain token plus `-writer` suffix. |
 
-Counts (22 active skills): 14 compliant or borderline-no-change, 7
+Counts (23 active skills): 15 compliant or borderline-no-change, 7
 accepted-rename, 1 deprecated (`old-` prefix). The post-rename canonical
 record matches the output of
 `tools/list_loaded_skills.py --names-only` on the repo. Two additional

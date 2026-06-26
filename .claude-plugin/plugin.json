@@ -28,6 +28,7 @@
     "./skills/delegate-manager-to-subagents",
     "./skills/docset-updater",
     "./skills/gas-town-workflow",
+    "./skills/geometry-expert",
     "./skills/html-game-parallel-builder",
     "./skills/parallel-plan",
     "./skills/pdf-guide",

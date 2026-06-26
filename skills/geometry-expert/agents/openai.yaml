@@ -1,0 +1,4 @@
+interface:
+  display_name: "Geometry Expert"
+  short_description: "Design and debug computational geometry"
+  default_prompt: "Use $geometry-expert to design, implement, debug, or review a computational geometry algorithm in any language."

@@ -59,10 +59,10 @@ See [docs/INSTALL.md](docs/INSTALL.md) for local clone and individual skill impo
 - `audit-code-reviewer`: Parallel multi-reviewer audit before merge or release.
 - `blueprint-plan-drafter`: Create forward-looking implementation plans from scratch.
 - `bptools-writer`: Create and validate biology-problems bptools Python question generators.
-- `computer-vision-expert`: Design, implement, and review computer vision systems in Python.
 - `delegate-manager-to-subagents`: Manage execution of an approved plan through subagents.
 - `docset-updater`: Audit and refresh the full repo doc set against REPO_STYLE.md.
 - `gas-town-workflow`: Gas Town style multi-agent coordination with role-mapped task routing.
+- `geometry-expert`: Design, implement, debug, and review computational geometry algorithms in any language.
 - `html-game-parallel-builder`: Build a TypeScript browser game using parallel subagents.
 - `old-python-code-review` (deprecated): Single-pass Python correctness/security/style review; kept frozen, excluded from the published plugin.
 - `parallel-plan`: Split current work into independent tracks for parallel dispatch.
@@ -76,6 +76,7 @@ See [docs/INSTALL.md](docs/INSTALL.md) for local clone and individual skill impo
 - `typescript-engineer`: Resolve TypeScript errors and design strict TypeScript types.
 - `ui-ux-engineer`: Review and improve UI/UX quality in any framework.
 - `unit-test-starter`: Generate thorough Python 3 pytest unit tests across a repo.
+- `vision-expert`: Design, implement, and review computer vision systems in Python.
 - `setup-install-usage-docs`: Create or refresh docs/INSTALL.md and docs/USAGE.md stubs.
 - `webwork-writer`: Create and lint WeBWorK PG/PGML questions.
 

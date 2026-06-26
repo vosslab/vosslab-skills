@@ -2,7 +2,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 25
+Total skills: 26
 
 - [agents-md-fixer/SKILL.md](../skills/agents-md-fixer/SKILL.md): Trim `AGENTS.md` aggressively to a small pointer file (prefer ~15 lines, hard cap ~50) that points into `docs/*.md` with bare paths instead of restating rules.
 - [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from current repo evidence.
@@ -12,6 +12,7 @@ Total skills: 25
 - [delegate-manager-to-subagents/SKILL.md](../skills/delegate-manager-to-subagents/SKILL.md): Use only when the user has an approved plan AND wants the main agent to manage execution through subagents instead of editing files directly.
 - [docset-updater/SKILL.md](../skills/docset-updater/SKILL.md): Refresh the whole repo doc set in one pass by invoking the per-doc skills in dependency order (`arch-docs`, `setup-install-usage-docs`, `readme-docs`, `screenshot-docs`, `agents-md-fixer`), then audit any remaining `docs/` files those skills do not own.
 - [gas-town-workflow/SKILL.md](../skills/gas-town-workflow/SKILL.md): Gas Town style multi-agent coordination with role-mapped task routing and convoy-based work decomposition.
+- [geometry-expert/SKILL.md](../skills/geometry-expert/SKILL.md): Design, implement, debug, and review computational geometry algorithms in any language, including convex hull, polygon triangulation, Delaunay triangulation, Voronoi diagrams, polygon boolean clipping and overlay, segment intersection and sweep line, proximity and nearest-neighbor queries, point location, spatial data structures (k-d tree, BVH, R-tree, quadtree), arrangements, mesh processing, and distance/intersection queries in 2D, 3D, and nD.
 - [html-game-parallel-builder/SKILL.md](../skills/html-game-parallel-builder/SKILL.md): Use when building a TypeScript browser game from modular `src/*.ts` files with parallel subagents to reduce wall-clock time.
 - [old-python-code-review/SKILL.md](../skills/old-python-code-review/SKILL.md): Single-pass Python correctness, security, and style review on demand; not for multi-reviewer audits before merge (use audit-code-reviewer for that).
 - [parallel-plan/SKILL.md](../skills/parallel-plan/SKILL.md): In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that).
