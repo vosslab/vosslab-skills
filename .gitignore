@@ -1,7 +1,6 @@
 report_*.txt
 .DS_Store
 skills/.system/
-skills/*/references/*.txt
 skills/codex-primary-runtime/
 docs/superpowers/
 local-only/
