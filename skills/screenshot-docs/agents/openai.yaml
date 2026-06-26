@@ -1,0 +1,4 @@
+interface:
+  display_name: "Screenshot Docs"
+  short_description: "Capture app screenshots and embed them into README and docs"
+  default_prompt: "Use $screenshot-docs to capture screenshots of this app and embed them into README.md and docs/ so the GitHub landing page shows what the app looks like."

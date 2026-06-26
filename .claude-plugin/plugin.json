@@ -25,7 +25,6 @@
     "./skills/audit-code-reviewer",
     "./skills/blueprint-plan-drafter",
     "./skills/bptools-writer",
-    "./skills/computer-vision-expert",
     "./skills/delegate-manager-to-subagents",
     "./skills/docset-updater",
     "./skills/gas-town-workflow",
@@ -35,6 +34,7 @@
     "./skills/pyside6-engineer",
     "./skills/readme-docs",
     "./skills/repo-rules-reader",
+    "./skills/screenshot-docs",
     "./skills/setup-install-usage-docs",
     "./skills/skill-writing-guide",
     "./skills/solid-js-expert",
@@ -42,6 +42,7 @@
     "./skills/typescript-engineer",
     "./skills/ui-ux-engineer",
     "./skills/unit-test-starter",
+    "./skills/vision-expert",
     "./skills/webwork-writer"
   ]
 }

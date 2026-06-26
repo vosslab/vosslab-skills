@@ -1,6 +1,6 @@
 ---
 name: readme-docs
-description: "Standardize `README.md` to match repo conventions: brief purpose, quick start, and links to `docs/`. Use when `README.md` has drifted or is missing key pointers. Does NOT touch any file under `docs/` (use `arch-docs`, `setup-install-usage-docs`, or `docset-updater` for those)."
+description: "Standardize `README.md` to match repo conventions: brief purpose, quick start, links to `docs/`, and a screenshots placeholder for the screenshot-docs skill. Use when `README.md` has drifted or is missing key pointers. Does NOT touch any file under `docs/` (use `arch-docs`, `setup-install-usage-docs`, or `docset-updater` for those)."
 ---
 
 # README fix
@@ -26,6 +26,32 @@ Keep deeper detail in `docs/` and link it from the README.
 - Troubleshooting pointer (otherwise link `docs/TROUBLESHOOTING.md`).
 - Status or maturity note (experimental, stable, deprecated).
 - Maintainer or support link (issues, discussion, contact).
+- Screenshots placeholder (see "Screenshots placeholder" section below).
+
+## Screenshots placeholder
+
+When the README warrants a screenshots section (evidence: existing `docs/screenshots/`
+directory, a prior README screenshots section, or explicit user request), insert the
+empty managed screenshot block at the appropriate position in `README.md`. The block
+is two sentinel comment lines with a one-line pointer between them:
+
+```
+<!-- screenshots:begin (managed by screenshot-docs) -->
+Screenshots are managed by the screenshot-docs skill.
+<!-- screenshots:end -->
+```
+
+The `screenshot-docs` skill owns the actual `docs/screenshots/` PNG files, the
+`![alt](docs/screenshots/...)` embed syntax, and alt-text rules. In a second pass it
+rewrites the lines between the two sentinels with real image embeds, keeping the
+sentinels intact so repeat runs stay idempotent. readme-docs keeps ownership of
+README prose and the two sentinel lines only. Insert the sentinels and the pointer
+line; leave image embeds and PNG files to `screenshot-docs`.
+
+Note: `tests/test_markdown_links.py` validates `![alt](path)` image embeds the
+same as text links (the image path must be a tracked file). Image-path correctness
+is the responsibility of `screenshot-docs`; readme-docs inserts only the two
+sentinel comment lines and one-line pointer.
 
 ## Inputs to request
 

@@ -1,5 +1,5 @@
 ---
-name: computer-vision-expert
+name: vision-expert
 description: Design, implement, debug, and review computer vision systems in Python, including image processing, detection, segmentation, classification, tracking, OCR, camera pipelines, and dataset-driven evaluation. Use when working with OpenCV, PyTorch vision models, video/image analysis, model-selection tradeoffs, annotation strategy, failure analysis, or CV performance and robustness problems.
 ---
 

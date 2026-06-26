@@ -4,6 +4,7 @@ skills/.system/
 skills/*/references/*.txt
 skills/codex-primary-runtime/
 docs/superpowers/
+local-only/
 
 # === UNIVERSAL ===
 _temp*.?*

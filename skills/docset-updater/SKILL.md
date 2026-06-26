@@ -1,6 +1,6 @@
 ---
 name: docset-updater
-description: "Refresh the whole repo doc set in one pass by invoking the per-doc skills in dependency order (`arch-docs`, `setup-install-usage-docs`, `readme-docs`, `agents-md-fixer`), then audit any remaining `docs/` files those skills do not own. Use when the user wants all docs brought current at once, or the doc set as a whole is missing, drifted, or unaudited."
+description: "Refresh the whole repo doc set in one pass by invoking the per-doc skills in dependency order (`arch-docs`, `setup-install-usage-docs`, `readme-docs`, `screenshot-docs`, `agents-md-fixer`), then audit any remaining `docs/` files those skills do not own. Use when the user wants all docs brought current at once, or the doc set as a whole is missing, drifted, or unaudited."
 ---
 
 # Docset refresh
@@ -21,7 +21,10 @@ downstream skills see current content to point at:
 1. `arch-docs` -> `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`
 2. `setup-install-usage-docs` -> `docs/USAGE.md`, `docs/INSTALL.md`
 3. `readme-docs` -> `README.md` (links into the `docs/` set above)
-4. `agents-md-fixer` -> `AGENTS.md` (trims to pointers into `docs/*.md`)
+4. `screenshot-docs` -> `docs/screenshots/` (captures app screenshots, writes them to
+   `docs/screenshots/`, and rewrites the readme-docs managed screenshot block with real
+   embeds; runs as a second pass after README prose exists)
+5. `agents-md-fixer` -> `AGENTS.md` (trims to pointers into `docs/*.md`)
 
 ## Workflow
 
@@ -30,7 +33,11 @@ downstream skills see current content to point at:
    - List `docs/` contents and root docs (`AGENTS.md`, `README.md`, `LICENSE`).
 2. Run the per-doc skills in order
    - Invoke `arch-docs`, then `setup-install-usage-docs`, then `readme-docs`, then
-     `agents-md-fixer`, each via the Skill tool.
+     `screenshot-docs`, then `agents-md-fixer`, each via the Skill tool.
+   - `screenshot-docs` runs as a second pass after README prose exists. When no app
+     window or display is available, it adds a Known-gaps line to the report, leaves
+     existing screenshots and the managed block in place, leaves both block sentinels
+     for the next run, and the chain continues to `agents-md-fixer`.
    - Let each skill decide whether its docs need creation or refresh; do not
      duplicate their work here.
    - Under `delegate-manager-to-subagents`, dispatch a fresh subagent per skill
@@ -72,7 +79,7 @@ downstream skills see current content to point at:
      task; under `delegate-manager-to-subagents`, dispatch a docs subagent to add
      the entry.
 8. Provide a short report
-   - Per-doc skills run: which of the four ran and what each reported.
+   - Per-doc skills run: which of the five ran and what each reported.
    - Created: list new docs.
    - Updated: list updated docs.
    - Flagged: list docs to relocate or delete.

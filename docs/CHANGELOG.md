@@ -1,3 +1,38 @@
+## 2026-06-26
+
+### Additions and New Features
+
+- Added the `screenshot-docs` skill (`skills/screenshot-docs/`) so the doc chain can
+  capture app screenshots and embed them in `README.md` and `docs/` to make GitHub
+  landing pages novice-friendly. It classifies the app kind (PySide6 GUI, Swift GUI,
+  terminal/CLI, web) and captures with the matching backend: `easy-screenshot` for
+  local windows, Playwright for web. PNGs are committed under `docs/screenshots/`.
+- Shipped six helper scripts under `skills/screenshot-docs/scripts/`: `capture_local.sh`
+  (easy-screenshot windows), `mini_capture_window.sh` (dependency-free fallback using
+  `osascript` bounds plus `screencapture -R`), `capture_region.sh` (full screen / fixed
+  rectangle / interactive), `capture_cli.sh` (render CLI output to a PNG), `screenshot_web.mjs`
+  (Playwright), and `screenshot_age.py` (report a screenshot's date, version, and age from git).
+- Defined a managed screenshot block with `<!-- screenshots:begin (managed by screenshot-docs) -->`
+  and `<!-- screenshots:end -->` sentinels so repeat runs rewrite only the inner embeds
+  and stay idempotent. `readme-docs` writes the empty block; `screenshot-docs` fills it.
+
+### Behavior or Interface Changes
+
+- Wired `screenshot-docs` into the `docset-updater` chain as a second pass after
+  `readme-docs` and before `agents-md-fixer`. When no app window or display is available
+  it adds a Known-gaps line, leaves existing screenshots and the block in place, and the
+  chain continues, so auto-run never blocks a doc refresh.
+- Updated `readme-docs` to reserve the empty managed screenshot block (two sentinel lines
+  plus a one-line pointer) instead of inserting images itself; `screenshot-docs` owns the
+  PNGs, embed syntax, and alt-text rules.
+
+### Fixes and Maintenance
+
+- Documented screenshot freshness and pruning: reuse stable slugs so re-capture overwrites
+  in place, prune unreferenced PNGs with `git rm`, and keep `reference_`-prefixed images as
+  intentional history. Tracked screenshot age and version through git commit metadata.
+- Regenerated the platform plugin manifests and `docs/SKILLS_INDEX.md` for the new skill.
+
 ## 2026-06-16
 
 ### Fixes and Maintenance
@@ -23,7 +58,7 @@
 
 ### Fixes and Maintenance
 
-- Synced vendored [skills/html-game-parallel-builder/templates/run_web_server.sh](../skills/html-game-parallel-builder/templates/run_web_server.sh)
+- Synced vendored [run_web_server.sh](../skills/html-game-parallel-builder/templates/run_web_server.sh)
   with canonical `starter-repo-template/templates/typescript/run_web_server.sh` (md5 afad7f39).
   The hardened version adds an own-child-only cleanup trap (kills only `server_pid` and
   `opener_pid` started by this script; no pkill/pgrep/ps), initializes PID vars before
@@ -36,7 +71,7 @@
 
 ### Additions and New Features
 
-- Added [skills/blueprint-plan-drafter/references/PLAN_TEMPLATE_BLANK.md](../skills/blueprint-plan-drafter/references/PLAN_TEMPLATE_BLANK.md):
+- Added [PLAN_TEMPLATE_BLANK.md](../skills/blueprint-plan-drafter/references/PLAN_TEMPLATE_BLANK.md):
   a clean, prose-free copy-paste plan skeleton (multi-workstream archetype:
   bare headings plus empty field labels like `Depends on:`, `Workstreams:`,
   `Parallel-plan ready:`, and empty tables; no `<...>` placeholder prose). The
@@ -62,7 +97,7 @@
 ### Fixes and Maintenance
 
 - Renamed `references/PLAN_TEMPLATE.md` to
-  [skills/blueprint-plan-drafter/references/PLAN_TEMPLATE_EXAMPLE.md](../skills/blueprint-plan-drafter/references/PLAN_TEMPLATE_EXAMPLE.md)
+  [PLAN_TEMPLATE_EXAMPLE.md](../skills/blueprint-plan-drafter/references/PLAN_TEMPLATE_EXAMPLE.md)
   via `git mv` and retitled its H1 to "Plan Template Examples", so the
   copy-this artifact (BLANK) and the learn-this artifact (EXAMPLE) have
   distinct names. Updated all cross-references in `SKILL.md`,
