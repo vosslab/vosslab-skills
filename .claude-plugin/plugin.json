@@ -24,7 +24,7 @@
     "./skills/arch-docs",
     "./skills/audit-code-reviewer",
     "./skills/blueprint-plan-drafter",
-    "./skills/bptools-writer",
+    "./skills/bptools-writer-expert",
     "./skills/delegate-manager-to-subagents",
     "./skills/docset-updater",
     "./skills/gas-town-workflow",
@@ -44,6 +44,6 @@
     "./skills/ui-ux-engineer",
     "./skills/unit-test-starter",
     "./skills/vision-expert",
-    "./skills/webwork-writer"
+    "./skills/webwork-writer-expert"
   ]
 }

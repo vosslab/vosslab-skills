@@ -8,7 +8,7 @@ Total skills: 26
 - [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from current repo evidence.
 - [audit-code-reviewer/SKILL.md](../skills/audit-code-reviewer/SKILL.md): Parallel multi-reviewer audit launched before merge or release; not for single-pass review.
 - [blueprint-plan-drafter/SKILL.md](../skills/blueprint-plan-drafter/SKILL.md): Create forward-looking implementation plans from scratch for coding teams without writing code.
-- [bptools-writer/SKILL.md](../skills/bptools-writer/SKILL.md): Create, edit, and validate biology-problems bptools Python question generators and supporting YAML content.
+- [bptools-writer-expert/SKILL.md](../skills/bptools-writer-expert/SKILL.md): Create, edit, and validate biology-problems bptools Python question generators and supporting YAML content.
 - [delegate-manager-to-subagents/SKILL.md](../skills/delegate-manager-to-subagents/SKILL.md): Use only when the user has an approved plan AND wants the main agent to manage execution through subagents instead of editing files directly.
 - [docset-updater/SKILL.md](../skills/docset-updater/SKILL.md): Refresh the whole repo doc set in one pass by invoking the per-doc skills in dependency order (`arch-docs`, `setup-install-usage-docs`, `readme-docs`, `screenshot-docs`, `agents-md-fixer`), then audit any remaining `docs/` files those skills do not own.
 - [gas-town-workflow/SKILL.md](../skills/gas-town-workflow/SKILL.md): Gas Town style multi-agent coordination with role-mapped task routing and convoy-based work decomposition.
@@ -29,4 +29,4 @@ Total skills: 26
 - [ui-ux-engineer/SKILL.md](../skills/ui-ux-engineer/SKILL.md): Review, improve, and engineer UI/UX quality in any framework.
 - [unit-test-starter/SKILL.md](../skills/unit-test-starter/SKILL.md): Generate thorough Python 3 pytest unit tests across a repo by scanning Python files.
 - [vision-expert/SKILL.md](../skills/vision-expert/SKILL.md): Design, implement, debug, and review computer vision systems in Python, including image processing, detection, segmentation, classification, tracking, OCR, camera pipelines, and dataset-driven evaluation.
-- [webwork-writer/SKILL.md](../skills/webwork-writer/SKILL.md): Create, edit, and lint WeBWorK PG/PGML questions following docs/webwork guidance, HTML whitelist constraints, and renderer-based lint checks.
+- [webwork-writer-expert/SKILL.md](../skills/webwork-writer-expert/SKILL.md): Create, edit, and lint WeBWorK PG/PGML questions following docs/webwork guidance, HTML whitelist constraints, and renderer-based lint checks.

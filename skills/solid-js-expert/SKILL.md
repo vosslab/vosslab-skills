@@ -52,21 +52,42 @@ Source: distilled from the official SolidJS documentation (docs.solidjs.com,
 
 ## Workflow
 
-1. Identify the layer: core reactivity, components/JSX, stores, router, start,
-   or meta. Match it in the routing table below.
-2. Open the one matching reference file. Read its mini-index (files over ~100
+1. Frame the project shape. When invoked on a target Solid app, decide
+   greenfield (new app) vs improve-existing (an existing repo) and follow the
+   matching workflow in [`references/project_workflow.md`](references/project_workflow.md):
+   greenfield starts from the data model and a Solid contract; improve-existing
+   inspects current reactivity, finds React-shaped breakage, and migrates one
+   pattern at a time. Skip this step for a one-off question with no target repo.
+2. Classify the task. Name the layer (reactivity, rendering, or app) and check
+   for React-migration red flags using
+   [`references/task_selection.md`](references/task_selection.md).
+3. Route by symptom or API. For an observed problem ("signal not updating",
+   "`<For>` lost selection"), start at the symptom router
+   [`references/topic_index.md`](references/topic_index.md); for an API-name
+   lookup use the routing table below. Both land on one focused reference file.
+4. Open the one matching reference file. Read its mini-index (files over ~100
    lines open with one) and jump to the relevant section.
-3. If the task is React-migration or "why is this broken", read
+5. If the task is React-migration or "why is this broken", read
    `references/gotchas.md` as well -- it lists the cross-cutting footguns.
-4. For SolidStart data work, confirm the server/client boundary explicitly
+6. For SolidStart data work, confirm the server/client boundary explicitly
    using the checklist in `references/solid-start.md`.
-5. Write idiomatic Solid; verify against the reference's stated behavior.
+7. Write idiomatic Solid; verify against the reference's stated behavior, and
+   prove granular updates with the tests in
+   [`references/testing_and_oracles.md`](references/testing_and_oracles.md).
 
 ## Routing table
 
-Scan by the symbol, concept, or React-migration phrase in front of you; each
-row routes to exactly one file. Overlapping topics carry an "also see" note
-inside the target file rather than a second row here.
+For a problem stated as a symptom ("why is my signal not updating",
+"`<For>` lost selection", "resource stuck pending"), enter through the symptom
+router [`references/topic_index.md`](references/topic_index.md). The table below
+is the API-name and concept front door: scan by the symbol, concept, or
+React-migration phrase in front of you; each row routes to exactly one file.
+Overlapping topics carry an "also see" note inside the target file rather than a
+second row here. The project-shape, task-classification, and reactivity-testing
+guides ([`references/project_workflow.md`](references/project_workflow.md),
+[`references/task_selection.md`](references/task_selection.md),
+[`references/testing_and_oracles.md`](references/testing_and_oracles.md)) are
+driven from the Workflow above, not this table.
 
 | Look for (API name / concept / React-migration term) | Reference |
 | --- | --- |

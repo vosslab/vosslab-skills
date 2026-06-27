@@ -1,0 +1,4 @@
+interface:
+  display_name: "WebWork Writer Expert"
+  short_description: "Author and validate WebWork PG problems"
+  default_prompt: "Use $webwork-writer-expert to design, write, review, and validate WebWork PG problems with correct randomization, answer checking, formatting, and grading behavior."

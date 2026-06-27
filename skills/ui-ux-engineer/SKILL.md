@@ -20,9 +20,15 @@ It applies equally to desktop, web, and mobile surfaces.
 - Improving an existing interface: read the existing surface first, identify the
   main friction points across hierarchy, interaction quality, and state coverage,
   then scope changes by user impact.
+- Read [`references/project_workflow.md`](references/project_workflow.md) for both paths.
 
-2. Identify the surface and its primary user goal.
-- Determine what the user is trying to accomplish and what states must be handled: loading, empty, valid, invalid, busy, success, and failure.
+2. Classify the UX task and route it.
+- Read [`references/task_selection.md`](references/task_selection.md) when the request is underspecified
+  or several UX framings fit.
+- Consult [`references/topic_index.md`](references/topic_index.md) to route the problem to the UX task,
+  default approach, common failure modes, audit fixtures, and the best local book.
+- Determine what the user is trying to accomplish and what states must be handled: loading, empty, valid,
+  invalid, busy, success, and failure.
 - Identify the main workflow path and any secondary paths.
 
 3. Review visual hierarchy and layout.
@@ -39,10 +45,12 @@ It applies equally to desktop, web, and mobile surfaces.
 - Support keyboard flow, sensible tab order, and accessible names or tooltips where needed.
 - Check whether busy work has been removed from the user's path.
 
-5. Review edge states.
+5. Review edge states and audit for completeness.
 - Check whether edge states (empty, error, loading, offline) look intentional rather than broken.
 - Verify that validation messages are clear and actionable.
 - Verify that error recovery paths exist.
+- Read [`references/testing_and_oracles.md`](references/testing_and_oracles.md) for the state matrix
+  fixture corpus, oracle checklists, and inspectable artifact formats.
 
 6. Reference design heuristics when needed.
 - Read [`references/design_books.md`](references/design_books.md) when you need durable design heuristics, typography guidance, grid and layout thinking, or design-system perspective.
@@ -53,7 +61,9 @@ It applies equally to desktop, web, and mobile surfaces.
 
 ## Implementation defaults
 
-- Load the local-only books first when present; see the coverage map in [`references/reference_survey.md`](references/reference_survey.md) and the broader design literature in [`references/design_books.md`](references/design_books.md).
+- Load the local-only books first when present; see [`references/local_books.md`](references/local_books.md)
+  for the reading order, the coverage map in [`references/reference_survey.md`](references/reference_survey.md),
+  and the broader design literature in [`references/design_books.md`](references/design_books.md).
 
 ## Quality bar
 

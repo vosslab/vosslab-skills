@@ -1,9 +1,9 @@
 ---
-name: bptools-writer
+name: bptools-writer-expert
 description: Create, edit, and validate biology-problems bptools Python question generators and supporting YAML content. Use when requests involve authoring question scripts, updating files under problems/*-problems, tuning randomization or anti-cheat behavior, or debugging BBQ/QTI output that depends on bptools.py and qti_package_maker.
 ---
 
-# Bptools Question Authoring
+# Bptools question authoring
 
 ## Overview
 
@@ -16,7 +16,7 @@ Follow the repo's shared generator patterns and verify output with small local r
 Before editing any generator script or writing new `write_question()` logic,
 you MUST use the Read tool on:
 
-1. `skills/bptools-writer/references/docs/QUESTION_AUTHORING_GUIDE.md`
+1. `skills/bptools-writer-expert/references/docs/QUESTION_AUTHORING_GUIDE.md`
    - Primary authoring workflow, TEMPLATE.py conventions, required structure.
 2. `bptools.py` at the target repo root (this skill is only invoked inside
    `biology-problems`, so the file is reachable at the repo-root path returned
@@ -34,6 +34,19 @@ task touches that domain (matching sets, PUBCHEM, MC statements, pedigrees,
 phylogenetic trees). See `references/docs.md` for the full index.
 
 ## Workflow
+
+0) Classify the request and detect project state
+   - Use `references/topic_index.md` as the routing front door: match the request to a row
+     and load the named guide before opening any generator file.
+   - Use `references/task_selection.md` to classify question family, output format,
+     randomization scope, and anti-cheat policy before writing any code.
+   - Use `references/project_workflow.md` to detect whether the target repo is greenfield
+     (no generator exists for this question type) or existing (generators already present).
+     Greenfield: start from TEMPLATE.py, write the authoring contract, implement with
+     bptools primitives, validate with a small run, prove reproducibility.
+     Existing repo: inspect-first (read live bptools.py, inventory generators), identify the
+     current design, make one generator change at a time, then collect the three proof
+     artifacts (before/after sample, seed log, anti-cheat audit).
 
 1) Satisfy the Required reading block above. This is step zero.
 2) Identify scope
@@ -60,7 +73,7 @@ phylogenetic trees). See `references/docs.md` for the full index.
    - Keep generated artifacts out of git (`bbq-*.txt`, `qti*.zip`,
      `selftest-*.html`).
 
-## Core Rules
+## Core rules
 
 - Treat `references/docs/QUESTION_AUTHORING_GUIDE.md` as the primary authoring reference.
 - Maintain Python style required by this repo: tabs for indentation, ASCII comments, `main()` entrypoint.
@@ -68,8 +81,16 @@ phylogenetic trees). See `references/docs.md` for the full index.
 - Keep Blackboard sanitizer compatibility patterns (split comments in JS function declarations) when present in existing generators.
 - If output behavior is unclear, inspect both `bptools.py` and the corresponding `qti_package_maker` writer/validator paths before changing format logic.
 
-## Reference Files
+## Reference files
 
+- Read `references/topic_index.md` as the routing front door: match the request to a row,
+  load the named guide.
+- Read `references/task_selection.md` to classify question family, output format,
+  randomization scope, and anti-cheat policy.
+- Read `references/project_workflow.md` for greenfield and existing-repo workflows on a
+  target biology-problems repo.
+- Read `references/testing_and_oracles.md` for fixture corpus, oracles, invariants, and
+  the three required proof artifacts.
 - Read `references/docs.md` for the full bundled doc index plus external qti_package_maker pointers.
 - Read `references/repos.md` for local repo paths and high-value files.
 - Read `references/api_surface.md` for common bptools and qti_package_maker touchpoints.

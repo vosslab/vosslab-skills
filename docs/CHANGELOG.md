@@ -38,6 +38,18 @@
 - Defined a managed screenshot block with `<!-- screenshots:begin (managed by screenshot-docs) -->`
   and `<!-- screenshots:end -->` sentinels so repeat runs rewrite only the inner embeds
   and stay idempotent. `readme-docs` writes the empty block; `screenshot-docs` fills it.
+- Authored the parity reference guides (`task_selection.md`, `topic_index.md`,
+  `project_workflow.md`, `testing_and_oracles.md`) across `vision-expert`,
+  `pyside6-engineer`, `ui-ux-engineer`, `solid-js-expert`, `typescript-engineer`,
+  `bptools-writer-expert`, and `webwork-writer-expert`, each filled with the
+  skill's own domain content, bringing all eight expert skills to the required set.
+- Added `local_books.md` to `pyside6-engineer` and `ui-ux-engineer` so the four
+  book-backed skills all carry the source-map guide for their local corpus.
+- Added `skills/webwork-writer-expert/agents/openai.yaml` so all eight expert
+  skills ship the OpenAI agent manifest the parity standard requires.
+- Added `tests/test_expert_skill_parity.py`, a parity gate that asserts each
+  expert skill carries the required reference set (universal files plus a
+  project-shape Workflow step; the book trio for the four book-backed skills).
 
 ### Behavior or Interface Changes
 
@@ -50,6 +62,14 @@
 - Updated `readme-docs` to reserve the empty managed screenshot block (two sentinel lines
   plus a one-line pointer) instead of inserting images itself; `screenshot-docs` owns the
   PNGs, embed syntax, and alt-text rules.
+- Added a project-shape Workflow step (greenfield vs improve-existing target) to the
+  expert skills that lacked it (`solid-js-expert`, `typescript-engineer`,
+  `bptools-writer-expert`, `webwork-writer-expert`); the three that already had one
+  now cite the new `project_workflow.md` and `topic_index.md`.
+- Rewrote `docs/EXPERT_SKILL-BEST_PRACTICES.md` to define the required parity set
+  (universal files plus the project-shape step, with the book trio called out for
+  the four book-backed skills) and refreshed the applicability table; the parity
+  gate `tests/test_expert_skill_parity.py` enforces the set per skill.
 
 ### Fixes and Maintenance
 
@@ -57,6 +77,17 @@
   in place, prune unreferenced PNGs with `git rm`, and keep `reference_`-prefixed images as
   intentional history. Tracked screenshot age and version through git commit metadata.
 - Regenerated the platform plugin manifests and `docs/SKILLS_INDEX.md` for the new skill.
+- Post-review cleanup of the parity work: renumbered a duplicated workflow step in
+  `skills/webwork-writer-expert/SKILL.md` (two steps labeled `3)`), sentence-cased
+  `Core rules` and `Reference files` headings in both renamed writer SKILL.md files, and
+  made `tests/test_expert_skill_parity.py` docstring self-contained (removed references to
+  the planning document).
+
+### Removals and Deprecations
+
+- Renamed `bptools-writer` to `bptools-writer-expert` and `webwork-writer` to
+  `webwork-writer-expert`, standardizing on the `{-expert, -engineer}` suffix set.
+  The invocation and marketplace names change; the old names are retired.
 
 ## 2026-06-16
 

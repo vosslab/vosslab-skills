@@ -33,7 +33,7 @@ in this repo and any sibling vosslab repos that ship skills.
      `computer-vision`): use agent-form suffix (`-writer`, `-engineer`,
      `-expert`, `-builder`). The domain token at position 1 already carries
      identity; the suffix names what the skill is. Examples:
-     `bptools-writer`, `typescript-engineer`, `vision-expert`.
+     `bptools-writer-expert`, `typescript-engineer`, `vision-expert`.
    - Long names are fine when the extra tokens add searchable keywords
      (`delegate-manager-to-subagents`, `blueprint-plan-drafter`,
      `html-game-parallel-builder`). What matters is that the first
@@ -59,14 +59,13 @@ in this repo and any sibling vosslab repos that ship skills.
 | `-docs` | Creates or refreshes documentation artifacts | `arch-docs`, `readme-docs`, `setup-install-usage-docs` |
 | `-drafter` | Authors a first-pass artifact (plan, spec, blueprint) | `blueprint-plan-drafter` |
 | `-engineer` | Implements or refactors code in a domain | `typescript-engineer`, `pyside6-engineer`, `ui-ux-engineer` |
-| `-expert` | Designs and reviews work in a specialized field | `vision-expert` |
+| `-expert` | Designs and reviews work in a specialized field | `vision-expert`, `bptools-writer-expert`, `webwork-writer-expert` |
 | `-fixer` | Trims and standardizes a single named artifact in place | `agents-md-fixer` |
 | `-guide` | Reads or explains rules and reference material | `skill-writing-guide`, `pdf-guide` |
 | `-manager-to-X` / `-manager` | Coordinates plans, milestones, or delegated execution. Verb-first variants encode WHAT the manager does (`delegate-`, `draft-`, `review-`); only one skill may lead with a bare `manager-` token. | `delegate-manager-to-subagents` |
 | `-reader` | Reads or summarizes content | `repo-rules-reader` |
 | `-reviewer` | Reviews code or output for quality | `audit-code-reviewer` |
 | `-starter` | Generates first-pass scaffolding | `unit-test-starter` |
-| `-writer` | Authors content in a specific format | `bptools-writer`, `webwork-writer` |
 
 Singleton suffix families are acceptable when the skill's role is clearly
 distinct (e.g. `-builder`, `-fixer`, `-starter`). What matters is that the
@@ -119,7 +118,7 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `arch-docs` | compliant | (unchanged) | Clean `-docs` suffix, unique leading token. |
 | `audit-code-reviewer` | compliant | review-code-changes | First-2 "audit code" reads as the activity; user-confirmed acceptable. |
 | `blueprint-plan-drafter` | accepted-rename | planning-manager / manager-make-new-plan | Verb-first; first-2 "blueprint plan" carries the artifact + domain; `manager-` lead retired. |
-| `bptools-writer` | compliant | (unchanged) | Domain-specific leading token, `-writer` suffix. |
+| `bptools-writer-expert` | accepted-rename | bptools-writer | Standardized suffix to `-expert`; `bpt` 3-char prefix unique; `writer` kept mid-name for discoverability. |
 | `vision-expert` | accepted-rename | computer-vision-expert | Domain-noun-first; `vis` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `delegate-manager-to-subagents` | accepted-rename | execution-manager / manager-driven-execution | Verb-first; first-2 "delegate manager"; "subagents" keyword in token 4 for searchability. |
 | `docset-updater` | compliant | docset-refresh | Agent-form suffix matches update-if-drifted behavior. |
@@ -137,9 +136,9 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `typescript-engineer` | compliant | (unchanged) | Language token plus `-engineer` suffix. |
 | `ui-ux-engineer` | compliant | (unchanged) | Domain token plus `-engineer` suffix. |
 | `unit-test-starter` | compliant | (unchanged) | Unique leading token, `-starter` suffix. |
-| `webwork-writer` | compliant | (unchanged) | Domain token plus `-writer` suffix. |
+| `webwork-writer-expert` | accepted-rename | webwork-writer | Standardized suffix to `-expert`; `web` 3-char prefix unique; `writer` kept mid-name for discoverability. |
 
-Counts (23 active skills): 15 compliant or borderline-no-change, 7
+Counts (23 active skills): 13 compliant or borderline-no-change, 9
 accepted-rename, 1 deprecated (`old-` prefix). The post-rename canonical
 record matches the output of
 `tools/list_loaded_skills.py --names-only` on the repo. Two additional

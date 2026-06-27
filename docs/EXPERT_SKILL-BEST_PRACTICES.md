@@ -5,15 +5,67 @@ a specialist skill (suffix `-expert` or `-engineer`) that turns vague requests
 in one field into explicit, evidence-backed tasks and drives a real project
 rather than dispensing generic advice. Eight such skills share a common
 skeleton: `geometry-expert`, `vision-expert`, `pyside6-engineer`,
-`ui-ux-engineer`, `solid-js-expert`, `typescript-engineer`, `bptools-writer`,
-and `webwork-writer`. This doc captures that skeleton and the local-only
-reference-survey pattern that `geometry-expert` pioneered, so a future author
-picks the right tool for the reference corpus at hand.
+`ui-ux-engineer`, `solid-js-expert`, `typescript-engineer`,
+`bptools-writer-expert`, and `webwork-writer-expert`. This doc captures that
+skeleton and the local-only reference-survey pattern that `geometry-expert`
+pioneered, so a future author picks the right tool for the reference corpus at
+hand.
 
 The single most important decision is the corpus-format axis in section 15: a
 gitignored, flat-text, maybe-absent book corpus needs a `reference_survey.md`; a
 committed, linkable, heading-anchored guide set needs a routing index instead.
 Classify the skill on that axis first, then follow the matching sections below.
+
+## Required reference set
+
+Parity is a required interface, not geometry-like depth. Every expert skill ships
+the same universal set; the four book-backed skills add two more committed files.
+This required-set definition is the standard the parity gate enforces.
+
+Universal required set, present in all eight experts:
+
+- `SKILL.md`: the thin entrypoint with a project-shape Workflow step.
+- `agents/openai.yaml`: the OpenAI agent manifest (three `interface` keys).
+- `references/task_selection.md`: routes an underspecified request to a path.
+- `references/topic_index.md`: maps each user problem to the best reference.
+- `references/project_workflow.md`: both the greenfield and existing-repo
+  workflows for an outside target project.
+- `references/testing_and_oracles.md`: how the skill proves the target improved.
+
+Book-backed required extras, present only in the four skills with a local book
+corpus (`geometry-expert`, `vision-expert`, `pyside6-engineer`, `ui-ux-engineer`):
+
+- `references/reference_survey.md`: topic-to-book coverage map with bare-path
+  references, validated grep terms, and coverage-strength ratings.
+- `references/local_books.md`: the source-map guide for the corpus.
+
+The gitignored `references/local-only/` corpus is part of the book-backed pattern
+but lives locally and is absent on a clean clone, so the parity gate asserts only
+the two committed files, never the physical corpus directory.
+
+Corpus-format rationale: a gitignored, flat-text, maybe-absent book corpus needs
+the `reference_survey.md` machine (bare-path references, grep routing,
+coverage-strength ratings, graceful-absent fallback). A committed, linkable,
+heading-anchored guide set needs a routing index instead, which the four
+non-book skills satisfy through their committed `topic_index.md` front door.
+Book-backed membership is an explicit allowlist of those four names, not inferred
+from the corpus directory, so a missing `local-only/` on a clean clone never
+flips a skill out of the set.
+
+### Design intent: a complete tool for an outside target
+
+Each expert skill is a complete tool to invoke on an outside TARGET project, new
+or existing, to make that project better. The skill operates on the user's repo,
+not on itself. `references/project_workflow.md` carries both a greenfield workflow
+and an existing-repo workflow, and the `SKILL.md` project-shape Workflow step
+detects which path applies before any edit to the target. The binding behavior:
+the skill turns a vague request such as "use this skill to improve my repo" into
+a concrete inspection, recommendation, implementation, and validation path. This
+is a behavior requirement, not just a file requirement.
+
+The parity gate `tests/test_expert_skill_parity.py` enforces this required set per
+skill: the universal files plus the project-shape step for all eight, and the book
+trio for the four book-backed names.
 
 ## Purpose and scope
 
@@ -39,8 +91,9 @@ domain token at position 1 carries identity; the suffix names what the skill is.
 
 - Use `-expert` for design-and-review specialists (`geometry-expert`,
   `vision-expert`) and `-engineer` for implement-and-refactor specialists
-  (`pyside6-engineer`, `typescript-engineer`). Use `-writer` for format authors
-  (`bptools-writer`, `webwork-writer`).
+  (`pyside6-engineer`, `typescript-engineer`). Format authors take `-expert`
+  too (`bptools-writer-expert`, `webwork-writer-expert`); the standard suffix set
+  is `{-expert, -engineer}`. See the Retired names note below for the rename.
 - Keep the first three characters unique across all active vosslab skills. This
   catches near-collisions like `web-` versus `webwork-`.
 - The frontmatter `name:` must match the directory name exactly.
@@ -59,9 +112,17 @@ references folder, and an OpenAI agent manifest.
   conversions). Present locally, absent on a clean clone.
 - `skills/<name>/agents/openai.yaml`: the OpenAI agent manifest. Mirror
   `skills/geometry-expert/agents/openai.yaml`.
-- Current exception observed in this repo: `webwork-writer` ships without
-  `agents/openai.yaml` (verified by listing `skills/webwork-writer/` during
-  planning). New expert skills should include the manifest.
+- `agents/openai.yaml` is required by this repo's parity standard, and all eight
+  expert skills now ship it. The earlier missing-manifest gap was closed when the
+  `webwork-writer-expert` rename added its manifest; new expert skills must
+  include the manifest.
+
+### Retired names
+
+- `bptools-writer` was renamed to `bptools-writer-expert`, and `webwork-writer`
+  was renamed to `webwork-writer-expert`, standardizing on the
+  `{-expert, -engineer}` suffix set. The old names are retired; reference the
+  current names everywhere.
 
 ## SKILL.md file anatomy
 
@@ -226,7 +287,7 @@ The manifests are generated; edit the source and regenerate.
 ## Validation gate tests
 
 Run the full skill validation gate from the repo root with
-`source source_me.sh && python3 -m pytest <test>`. Nine tests guard expert-skill
+`source source_me.sh && python3 -m pytest <test>`. Ten tests guard expert-skill
 changes:
 
 - `tests/test_skill_frontmatter.py`: frontmatter is well-formed and intact.
@@ -239,6 +300,9 @@ changes:
 - `tests/test_markdown_links.py`: every local Markdown link resolves.
 - `tests/test_no_local_only_markdown_links.py`: no Markdown link targets a
   `local-only/` path (bare backtick mentions stay allowed).
+- `tests/test_expert_skill_parity.py`: each expert skill carries the required
+  reference set (universal files plus a project-shape step; the book trio for the
+  four book-backed skills).
 
 Actionable rule: run the gate before reporting a skill change complete, and treat
 any manifest drift as diagnostic evidence (inspect whether a frontmatter actually
@@ -246,27 +310,31 @@ changed) before regenerating.
 
 ## Applicability across eight experts
 
-Classify every expert skill on the corpus-format axis. A gitignored, opaque book
+All eight experts now carry the universal required set (SKILL.md with a
+project-shape step, `agents/openai.yaml`, and the four reference guides). The
+book trio (`reference_survey.md`, `local_books.md`, and the gitignored
+`local-only/` corpus) lives only in the four book-backed skills. The table below
+classifies every expert on the corpus-format axis: a gitignored, opaque book
 corpus needs a `reference_survey.md`; a committed, structured guide set needs a
-linkable routing index. All eight current experts fall cleanly on one side.
+linkable routing index. All eight fall cleanly on one side.
 
-| Skill | Corpus format | Reference mechanism |
-| --- | --- | --- |
-| `geometry-expert` | gitignored book corpus | `reference_survey.md` reference implementation |
-| `vision-expert` | gitignored book corpus | survey added by this pattern |
-| `pyside6-engineer` | gitignored book corpus | survey added by this pattern |
-| `ui-ux-engineer` | gitignored book corpus | survey added by this pattern |
-| `solid-js-expert` | committed guide set | routes via `references/api-cheatsheet.md`; survey not applicable |
-| `typescript-engineer` | committed guide set | routes via `references/checklist.md`; survey not applicable |
-| `bptools-writer` | committed `references/docs/` guides | routes via `references/docs.md`; survey not applicable |
-| `webwork-writer` | committed `references/docs/` guides | routes via `references/docs.md`; survey not applicable |
+| Skill | Universal set | Corpus format | Book trio / routing mechanism |
+| --- | --- | --- | --- |
+| `geometry-expert` | yes | gitignored book corpus | book trio; `reference_survey.md` reference implementation |
+| `vision-expert` | yes | gitignored book corpus | book trio; survey added by this pattern |
+| `pyside6-engineer` | yes | gitignored book corpus | book trio; survey added by this pattern |
+| `ui-ux-engineer` | yes | gitignored book corpus | book trio; survey added by this pattern |
+| `solid-js-expert` | yes | committed guide set | routes via `topic_index.md`; survey not applicable |
+| `typescript-engineer` | yes | committed guide set | routes via `topic_index.md`; survey not applicable |
+| `bptools-writer-expert` | yes | committed guide set | routes via `topic_index.md`; survey not applicable |
+| `webwork-writer-expert` | yes | committed guide set | routes via `topic_index.md`; survey not applicable |
 
 - The four gitignored-corpus skills carry book conversions under
   `references/local-only/` and exploit them through a committed survey plus a
   graceful-absent fallback.
 - The four committed-set skills carry heading-anchored guides that are always
-  present, so their analog is a routing index, which each already has. No survey
-  is added to them.
+  present, so their analog is the committed `topic_index.md` routing front door.
+  No survey is added to them.
 - Actionable rule: before authoring references for a new expert skill, decide
   which row it joins; that choice determines whether you write a survey or a
-  routing index.
+  routing index. The universal required set is mandatory regardless of the row.

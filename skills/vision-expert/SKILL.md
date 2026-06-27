@@ -12,11 +12,13 @@ Prefer simple, testable pipelines and evidence-driven evaluation over fashionabl
 
 ## Workflow
 
-1. Detect project state.
+1. Detect project state. Consult [`references/topic_index.md`](references/topic_index.md) first to
+match the user problem to a CV task, default library, and guide file. Then inspect the target repo:
 - Search the target repo for existing CV source files, model configs, pipeline scripts, and evaluation code.
 - Search for existing tests or benchmarks that characterize current behavior.
-- If any of these exist, follow the existing-pipeline path: build an inventory, write characterization tests before changing anything, and improve one factor at a time.
-- If none exist, follow the greenfield path: define success metrics first, choose the simplest viable pipeline, and seed a small representative test set before writing production code.
+- If any of these exist, follow the existing-pipeline path: inspect model weights, validation split, and failure logs; establish a per-class baseline before changing anything; tie each proposed change to a specific failing case; prove improvement with before/after metrics on the held-out set.
+- If none exist, follow the greenfield path: seed a balanced 100-500 image set with a held-out test split; write a vision contract covering resolution, class taxonomy, FPS budget, and miss-vs-false-alarm tolerance; then build and validate the minimal pipeline.
+- Read [`references/project_workflow.md`](references/project_workflow.md) for the full branching workflow, vision contract spec, and CV review checklist.
 
 2. Define the exact vision task.
 - Determine whether the task is classification, detection, segmentation, keypoints, tracking, OCR, retrieval, restoration, or measurement.
@@ -45,6 +47,7 @@ Prefer simple, testable pipelines and evidence-driven evaluation over fashionabl
 - Inspect failures by category rather than averaging everything into one score.
 - Measure speed, memory, and deployment constraints alongside accuracy.
 - Read [`references/debugging_and_failure_analysis.md`](references/debugging_and_failure_analysis.md) when performance is unstable, errors cluster in strange ways, or the model seems to fail "randomly."
+- Read [`references/testing_and_oracles.md`](references/testing_and_oracles.md) when building the fixture corpus or selecting oracles for a task type.
 
 6. Improve iteratively.
 - Change one major factor at a time: data, preprocessing, architecture, thresholding, postprocessing, or evaluation.

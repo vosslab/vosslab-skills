@@ -1,6 +1,6 @@
 # Claude hook usage guide
 
-_Last updated: 2026-06-03 19:30 UTC. Source of truth: `claude-code-permissions-hook`
+_Last updated: 2026-06-23 18:37 UTC. Source of truth: `claude-code-permissions-hook`
 repo. Mirrors in sibling repos (e.g. `starter-repo-template`) are copies; do not
 edit mirrors directly._
 
@@ -16,6 +16,23 @@ patterns. Claude-specific (not Codex). Repo style conventions live in
 ## Trust model
 
 The hook optimizes for high task completion with bounded blast radius: allow routine local work, deny/steer on machine-changing actions, prompt on high-impact operations.
+
+## Guide philosophy
+
+This guide is moving toward principles over catalog. It teaches how the hook
+decides -- decompose a command into leaves, match each leaf, pick an outcome --
+plus the safe-zone and blast-radius reasoning behind those decisions and the
+fast recovery path when a leaf is denied. Aim for the smallest set of
+principles that lets a reader predict any outcome.
+
+- Treat the TOML config as the source of truth for exact patterns and for the
+  deny `reason` text. The agent sees that reason live at runtime, so the guide
+  stays focused on principles and recovery.
+- Let per-repo-type and single-tool specifics live in the config, where they
+  apply.
+- Prefer principle plus recovery, and let the config carry the specifics.
+
+As older sections are touched, trim them toward this model.
 
 ## Overview
 
@@ -116,6 +133,18 @@ scripts/build.sh
 
 `bash -n script.sh` (syntax check) is denied -- inspect the script with the
 Read tool instead. See the denied commands section.
+
+### Built binaries (.build/, target/)
+
+Run a freshly-built first-party binary from the CWD. SwiftPM emits under `.build/`,
+Cargo under `target/debug|release/`. CWD-relative only; absolute paths, `..`, and
+command substitution fall to passthrough.
+
+```bash
+.build/debug/app --version          # allowed
+./target/release/tool --help        # allowed
+/abs/.build/debug/app               # passthrough (absolute)
+```
 
 ### Safe utilities
 
@@ -243,6 +272,16 @@ ffmpeg -i /tmp/in.wav /Users/me/out.wav         # passthrough (out of tmp)
 convert in.png out.png                          # passthrough (no tmp path)
 ```
 
+`sips` write forms (`-c`, `-z`, `-s`, `--out`) are also `/tmp`-scoped here; `sips -g`
+metadata reads are allowed at any path. `ffmpeg ... -f null -` (decode-only validation,
+no output file) is allowed for any input path.
+
+### macOS read-only inspection
+
+`diskutil list` / `diskutil info` are allowed (read verbs); destructive verbs
+(`eraseDisk`, `partitionDisk`, `unmountDisk`) stay passthrough. `plutil -lint` and
+`plutil -convert ... -o -` (stdout) are allowed; convert-to-file forms passthrough.
+
 ### File deletion (safe patterns)
 
 The `rm` command is denied by default, but these specific patterns are allowed:
@@ -321,8 +360,6 @@ are also allowed.
 **Instead:** Use underscore-prefixed filenames for scratch files (`_temp.py`),
 write to `/tmp/`, or use `git rm` for tracked files.
 
-**Why:** Prevents accidental deletion of important files.
-
 **Blocked:** `rm file.txt`, `rm -rf dir/`.
 
 ### `git commit`, `git stash`, `git clean` (branch-aware)
@@ -348,10 +385,6 @@ variations including flag insertion like `git -C /tmp commit`). `git stash` and
 `offset` and `limit`. The pipeline form (`... | head -5`, `... | tail -5`,
 `... | cat`) stays allowed for slicing piped stdout, where Read does not
 apply.
-
-**Why:** Read is a Claude Code tool call (like Edit/Write). It provides line
-numbers, offset, and limit, and is the canonical way to inspect a file from
-this harness.
 
 **Blocked:** `cat /path/to/file`, `head -20 /abs/path/file.txt`.
 
@@ -406,10 +439,9 @@ Common read-only predicates ride along: `-name`, `-iname`,
 `-type f|d|l`, `-path`, `-maxdepth`, `-mindepth`, `-not`, `!`,
 `-o`, `-a`, grouping `(` `)`, `-print`, `-empty`. Output shaping
 pipes (`| head`, `| sort`, `| grep`, `| rg`) stay allowed.
-**Not in this pass:** `-size`, `-print0`, `-printf`, `-prune`,
-`-newer`, `-mtime`, `-atime`, `-user`, `-group`, `-perm`, `-links`,
-`-inum`, `-samefile`, `-fstype`, `-mount`, `-xdev`, `-regex`,
-`-iregex` (add a focused rule + fixtures if needed).
+Less-common predicates (`-size`, `-printf`, `-prune`, `-mtime`,
+`-perm`, `-regex`, and similar) are not in the allow pass and fall
+to passthrough; add a focused rule + fixtures if you need one.
 
 Inside a git repo, prefer `git ls-files <pathspec>` when
 tracked-file discovery is enough -- it excludes ignored and
@@ -447,18 +479,11 @@ step.
   and allowed.
 - Path traversal: `find ../`, `find docs/../`.
 
-Residual passthrough: a non-standard home subdir like
-`/Users/<me>/scratch_random_dir/...` is neither in the explicit
-non-workspace denylist (`Downloads`, `Documents`, `Desktop`,
-`Library`, `Movies`, `Music`, `Pictures`, `Public`, `Applications`)
-nor in the safe-zone allow. It falls through to user approval.
-
-Quoted or escaped path SEGMENTS are allowed: the safe-path char class
-includes `'`, `"`, `\`, `(`, and `)`, so a directory literally named
-`(0)concepts` matches whether written `'(0)concepts'` or `\(0\)concepts`
-(common with SolidJS route groups). A whole path ARG wrapped in leading
-quotes (`find "docs" -name '*.md'`) still passthroughs -- drop the outer
-quotes to auto-allow. `..` traversal stays denied regardless of quoting.
+Quoted or escaped path SEGMENTS are allowed (a directory literally named
+`(0)concepts` matches whether written `'(0)concepts'` or `\(0\)concepts`),
+but a whole path ARG wrapped in leading quotes (`find "docs" ...`)
+passthroughs -- drop the outer quotes to auto-allow. `..` traversal stays
+denied regardless of quoting.
 
 ### `awk`
 
@@ -536,11 +561,32 @@ ffprobe -f lavfi -i sine=440      # allowed (synthetic/lavfi probe)
 
 **Blocked:** `ffprobe file.m4b`, `ffprobe -show_streams file.mp3`, `ffprobe -i file.wav`.
 
-### `perl` on `.pg`/`.pgml` files
+### `perl` in-place edits (`-i`)
 
-Use the `/webwork-writer` skill lint guide instead. PGML is not standard Perl.
+Use the Edit tool for in-place edits (it shows a diff). Plain `perl script.pl` is fine.
 
-**Blocked:** `perl -c problem.pgml`, `perl problem.pg`.
+**Blocked:** `perl -pi -e '...' f`, `perl -0pi -e '...' f`, `perl -i -pe '...' f`.
+
+### `osascript`, `screencapture $(...)`
+
+`osascript` can drive arbitrary apps -- ask the user or use a screenshot helper. Plain
+`screencapture /tmp/x.png` is allowed; the command-substitution form is blocked.
+
+**Blocked:** `osascript -e '...'`, `screencapture -l $(osascript ...) /tmp/x.png`.
+
+### `claude` CLI dispatch (`-p`/`--print`)
+
+Use the Agent tool to dispatch subagents; the `claude` CLI spawns an unsupervised
+nested agent the hook cannot see.
+
+**Blocked:** `claude -p "..."`, `claude --print "..."`.
+
+### `kill` / `pkill` / `killall`
+
+Let the program exit on its own (for an app under test, launch with `--auto-exit=3`).
+Find a running instance with `pgrep -l <name>` and let the user stop it.
+
+**Blocked:** `kill 123`, `kill -9 $PID`, `pkill app`, `killall app`.
 
 ### Heredocs (`<<EOF`)
 
@@ -599,23 +645,9 @@ Branch switches (`git checkout main`, `git checkout -b feature/x`) remain
 allowed unchanged. If you really want to wipe everything, ask the user to
 run the command themselves.
 
-**Why:** These forms have the same blast radius as `git reset --hard` --
-they wipe every uncommitted change and unstage all renames in one shot.
-That destroys agent work in progress (edits, renames, staged content) with
-no recovery path other than `git reflog`.
-
 **Blocked:** Any `git restore` or `git checkout` invocation whose pathspec is
-`.` or `:/` (the "all tracked files" selector). Examples:
-
-- `git restore .`
-- `git restore :/`
-- `git restore --staged --worktree .`
-- `git restore --source=HEAD .`
-- `git checkout .`
-- `git checkout -- .`
-- `git checkout HEAD -- .`
-- `git checkout main -- .`
-- `git checkout :/`
+`.` or `:/` (the "all tracked files" selector), e.g. `git restore .`,
+`git restore --staged --worktree .`, `git checkout -- .`, `git checkout :/`.
 
 ### `git push --force` (including --force-with-lease)
 

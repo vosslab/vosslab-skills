@@ -18,9 +18,12 @@ For UI/UX review and design polish, use the `ui-ux-engineer` skill.
 - Inspect the target for existing PySide6 source: window or widget classes, `.ui` files, signal-slot wiring, and any GUI tests or screenshots.
 - If GUI code exists, follow the existing-app path: inventory the current widgets and state flow, then make targeted, layout-preserving changes tied to a specific issue.
 - If no GUI code exists, follow the greenfield path: decide the window shell and primary surface first, then build the layout and hierarchy before wiring behavior.
+- Read [`references/project_workflow.md`](references/project_workflow.md) for the full two-path workflow: greenfield (evidence, Qt contract, implementation choices, validation) and existing-repo (inspect first, identify current design, targeted changes, prove improvement).
 
 2. Classify the surface before coding.
+- Read [`references/topic_index.md`](references/topic_index.md) as the routing front door: match the user problem to a row to find the right reference guide before writing any code.
 - Decide whether the work belongs in Qt Widgets or Qt Quick first, then decide whether it should use a `QMainWindow`, `QWidget`, `QDialog`, wizard, dock layout, or model/view surface.
+- Read [`references/task_selection.md`](references/task_selection.md) to classify underspecified requests by window container, state coordination model, user goal, and required states.
 - Identify the primary user goal, the main workflow path, and the states that must be handled: loading, empty, valid, invalid, busy, success, and failure.
 - Read [`references/official_qt_for_python_docs.md`](references/official_qt_for_python_docs.md) when you need the official entry points for installation, module lookup, tutorials, examples, or package tools.
 
@@ -36,10 +39,11 @@ For UI/UX review and design polish, use the `ui-ux-engineer` skill.
 - Keep forms short, labels explicit, and primary actions visually dominant.
 - Design for resizing from the start; do not assume one fixed window size.
 - Read [`references/model_view.md`](references/model_view.md) before building non-trivial tables, trees, filtering, sorting, or custom cell rendering.
+- Read [`references/testing_and_oracles.md`](references/testing_and_oracles.md) to drive every UI state through pytest-qt and qtbot, validate against an oracle, and capture a before-and-after screenshot grid as the proof artifact.
 
 ## Implementation defaults
 
-- Load the local-only design books first when present; see the survey in [`references/reference_survey.md`](references/reference_survey.md) for the topic-to-book map, validated grep terms, and the graceful-absent fallback to official Qt docs.
+- Load the local-only design books first when present; see the survey in [`references/reference_survey.md`](references/reference_survey.md) for the topic-to-book map, validated grep terms, and the graceful-absent fallback to official Qt docs. See [`references/local_books.md`](references/local_books.md) for the reading order and Qt-UX lens per book.
 - Prefer Qt Widgets for classic desktop productivity tools, forms, settings, inspectors, admin panels, and other dense business UIs.
 - Use Qt Quick only when the product genuinely needs a more fluid, animated, or QML-centric surface and the request clearly points there.
 - Prefer `QMainWindow` for multi-region applications with menus, toolbars, docks, or status bars.

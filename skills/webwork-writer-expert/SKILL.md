@@ -1,9 +1,9 @@
 ---
-name: webwork-writer
+name: webwork-writer-expert
 description: Create, edit, and lint WeBWorK PG/PGML questions following docs/webwork guidance, HTML whitelist constraints, and renderer-based lint checks. Use for tasks like authoring new PGML problems, adjusting randomization or grading, fixing PGML rendering issues, and running renderer API linting.
 ---
 
-# WebWork Question Authoring
+# WebWork question authoring
 
 ## Overview
 
@@ -15,9 +15,9 @@ Use this skill to author or adjust PG/PGML problems with the local WebWork rende
 Before editing any `.pg` or `.pgml` file, before proposing fixes, and before
 running the renderer, you MUST use the Read tool on each of these files:
 
-1. `skills/webwork-writer/references/docs/HOW_TO_LINT.md`
-2. `skills/webwork-writer/references/docs/PG_COMMON_PITFALLS.md`
-3. `skills/webwork-writer/references/docs/WEBWORK_PROBLEM_AUTHOR_GUIDE.md`
+1. `skills/webwork-writer-expert/references/docs/HOW_TO_LINT.md`
+2. `skills/webwork-writer-expert/references/docs/PG_COMMON_PITFALLS.md`
+3. `skills/webwork-writer-expert/references/docs/WEBWORK_PROBLEM_AUTHOR_GUIDE.md`
 
 Do not summarize from memory. Do not skip because "you already know PGML."
 Agents that skip these docs ship problems with well-known pitfalls that fail
@@ -30,18 +30,30 @@ this session before continuing.
 
 ## Workflow
 
-1) Satisfy the Required reading block above. This is step zero; nothing else
-   happens first.
-2) Identify the target repo and file, then read any additional relevant doc
+0) Classify the request using `references/task_selection.md`, then route to the
+   correct guide via `references/topic_index.md`. Both files must be consulted
+   before opening any PG/PGML file.
+1) Determine project shape using `references/project_workflow.md`:
+   - **Greenfield**: no existing `.pg`/`.pgml` files in the target repo. Write
+     the WebWork design contract first, then scaffold problems following the
+     greenfield path.
+   - **Improve existing**: existing `.pg`/`.pgml` files are present. Inspect
+     the existing files, renderer harness, and OPL headers first; then apply
+     changes one category at a time following the existing-repo path.
+2) Satisfy the Required reading block above. This is step zero of editing; nothing
+   else happens first.
+3) Identify the target repo and file, then read any additional relevant doc
    references from `references/docs.md` for the question type at hand.
-3) Apply the PGML structure and rules from the WebWork author guide.
-4) Make edits in the problem file and update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `delegate-manager-to-subagents`, dispatch a docs subagent to add the entry.
-5) Render with `-r` using the local renderer API to visually confirm layout and
+4) Apply the PGML structure and rules from the WebWork author guide.
+5) Make edits in the problem file and update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `delegate-manager-to-subagents`, dispatch a docs subagent to add the entry.
+6) Render with `-r` using the local renderer API to visually confirm layout and
    checkbox behavior (prerequisite).
-6) Lint or render with the local renderer API when the change affects PGML
+7) Lint or render with the local renderer API when the change affects PGML
    output.
+8) Validate against the oracles in `references/testing_and_oracles.md`: lint
+   output clean, visual render correct, grading test passes, seed reproducible.
 
-## Core Rules (from repo docs)
+## Core rules (from repo docs)
 
 - Use PGML-first structure with inline grading; keep setup, answers, and PGML text in separate sections.
 - PGML is single-pass: do not build PGML tag wrappers inside Perl strings. If a variable contains HTML, render it with `[$var]*`.
@@ -81,7 +93,7 @@ Conventions:
 - When fixing a bug in a block, update every PGML that carries it; a repo-wide
   `grep` on the block name surfaces them all.
 
-## Reference Files
+## Reference files
 
 - Read references/repos.md to locate local repos and paths.
 - Read references/docs.md for the full index of authoring docs, grouped by purpose.

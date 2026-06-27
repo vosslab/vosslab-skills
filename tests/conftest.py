@@ -31,3 +31,25 @@ collect_ignore = ["e2e", "playwright"]
 #       "pyflakes_code_lint": ["devel/scratch_*.py"],
 #   }
 REPO_HYGIENE_FILTERS = {}
+
+# === OPTIONAL_HELPERS_MENU ===
+# See meta/docs/PROPAGATION_RULES.md for the managed-block propagation contract.
+# This block is an optional helpers menu appended once by propagation and
+# never overwritten on subsequent propagation runs. Uncomment a recipe below
+# to enable it for this repo. Every line here is a comment by default so an
+# untouched consumer behaves exactly as it did before propagation added this
+# block.
+#
+# Note: inserting the repo root onto sys.path is now done unconditionally at the
+# top of this file via file_utils.get_repo_root(), so it is no longer a recipe.
+#
+# --- Recipe 1: redirect matplotlib config dir to a per-repo tmp location ---
+# Prevents matplotlib from writing to the home-directory config cache during
+# tests, which can cause cross-repo pollution or permission errors in CI.
+# Set MPLCONFIGDIR to a writable tmp path before matplotlib is imported.
+# Note: PYTHONUNBUFFERED and PYTHONDONTWRITEBYTECODE are handled by
+# source_me.sh and belong there, not here.
+#
+#	import os
+#	import tempfile
+#	os.environ.setdefault("MPLCONFIGDIR", tempfile.mkdtemp(prefix="mpl_"))

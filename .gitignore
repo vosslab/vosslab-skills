@@ -7,6 +7,7 @@ local-only/
 
 # === UNIVERSAL ===
 _temp*.?*
+OTHER_REPOS/
 # === PYTHON ===
 build/
 dist/
@@ -14,6 +15,7 @@ sdist/
 *.egg
 *.egg-info/
 site/
+
 
 
 

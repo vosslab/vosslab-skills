@@ -53,6 +53,20 @@ or shared type design.
 - Framework- or platform-specific runtime patterns (React component design, Node service routing,
   Next/Nest/Vue conventions). This skill is type-level only; route those to a framework skill.
 
+## Workflow
+
+When invoked on a target TypeScript project, decide the project shape before anything else, then
+follow the working style below.
+
+- Greenfield (new project or new module with no type contract): enable strict flags, write the type
+  contract first, then implement. See [`references/project_workflow.md`](references/project_workflow.md).
+- Improve-existing (code already in place): inspect strictness and casts, capture the `tsc --noEmit`
+  baseline, then fix one error or module at a time and prove the diagnostics dropped. See
+  [`references/project_workflow.md`](references/project_workflow.md).
+
+For symptom-driven routing, start at [`references/topic_index.md`](references/topic_index.md) and
+classify the task with [`references/task_selection.md`](references/task_selection.md).
+
 ## Working style
 
 1. Reproduce first.
@@ -148,6 +162,10 @@ client (keywords: game, simulation, save file, entity id, coordinate,
 - Match the concept in the routing table, then provide a minimal before and after example.
 
 ## Routing table
+
+For symptom-driven entry, [`references/topic_index.md`](references/topic_index.md) is the routing
+front door: match a reported problem to a row, then open the named guide. The table below is the
+keyword index into the same rule files.
 
 | Keyword or topic | Rule file |
 | --- | --- |

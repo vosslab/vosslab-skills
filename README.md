@@ -59,7 +59,7 @@ See [docs/INSTALL.md](docs/INSTALL.md) for local clone and individual skill impo
 - `arch-docs`: Create or refresh CODE_ARCHITECTURE.md and FILE_STRUCTURE.md.
 - `audit-code-reviewer`: Parallel multi-reviewer audit before merge or release.
 - `blueprint-plan-drafter`: Create forward-looking implementation plans from scratch.
-- `bptools-writer`: Create and validate biology-problems bptools Python question generators.
+- `bptools-writer-expert`: Create and validate biology-problems bptools Python question generators.
 - `delegate-manager-to-subagents`: Manage execution of an approved plan through subagents.
 - `docset-updater`: Audit and refresh the full repo doc set against REPO_STYLE.md.
 - `gas-town-workflow`: Gas Town style multi-agent coordination with role-mapped task routing.
@@ -79,7 +79,7 @@ See [docs/INSTALL.md](docs/INSTALL.md) for local clone and individual skill impo
 - `unit-test-starter`: Generate thorough Python 3 pytest unit tests across a repo.
 - `vision-expert`: Design, implement, and review computer vision systems in Python.
 - `setup-install-usage-docs`: Create or refresh docs/INSTALL.md and docs/USAGE.md stubs.
-- `webwork-writer`: Create and lint WeBWorK PG/PGML questions.
+- `webwork-writer-expert`: Create and lint WeBWorK PG/PGML questions.
 
 Full index with links: [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md).
 
