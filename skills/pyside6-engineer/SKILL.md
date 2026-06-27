@@ -14,19 +14,24 @@ For UI/UX review and design polish, use the `ui-ux-engineer` skill.
 
 ## Workflow
 
-1. Classify the surface before coding.
+1. Detect the project shape before coding.
+- Inspect the target for existing PySide6 source: window or widget classes, `.ui` files, signal-slot wiring, and any GUI tests or screenshots.
+- If GUI code exists, follow the existing-app path: inventory the current widgets and state flow, then make targeted, layout-preserving changes tied to a specific issue.
+- If no GUI code exists, follow the greenfield path: decide the window shell and primary surface first, then build the layout and hierarchy before wiring behavior.
+
+2. Classify the surface before coding.
 - Decide whether the work belongs in Qt Widgets or Qt Quick first, then decide whether it should use a `QMainWindow`, `QWidget`, `QDialog`, wizard, dock layout, or model/view surface.
 - Identify the primary user goal, the main workflow path, and the states that must be handled: loading, empty, valid, invalid, busy, success, and failure.
 - Read [`references/official_qt_for_python_docs.md`](references/official_qt_for_python_docs.md) when you need the official entry points for installation, module lookup, tutorials, examples, or package tools.
 
-2. Choose a structure that keeps state understandable.
+3. Choose a structure that keeps state understandable.
 - Prefer a small composition tree of widgets over a giant window class.
 - Keep business logic separate from widget layout logic.
 - Use signals, slots, and small controller-style helpers to avoid tightly coupling every widget to every other widget.
 - Read [`references/pyside6_patterns.md`](references/pyside6_patterns.md) when choosing between common widget, dialog, navigation, threading, and model/view patterns.
 - Read [`references/signals_slots.md`](references/signals_slots.md) when designing event flow, widget coordination, worker updates, or signal boundaries.
 
-3. Build the UI from layout and hierarchy first.
+4. Build the UI from layout and hierarchy first.
 - Prefer layouts over absolute positioning.
 - Keep forms short, labels explicit, and primary actions visually dominant.
 - Design for resizing from the start; do not assume one fixed window size.
@@ -34,6 +39,7 @@ For UI/UX review and design polish, use the `ui-ux-engineer` skill.
 
 ## Implementation defaults
 
+- Load the local-only design books first when present; see the survey in [`references/reference_survey.md`](references/reference_survey.md) for the topic-to-book map, validated grep terms, and the graceful-absent fallback to official Qt docs.
 - Prefer Qt Widgets for classic desktop productivity tools, forms, settings, inspectors, admin panels, and other dense business UIs.
 - Use Qt Quick only when the product genuinely needs a more fluid, animated, or QML-centric surface and the request clearly points there.
 - Prefer `QMainWindow` for multi-region applications with menus, toolbars, docks, or status bars.

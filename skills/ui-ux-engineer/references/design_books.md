@@ -77,6 +77,15 @@ Use this reference when a PySide6 interface needs stronger visual judgment, bett
 - If layouts feel inconsistent, start with `Grid Systems in Graphic Design`.
 - If the product flow is confusing, start with `About Face`, then `UI is Communication`.
 
+## Local corpus map
+
+The three books listed as "best immediate references" (`About_Face`, `Practical_UI`,
+`Refactoring_UI`) are also present as local flat-text conversions in
+`references/local-only/`. See [reference_survey.md](reference_survey.md) for the
+topic-to-book coverage map, per-topic grep terms, and coverage-strength ratings for
+those three books. Use [reference_survey.md](reference_survey.md) when you want to
+locate a specific passage by topic; use this file for the broader design literature.
+
 ## Source note
 
 This list is adapted from user-provided source material describing recommended UI design books for 2026 and is curated here as a practical reading map for PySide6-oriented design work.

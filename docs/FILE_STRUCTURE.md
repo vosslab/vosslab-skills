@@ -84,7 +84,9 @@ Two flavors live here:
   [docs/SKILL_NAMING.md](SKILL_NAMING.md),
   [docs/archive/SKILL_PHILOSOPHY_REVIEW.md](archive/SKILL_PHILOSOPHY_REVIEW.md),
   [docs/CODE_ARCHITECTURE.md](CODE_ARCHITECTURE.md),
-  [docs/FILE_STRUCTURE.md](FILE_STRUCTURE.md).
+  [docs/FILE_STRUCTURE.md](FILE_STRUCTURE.md),
+  [docs/EXPERT_SKILL-BEST_PRACTICES.md](EXPERT_SKILL-BEST_PRACTICES.md)
+  (conventions for authoring domain-expert skills and the local-only reference-survey pattern).
 - Archived skill folders live under [docs/archive/skills/](archive/skills/):
   currently [docs/archive/skills/old-manager-review-existing-plan/](archive/skills/old-manager-review-existing-plan/)
   and [docs/archive/skills/old-orchestrate-next-milestone/](archive/skills/old-orchestrate-next-milestone/).

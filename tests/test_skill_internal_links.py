@@ -105,7 +105,8 @@ def is_gitignored(target: pathlib.Path) -> bool:
 	Return True if the target path is matched by repo .gitignore rules.
 
 	Skills can intentionally reference large local files (book notes,
-	datasets) that are gitignored by pattern (e.g. `skills/*/references/*.txt`).
+	datasets) that are gitignored by pattern (e.g. the `local-only/` rule
+	covers books under `references/local-only/`).
 	Those missing-on-disk cases are not test failures.
 	"""
 	# git check-ignore exits 0 when the path matches an ignore rule, 1 when

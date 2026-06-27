@@ -23,3 +23,8 @@ Use this reference to choose between the local computer-vision book resources bu
 - For faster recipe-style implementation help, check `OpenCV_Cookbook.txt`.
 - For video tracking pipelines, read `Video_Object_Tracking.txt` first.
 - For multi-camera geometry or reconstruction, use other verified sources until `Multiple_View_Geometry.txt` is fixed.
+
+## Topic-to-book routing
+
+For a full topic-by-topic map with grep terms and coverage ratings, see
+[reference_survey.md](reference_survey.md).

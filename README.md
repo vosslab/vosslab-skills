@@ -12,6 +12,7 @@ Reusable workflow skills that guide Claude and Codex through code review, plan d
 - [docs/FILE_STRUCTURE.md](docs/FILE_STRUCTURE.md): Directory map and where to add new work.
 - [docs/CHANGELOG.md](docs/CHANGELOG.md): Dated record of documentation and skill updates.
 - [docs/REPO_STYLE.md](docs/REPO_STYLE.md): Repository organization and documentation conventions.
+- [docs/EXPERT_SKILL-BEST_PRACTICES.md](docs/EXPERT_SKILL-BEST_PRACTICES.md): Conventions for authoring domain-expert skills and the local-only reference-survey pattern.
 - [docs/PYTHON_STYLE.md](docs/PYTHON_STYLE.md): Python coding standards used by this repository.
 - [docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md): Markdown formatting and writing rules.
 

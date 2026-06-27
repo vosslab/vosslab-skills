@@ -105,7 +105,9 @@ See [docs/PLAYWRIGHT_USAGE.md](PLAYWRIGHT_USAGE.md).
 - Add a new skill: create `skills/<new-skill>/SKILL.md` following
   [docs/SKILL_NAMING.md](SKILL_NAMING.md) and the
   [skills/skill-writing-guide/SKILL.md](../skills/skill-writing-guide/SKILL.md)
-  guide; regenerate [docs/SKILLS_INDEX.md](SKILLS_INDEX.md) with
+  guide; for the expert-skill subclass (naming, skeleton, survey pattern) see
+  [docs/EXPERT_SKILL-BEST_PRACTICES.md](EXPERT_SKILL-BEST_PRACTICES.md);
+  regenerate [docs/SKILLS_INDEX.md](SKILLS_INDEX.md) with
   [tools/build_skills_index.py](../tools/build_skills_index.py).
 - Add a new sub-agent role: drop a markdown file under
   [agents/](../agents/); reference it from the dispatching skill.

@@ -2,6 +2,21 @@
 
 ### Additions and New Features
 
+- Added `docs/EXPERT_SKILL-BEST_PRACTICES.md`, a conventions guide for authoring domain-expert
+  skills with the local-only reference-survey pattern (motivation, directory layout, SKILL.md
+  guidance, `local_books.md` format, `reference_survey.md` conventions, and gitignore rules).
+- Added `skills/vision-expert/references/reference_survey.md`: topic-to-book coverage map with
+  bare-path references, validated grep terms, and strong/partial/thin coverage ratings;
+  routes to official docs when a local book is absent.
+- Added `skills/pyside6-engineer/references/reference_survey.md`: coverage map of the three
+  local-only design books with bare-path references, validated grep terms, and
+  coverage-strength ratings; routes to official Qt docs when books are absent.
+- Added `skills/ui-ux-engineer/references/reference_survey.md`: coverage map of the three
+  local-only design books with bare-path references, validated grep terms, and
+  coverage-strength ratings; routes to design_books.md when books are absent.
+- Added `tests/test_no_local_only_markdown_links.py`: guard that fails if any tracked Markdown
+  file links to a path that contains `local-only/` (which is gitignored and absent on clone),
+  preventing broken reference links from shipping.
 - Added the `geometry-expert` skill (`skills/geometry-expert/`) for designing, implementing,
   debugging, and reviewing computational geometry algorithms in any language. Ships with
   `SKILL.md`, eight reference guides (`reference_survey.md`, `topic_index.md`,
@@ -26,6 +41,8 @@
 
 ### Behavior or Interface Changes
 
+- Added a project-shape Workflow step (greenfield vs improve-existing) to the vision-expert,
+  pyside6-engineer, and ui-ux-engineer skills; existing steps were renumbered.
 - Wired `screenshot-docs` into the `docset-updater` chain as a second pass after
   `readme-docs` and before `agents-md-fixer`. When no app window or display is available
   it adds a Known-gaps line, leaves existing screenshots and the block in place, and the

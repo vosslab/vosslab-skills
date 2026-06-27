@@ -12,13 +12,19 @@ Prefer simple, testable pipelines and evidence-driven evaluation over fashionabl
 
 ## Workflow
 
-1. Define the exact vision task.
+1. Detect project state.
+- Search the target repo for existing CV source files, model configs, pipeline scripts, and evaluation code.
+- Search for existing tests or benchmarks that characterize current behavior.
+- If any of these exist, follow the existing-pipeline path: build an inventory, write characterization tests before changing anything, and improve one factor at a time.
+- If none exist, follow the greenfield path: define success metrics first, choose the simplest viable pipeline, and seed a small representative test set before writing production code.
+
+2. Define the exact vision task.
 - Determine whether the task is classification, detection, segmentation, keypoints, tracking, OCR, retrieval, restoration, or measurement.
 - Identify the input domain: still image, video, live camera, document scan, microscopy, satellite, industrial, or another domain.
 - Define success in measurable terms such as accuracy, recall, latency, FPS, false positives, localization error, or downstream business impact.
 - Read [`references/task_selection.md`](references/task_selection.md) when the request is underspecified or multiple CV framings are possible.
 
-2. Choose the simplest viable pipeline.
+3. Choose the simplest viable pipeline.
 - Start with a baseline that can be inspected and benchmarked.
 - Separate data ingestion, preprocessing, inference, postprocessing, and evaluation.
 - Prefer classical CV when the task is geometric, threshold-driven, template-based, or small-data.
@@ -29,18 +35,18 @@ Prefer simple, testable pipelines and evidence-driven evaluation over fashionabl
   - "OpenCV Cookbook" for practical implementation patterns and utility code.
   - "Video Object Tracking" for tracking-specific tasks, datasets, and methods.
 
-3. Make data quality explicit.
+4. Make data quality explicit.
 - Check label quality, class balance, resolution, compression artifacts, lighting, occlusion, and domain shift.
 - Treat poor annotations and mismatched evaluation data as first-order causes of failure.
 - Do not blame the model first when the dataset is weak or misaligned.
 
-4. Evaluate before optimizing.
+5. Evaluate before optimizing.
 - Establish a baseline metric and representative validation set.
 - Inspect failures by category rather than averaging everything into one score.
 - Measure speed, memory, and deployment constraints alongside accuracy.
 - Read [`references/debugging_and_failure_analysis.md`](references/debugging_and_failure_analysis.md) when performance is unstable, errors cluster in strange ways, or the model seems to fail "randomly."
 
-5. Improve iteratively.
+6. Improve iteratively.
 - Change one major factor at a time: data, preprocessing, architecture, thresholding, postprocessing, or evaluation.
 - Prefer targeted fixes tied to a known failure mode.
 - Keep intermediate visualizations so behavior is explainable.
@@ -53,6 +59,7 @@ Prefer simple, testable pipelines and evidence-driven evaluation over fashionabl
 - For video, define frame sampling, buffering, temporal smoothing, and throughput requirements up front.
 - For OCR, treat document cleanup, orientation, crop quality, and layout structure as part of the pipeline, not preprocessing trivia.
 - If the work is OpenCV-heavy, check the local books before reinventing standard pipelines or utility patterns.
+- Load the local-only books first when present; see [`references/local_books.md`](references/local_books.md) and the survey in [`references/reference_survey.md`](references/reference_survey.md).
 
 ## Quality bar
 
