@@ -15,34 +15,58 @@ the remaining `docs/` files no per-doc skill owns.
 
 ## Owned-doc routing
 
-Each of these docs has a dedicated skill. Invoke them in this order so
-downstream skills see current content to point at:
+Each of these docs has a dedicated skill. Each skill writes its own files:
 
-1. `arch-docs` -> `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`
-2. `setup-install-usage-docs` -> `docs/USAGE.md`, `docs/INSTALL.md`
-3. `readme-docs` -> `README.md` (links into the `docs/` set above)
-4. `screenshot-docs` -> `docs/screenshots/` (captures app screenshots, writes them to
-   `docs/screenshots/`, and rewrites the readme-docs managed screenshot block with real
-   embeds; runs as a second pass after README prose exists)
-5. `agents-md-fixer` -> `AGENTS.md` (trims to pointers into `docs/*.md`)
+- `arch-docs` -> `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md` (and adds the
+  links to `README.md`)
+- `setup-install-usage-docs` -> `docs/USAGE.md`, `docs/INSTALL.md`
+- `readme-docs` -> `README.md` (links into the `docs/` set above, reserves the
+  screenshot block)
+- `screenshot-docs` -> `docs/screenshots/` PNGs and the managed screenshot block
+  inside `README.md` and `docs/`
+- `agents-md-fixer` -> `AGENTS.md` (trims to pointers into `docs/*.md`)
+
+Ship these as three dependency-aware waves so independent skills run together and
+each wave starts from a ready precondition:
+
+- Wave 1 (parallel): `arch-docs`, `setup-install-usage-docs`, and the remaining-docs
+  audit (step 3). These write separate `docs/` files; `arch-docs` is the lone
+  `README.md` writer in this wave.
+- Wave 2: `readme-docs`. Starts once Wave 1 reports, so `arch-docs` has finished its
+  `README.md` touch and the `docs/` link targets exist.
+- Wave 3 (parallel): `screenshot-docs` and `agents-md-fixer`. `screenshot-docs` fills
+  the screenshot block that `readme-docs` reserved; `agents-md-fixer` points
+  `AGENTS.md` into the finished `docs/*.md` set. They write separate targets, so they
+  run together.
+
+Three preconditions set the wave order: `readme-docs` follows `arch-docs` (both write
+`README.md`); `screenshot-docs` follows `readme-docs` (it fills the reserved block);
+`agents-md-fixer` follows the completed `docs/*.md` set.
 
 ## Workflow
 
 1. Read the rules and inventory
    - Read `AGENTS.md`, `docs/REPO_STYLE.md`, and `docs/MARKDOWN_STYLE.md`.
    - List `docs/` contents and root docs (`AGENTS.md`, `README.md`, `LICENSE`).
-2. Run the per-doc skills in order
-   - Invoke `arch-docs`, then `setup-install-usage-docs`, then `readme-docs`, then
-     `screenshot-docs`, then `agents-md-fixer`, each via the Skill tool.
+2. Dispatch the per-doc skills in three waves
+   - Wave 1 (parallel): dispatch `arch-docs`, `setup-install-usage-docs`, and the
+     remaining-docs audit (step 3) together in one batch.
+   - Wave 2: dispatch `readme-docs` once Wave 1 reports.
+   - Wave 3 (parallel): dispatch `screenshot-docs` and `agents-md-fixer` together once
+     Wave 2 reports.
    - `screenshot-docs` runs as a second pass after README prose exists. When no app
      window or display is available, it adds a Known-gaps line to the report, leaves
      existing screenshots and the managed block in place, leaves both block sentinels
      for the next run, and the chain continues to `agents-md-fixer`.
-   - Let each skill decide whether its docs need creation or refresh; do not
-     duplicate their work here.
-   - Under `delegate-manager-to-subagents`, dispatch a fresh subagent per skill
-     instead of invoking inline (one atomic task per subagent).
+   - Let each skill decide whether its docs need creation or refresh; each skill owns
+     its own content.
+   - Under `delegate-manager-to-subagents`, dispatch a fresh subagent per skill and
+     send each wave's subagents in a single batch so they run concurrently.
 3. Audit the remaining docs (this skill's direct responsibility)
+   - Each file below is an independent atomic task that joins Wave 1's parallel batch.
+     Under `delegate-manager-to-subagents`, give each file its own subagent with one
+     owner, one target file, and one verification result. This list is the source of
+     truth for which files the audit covers.
    - For each below, create or update only when repo evidence supports truthful
      content. If evidence is missing, add a short stub with a "Known gaps" task
      list instead of guessing.
@@ -97,6 +121,13 @@ For docs this skill writes directly (step 3):
 ## Delegated execution
 
 Under `delegate-manager-to-subagents`, dispatch a fresh subagent for each per-doc
-skill and for the remaining-docs audit, each with one bounded task, the relevant
-repo rules, and one verification step. Do not continue the same subagent across
-unrelated follow-up work. See `docs/REPO_STYLE.md`.
+skill and for each remaining-docs audit file, each with one bounded task, the
+relevant repo rules, and one verification step. Give each subagent a single atomic
+task.
+
+Be efficient with time: subagents and tokens are cheap, wall time is scarce.
+Dispatch the independent tasks in each wave as one parallel batch. Give each task one
+owner, one clear outcome, and one verification step. Order the work by the three
+preconditions in "Owned-doc routing" and ship everything else together. See
+`docs/REPO_STYLE.md#core-philosophies` ("Be efficient with time", "Atomic task
+decomposition", "Prompt positively") and the `parallel-plan` skill.

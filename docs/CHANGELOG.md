@@ -9,6 +9,20 @@
   (gh-pages branch, `docs/` site root, root `index.html`, Pages deploy workflow) and
   required confirmation before adding a URL. Also added a matching optional-sections bullet.
 
+### Behavior or Interface Changes
+
+- Reworked `skills/docset-updater/SKILL.md` so managers dispatch the per-doc skills in
+  three dependency-aware waves instead of a five-step serial chain: Wave 1 runs
+  `arch-docs`, `setup-install-usage-docs`, and the remaining-docs audit in parallel;
+  Wave 2 runs `readme-docs`; Wave 3 runs `screenshot-docs` and `agents-md-fixer` in
+  parallel. Documented the three preconditions that set the order (shared `README.md`
+  for `arch-docs` -> `readme-docs`, the reserved screenshot block for
+  `readme-docs` -> `screenshot-docs`, and the finished `docs/*.md` set for
+  `agents-md-fixer`), made each remaining-docs audit file an atomic one-owner task, and
+  added positively phrased wall-time-efficiency guidance cross-referencing the
+  "Be efficient with time", "Atomic task decomposition", and "Prompt positively"
+  core philosophies.
+
 ## 2026-06-26
 
 ### Additions and New Features
