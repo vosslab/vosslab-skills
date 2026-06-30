@@ -1,3 +1,14 @@
+## 2026-06-30
+
+### Additions and New Features
+
+- Added a "Live demo / GitHub Pages" section to the `readme-docs` skill
+  (`skills/readme-docs/SKILL.md`) so READMEs for repos that deploy to GitHub Pages link
+  the live instance (`https://<owner>.github.io/<repo>/`) near the top, letting users run
+  browser apps and games in one click without cloning. Listed Pages-deployment evidence
+  (gh-pages branch, `docs/` site root, root `index.html`, Pages deploy workflow) and
+  required confirmation before adding a URL. Also added a matching optional-sections bullet.
+
 ## 2026-06-26
 
 ### Additions and New Features

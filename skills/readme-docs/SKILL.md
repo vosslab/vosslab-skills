@@ -20,6 +20,7 @@ Keep deeper detail in `docs/` and link it from the README.
 
 ## Optional sections (only with evidence or genuinely short)
 
+- Live demo link (see "Live demo / GitHub Pages" section below).
 - Installation summary (otherwise link `docs/INSTALL.md`).
 - Usage examples (otherwise link `docs/USAGE.md`).
 - Testing command (only if you can confirm the command exists).
@@ -27,6 +28,28 @@ Keep deeper detail in `docs/` and link it from the README.
 - Status or maturity note (experimental, stable, deprecated).
 - Maintainer or support link (issues, discussion, contact).
 - Screenshots placeholder (see "Screenshots placeholder" section below).
+
+## Live demo / GitHub Pages
+
+When the repo deploys to GitHub Pages (a browser app, game, or interactive demo),
+link the live GitHub Pages instance near the top of the README so users can run it
+in one click without cloning. Evidence the repo uses Pages:
+
+- A `gh-pages` branch, a `docs/` site root, or an `index.html` at the deploy root.
+- A GitHub Actions workflow under `.github/workflows/` that deploys to Pages
+  (for example `actions/deploy-pages` or `peaceiris/actions-gh-pages`).
+- A configured Pages URL the user provides.
+
+Construct the URL as `https://<owner>.github.io/<repo>/` (or the user-supplied custom
+domain). Add a short, prominent line under the overview paragraph, for example:
+
+```
+Play it live: [<owner>.github.io/<repo>](https://<owner>.github.io/<repo>/)
+```
+
+Keep the link text the visible URL so readers see exactly where it goes. Only add the
+link when you have confirmed Pages is deployed; do not guess a URL for a repo that does
+not publish to Pages.
 
 ## Screenshots placeholder
 

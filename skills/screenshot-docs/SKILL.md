@@ -93,8 +93,40 @@ app's front-window bounds and captures that rectangle with the macOS
 `screencapture` command.
 
 For a menu, a free-form region, or the whole screen, use
-[scripts/capture_region.sh](scripts/capture_region.sh). To render a CLI command's
-output to a PNG, use [scripts/capture_cli.sh](scripts/capture_cli.sh).
+[scripts/capture_region.sh](scripts/capture_region.sh).
+
+##### Terminal/CLI artifact-first decision branch
+
+For a terminal/CLI app, apply this decision branch before choosing a capture
+method, because the most compelling screenshot is usually the tool's output
+product, not its help text.
+
+1. **Does the tool produce a visual output artifact?** Check the tool's output
+   directory (for example `output/`) for an already-generated file before
+   regenerating one. Visual artifacts include: images, spreadsheets (`.xlsx`,
+   `.ods`), PDFs, plots, or rendered HTML pages.
+
+   - **Image or plot:** embed or `screencapture` the artifact directly; copy it
+     to `docs/screenshots/<slug>.png`.
+   - **Spreadsheet or PDF:** use
+     [scripts/render_artifact_libreoffice.sh](scripts/render_artifact_libreoffice.sh)
+     for a full-width landscape PNG. For a spreadsheet, pre-apply landscape +
+     fit-to-one-page-wide page setup with openpyxl (snippet in the script header)
+     before calling the script so no columns are clipped.
+   - **Rendered HTML:** open in a Playwright browser and capture with
+     [scripts/screenshot_web.mjs](scripts/screenshot_web.mjs).
+
+2. **No visual artifact and a display IS available:** run the command in a real
+   terminal and capture the Terminal window via
+   [scripts/capture_local.sh](scripts/capture_local.sh) (easy-screenshot or the
+   mini-capture fallback).
+
+3. **No visual artifact and NO display is available:** prefer a fenced `--help`
+   code block embedded directly in the doc over an image; an ASCII code block
+   is accessible, searchable, and copy-pasteable. Use
+   [scripts/capture_cli.sh](scripts/capture_cli.sh) (ImageMagick text render)
+   only as a last-resort headless fallback when the doc format genuinely
+   requires an image.
 
 #### Web app
 
@@ -163,10 +195,11 @@ Add an entry to `docs/CHANGELOG.md` listing:
 - [scripts/capture_local.sh](scripts/capture_local.sh) - local window capture via easy-screenshot
 - [scripts/mini_capture_window.sh](scripts/mini_capture_window.sh) - dependency-free mini window capture
 - [scripts/capture_region.sh](scripts/capture_region.sh) - full screen, fixed rectangle, or interactive region
-- [scripts/capture_cli.sh](scripts/capture_cli.sh) - render a CLI command's output to a PNG
+- [scripts/capture_cli.sh](scripts/capture_cli.sh) - last-resort headless fallback: render a CLI command's output to a PNG via ImageMagick when no display and no visual artifact is available
 - [references/capture_web.md](references/capture_web.md) - web capture via Playwright
 - [scripts/screenshot_web.mjs](scripts/screenshot_web.mjs) - Playwright web capture script
 - [scripts/screenshot_age.py](scripts/screenshot_age.py) - report a screenshot's date, version, and age from git
+- [scripts/render_artifact_libreoffice.sh](scripts/render_artifact_libreoffice.sh) - render a spreadsheet or document artifact to a full-width landscape PNG via LibreOffice headless + ImageMagick
 - [references/postprocess.md](references/postprocess.md) - PNG optimization steps
 - [references/embedding.md](references/embedding.md) - storage layout, embed format, alt-text rules
 

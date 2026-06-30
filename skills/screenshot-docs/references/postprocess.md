@@ -85,6 +85,40 @@ Run the script with `python3 _temp_crop.py`, then copy:
 cp /tmp/capture_cropped.png docs/screenshots/main_window.png
 ```
 
+## Aspect ratio and complete content capture
+
+Capture the complete used range of a document or UI so no content is clipped.
+Wide content such as a multi-column schedule grid renders naturally in landscape;
+narrow or tall content renders naturally in portrait. Commit the natural
+dimensions rather than forcing an arbitrary ratio.
+
+For spreadsheet grids exported via LibreOffice, set the print area to the full
+used range, landscape orientation, and fit-to-one-page-wide before converting:
+
+```python
+# prep step (_temp_prep.py with openpyxl): set print area and fit-to-width, save to /tmp
+ws.print_area = 'A1:AQ69'              # adjust to actual used range
+ws.page_setup.orientation = ws.ORIENTATION_LANDSCAPE
+ws.page_setup.fitToPage = True
+ws.page_setup.fitToWidth = 1
+ws.page_setup.fitToHeight = 0         # 0 = auto height, as many rows as needed
+ws.page_margins.left = 0.25
+ws.page_margins.right = 0.25
+```
+
+```bash
+# export to PDF (first page contains all columns in landscape)
+soffice --headless --convert-to pdf /tmp/grid_prepped.xlsx --outdir /tmp/
+# render first PDF page to PNG at 150 DPI
+magick -density 150 /tmp/grid_prepped.pdf[0] -background white -flatten /tmp/grid_raw.png
+```
+
+After rendering, crop blank whitespace using Pillow's `getbbox()` on the
+difference from a white canvas, then add a small margin (20 px). Do not
+upscale the original pixels. Pad with a neutral background only as a last
+resort when genuine content cannot fill a landscape frame; prefer fixing the
+export settings so the content fills the frame naturally.
+
 ## Summary workflow
 
 ```bash
