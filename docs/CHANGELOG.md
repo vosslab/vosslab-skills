@@ -15,6 +15,19 @@
   evidence-first design spec for a future `related-projects-docs` skill that
   web-searches GitHub/PyPI/npm for candidates and classifies each by relationship and
   confidence tier; recorded the build task in `docs/TODO.md`.
+- Added the `related-projects-docs` skill (`skills/related-projects-docs/`), the
+  dedicated owner of `docs/RELATED_PROJECTS.md`. Built from the design spec: seeds from
+  repo evidence, runs bounded (2-round) tool-neutral web discovery, classifies each
+  project by relationship and confidence tier, and writes a sourced map only when
+  evidence supports it. Ships a writing-shape reference template; follow-ups are
+  report-only.
+- Added the `news-release-docs` skill (`skills/news-release-docs/`), the owner of
+  `docs/RELEASE_HISTORY.md` and `docs/NEWS.md`. Reads `docs/CHANGELOG.md` (plus rotated
+  archives) and authors two differentiated docs (full versioned log vs short curated
+  highlights), prepends a `## v<version> - YYYY-MM-DD` block matching `make_release.py`
+  `_prepend_release_doc`, derives the version from changelog headings then the `VERSION`
+  file (cross-checked against `pyproject.toml`), and emits a `/tmp` notes-file body for
+  `make_release.py --notes-file`. Ships two reference templates.
 
 ### Behavior or Interface Changes
 
@@ -41,6 +54,25 @@
   refresh" (frontmatter, overview, and the renamed "Wave role" section) and clarified
   in `readme-docs` step 1 that the `docs/` scan is an inventory, while the four core
   docs are linked by convention regardless of scan-time presence.
+- Replaced the docset suite's empty-stub behavior with a "content or no file" policy:
+  `docset-updater` step 3 now creates a doc only when evidence supports a section beyond
+  title, intro, and known gaps, and otherwise reports the gap and writes no file; its
+  `## Minimal stub template` is replaced by a `## Content shape for audited docs` section
+  with an explicit "when not to create a file" rule. `setup-install-usage-docs` writes
+  content-supported `INSTALL`/`USAGE` (still written when a runnable command, entry
+  point, or dependency manifest exists) and reports gaps otherwise. `readme-docs` links a
+  `docs/` file only when it exists and reports missing docs as gaps instead of creating a
+  stub. The managed screenshot sentinel block is preserved as an intentional handoff.
+- Routed `docs/RELATED_PROJECTS.md`, `docs/RELEASE_HISTORY.md`, and `docs/NEWS.md` out of
+  the `docset-updater` step-3 audit into dependency-free owners (`related-projects-docs`,
+  `news-release-docs`), mirroring `arch-docs` / `readme-docs` single-owner routing.
+- Replaced `docset-updater`'s two-wave dispatch barrier with an explicit dependency-edge
+  model to cut wall time: all dependency-free producers (`arch-docs`,
+  `setup-install-usage-docs`, `related-projects-docs`, `news-release-docs`, `readme-docs`,
+  and the remaining-docs audit) start as one batch; `screenshot-docs` starts on the
+  `readme-docs` edge alone (no longer waiting behind the network-bound, long-pole
+  `related-projects-docs`); `agents-md-fixer` starts once the `docs/*.md` files it links
+  exist. Single-owner-per-artifact is unchanged, so the edges add no write contention.
 
 ### Fixes and Maintenance
 

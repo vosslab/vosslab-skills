@@ -1,6 +1,6 @@
 ---
 name: docset-updater
-description: "Refresh the whole repo doc set in one pass by invoking the per-doc skills in dependency order (`arch-docs`, `setup-install-usage-docs`, `readme-docs`, `screenshot-docs`, `agents-md-fixer`), then audit any remaining `docs/` files those skills do not own. Use when the user wants all docs brought current at once, or the doc set as a whole is missing, drifted, or unaudited."
+description: "Refresh the whole repo doc set in one pass by invoking the per-doc skills in dependency order (`arch-docs`, `setup-install-usage-docs`, `readme-docs`, `related-projects-docs`, `news-release-docs`, `screenshot-docs`, `agents-md-fixer`), then audit any remaining `docs/` files those skills do not own. Use when the user wants all docs brought current at once, or the doc set as a whole is missing, drifted, or unaudited."
 ---
 
 # Docset refresh
@@ -15,11 +15,13 @@ the remaining `docs/` files no per-doc skill owns.
 
 ## Owned-doc routing
 
-Each artifact has one owning skill. The wave order follows ownership, so independent
+Each artifact has one owning skill. Dependencies follow ownership, so independent
 owners run together:
 
 - `arch-docs` -> `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`
 - `setup-install-usage-docs` -> `docs/USAGE.md`, `docs/INSTALL.md`
+- `related-projects-docs` -> `docs/RELATED_PROJECTS.md`
+- `news-release-docs` -> `docs/RELEASE_HISTORY.md`, `docs/NEWS.md`
 - `readme-docs` -> `README.md` (sole owner; links the core docs by convention,
   reserves the screenshot block)
 - `screenshot-docs` -> `docs/screenshots/` PNGs and the managed screenshot block
@@ -30,22 +32,29 @@ owners run together:
 `docs/` files and `readme-docs` writes every README link. With one owner per artifact,
 the producers carry no write conflict and run together.
 
-Ship two ownership-aware waves:
+Dispatch by dependency edges, not a fixed barrier, so each owner starts as early as
+its inputs allow:
 
-- Wave 1 (parallel): `arch-docs`, `setup-install-usage-docs`, `readme-docs`, and the
-  remaining-docs audit (step 3). Each owns separate files: `readme-docs` owns
-  `README.md`, the others own their own `docs/` files. `readme-docs` links the core
-  docs (`CODE_ARCHITECTURE`, `FILE_STRUCTURE`, `INSTALL`, `USAGE`) by convention, so it
-  runs alongside their producers; the final Markdown link check confirms the files
-  exist.
-- Wave 2 (parallel): `screenshot-docs` and `agents-md-fixer`. `screenshot-docs` fills
-  the screenshot block that `readme-docs` reserved; `agents-md-fixer` points
-  `AGENTS.md` at the `docs/*.md` files now created. They own separate targets, so they
-  run together.
+- Start immediately, no dependencies (one concurrent batch): `arch-docs`,
+  `setup-install-usage-docs`, `related-projects-docs`, `news-release-docs`,
+  `readme-docs`, and the remaining-docs audit (step 3). Each owns separate files, so
+  they carry no write conflict. `readme-docs` links the core docs
+  (`CODE_ARCHITECTURE`, `FILE_STRUCTURE`, `INSTALL`, `USAGE`) by convention, so it runs
+  alongside their producers; the final Markdown link check confirms the files exist.
+- `screenshot-docs` <- `readme-docs`: start as soon as `readme-docs` has reserved the
+  screenshot block. It does not depend on the other producers, so it runs concurrently
+  with the still-running batch (including the slow `related-projects-docs`) instead of
+  waiting behind it.
+- `agents-md-fixer` <- the doc producers and audit outputs: start once the `docs/*.md`
+  files it links exist. It points `AGENTS.md` at created paths, not prose, so it waits
+  for file existence only, not content quality.
 
-Two preconditions set the order: `screenshot-docs` starts once `readme-docs` has
-reserved the block; `agents-md-fixer` starts once the `docs/*.md` files exist (it
-links paths, not prose).
+`related-projects-docs` is the likely long pole: its bounded web discovery (search,
+fetch, and package/repo metadata with rate-limit sleeps) is network-bound and may
+dominate wall time. The dependency-edge model matters because it lets the
+`readme-docs` -> `screenshot-docs` path finish in parallel rather than stall behind
+that network-bound producer. Keep discovery bounded; do not gate the rest of the
+refresh on it.
 
 ### README links for conditional docs
 
@@ -59,31 +68,35 @@ guaranteed a README link in the same run; link it on a later pass when it is pre
 1. Read the rules and inventory
    - Read `AGENTS.md`, `docs/REPO_STYLE.md`, and `docs/MARKDOWN_STYLE.md`.
    - List `docs/` contents and root docs (`AGENTS.md`, `README.md`, `LICENSE`).
-2. Dispatch the per-doc skills in two waves
-   - Wave 1 (parallel): dispatch `arch-docs`, `setup-install-usage-docs`, `readme-docs`,
-     and the remaining-docs audit (step 3) together in one batch.
-   - Wave 2 (parallel): dispatch `screenshot-docs` and `agents-md-fixer` together once
-     Wave 1 reports.
-   - `screenshot-docs` runs as a second pass after README prose exists. When no app
-     window or display is available, it adds a Known-gaps line to the report, leaves
-     existing screenshots and the managed block in place, leaves both block sentinels
-     for the next run, and the chain continues to `agents-md-fixer`.
+2. Dispatch the per-doc skills by dependency edges
+   - Start immediately in one concurrent batch (no dependencies): `arch-docs`,
+     `setup-install-usage-docs`, `related-projects-docs`, `news-release-docs`,
+     `readme-docs`, and the remaining-docs audit (step 3).
+   - `screenshot-docs` <- `readme-docs`: dispatch as soon as `readme-docs` has reserved
+     the screenshot block, concurrently with the still-running producers (do not wait
+     for the slow `related-projects-docs`).
+   - `agents-md-fixer` <- doc producers and audit outputs: dispatch once the `docs/*.md`
+     files it links exist.
+   - `screenshot-docs` runs after README prose exists. When no app window or display is
+     available, it adds a Known-gaps line to the report, leaves existing screenshots and
+     the managed block in place, leaves both block sentinels for the next run, and
+     `agents-md-fixer` still proceeds.
    - Let each skill decide whether its docs need creation or refresh; each skill owns
      its own content.
-   - Under `delegate-manager-to-subagents`, dispatch a fresh subagent per skill and
-     send each wave's subagents in a single batch so they run concurrently.
+   - Under `delegate-manager-to-subagents`, dispatch a fresh subagent per skill. Send
+     every dependency-free task as one parallel batch, then dispatch `screenshot-docs`
+     and `agents-md-fixer` the moment their edges resolve rather than waiting on the
+     whole batch.
 3. Audit the remaining docs (this skill's direct responsibility)
-   - Each file below is an independent atomic task that joins Wave 1's parallel batch.
+   - Each file below is an independent atomic task that joins the dependency-free batch.
      Under `delegate-manager-to-subagents`, give each file its own subagent with one
      owner, one target file, and one verification result. This list is the source of
      truth for which files the audit covers.
-   - For each below, create or update only when repo evidence supports truthful
-     content. If evidence is missing, add a short stub with a "Known gaps" task
-     list instead of guessing.
+   - For each below, create or update a doc only when repo evidence supports at
+     least one useful section beyond its title, intro, and any known gaps. When
+     evidence is thin, record the doc under Known gaps in the step-8 report and
+     write no file.
      - `docs/CHANGELOG.md`
-     - `docs/NEWS.md`
-     - `docs/RELATED_PROJECTS.md`
-     - `docs/RELEASE_HISTORY.md`
      - `docs/ROADMAP.md`
      - `docs/TODO.md`
      - `docs/TROUBLESHOOTING.md`
@@ -113,20 +126,24 @@ guaranteed a README link in the same run; link it on a later pass when it is pre
      task; under `delegate-manager-to-subagents`, dispatch a docs subagent to add
      the entry.
 8. Provide a short report
-   - Per-doc skills run: which of the five ran and what each reported.
+   - Per-doc skills run: which of the per-doc owners ran and what each reported.
    - Created: list new docs.
    - Updated: list updated docs.
    - Flagged: list docs to relocate or delete.
    - Known gaps: list verification tasks only.
 
-## Minimal stub template
+## Content shape for audited docs
 
-For docs this skill writes directly (step 3):
+When evidence supports a doc this skill writes directly (step 3), follow this shape:
 
 - Title in sentence case.
 - One paragraph describing scope and audience.
-- Sections with 2 to 6 bullets each, one idea per bullet.
-- "Known gaps" section when evidence is missing, with tasks only.
+- At least one substantive section grounded in repo evidence, with 2 to 6 bullets each,
+  one idea per bullet.
+
+When not to create a file: when the only content would be a title, an intro, and a
+known-gaps list, write no file. Record the doc under Known gaps in the step-8 report so
+the gap stays visible and the owning skill can create the doc once evidence supports it.
 
 ## Delegated execution
 
@@ -136,8 +153,10 @@ relevant repo rules, and one verification step. Give each subagent a single atom
 task.
 
 Be efficient with time: subagents and tokens are cheap, wall time is scarce.
-Dispatch the independent tasks in each wave as one parallel batch. Give each task one
-owner, one clear outcome, and one verification step. Order the work by the two
-preconditions in "Owned-doc routing" and ship everything else together. See
-`docs/REPO_STYLE.md#core-philosophies` ("Be efficient with time", "Atomic task
-decomposition", "Prompt positively") and the `parallel-plan` skill.
+Dispatch every dependency-free task as one parallel batch, then release
+`screenshot-docs` and `agents-md-fixer` the moment their edges in "Owned-doc routing"
+resolve rather than waiting on the whole batch (this keeps the fast
+`readme-docs` -> `screenshot-docs` path off the critical path of the network-bound
+`related-projects-docs`). Give each task one owner, one clear outcome, and one
+verification step. See `docs/REPO_STYLE.md#core-philosophies` ("Be efficient with
+time", "Atomic task decomposition", "Prompt positively") and the `parallel-plan` skill.

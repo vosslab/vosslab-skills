@@ -1,18 +1,23 @@
 ---
 name: setup-install-usage-docs
-description: "Create or refresh minimal `docs/INSTALL.md` and `docs/USAGE.md` stubs from repo evidence. Use when these two docs are missing, too thin, or stale. Does NOT touch `README.md`, `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`, or the broader doc set (use `readme-docs`, `arch-docs`, or `docset-updater` for those)."
+description: "Create or refresh `docs/INSTALL.md` and `docs/USAGE.md` from repo evidence, writing real content when install or usage evidence supports it and reporting gaps when it does not. Use when these two docs are missing, too thin, or stale. Does NOT touch `README.md`, `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`, or the broader doc set (use `readme-docs`, `arch-docs`, or `docset-updater` for those)."
 ---
 
 # Setup, install, and usage docs
 
 ## Goal
 
-Create minimal, correct stubs for:
+Write content-supported docs for:
 - `docs/INSTALL.md`: setup steps, dependencies, environment requirements.
 - `docs/USAGE.md`: how to run the tool, CLI flags, practical examples.
 
-Keep content evidence based. If evidence is missing, write a "Known gaps" task instead
-of guessing.
+Write a doc when repo evidence supports a real Requirements/Install section (INSTALL)
+or a real Quick-start/CLI section (USAGE). Treat a basic runnable command, an entry
+point, or a dependency manifest (`pip_requirements.txt`, `pyproject.toml`, `Brewfile`)
+as install or usage evidence and write the doc from it; INSTALL and USAGE are
+near-universal, so do not skip them when this evidence exists. Report the gap instead
+of writing a file only when no such evidence exists, so the only content would be a
+title plus "Known gaps".
 
 ## Inputs to request
 
@@ -29,10 +34,13 @@ of guessing.
      `setup.cfg`, `Makefile`, `tools/`, `bin/`) and note what a user actually runs.
    - Identify dependencies and install method (pip editable, requirements file, system deps),
      and only record what is confirmed by repo files.
-2. Create or update docs
-   - Create missing files, or trim and correct stale ones.
+2. Write or update docs
+   - Write a file when evidence supports a real Requirements/Install or
+     Quick-start/CLI section; trim and correct stale files.
+   - Report the gap and write no file only when no real install or usage
+     evidence exists.
    - Keep doc naming under `docs/` consistent with repo conventions.
-3. Keep stubs minimal
+3. Keep docs minimal
    - Prefer 2 to 6 bullets per section.
    - Prefer one primary path and keep alternates out unless the repo makes them explicit.
    - Include exact commands only when verifiable from repo evidence, not inferred.
@@ -40,10 +48,11 @@ of guessing.
 4. Record uncertainty explicitly
    - Add a "Known gaps" section with verification tasks only, written as TODO-style checks.
    - Do not invent versions, OS support, or flags; leave them as gaps instead.
-5. Require a verify step
-   - `docs/INSTALL.md` must include a "Verify install" section with
-     one command that proves the install worked in a fresh environment.
-   - If no verifiable command exists, add it as a "Known gaps" task instead of guessing.
+5. Require a verify step on written INSTALL docs
+   - When evidence supports writing `docs/INSTALL.md`, include a "Verify install"
+     section with one command that proves the install worked in a fresh environment.
+   - When no verifiable command and no real install evidence exist, report the gap
+     and write no `docs/INSTALL.md` file.
 6. Troubleshooting only with evidence
    - Add a troubleshooting subsection in `docs/INSTALL.md` only when
      you can cite it from repo evidence (existing issues, error messages in scripts,
@@ -60,7 +69,7 @@ of guessing.
 9. Update changelog
    - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `delegate-manager-to-subagents`, dispatch a docs subagent to add the entry.
 
-## docs/INSTALL.md stub template
+## docs/INSTALL.md content template
 
 # Install
 
@@ -86,7 +95,7 @@ One paragraph: what "installed" means for this repo (CLI available, importable m
 ## Known gaps
 - Verification tasks only.
 
-## docs/USAGE.md stub template
+## docs/USAGE.md content template
 
 # Usage
 
@@ -114,8 +123,9 @@ One paragraph: what users do with the tool.
 
 ## Output
 
-- Updated `docs/INSTALL.md` and `docs/USAGE.md`.
-- Short report: created, updated, and known gaps.
+- `docs/INSTALL.md` and `docs/USAGE.md`, written or updated where evidence supports them.
+- Short report: created, updated, gaps reported without a file, and known gaps within
+  written docs.
 
 ## Delegated execution
 

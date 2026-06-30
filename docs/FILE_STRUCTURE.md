@@ -97,7 +97,6 @@ Two flavors live here:
   [docs/TROUBLESHOOTING.md](TROUBLESHOOTING.md),
   [docs/CHANGELOG.md](CHANGELOG.md) with archive
   [docs/CHANGELOG-2026-06a.md](CHANGELOG-2026-06a.md),
-  [docs/NEWS.md](NEWS.md), [docs/RELEASE_HISTORY.md](RELEASE_HISTORY.md),
   [docs/E2E_TESTS.md](E2E_TESTS.md),
   [docs/PLAYWRIGHT_USAGE.md](PLAYWRIGHT_USAGE.md),
   [docs/SKILLS_INDEX.md](SKILLS_INDEX.md),

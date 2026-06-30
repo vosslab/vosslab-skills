@@ -164,8 +164,11 @@ sentinel comment lines and one-line pointer.
      `[Style Guide for Markdown](docs/MARKDOWN_STYLE.md)`).
 8. Enforce REPO_STYLE documentation rules
    - Do not add banned docs (CONTRIBUTING.md, templates, SECURITY.md unless supported).
-   - If a missing common doc is required to keep README concise (usually INSTALL or
-     USAGE), create a minimal stub under `docs/` using ALL CAPS naming and link it.
+   - Link a `docs/` file only when it already exists. If a common doc that would keep
+     README concise (usually INSTALL or USAGE) is missing, do not link it and do not
+     create a stub; report the gap in the output checklist so the owning skill
+     (`setup-install-usage-docs`, `arch-docs`, or `docset-updater`) creates the real
+     doc once it has evidence to write from.
    - Prefer social links over hard coded email when adding contact.
 9. Keep claims verifiable
    - Only include commands you can confirm exist (scripts, Makefile targets, documented

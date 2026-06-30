@@ -63,6 +63,8 @@ A few representative skills from the collection:
 - `delegate-manager-to-subagents`: Manage execution of an approved plan through subagents.
 - `docset-updater`: Audit and refresh the full repo doc set against REPO_STYLE.md.
 - `readme-docs`: Standardize README.md to match repo conventions.
+- `related-projects-docs`: Build a sourced, confidence-tiered docs/RELATED_PROJECTS.md.
+- `news-release-docs`: Author docs/RELEASE_HISTORY.md and docs/NEWS.md from the changelog.
 - `skill-writing-guide`: Guide for authoring Agent Skills (SKILL.md) in open standard format.
 
 Domain-expert skills cover computational geometry, computer vision, PySide6, SolidJS,
