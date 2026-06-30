@@ -8,6 +8,13 @@
   browser apps and games in one click without cloning. Listed Pages-deployment evidence
   (gh-pages branch, `docs/` site root, root `index.html`, Pages deploy workflow) and
   required confirmation before adding a URL. Also added a matching optional-sections bullet.
+- Added `docs/RELATED_PROJECTS.md` (sibling repos: `starter-repo-template`,
+  `claude-code-permissions-hook`, `biology-problems`, `qti_package_maker`),
+  `docs/ROADMAP.md`, and `docs/TODO.md` during a `docset-updater` run.
+- Added `docs/active_plans/active/related_projects_docs_skill_design.md`, an
+  evidence-first design spec for a future `related-projects-docs` skill that
+  web-searches GitHub/PyPI/npm for candidates and classifies each by relationship and
+  confidence tier; recorded the build task in `docs/TODO.md`.
 
 ### Behavior or Interface Changes
 
@@ -34,6 +41,19 @@
   refresh" (frontmatter, overview, and the renamed "Wave role" section) and clarified
   in `readme-docs` step 1 that the `docs/` scan is an inventory, while the four core
   docs are linked by convention regardless of scan-time presence.
+
+### Fixes and Maintenance
+
+- Ran `docset-updater` on this repo with parallel Wave 1 subagents and refreshed the
+  doc set from current evidence: rewrote `docs/USAGE.md` (it had drifted to document a
+  `reset_repo.py` bootstrap tool absent from this repo) to cover the real `tools/*.py`
+  scripts and test commands; refreshed `docs/CODE_ARCHITECTURE.md` and
+  `docs/FILE_STRUCTURE.md` for the four-platform plugin manifests, current `tools/` and
+  `devel/` contents, and test gates; refined `docs/INSTALL.md` requirements; regrouped
+  the `README.md` documentation section and trimmed its skills list to a curated set
+  pointing at `docs/SKILLS_INDEX.md`; and trimmed `AGENTS.md` to a 16-line bare-path
+  pointer file (preserving the user override directive). `screenshot-docs` was not
+  applicable (no GUI/web/CLI-artifact app and no managed screenshot block).
 
 ## 2026-06-26
 

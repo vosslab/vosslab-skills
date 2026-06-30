@@ -6,6 +6,10 @@ This repository is a Claude Code plugin that provides reusable workflow skills. 
 
 - [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed and working
 - Git (for clone-based methods)
+- Python 3.12 to run the local tools under `tools/` and the test suite (see
+  [USAGE.md](USAGE.md))
+- Developer Python packages from `pip_requirements-dev.txt` for running tools and
+  tests (for example `pytest`, `rich`, `tabulate`)
 
 ## Method 1: install from the marketplace
 

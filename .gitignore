@@ -6,6 +6,7 @@ docs/superpowers/
 local-only/
 
 # === UNIVERSAL ===
+output*/
 _temp*.?*
 OTHER_REPOS/
 # === PYTHON ===
@@ -15,6 +16,7 @@ sdist/
 *.egg
 *.egg-info/
 site/
+
 
 
 
