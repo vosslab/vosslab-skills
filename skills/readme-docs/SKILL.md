@@ -10,6 +10,20 @@ description: "Standardize `README.md` to match repo conventions: brief purpose, 
 Make `README.md` short, correct, and consistent with this repo's documentation layout.
 Keep deeper detail in `docs/` and link it from the README.
 
+This skill is the sole owner of `README.md`. Other doc skills create their own files
+under `docs/`; this skill writes the README links that point at them. In a docset
+refresh this skill runs alongside the doc producers (`arch-docs`,
+`setup-install-usage-docs`), so link the standard core docs by convention rather than
+gating on whether they exist at scan time:
+
+- Core docs (linked by convention, always produced this run):
+  `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`, `docs/INSTALL.md`,
+  `docs/USAGE.md`. The final Markdown link check confirms they exist.
+- Conditional docs (linked only when already present): for example
+  `docs/TROUBLESHOOTING.md`. These stay discoverable through `docs/`; a conditional
+  doc created in the same run keeps its README link as a follow-up rather than a
+  guarantee.
+
 ## Required sections
 
 - Title.
@@ -86,7 +100,10 @@ sentinel comment lines and one-line pointer.
 
 1. Read the current README and docs index
    - Read `README.md`.
-   - Scan `docs/` for existing target docs (INSTALL, USAGE, TROUBLESHOOTING, etc.).
+   - Scan `docs/` to inventory what is present (INSTALL, USAGE, TROUBLESHOOTING, etc.).
+     Link the core docs (CODE_ARCHITECTURE, FILE_STRUCTURE, INSTALL, USAGE) by
+     convention regardless of this scan; use the scan to pick up conditional docs that
+     already exist.
 2. Enforce the README role
    - README contains:
      - One paragraph: what the project is and who it is for.

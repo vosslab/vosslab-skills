@@ -1,6 +1,6 @@
 ---
 name: screenshot-docs
-description: "Capture screenshots of a running app and embed them into README.md and docs/ to make GitHub landing pages novice-friendly. Classifies the app as PySide6 GUI, Swift GUI, terminal/CLI, or web app, captures with the appropriate backend (easy-screenshot for local windows, Playwright for web), writes PNGs to docs/screenshots/, and inserts embed lines into README/docs. Rewrites the readme-docs managed screenshot block (begin/end sentinels) with real embeds, idempotently. Use after readme-docs runs, when screenshots are stale or absent, or when adding a new app kind. Writes docs/screenshots/ PNG files and edits README/docs embed lines; runs as a second pass in the docset-updater chain. App code is read-only."
+description: "Capture screenshots of a running app and embed them into README.md and docs/ to make GitHub landing pages novice-friendly. Classifies the app as PySide6 GUI, Swift GUI, terminal/CLI, or web app, captures with the appropriate backend (easy-screenshot for local windows, Playwright for web), writes PNGs to docs/screenshots/, and inserts embed lines into README/docs. Rewrites the readme-docs managed screenshot block (begin/end sentinels) with real embeds, idempotently. Use after readme-docs runs, when screenshots are stale or absent, or when adding a new app kind. Writes docs/screenshots/ PNG files and edits README/docs embed lines; runs in Wave 2 of the docset-updater refresh, after readme-docs. App code is read-only."
 ---
 
 # Screenshot docs
@@ -10,7 +10,7 @@ description: "Capture screenshots of a running app and embed them into README.md
 Capture screenshots of an app and embed them into `README.md` and `docs/` files
 to make GitHub landing pages informative for first-time visitors.
 
-This skill runs as a second pass in the `docset-updater` chain, after `readme-docs`
+This skill runs in Wave 2 of the `docset-updater` refresh, after `readme-docs`
 writes an empty managed screenshot block. It detects the app kind, captures images
 with the matching backend, stores them under `docs/screenshots/`, and rewrites the
 inside of that block with real embed lines.
@@ -36,9 +36,10 @@ On no window or no display available:
 - Preserve both block sentinels for the next run.
 - Continue with any remaining steps that do not require a live window.
 
-## Chain role
+## Wave role
 
-In the `docset-updater` chain:
+In the `docset-updater` refresh, `readme-docs` runs in Wave 1 and `screenshot-docs`
+runs in Wave 2:
 
 1. `readme-docs` runs first and writes the empty managed block:
    - `<!-- screenshots:begin (managed by screenshot-docs) -->`

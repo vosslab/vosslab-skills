@@ -155,7 +155,11 @@ demands action.
 ## Delegated execution
 
 Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagent with
-one bounded task, the relevant repo rules, and one verification step. Do
-not continue the same subagent across unrelated follow-up work; dispatch a
-new subagent for each atomic task. See
+one bounded task, the relevant repo rules, and one verification step. Dispatch a new
+subagent for each atomic task.
+
+This skill rewrites `AGENTS.md` to bare-path pointers. It needs the `docs/*.md`
+filenames to exist, not their prose, so in a docset refresh it runs after the doc
+producers have created their files (the wave with `screenshot-docs`). It owns only
+`AGENTS.md`, so it runs in parallel with `screenshot-docs`. See
 `docs/REPO_STYLE.md`.

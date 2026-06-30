@@ -84,8 +84,9 @@ mkdocs.yml
 
 6. Wrap up
    - Save both files.
-   - Ensure `README.md` links to `docs/CODE_ARCHITECTURE.md` and
-     `docs/FILE_STRUCTURE.md` (add links if missing).
+   - Leave `README.md` to `readme-docs`, the sole owner of README content. It links
+     `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from README once they
+     exist. This skill owns only the two architecture docs.
    - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under `delegate-manager-to-subagents`, dispatch a docs subagent to add the entry.
    - Summarize what changed and what could not be verified.
    - Note that docs-only changes do not require tests unless otherwise requested.

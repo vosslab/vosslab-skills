@@ -11,17 +11,29 @@
 
 ### Behavior or Interface Changes
 
-- Reworked `skills/docset-updater/SKILL.md` so managers dispatch the per-doc skills in
-  three dependency-aware waves instead of a five-step serial chain: Wave 1 runs
-  `arch-docs`, `setup-install-usage-docs`, and the remaining-docs audit in parallel;
-  Wave 2 runs `readme-docs`; Wave 3 runs `screenshot-docs` and `agents-md-fixer` in
-  parallel. Documented the three preconditions that set the order (shared `README.md`
-  for `arch-docs` -> `readme-docs`, the reserved screenshot block for
-  `readme-docs` -> `screenshot-docs`, and the finished `docs/*.md` set for
-  `agents-md-fixer`), made each remaining-docs audit file an atomic one-owner task, and
-  added positively phrased wall-time-efficiency guidance cross-referencing the
-  "Be efficient with time", "Atomic task decomposition", and "Prompt positively"
-  core philosophies.
+- Reworked the docset refresh so managers dispatch the per-doc skills in two
+  ownership-aware waves instead of a five-step serial chain. Wave 1 (parallel) runs
+  `arch-docs`, `setup-install-usage-docs`, `readme-docs`, and the remaining-docs audit;
+  Wave 2 (parallel) runs `screenshot-docs` and `agents-md-fixer`. The wave order
+  follows artifact ownership: `readme-docs` is now the sole owner of `README.md` and
+  links the core docs (`CODE_ARCHITECTURE`, `FILE_STRUCTURE`, `INSTALL`, `USAGE`) by
+  convention, so it runs alongside their producers; the two preconditions are the
+  reserved screenshot block (`readme-docs` -> `screenshot-docs`) and the created
+  `docs/*.md` paths (`agents-md-fixer` links paths, not prose).
+- Made `readme-docs` the sole owner of `README.md`: `arch-docs` no longer edits
+  `README.md` (it owns only the two architecture docs), removing the prior dual-writer
+  collision. Documented an explicit policy that README links core docs by convention
+  while conditional docs (for example `docs/TROUBLESHOOTING.md`) stay discoverable
+  through `docs/` and `AGENTS.md` and are linked on a later pass when present.
+- Noted in `agents-md-fixer` that it needs `docs/*.md` filenames to exist, not their
+  prose, so it runs in the wave after the doc producers and in parallel with
+  `screenshot-docs`. Added positively phrased wall-time-efficiency guidance to
+  `docset-updater` cross-referencing the "Be efficient with time", "Atomic task
+  decomposition", and "Prompt positively" core philosophies.
+- Synced `screenshot-docs` terminology from "chain" to "Wave 2 of the docset-updater
+  refresh" (frontmatter, overview, and the renamed "Wave role" section) and clarified
+  in `readme-docs` step 1 that the `docs/` scan is an inventory, while the four core
+  docs are linked by convention regardless of scan-time presence.
 
 ## 2026-06-26
 

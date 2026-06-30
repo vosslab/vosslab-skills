@@ -15,45 +15,55 @@ the remaining `docs/` files no per-doc skill owns.
 
 ## Owned-doc routing
 
-Each of these docs has a dedicated skill. Each skill writes its own files:
+Each artifact has one owning skill. The wave order follows ownership, so independent
+owners run together:
 
-- `arch-docs` -> `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md` (and adds the
-  links to `README.md`)
+- `arch-docs` -> `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`
 - `setup-install-usage-docs` -> `docs/USAGE.md`, `docs/INSTALL.md`
-- `readme-docs` -> `README.md` (links into the `docs/` set above, reserves the
-  screenshot block)
+- `readme-docs` -> `README.md` (sole owner; links the core docs by convention,
+  reserves the screenshot block)
 - `screenshot-docs` -> `docs/screenshots/` PNGs and the managed screenshot block
   inside `README.md` and `docs/`
-- `agents-md-fixer` -> `AGENTS.md` (trims to pointers into `docs/*.md`)
+- `agents-md-fixer` -> `AGENTS.md` (bare-path pointers into `docs/*.md`)
 
-Ship these as three dependency-aware waves so independent skills run together and
-each wave starts from a ready precondition:
+`readme-docs` owns all of `README.md`, so the doc producers create only their own
+`docs/` files and `readme-docs` writes every README link. With one owner per artifact,
+the producers carry no write conflict and run together.
 
-- Wave 1 (parallel): `arch-docs`, `setup-install-usage-docs`, and the remaining-docs
-  audit (step 3). These write separate `docs/` files; `arch-docs` is the lone
-  `README.md` writer in this wave.
-- Wave 2: `readme-docs`. Starts once Wave 1 reports, so `arch-docs` has finished its
-  `README.md` touch and the `docs/` link targets exist.
-- Wave 3 (parallel): `screenshot-docs` and `agents-md-fixer`. `screenshot-docs` fills
+Ship two ownership-aware waves:
+
+- Wave 1 (parallel): `arch-docs`, `setup-install-usage-docs`, `readme-docs`, and the
+  remaining-docs audit (step 3). Each owns separate files: `readme-docs` owns
+  `README.md`, the others own their own `docs/` files. `readme-docs` links the core
+  docs (`CODE_ARCHITECTURE`, `FILE_STRUCTURE`, `INSTALL`, `USAGE`) by convention, so it
+  runs alongside their producers; the final Markdown link check confirms the files
+  exist.
+- Wave 2 (parallel): `screenshot-docs` and `agents-md-fixer`. `screenshot-docs` fills
   the screenshot block that `readme-docs` reserved; `agents-md-fixer` points
-  `AGENTS.md` into the finished `docs/*.md` set. They write separate targets, so they
+  `AGENTS.md` at the `docs/*.md` files now created. They own separate targets, so they
   run together.
 
-Three preconditions set the wave order: `readme-docs` follows `arch-docs` (both write
-`README.md`); `screenshot-docs` follows `readme-docs` (it fills the reserved block);
-`agents-md-fixer` follows the completed `docs/*.md` set.
+Two preconditions set the order: `screenshot-docs` starts once `readme-docs` has
+reserved the block; `agents-md-fixer` starts once the `docs/*.md` files exist (it
+links paths, not prose).
+
+### README links for conditional docs
+
+`readme-docs` links the core docs above by convention. Conditional docs (for example
+`docs/TROUBLESHOOTING.md`, created only when evidence supports them) stay discoverable
+through `docs/` and `AGENTS.md`. A conditional doc created in this same run is not
+guaranteed a README link in the same run; link it on a later pass when it is present.
 
 ## Workflow
 
 1. Read the rules and inventory
    - Read `AGENTS.md`, `docs/REPO_STYLE.md`, and `docs/MARKDOWN_STYLE.md`.
    - List `docs/` contents and root docs (`AGENTS.md`, `README.md`, `LICENSE`).
-2. Dispatch the per-doc skills in three waves
-   - Wave 1 (parallel): dispatch `arch-docs`, `setup-install-usage-docs`, and the
-     remaining-docs audit (step 3) together in one batch.
-   - Wave 2: dispatch `readme-docs` once Wave 1 reports.
-   - Wave 3 (parallel): dispatch `screenshot-docs` and `agents-md-fixer` together once
-     Wave 2 reports.
+2. Dispatch the per-doc skills in two waves
+   - Wave 1 (parallel): dispatch `arch-docs`, `setup-install-usage-docs`, `readme-docs`,
+     and the remaining-docs audit (step 3) together in one batch.
+   - Wave 2 (parallel): dispatch `screenshot-docs` and `agents-md-fixer` together once
+     Wave 1 reports.
    - `screenshot-docs` runs as a second pass after README prose exists. When no app
      window or display is available, it adds a Known-gaps line to the report, leaves
      existing screenshots and the managed block in place, leaves both block sentinels
@@ -127,7 +137,7 @@ task.
 
 Be efficient with time: subagents and tokens are cheap, wall time is scarce.
 Dispatch the independent tasks in each wave as one parallel batch. Give each task one
-owner, one clear outcome, and one verification step. Order the work by the three
+owner, one clear outcome, and one verification step. Order the work by the two
 preconditions in "Owned-doc routing" and ship everything else together. See
 `docs/REPO_STYLE.md#core-philosophies` ("Be efficient with time", "Atomic task
 decomposition", "Prompt positively") and the `parallel-plan` skill.
