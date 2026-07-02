@@ -16,16 +16,20 @@ docs/
 Name PNG files using lowercase_underscore with no spaces or special characters.
 Examples: `main_window.png`, `login_screen.png`, `chart_view_dark.png`.
 
-## Size budget
+## Size ceiling and budget
 
-Keep each PNG under 500 KB. Anything over 1 MB requires a written justification
-in the PR description or CHANGELOG entry (for example, a high-resolution diagram
-that must stay sharp).
+Cap the longer edge at 1920 px and keep each PNG under about 1 MB. GitHub
+renders an inline README image downscaled to the text column and opens the
+native-resolution file on click, so a 1920 px landscape capture stays crisp in
+the column and reveals full detail when clicked; do not add a separate thumbnail
+file. See [postprocess.md](postprocess.md) for the full rationale.
 
-Crush large PNGs before committing:
+Resize a capture whose longer edge exceeds 1920 px under `/tmp` before copying
+it in (see [postprocess.md](postprocess.md) for the full workflow and the /tmp
+hook constraint):
 
 ```bash
-optipng -o3 docs/screenshots/main_window.png
+convert /tmp/main_window.png -resize '1920x1920>' /tmp/main_window.png
 ```
 
 ## Capturing screenshots

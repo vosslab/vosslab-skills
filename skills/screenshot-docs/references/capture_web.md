@@ -92,17 +92,18 @@ await page.screenshot({ path: outputPath, fullPage: true });
 
 ## Step 3 - copy into docs/screenshots/
 
-After the capture writes the PNG to `/tmp`, copy it into the committed
-screenshots folder following [embedding.md](embedding.md):
+The capture writes the PNG to `/tmp`. First resize it there when either
+dimension exceeds the 1920 px ceiling (see [postprocess.md](postprocess.md)):
+
+```bash
+convert /tmp/concept_map_main.png -resize '1920x1920>' /tmp/concept_map_main.png
+```
+
+Then copy it into the committed screenshots folder following
+[embedding.md](embedding.md):
 
 ```bash
 cp /tmp/concept_map_main.png docs/screenshots/concept_map_main.png
-```
-
-Crush large PNGs before committing when the file exceeds 500 KB:
-
-```bash
-optipng -o3 docs/screenshots/concept_map_main.png
 ```
 
 ## Worked example - concept-map-maker smoke fixture

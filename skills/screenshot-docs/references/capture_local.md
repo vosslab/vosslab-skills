@@ -30,8 +30,11 @@ Grant Screen Recording permission to the controlling terminal in System Settings
 
 ## Step 1 - find the window
 
-Open the target app and bring the window you want to the front. List the matching
-windows to confirm the application name and a title filter:
+Open the target app and bring the window you want to the front. Size the window
+to a 16:10 landscape shape (about 1440x900 or 1920x1200) before capturing, so
+the screenshot lands in the recommended frame (see
+[postprocess.md](postprocess.md)). List the matching windows to confirm the
+application name and a title filter:
 
 ```bash
 screenshot -A "App Name" --preview
@@ -47,18 +50,18 @@ screenshot -A "App Name" -t "main" -f /tmp/main_window.png
 
 ## Step 3 - copy into docs/screenshots/
 
-Copy the finished PNG into the committed folder following
+First, while the PNG is still under `/tmp`, resize it when either dimension
+exceeds the 1920 px ceiling (see [postprocess.md](postprocess.md)):
+
+```bash
+convert /tmp/main_window.png -resize '1920x1920>' /tmp/main_window.png
+```
+
+Then copy the finished PNG into the committed folder following
 [embedding.md](embedding.md):
 
 ```bash
 cp /tmp/main_window.png docs/screenshots/main_window.png
-```
-
-Optimize the PNG when it exceeds the size budget (see
-[postprocess.md](postprocess.md)):
-
-```bash
-optipng -o3 /tmp/main_window.png
 ```
 
 ## App kinds

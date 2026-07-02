@@ -38,8 +38,9 @@ if (!url || !outputPath) {
 // Launch headless Chromium. Headless is the default; do not pass headless: false.
 const browser = await chromium.launch();
 
-// Set a consistent viewport so captures are reproducible across machines.
-const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+// Set a consistent 16:10 viewport so captures are reproducible across machines
+// and land in the recommended landscape shape (see references/postprocess.md).
+const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 
 // Navigate to the target page and wait for the network to settle.
 await page.goto(url, { waitUntil: 'networkidle' });

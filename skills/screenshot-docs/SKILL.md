@@ -150,7 +150,8 @@ file in place and existing embeds stay valid.
 ### 4. Post-process images
 
 Read [references/postprocess.md](references/postprocess.md).
-Apply the optimization steps from that file to each captured PNG.
+Resize any capture whose longer edge exceeds 1920 px; a capture already within
+the ceiling needs no processing.
 
 ### 5. Embed screenshots
 
@@ -201,7 +202,7 @@ Add an entry to `docs/CHANGELOG.md` listing:
 - [scripts/screenshot_web.mjs](scripts/screenshot_web.mjs) - Playwright web capture script
 - [scripts/screenshot_age.py](scripts/screenshot_age.py) - report a screenshot's date, version, and age from git
 - [scripts/render_artifact_libreoffice.sh](scripts/render_artifact_libreoffice.sh) - render a spreadsheet or document artifact to a full-width landscape PNG via LibreOffice headless + ImageMagick
-- [references/postprocess.md](references/postprocess.md) - PNG optimization steps
+- [references/postprocess.md](references/postprocess.md) - resize to the size budget, optional optimize
 - [references/embedding.md](references/embedding.md) - storage layout, embed format, alt-text rules
 
 ## Delegated execution

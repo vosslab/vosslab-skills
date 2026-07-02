@@ -1,3 +1,45 @@
+## 2026-07-02
+
+### Behavior or Interface Changes
+
+- Rewrote `skills/screenshot-docs/references/postprocess.md` so resize is the
+  primary post-processing step and lossless optimization (`optipng`, `pngcrush`)
+  is an explicitly optional, only-if-already-installed step worth a further
+  5-20 percent, never a dependency. Removed the niche LibreOffice spreadsheet
+  print-area block (already covered by `scripts/render_artifact_libreoffice.sh`)
+  and trimmed the over-explained Pillow crop section to a short resize fallback.
+- Replaced the fixed 500 KB / 1280 px resize rule with a 1920 px ceiling and an
+  about-1 MB budget: resize only when a capture's longer edge exceeds 1920 px,
+  otherwise leave it. The `-resize '1920x1920>'` command fits the image inside a
+  1920 px box, so it bounds whichever edge is longer; the docs describe this as
+  a longer-edge cap (for the common landscape screenshot that is the width)
+  rather than a strict width cap. Rationale: GitHub renders an inline README
+  image downscaled to the text column and opens the native-resolution file on
+  click, so a 1920 px landscape capture stays crisp in the column and reveals
+  full detail when clicked, with no separate thumbnail file to maintain.
+  Downscaling to column width would discard that detail.
+- Set 16:10 landscape as the `screenshot-docs` design target (1920x1200 at the
+  ceiling): a new "Aspect ratio" section in `references/postprocess.md`, a
+  window-sizing note in `references/capture_local.md`, and a 16:10 default for
+  the Playwright viewport in `scripts/screenshot_web.mjs` (1280x900 became
+  1280x800). The section distinguishes synthetic captures where the coder sets
+  exact pixels (Playwright viewport, terminal-output render) and should hit 16:10
+  precisely, from real app windows that can only approximate it. Aspect is a
+  capture-time choice; the resize step still only bounds size and preserves the
+  captured ratio.
+- Aligned `scripts/render_artifact_libreoffice.sh` to the new ceiling
+  (`-resize '2000x>'` became `-resize '1920x1920>'`) so the LibreOffice artifact
+  path matches the budget stated in `references/postprocess.md`.
+- Updated the size-budget rationale to state the real reasons for keeping PNGs
+  small (page load time and permanent git history weight), not storage cost,
+  since GitHub charges nothing for repo or Pages storage.
+- Repointed the callers that led with `optipng` to resize-under-`/tmp` instead:
+  `references/capture_local.md`, `references/embedding.md`, and
+  `references/capture_web.md`. The latter two also ran `optipng` on the committed
+  `docs/screenshots/` path, violating the /tmp-only image-tool hook constraint;
+  both now resize under `/tmp` before the `cp`. Updated the `SKILL.md`
+  postprocess reference label to match.
+
 ## 2026-06-30
 
 ### Additions and New Features

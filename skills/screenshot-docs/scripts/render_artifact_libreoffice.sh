@@ -86,12 +86,13 @@ fi
 # -flatten on white: merge any transparency layer so the background is white.
 # -trim: remove surrounding whitespace so the image is tight to the content.
 # +repage: reset the canvas after trim.
-# Resize to 2000 px wide max to keep file size reasonable for a README embed.
+# Resize so the longer edge is 1920 px max, matching the screenshot budget
+# in references/postprocess.md, to keep the README embed reasonable.
 tmp_png="/tmp/${artifact_stem}_render.png"
 magick -density 150 "${tmp_pdf}[0]" \
 	-background white -flatten \
 	-trim +repage \
-	-resize '2000x>' \
+	-resize '1920x1920>' \
 	"${tmp_png}"
 
 #============================================
