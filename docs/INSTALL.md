@@ -10,6 +10,8 @@ This repository is a Claude Code plugin that provides reusable workflow skills. 
   [USAGE.md](USAGE.md))
 - Developer Python packages from `pip_requirements-dev.txt` for running tools and
   tests (for example `pytest`, `rich`, `tabulate`)
+- Runtime Python packages for skill scripts from root `pip_requirements.txt`
+  (install via `pip3 install -r pip_requirements.txt`)
 
 ## Method 1: install from the marketplace
 

@@ -1,0 +1,5 @@
+pillow  # color-accessibility-expert image_contrast.py (image I/O and pixel sampling)
+colour-science  # color-accessibility-expert wheel CLI (CAM16 color model math)
+numpy  # color-accessibility-expert wheel CLI (array math backing CAM16)
+six  # color-accessibility-expert wheel CLI (colour-science imports six.moves)
+pyyaml  # color-accessibility-expert wheel CLI (parses wheel_specs.yaml mode policies)

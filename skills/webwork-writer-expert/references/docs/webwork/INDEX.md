@@ -25,4 +25,5 @@ Guides:
 - [ORDERING_PROBLEMS.md](ORDERING_PROBLEMS.md)
 - [HOW_TO_MAKE_GRAPHS.md](HOW_TO_MAKE_GRAPHS.md)
 - [COLOR_CONTRAST_ACCESSIBILITY.md](COLOR_CONTRAST_ACCESSIBILITY.md)
+- [PALETTE_CONTRAST_AUDIT.md](PALETTE_CONTRAST_AUDIT.md) -- audited 14-color problem palette
 - HTML whitelist and blacklist constraints (including blocked `table`, `tr`, `td`, `th` tags) are covered in the matching and author guides.

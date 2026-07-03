@@ -49,6 +49,8 @@ See the Required reading block in `SKILL.md`.
   - Color class migration and strict conversion plan.
 - [references/docs/webwork/COLOR_CONTRAST_ACCESSIBILITY.md](docs/webwork/COLOR_CONTRAST_ACCESSIBILITY.md)
   - Target contrast ratios and accessibility guidance.
+- [references/docs/webwork/PALETTE_CONTRAST_AUDIT.md](docs/webwork/PALETTE_CONTRAST_AUDIT.md)
+  - Audited 14-color problem palette.
 
 ## HTML and tables
 

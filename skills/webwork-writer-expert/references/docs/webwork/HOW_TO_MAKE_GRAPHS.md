@@ -423,7 +423,7 @@ Use these names anywhere a color is expected: `$fn->color('accessible_blue')`,
 
 Blue/orange/teal avoids the red-green confusion axis for colorblind users while
 meeting the 5.5:1 WCAG contrast target. See
-[COLOR_CONTRAST_ACCESSIBILITY.md](COLOR_CONTRAST_ACCESSIBILITY.md) for the full
+[PALETTE_CONTRAST_AUDIT.md](PALETTE_CONTRAST_AUDIT.md) for the full
 14-color palette.
 
 ### Default GD named colors (for reference)

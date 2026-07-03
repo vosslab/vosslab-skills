@@ -1,3 +1,85 @@
+## 2026-07-03
+
+### Additions and New Features
+
+- Added the `color-accessibility-expert` skill (`skills/color-accessibility-expert/`): a shared
+  `color_utils.py` support module plus eight CLIs (`check_contrast.py`, `adjust_color.py`,
+  `extract_colors.py`, `audit_palette.py`, `apply_color_fixes.py`, `generate_palette_audit.py`,
+  `image_contrast.py`, `generate_color_wheel.py`) covering the full WCAG contrast detect-and-fix
+  loop, where fixing the repo's source colors is the primary outcome and the audit documents the
+  result: locate hex color literals in source files, measure contrast ratios, compute
+  hue-preserved accessible replacements, apply those replacements directly to the source files,
+  re-audit to confirm every color passes, spot-check rendered images, and generate a fresh
+  hue-spaced palette. `apply_color_fixes.py` applies an old->new hex mapping (from
+  `audit_palette.py`'s replacement mapping, a file, or stdin) across source files, reusing
+  `extract_colors.py`'s file discovery and word-boundary hex matching so only standalone hex
+  tokens change; it is dry-run by default and edits in place with `-w/--write`.
+  `generate_palette_audit.py` is the skill's single documented writer for a target repo's
+  `docs/PALETTE_CONTRAST_AUDIT.md`, the per-repo palette audit: it renders a title, a one-line
+  provenance note (generating skill, target ratio, background), and the audit table, and prints an
+  `EVIDENCE` manifest (`source_root`, `scanned_files`, `skipped_dirs`, `colors_found`,
+  `colors_documented`) so every path and hex value in the audit table traces back to this run's
+  extraction and audit evidence. The generic WCAG method doc,
+  `docs/COLOR_CONTRAST_ACCESSIBILITY.md`, is propagated read-only from `starter-repo-template` and
+  assumed present; the skill cites it but never writes it. A colorless repo carries no audit file:
+  when extraction finds zero colors, the script writes nothing and says so on stdout.
+  `generate_color_wheel.py`'s CAM16 color wheel solver (`cam16_utils.py`, `hue_layout.py`,
+  `wheel_specs.py`, `wheel_specs.yaml`) is vendored from the `qti-package-maker` repo's
+  `qti_package_maker/common/color_theory/` module (ported 2026-07-03). Added
+  `pip_requirements.txt` at the repo root (`pillow`, `colour-science`, `numpy`, `six`, `pyyaml`)
+  to declare the new skill's third-party dependencies.
+
+### Behavior or Interface Changes
+
+- Split the webwork-writer-expert reference docs:
+  `references/docs/webwork/COLOR_CONTRAST_ACCESSIBILITY.md` now holds the generic WCAG contrast
+  method (WeBWorK framing), and a new sibling
+  `references/docs/webwork/PALETTE_CONTRAST_AUDIT.md` mirrors the `biology-problems` 14-color
+  palette audit, naming `biology-problems` as the source of truth.
+
+### Fixes and Maintenance
+
+- Added an auto-generated marker as the first line of every doc/JS output the two build tools
+  write: an HTML comment in `docs/SKILLS_INDEX.md` and `.opencode/INSTALL.md`
+  (`tools/build_skills_index.py` and `tools/build_plugin_manifest.py` respectively), and a JS
+  block-comment line in `.opencode/plugins/vosslab_skills.js`, each naming the generating
+  script and telling readers to edit `SKILL.md` sources and rerun instead of hand-editing the
+  output. The marker text lives in the generator scripts, so it survives every regeneration and
+  `--check` drift mode compares it like any other content. The JSON manifests
+  (`.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.codex-plugin/plugin.json`,
+  `.cursor-plugin/plugin.json`) are left unmarked: their schemas are formally documented (the
+  marketplace file references a `$schema` URL) with no observed tolerance for unknown keys, so a
+  stray `$generated` field risked breaking external validation; `tests/test_plugin_manifest_drift.py`
+  already guards those files against silent drift. The JS marker text avoids any literal glob path
+  like `skills/*/SKILL.md`, because the `*/` inside it closes the enclosing `/* ... */` block
+  comment early and breaks the file; `node --check` on the generated file caught this before commit.
+- Applied a post-audit fix pass to `color-accessibility-expert` from a six-reviewer audit:
+  removed the dead `brightness_q_cap` field from `wheel_specs.WheelSpec`, wrapped long
+  `WheelSpec(...)` construction lines under 100 chars, reordered `generate_palette_audit.py`'s
+  local-module imports shortest-name-first, dropped no-information inline comments on
+  `cam16_utils.py`'s `six`/`numpy` imports, added intent comments to the binary-search loop
+  bodies in `generate_color_wheel.py`, extended the SKILL.md `compatibility` field to list
+  `pyyaml` and `six`, pointed `docs/INSTALL.md` at root `pip_requirements.txt` for skill-script
+  runtime dependencies, and added `tests/test_color_utils.py` covering `contrast_ratio`,
+  `parse_color_token`, and `find_accessible_shade`.
+- Applied a post-audit fix pass 2: added a `-l/--hue-layout` flag to
+  `generate_color_wheel.py` (`offset`, `anchor`, or `optimize`, default `offset`) wired to the
+  existing `generate_color_wheel(hue_layout_name=...)` parameter, with `SKILL.md` updated to
+  document the flag; and converted `tools/build_skills_index.py` from 4-space indentation to
+  tabs to match `docs/PYTHON_STYLE.md`, a mechanical change that leaves `docs/SKILLS_INDEX.md`
+  byte-identical.
+
+### Decisions and Failures
+
+- Motivating failure for `color-accessibility-expert`: per-repo copies of
+  `COLOR_CONTRAST_ACCESSIBILITY.md` had drifted independently and cross-referenced files absent
+  in their own repo. The durable fix splits the concern into two files: the generic WCAG method
+  doc `docs/COLOR_CONTRAST_ACCESSIBILITY.md` is propagated read-only from `starter-repo-template`
+  and assumed present, while the skill owns only the per-repo `docs/PALETTE_CONTRAST_AUDIT.md` and
+  regenerates it from evidence gathered in the target repo during the current run, rather than
+  hand-copying or hand-editing a shared template. The vendored CAM16 wheel solver was ported from
+  `qti-package-maker` at `qti_package_maker/common/color_theory/` on 2026-07-03.
+
 ## 2026-07-02
 
 ### Behavior or Interface Changes

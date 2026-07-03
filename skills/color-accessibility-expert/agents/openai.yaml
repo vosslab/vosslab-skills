@@ -1,0 +1,4 @@
+interface:
+  display_name: "Color Accessibility Expert"
+  short_description: "Audit and fix WCAG color contrast, own docs/PALETTE_CONTRAST_AUDIT.md"
+  default_prompt: "Use $color-accessibility-expert to audit this repo's colors for WCAG contrast, fix any failing colors hue-preserved, and write or refresh docs/PALETTE_CONTRAST_AUDIT.md from the evidence found this run."
