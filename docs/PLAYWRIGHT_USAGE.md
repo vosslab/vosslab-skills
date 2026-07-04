@@ -73,8 +73,8 @@ Put Playwright scripts in `tests/playwright/`.
 ## Script location
 
 Store Playwright scripts in `tests/playwright/` with an `.mjs` extension, for example
-`tests/playwright/test_game_ui.mjs`. Helpers (`tests/playwright/helpers.mjs`) and fixtures
-(`tests/playwright/fixtures/`) live alongside.
+`tests/playwright/test_game_ui.mjs`. Helpers (`tests/playwright/helpers.mjs`) live alongside.
+Keep test data inline when practical; see the Fixture policy section in PYTEST_STYLE.md.
 
 Pytest only collects `test_*.py` files and actively excludes `tests/playwright/`
 via `collect_ignore = ["e2e", "playwright"]` in `tests/conftest.py`, so the extension
@@ -91,6 +91,10 @@ Some repos group complete Playwright walkthroughs (multi-step user journeys, rec
 | `playwright` | Library/API for browser automation (what we use) |
 | `@playwright/test` | Test runner with fixtures, assertions, reporters |
 | `playwright-core` | Low-level core without bundled browsers (rarely needed) |
+
+Playwright's "fixtures" are a framework feature of `@playwright/test` (test-runner setup and
+teardown helpers); for repo test data design, follow the Fixture policy section in
+PYTEST_STYLE.md (inline setup first).
 
 For "open a local HTML file, click things, take screenshots", use `playwright`.
 
@@ -210,3 +214,38 @@ Should show `playwright@x.x.x` under the project.
 - Use `.mjs` extension for ES module scripts (e.g., `tests/playwright/test_game_ui.mjs`).
 - Put screenshots in `test-results/` (gitignored).
 - Note: `tests/conftest.py` declares `collect_ignore = ["e2e", "playwright"]` so pytest never collects anything in this tree, regardless of name.
+
+## PDF generation
+
+Render HTML to PDF using `tools/html_to_pdf.mjs`. Run it directly with node:
+
+```bash
+node tools/html_to_pdf.mjs --input report.html --output test-results/report.pdf
+```
+
+The `--output` flag is optional. If not provided, the CLI derives the output filename by replacing the input's extension with `.pdf` in the same directory:
+
+```bash
+node tools/html_to_pdf.mjs --input report.html
+# writes report.pdf alongside report.html
+```
+
+When `--input` is an `http://`, `https://`, or `file://` URL, `--output` is required - the filename cannot be derived from a URL.
+
+Generate landscape orientation by adding the `--landscape` flag:
+
+```bash
+node tools/html_to_pdf.mjs --input wide.html --output /tmp/wide.pdf --landscape
+```
+
+Hardcoded defaults: Letter page size, 0.6 inch margins, screen media, 1440 x 1200 pixel viewport, `networkidle` wait, and backgrounds enabled.
+
+Write PDFs to `/tmp/` or `test-results/` - both are gitignored.
+
+Chromium only. Firefox and WebKit do not implement `page.pdf()`.
+
+The tool needs the `playwright` dev dependency. If it is not installed yet:
+
+```bash
+npm install --save-dev playwright
+```
