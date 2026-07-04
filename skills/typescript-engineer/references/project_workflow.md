@@ -10,8 +10,10 @@ through [topic_index.md](topic_index.md).
 
 Inspect the target repo before writing type code:
 
+- Read the target repo's `AGENTS.md` and `CLAUDE.md` overrides first, if they exist.
 - Read `tsconfig.json` for current strictness (`strict`, `noUncheckedIndexedAccess`,
-  `exactOptionalPropertyTypes`, `verbatimModuleSyntax`).
+  `exactOptionalPropertyTypes`, `noImplicitOverride`, `useUnknownInCatchVariables`,
+  `verbatimModuleSyntax`).
 - Search for `as` casts and `any` usage to gauge existing unsafety.
 - Identify module boundaries: exported APIs, schema-derived types, storage shapes, domain models.
 - Search for type-level tests (`Expect<Equal<>>`, `@ts-expect-error`) and a type-check command.
@@ -23,7 +25,11 @@ follow the greenfield path.
 
 1. Evidence. Enable strict flags in `tsconfig.json` first: `strict`, plus
    `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` where the project can bear them.
-   Confirm `tsc --noEmit` runs at all. See [strict-mode-flags.md](strict-mode-flags.md).
+   Keep `noImplicitOverride`, `useUnknownInCatchVariables`, and `verbatimModuleSyntax` on when the
+   repo already uses them. Confirm `tsc --noEmit` runs at all. See
+   [strict-mode-flags.md](strict-mode-flags.md).
+   Use the repo's front-door script if one exists instead of reconstructing the command from
+   `package.json`.
 2. Design contract. Write the TypeScript contract before the implementation:
    - Which strict flags are on and why.
    - Type-ownership policy by module (who owns the API DTO, the schema-derived type, the storage
@@ -45,6 +51,7 @@ follow the greenfield path.
 ## Existing-repo workflow
 
 1. Inspect first (free before any change):
+   - Read repo-local `AGENTS.md` and `CLAUDE.md` overrides first, if present.
    - Read `tsconfig.json` strictness and note which strict flags are off.
    - Search `as` casts and `any` to map the unsafe surface.
    - Map module boundaries and which types cross them.

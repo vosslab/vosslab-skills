@@ -136,8 +136,14 @@ def collect_dep_keys(targets: list[str]) -> list[str]:
 
 #============================================
 
-def fetch_latest_version(pkg: str) -> str:
-	"""Return the latest registry version of ``pkg`` via ``npm view``."""
+def fetch_latest_version(pkg: str) -> str | None:
+	"""Return the latest registry version of ``pkg`` via ``npm view``.
+
+	Returns ``None`` when the registry has no such package (npm ``E404``).
+	That is the normal case for private or workspace-local packages that
+	are never published; the caller skips them and the extras path leaves
+	their pins untouched. Other npm failures (network, auth) still raise.
+	"""
 	result = subprocess.run(
 		["npm", "view", pkg, "version"],
 		stdout=subprocess.PIPE,
@@ -146,6 +152,10 @@ def fetch_latest_version(pkg: str) -> str:
 	)
 	if result.returncode != 0:
 		stderr = result.stderr.strip() or "npm view failed"
+		# E404 means the package is not on the registry (private/workspace
+		# package). Treat it as unmanaged rather than crashing the run.
+		if "E404" in stderr:
+			return None
 		raise RuntimeError(f"npm view {pkg}: {stderr}")
 	version = result.stdout.strip()
 	if not version:
@@ -155,10 +165,24 @@ def fetch_latest_version(pkg: str) -> str:
 #============================================
 
 def fetch_latest_versions(packages: list[str]) -> dict[str, str]:
-	"""Return a ``{pkg: latest_version}`` map for every package."""
+	"""Return a ``{pkg: latest_version}`` map for every published package.
+
+	Packages the registry does not know (npm ``E404`` -- private or
+	workspace-local) are omitted from the map. Downstream treats a missing
+	key as an unmanaged consumer-extra and leaves its pin untouched.
+	"""
 	versions: dict[str, str] = {}
-	for pkg in packages:
-		versions[pkg] = fetch_latest_version(pkg)
+	total = len(packages)
+	for index, pkg in enumerate(packages, start=1):
+		# live progress: each npm view is a round-trip, so print as we go
+		counter = f"[{index}/{total}]"
+		latest = fetch_latest_version(pkg)
+		if latest is None:
+			# private/workspace package: not on the registry, leave its pin alone
+			print(f"  {counter} skip (not on registry): {pkg}", flush=True)
+			continue
+		versions[pkg] = latest
+		print(f"  {counter} {pkg}: {latest}", flush=True)
 	return versions
 
 #============================================
@@ -244,9 +268,8 @@ def main() -> None:
 		print("targets have no dependencies or devDependencies; nothing to bump.")
 		return
 	print(f"querying npm for {len(packages)} package version(s)...")
+	# fetch_latest_versions prints live per-package progress as it queries
 	latest = fetch_latest_versions(packages)
-	for pkg in packages:
-		print(f"  {pkg}: {latest[pkg]}")
 
 	# compute changes per target without writing
 	any_changes = False

@@ -2,6 +2,15 @@
 
 ### Additions and New Features
 
+- Aligned the `typescript-engineer` skill with the live TypeScript consumer
+  corpus: the skill now leads with repo-local `AGENTS.md` / `CLAUDE.md`
+  overrides, prefers the named shell front doors (`check_codebase.sh`,
+  `build_github_pages.sh`, `run_web_server.sh`, `run_playwright_tests.sh`), and
+  points to a new `references/divergence-map.md` that keeps shared rules and
+  local exceptions separate. Also refreshed the workflow and strict-flag
+  references so `exactOptionalPropertyTypes` is treated as a repo-local choice
+  rather than a universal default.
+
 - Added the `color-accessibility-expert` skill (`skills/color-accessibility-expert/`): a shared
   `color_utils.py` support module plus eight CLIs (`check_contrast.py`, `adjust_color.py`,
   `extract_colors.py`, `audit_palette.py`, `apply_color_fixes.py`, `generate_palette_audit.py`,

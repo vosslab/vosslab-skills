@@ -1,0 +1,21 @@
+# Prettier scope in this repo is .js .mjs .cjs .ts .tsx .mts .cts only.
+# JSON, YAML, Markdown, Python files are explicitly NOT prettier-managed.
+# Script invocations in package.json and check_codebase.sh pin a narrow glob;
+# the entries below cover noisy generated dirs that should still be skipped
+# if prettier is ever invoked with a broader glob from a contributor shell.
+
+# Dependencies and installed package state.
+node_modules/
+package-lock.json
+
+# Build outputs and bundler artifacts.
+dist/
+dist-single/
+_site/
+generated/
+coverage/
+
+# Test runner output trees.
+playwright-report/
+test-results/
+blob-report/

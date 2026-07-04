@@ -8,6 +8,10 @@ import file_utils
 REPO_ROOT = file_utils.get_repo_root()
 REPORT_NAME = file_utils.report_name(__file__)
 
+# Module-level dict of check label -> list of violation lines.
+# Populated by the autouse collect_report fixture before any test runs.
+VIOLATIONS: dict[str, list[str]] = {}
+
 
 #============================================
 def get_e2e_dir() -> str:
@@ -74,137 +78,99 @@ def list_playwright_files() -> list[str]:
 
 
 #============================================
-@pytest.fixture(scope="module", autouse=True)
-def reset_test_naming_report() -> None:
+def check_no_test_prefix_in_e2e() -> list[str]:
 	"""
-	Remove stale report files before this module runs.
-	"""
-	file_utils.clear_stale_reports()
-
-
-#============================================
-def record_naming_violations(label: str, violations: list[str]) -> str:
-	"""
-	Write labeled naming violations to the shared report file.
-
-	Args:
-		label: Short description of the check, used as section header.
-		violations: List of violation strings to record.
-
-	Returns:
-		str: Absolute path to the report file.
-	"""
-	# Prepend the label so violations are grouped under their check name.
-	lines = ["test naming convention violations", label] + violations
-	return file_utils.write_report_lines(REPORT_NAME, lines)
-
-
-#============================================
-def test_no_test_prefix_in_e2e() -> None:
-	"""
-	Verify no test_*.py files exist under tests/e2e/.
+	Return test_*.py files under tests/e2e/ (silently skipped by pytest).
 
 	Such files are silently skipped by pytest (due to collect_ignore in
 	conftest), which is a trap: the name promises pytest collection but
 	the location revokes it. Forbid the contradiction.
+
+	Returns:
+		list[str]: Relative paths of offending files (empty when clean or the
+			tests/e2e directory does not exist).
 	"""
 	if not e2e_dir_exists():
-		return
+		return []
 	files = list_e2e_files()
 	violations = []
 	for filename in files:
 		basename = os.path.basename(filename)
 		if fnmatch.fnmatch(basename, "test_*.py"):
 			violations.append(filename)
-	if violations:
-		report_file = record_naming_violations("test_no_test_prefix_in_e2e", violations)
-		report_rel = file_utils.rel_to_root(report_file)
-		raise AssertionError(
-			f"Found test_*.py files under tests/e2e/ "
-			f"(silently skipped by pytest): {violations}"
-			f" See {report_rel}."
-		)
+	return violations
 
 
 #============================================
-def test_no_test_prefix_in_playwright() -> None:
+def check_no_test_prefix_in_playwright() -> list[str]:
 	"""
-	Verify no test_*.py files exist under tests/playwright/.
+	Return test_*.py files under tests/playwright/ (silently skipped by pytest).
 
 	Such files are silently skipped by pytest (due to collect_ignore in
 	conftest), which is a trap: the name promises pytest collection but
 	the location revokes it. This includes tests/playwright/e2e/ and
 	any other subtree. Forbid the contradiction.
+
+	Returns:
+		list[str]: Relative paths of offending files (empty when clean or the
+			tests/playwright directory does not exist).
 	"""
 	if not playwright_dir_exists():
-		return
+		return []
 	files = list_playwright_files()
 	violations = []
 	for filename in files:
 		basename = os.path.basename(filename)
 		if fnmatch.fnmatch(basename, "test_*.py"):
 			violations.append(filename)
-	if violations:
-		report_file = record_naming_violations("test_no_test_prefix_in_playwright", violations)
-		report_rel = file_utils.rel_to_root(report_file)
-		raise AssertionError(
-			f"Found test_*.py files under tests/playwright/ "
-			f"(silently skipped by pytest): {violations}"
-			f" See {report_rel}."
-		)
+	return violations
 
 
 #============================================
-def test_python_files_use_e2e_prefix() -> None:
+def check_python_files_use_e2e_prefix() -> list[str]:
 	"""
-	Verify all Python files under tests/e2e/ use e2e_*.py prefix.
+	Return Python files under tests/e2e/ that lack the e2e_*.py prefix.
 
 	This is a readability convention: a file named e2e_*.py clearly
 	indicates it is an end-to-end runner and should not be collected
 	by pytest even if it were in tests/ directly.
+
+	Returns:
+		list[str]: Relative paths of offending files (empty when clean or the
+			tests/e2e directory does not exist).
 	"""
 	if not e2e_dir_exists():
-		return
+		return []
 	files = list_e2e_files()
 	violations = []
 	for filename in files:
 		if filename.endswith(".py"):
 			if not fnmatch.fnmatch(filename, "e2e_*.py"):
 				violations.append(filename)
-	if violations:
-		report_file = record_naming_violations("test_python_files_use_e2e_prefix", violations)
-		report_rel = file_utils.rel_to_root(report_file)
-		raise AssertionError(
-			f"Python files under tests/e2e/ must use e2e_*.py prefix: "
-			f"{violations}"
-			f" See {report_rel}."
-		)
+	return violations
 
 
 #============================================
-def test_shell_files_use_e2e_prefix() -> None:
+def check_shell_files_use_e2e_prefix() -> list[str]:
 	"""
-	Verify all shell files under tests/e2e/ use e2e_*.sh prefix.
+	Return shell files under tests/e2e/ that lack the e2e_*.sh prefix.
 
 	This is a readability convention to match the Python rule and
 	make the tier and tier membership clear to readers.
+
+	Returns:
+		list[str]: Relative paths of offending files (empty when clean or the
+			tests/e2e directory does not exist).
 	"""
 	if not e2e_dir_exists():
-		return
+		return []
 	files = list_e2e_files()
 	violations = []
 	for filename in files:
 		if filename.endswith(".sh"):
 			if not fnmatch.fnmatch(filename, "e2e_*.sh"):
 				violations.append(filename)
-	if violations:
-		report_file = record_naming_violations("test_shell_files_use_e2e_prefix", violations)
-		report_rel = file_utils.rel_to_root(report_file)
-		raise AssertionError(
-			f"Shell files under tests/e2e/ must use e2e_*.sh prefix: "
-			f"{violations}"
-			f" See {report_rel}."
-		)
+	return violations
 
 
 #============================================
@@ -261,6 +227,182 @@ def list_mjs_files_outside_playwright() -> list[str]:
 
 
 #============================================
+def check_playwright_imports_in_playwright_folder() -> list[str]:
+	"""
+	Return .mjs files with Playwright imports outside tests/playwright/.
+
+	Playwright browser tests must live under the browser tier
+	(tests/playwright/, including tests/playwright/e2e/) to avoid
+	confusion with fast-running pure Node tests or whole-system E2E.
+
+	Returns:
+		list[str]: Relative paths of offending .mjs files (empty when clean).
+	"""
+	mjs_files = list_mjs_files_outside_playwright()
+	violations = []
+	for mjs_file in mjs_files:
+		full_path = os.path.join(REPO_ROOT, mjs_file)
+		if has_playwright_import(full_path):
+			violations.append(mjs_file)
+	return violations
+
+
+#============================================
+def collect_violations() -> dict[str, list[str]]:
+	"""
+	Run all naming-convention checks and return only those with violations.
+
+	Each check preserves its own logic and its directory-exists early-skip
+	guard. Checks that produce at least one violation store their lines under
+	their stable label. Checks with no violations are omitted from the dict.
+
+	Returns:
+		dict[str, list[str]]: Check label -> list of violation lines, containing
+			only checks that have at least one violation.
+	"""
+	# Map each stable check label to its detection function.
+	checks = {
+		"test_no_test_prefix_in_e2e": check_no_test_prefix_in_e2e,
+		"test_no_test_prefix_in_playwright": check_no_test_prefix_in_playwright,
+		"test_python_files_use_e2e_prefix": check_python_files_use_e2e_prefix,
+		"test_shell_files_use_e2e_prefix": check_shell_files_use_e2e_prefix,
+		"test_playwright_imports_in_playwright_folder": check_playwright_imports_in_playwright_folder,
+	}
+	result = {}
+	# Run each check; only record labels that produced violations.
+	for label, check in checks.items():
+		violations = check()
+		if violations:
+			result[label] = violations
+	return result
+
+
+#============================================
+def make_report_lines(violations: dict[str, list[str]]) -> list[str]:
+	"""
+	Build the full report body from a violations dict.
+
+	Emits a header line first, then iterates labels in sorted order, emitting
+	each label's lines (the label line followed by its violation paths). Returns
+	a flat list of raw lines without trailing newlines.
+
+	Args:
+		violations: Check label -> list of violation lines.
+
+	Returns:
+		list[str]: Raw report lines without trailing newlines. Empty when the
+			violations dict is empty (clean run).
+	"""
+	# Return an empty list for a clean run; no report file is written.
+	if not violations:
+		return []
+	# Emit header then each label's section in sorted label order.
+	lines = ["test naming convention violations"]
+	for label in sorted(violations):
+		lines.append(label)
+		lines += violations[label]
+	return lines
+
+
+#============================================
+@pytest.fixture(scope="module", autouse=True)
+def collect_report() -> None:
+	"""
+	Autouse fixture: populate VIOLATIONS and write the report file.
+
+	Clears stale report files first, then clears and rebuilds the module-level
+	violations dict. A clean run writes nothing; a failing run writes the body.
+	"""
+	file_utils.clear_stale_reports()
+	# Clear any state left from a previous collection in the same process.
+	VIOLATIONS.clear()
+	VIOLATIONS.update(collect_violations())
+	lines: list[str] = make_report_lines(VIOLATIONS)
+	if lines:
+		file_utils.write_report_lines(REPORT_NAME, lines)
+
+
+#============================================
+def _report_rel() -> str:
+	"""
+	Return the repo-relative path to this module's report file.
+	"""
+	return file_utils.rel_to_root(file_utils.report_path(REPORT_NAME))
+
+
+#============================================
+def test_no_test_prefix_in_e2e() -> None:
+	"""
+	Verify no test_*.py files exist under tests/e2e/.
+
+	Such files are silently skipped by pytest (due to collect_ignore in
+	conftest), which is a trap: the name promises pytest collection but
+	the location revokes it. Forbid the contradiction.
+	"""
+	violations = VIOLATIONS.get("test_no_test_prefix_in_e2e", [])
+	message = (
+		f"Found test_*.py files under tests/e2e/ "
+		f"(silently skipped by pytest): {violations}"
+		f" See {_report_rel()}."
+	)
+	assert "test_no_test_prefix_in_e2e" not in VIOLATIONS, message
+
+
+#============================================
+def test_no_test_prefix_in_playwright() -> None:
+	"""
+	Verify no test_*.py files exist under tests/playwright/.
+
+	Such files are silently skipped by pytest (due to collect_ignore in
+	conftest), which is a trap: the name promises pytest collection but
+	the location revokes it. This includes tests/playwright/e2e/ and
+	any other subtree. Forbid the contradiction.
+	"""
+	violations = VIOLATIONS.get("test_no_test_prefix_in_playwright", [])
+	message = (
+		f"Found test_*.py files under tests/playwright/ "
+		f"(silently skipped by pytest): {violations}"
+		f" See {_report_rel()}."
+	)
+	assert "test_no_test_prefix_in_playwright" not in VIOLATIONS, message
+
+
+#============================================
+def test_python_files_use_e2e_prefix() -> None:
+	"""
+	Verify all Python files under tests/e2e/ use e2e_*.py prefix.
+
+	This is a readability convention: a file named e2e_*.py clearly
+	indicates it is an end-to-end runner and should not be collected
+	by pytest even if it were in tests/ directly.
+	"""
+	violations = VIOLATIONS.get("test_python_files_use_e2e_prefix", [])
+	message = (
+		f"Python files under tests/e2e/ must use e2e_*.py prefix: "
+		f"{violations}"
+		f" See {_report_rel()}."
+	)
+	assert "test_python_files_use_e2e_prefix" not in VIOLATIONS, message
+
+
+#============================================
+def test_shell_files_use_e2e_prefix() -> None:
+	"""
+	Verify all shell files under tests/e2e/ use e2e_*.sh prefix.
+
+	This is a readability convention to match the Python rule and
+	make the tier and tier membership clear to readers.
+	"""
+	violations = VIOLATIONS.get("test_shell_files_use_e2e_prefix", [])
+	message = (
+		f"Shell files under tests/e2e/ must use e2e_*.sh prefix: "
+		f"{violations}"
+		f" See {_report_rel()}."
+	)
+	assert "test_shell_files_use_e2e_prefix" not in VIOLATIONS, message
+
+
+#============================================
 def test_playwright_imports_in_playwright_folder() -> None:
 	"""
 	Verify Playwright imports only appear in .mjs files under tests/playwright/.
@@ -269,19 +411,10 @@ def test_playwright_imports_in_playwright_folder() -> None:
 	(tests/playwright/, including tests/playwright/e2e/) to avoid
 	confusion with fast-running pure Node tests or whole-system E2E.
 	"""
-	mjs_files = list_mjs_files_outside_playwright()
-	violations = []
-	for mjs_file in mjs_files:
-		full_path = os.path.join(REPO_ROOT, mjs_file)
-		if has_playwright_import(full_path):
-			violations.append(mjs_file)
-	if violations:
-		report_file = record_naming_violations(
-			"test_playwright_imports_in_playwright_folder", violations
-		)
-		report_rel = file_utils.rel_to_root(report_file)
-		raise AssertionError(
-			f"Playwright imports found in .mjs files outside tests/playwright/. "
-			f"Move these files to tests/playwright/: {violations}"
-			f" See {report_rel}."
-		)
+	violations = VIOLATIONS.get("test_playwright_imports_in_playwright_folder", [])
+	message = (
+		f"Playwright imports found in .mjs files outside tests/playwright/. "
+		f"Move these files to tests/playwright/: {violations}"
+		f" See {_report_rel()}."
+	)
+	assert "test_playwright_imports_in_playwright_folder" not in VIOLATIONS, message

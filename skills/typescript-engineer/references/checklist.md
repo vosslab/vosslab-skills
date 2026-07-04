@@ -4,9 +4,14 @@ Use this file as the entry point for sweep, audit, pre-PR review, or
 type-safety-sweep tasks. Each bullet is a router into a focused rule file;
 do not expand bullets into prose here.
 
+For command-front-door and local-override differences, see
+[divergence-map.md](divergence-map.md).
+
 ## Strict-flag compliance
 - Confirm `strict` is enabled and the recommended flags are on.
-- See [strict-mode-flags.md](strict-mode-flags.md).
+- See [strict-mode-flags.md](strict-mode-flags.md) and
+  [divergence-map.md](divergence-map.md) for repo-local exceptions such as
+  `exactOptionalPropertyTypes`.
 
 ## Generic constraints and inference quality
 - Are constraints tight enough to reject misuse but loose enough to infer?

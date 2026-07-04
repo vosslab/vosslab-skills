@@ -5,6 +5,10 @@ compile-time safety. Covers flags that change what the type checker accepts.
 Out of scope: build-config flags such as `incremental`, `composite`, `paths`,
 `outDir`, and module-resolution settings.
 
+The shared TypeScript style guide treats some flags as canonical template
+defaults, but consumer repos may enable additional strictness locally. Verify
+the target repo's `tsconfig.json` before assuming a flag is absent.
+
 In game projects with split configs such as `tsconfig.core.json`, apply
 strict type-checking flags to the core simulation config first; UI,
 tooling, or generated configs may be handled separately.
@@ -32,6 +36,8 @@ const a: { x?: number } = { x: undefined };  // error under this flag
 ```
 Prevents: code that conflates "missing" and "explicitly undefined" when the
 contract distinguishes them.
+Many consumer repos turn this on even though the shared template treats it as
+opt-in, so read the repo-local config rather than assuming the shared default.
 
 ## `noImplicitOverride`
 Subclass overrides must use the `override` keyword.

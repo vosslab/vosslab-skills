@@ -1,32 +1,23 @@
 #!/bin/sh
-# setup_playwright.sh - one-time Playwright install for smoke testing.
-#
-# The web-game-parallel-build skill mandates a Playwright smoke test
-# between every batch. This script installs the @playwright/test package
-# locally and the chromium browser. Idempotent; safe to rerun.
-#
-# Kept separate from setup_game.sh because the chromium download is
-# heavier than the rest of npm install and may be skipped on machines
-# where Playwright is already installed system-wide.
+# setup_playwright.sh - one-time Playwright browser install.
+# Run after npm install if this repo uses Playwright smoke tests.
 
 set -e
 
 cd "$(git rev-parse --show-toplevel)"
 
 if ! command -v npm >/dev/null 2>&1; then
-	echo "ERROR: npm not found. Install Node.js first (e.g., 'brew install node')." >&2
+	echo "ERROR: npm not found. Install Node.js first, for example: brew install node" >&2
 	exit 1
 fi
 
-echo "Installing @playwright/test as a dev dependency..."
-npm install --save-dev @playwright/test
+if [ ! -d node_modules ]; then
+	echo "ERROR: node_modules missing. Run ./devel/setup_typescript.sh or npm install first." >&2
+	exit 1
+fi
 
-echo "Downloading chromium browser for Playwright..."
-npx playwright install chromium
+echo "Installing Chromium and Firefox for Playwright..."
+npx playwright install chromium firefox
 
-echo "Downloading firefox browser for Playwright..."
-npx playwright install firefox
-
-echo
-echo "Playwright setup complete. See templates/playwright_smoke_test.md"
-echo "for the smoke-test recipe used between batches."
+echo "Playwright setup complete."
+echo "  bash run_playwright_tests.sh - run Playwright tests (or: npm run test:playwright)"

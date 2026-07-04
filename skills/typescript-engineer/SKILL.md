@@ -12,6 +12,11 @@ strict-safety refactoring in TypeScript. Route non-trivial work to the focused r
 `references/`; do not answer from `SKILL.md` alone when the request involves advanced type behavior
 or shared type design.
 
+Before any nontrivial repo work, read the target repo's `AGENTS.md` and `CLAUDE.md` overrides if
+they exist, then inspect the repo-local `docs/TYPESCRIPT_STYLE.md` or equivalent TypeScript
+instructions. The consumer repos are the source of truth for command front doors and local
+exceptions.
+
 ## Design philosophy
 
 - Keep one responsibility per file.
@@ -26,6 +31,8 @@ or shared type design.
   of those owners do not exist, fall back to feature-area boundaries inside the domain.
 - Zero unchecked cast: `as` is permitted only inside a brand constructor, a type-guard return, or
   a documented boundary adapter. Never as a fix for a compiler error.
+- Keep shared guidance narrow. When a consumer repo intentionally diverges, document the exception
+  instead of flattening it into the shared rule.
 
 ## When to use
 
@@ -36,6 +43,12 @@ or shared type design.
 - Refactor a file or module toward stricter compile-time safety without changing runtime behavior.
 - Explain a TypeScript type-system concept with concrete before and after examples.
 - Validate production refactors with `tsc --noEmit` and type-level tests.
+- Follow the repo's shell-script front doors first: `./check_codebase.sh`,
+  `./build_github_pages.sh`, `./run_web_server.sh`, and `./run_playwright_tests.sh`. Many repos
+  also mirror these with `npm run check`, `build`, `serve`, and `test:playwright`, but the shell
+  scripts remain the interface.
+- Run repo Python helpers through `source source_me.sh && python3 ...` when the target repo uses
+  the shared Python environment. Do not assume a bare `python3` shell.
 - Resolve a narrow in-flight type contract during a parallel game build
   (invoked by a coding subagent, not a manager). One bounded question
   -- typically a single shared type, brand, or boundary shape -- and a
@@ -63,6 +76,8 @@ follow the working style below.
 - Improve-existing (code already in place): inspect strictness and casts, capture the `tsc --noEmit`
   baseline, then fix one error or module at a time and prove the diagnostics dropped. See
   [`references/project_workflow.md`](references/project_workflow.md).
+- When the target repo has a front-door script, use it instead of reconstructing the command from
+  `package.json`.
 
 For symptom-driven routing, start at [`references/topic_index.md`](references/topic_index.md) and
 classify the task with [`references/task_selection.md`](references/task_selection.md).
@@ -191,6 +206,9 @@ keyword index into the same rule files.
 
 For copy-pastable smell-test examples, see
 [`references/smell-test-examples.md`](references/smell-test-examples.md).
+
+For shared-vs-local command and config differences, see
+[`references/divergence-map.md`](references/divergence-map.md).
 
 ## Delegated execution
 
