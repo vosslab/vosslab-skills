@@ -124,6 +124,7 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `docset-updater` | compliant | docset-refresh | Agent-form suffix matches update-if-drifted behavior. |
 | `gas-town-workflow` | borderline-no-change | (unchanged) | Repo-specific brand name; leading token unique. |
 | `geometry-expert` | compliant | (new) | Domain-noun-first; `geo` 3-char prefix unique; `-expert` suffix matches specialist role. |
+| `glass-expert` | compliant | (new) | Domain-noun-first; `gla` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `html-game-parallel-builder` | accepted-rename | web-game-parallel-builder | Drops `web-` collision with `webwork-`; `html` is short, evergreen. |
 | `install-usage-docs` | accepted-rename | setup-install-usage-docs | Both `install` and `usage` collide with built-in CLI args; `setup-` lead token clears the collision while keeping `install`/`usage` mid-name for discoverability, with the `-docs` suffix. |
 | `old-python-code-review` | deprecated | python-reviewer / python-code-review | `old-` prefix marks for occasional use. |
@@ -138,7 +139,7 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `unit-test-starter` | compliant | (unchanged) | Unique leading token, `-starter` suffix. |
 | `webwork-writer-expert` | accepted-rename | webwork-writer | Standardized suffix to `-expert`; `web` 3-char prefix unique; `writer` kept mid-name for discoverability. |
 
-Counts (23 active skills): 13 compliant or borderline-no-change, 9
+Counts (24 active skills): 14 compliant or borderline-no-change, 9
 accepted-rename, 1 deprecated (`old-` prefix). The post-rename canonical
 record matches the output of
 `tools/list_loaded_skills.py --names-only` on the repo. Two additional

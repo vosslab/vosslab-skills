@@ -43,6 +43,16 @@ Ground every file path and color value in the generated audit table in files
 Read during the current run: the "Evidence rule" section below states the
 exact standard.
 
+## Project shape
+
+Before step 1, frame the target: improve-existing (the repo has colors to
+audit and fix -- the common case) versus greenfield (the repo needs a palette
+created). Detection and both paths live in
+[references/project_workflow.md](references/project_workflow.md). Classify
+one-off requests (single pair, one color, one image) with
+[references/task_selection.md](references/task_selection.md); route observed
+symptoms through [references/topic_index.md](references/topic_index.md).
+
 ## Workflow
 
 1. **Locate color sources.** Run `extract_colors.py` over the target repo (or
@@ -175,6 +185,15 @@ before treating a generated audit file as final.
 
 ## References
 
+- [references/task_selection.md](references/task_selection.md) -- classify a
+  request (scope, medium, background, target ratio, deliverable) and route it.
+- [references/topic_index.md](references/topic_index.md) -- symptom router
+  keyed by what the user observes, one tool or guide per row.
+- [references/project_workflow.md](references/project_workflow.md) --
+  improve-existing versus greenfield paths for a target repo.
+- [references/testing_and_oracles.md](references/testing_and_oracles.md) --
+  the numeric oracles behind "passes", "fixed", and "audited", plus the
+  per-run verification checklist.
 - [references/color_contrast_reference.md](references/color_contrast_reference.md)
   -- the generic WCAG contrast method: thresholds, formula, luminance,
   backward solve, online calculators.

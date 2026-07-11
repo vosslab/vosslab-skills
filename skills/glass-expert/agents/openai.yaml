@@ -1,0 +1,4 @@
+interface:
+  display_name: "Liquid Glass Expert"
+  short_description: "Get Apple Liquid Glass demonstrably correct in SwiftUI"
+  default_prompt: "Use $glass-expert to implement, debug, or verify Liquid Glass surfaces on macOS 26+: sampling layers, contrast over glass, and on-screen capture evidence."

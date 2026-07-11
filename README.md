@@ -67,8 +67,9 @@ A few representative skills from the collection:
 - `news-release-docs`: Author docs/RELEASE_HISTORY.md and docs/NEWS.md from the changelog.
 - `skill-writing-guide`: Guide for authoring Agent Skills (SKILL.md) in open standard format.
 
-Domain-expert skills cover computational geometry, computer vision, PySide6, SolidJS,
-TypeScript, PDF work, and education-content generators (bptools and WeBWorK).
+Domain-expert skills cover computational geometry, Apple Liquid Glass, computer vision,
+PySide6, SolidJS, TypeScript, PDF work, and education-content generators (bptools and
+WeBWorK).
 
 Full index with one-line descriptions: [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md).
 

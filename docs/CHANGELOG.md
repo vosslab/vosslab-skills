@@ -1,3 +1,82 @@
+## 2026-07-11
+
+### Behavior or Interface Changes
+
+- `tests/test_expert_skill_parity.py`: the expert roster is now discovered,
+  not hand-listed. `discover_expert_skills()` gates every `skills/` directory
+  ending in `-expert` or `-engineer` (deterministic on a clean clone, since
+  directory names are always present), minus a `PENDING_PARITY` escape-hatch
+  set kept empty in steady state (name a new suffix-matched skill there only
+  while bringing it up to parity). `BOOK_BACKED_SKILLS` stays an explicit
+  allowlist because its marker, the `local-only/` corpus, is gitignored and
+  absent on clean clones. Added `test_discovery_finds_experts`, a canary
+  asserting `geometry-expert` is discovered, so an empty roster (wrong root,
+  renamed directory) fails loudly instead of parametrizing zero tests and
+  passing silently. A future new expert skill is gated automatically with no
+  test edit. `docs/EXPERT_SKILL-BEST_PRACTICES.md` rephrased count-free to
+  match ("every expert" instead of "eight"/"nine"), with the suffix-discovery
+  rule stated in the intro and the parity-gate section.
+- `skills/color-accessibility-expert/`: brought to expert-skeleton parity so
+  suffix discovery gates it with the rest. Added the four required guides,
+  each framing and routing into the skill's existing workflow rather than
+  duplicating it: `references/task_selection.md` (scope / medium / background
+  / target-ratio / deliverable dimensions, request-shape routing, red flags),
+  `references/topic_index.md` (symptom router: failing pair, dry-run-only
+  fixes, wrong-background audits, stale audit doc, image spot checks),
+  `references/project_workflow.md` (detect improve-existing versus
+  greenfield; existing path maps to SKILL.md steps 1-8, greenfield runs
+  `generate_color_wheel.py` then converges into the audit loop), and
+  `references/testing_and_oracles.md` (numeric oracles: WCAG ratio, clean
+  re-audit, dry-run preview counts, `EVIDENCE` manifest match, 3x3-median
+  image sampling; per-run verification checklist; what not to trust).
+  `SKILL.md` gains a "Project shape" section routing to the new guides and
+  reference-list entries for all four.
+
+### Additions and New Features
+
+- Added the `glass-expert` skill (`skills/glass-expert/`), the ninth
+  domain-expert skill: design, implement, verify, and debug Apple Liquid
+  Glass surfaces in SwiftUI on macOS 26+ / iOS 26+. Committed-guide-set row
+  of the expert skeleton (no book corpus): `SKILL.md` with a project-shape
+  Workflow step and API/symptom routing, `agents/openai.yaml`, and seven
+  reference guides -- `task_selection.md`, `topic_index.md` (symptom router
+  keyed by what breaks: flat gray glass, invisible glass, lying captures,
+  identical differential pairs, unreadable text), `project_workflow.md`
+  (greenfield vs existing-repo, with a per-surface glass contract table),
+  `testing_and_oracles.md` (evidence protocol, expected-appearance matrix,
+  paste-able SHIP/REWORK dispatch brief), `design_placement.md` (system
+  components first; macOS 27 Golden Gate uniform frosted toolbar; own your
+  glass surfaces, rent the system's chrome), `layers_and_sampling.md`
+  (sampling-path diagram, glass-on-glass, `GlassEffectContainer`/morphing),
+  `color_and_contrast.md` (adaptive material, layered contrast fixes; routes
+  measurement to the color-accessibility-expert skill's `image_contrast.py`
+  rather than duplicating it), `component_seeds.md`,
+  `api_quick_reference.md`, and `toolbar_best_practices.md` (toolbar quality
+  is best-practices work, not API work: grouping-is-meaning `ToolbarSpacer`
+  semantics, symbols-first items, placement-driven prominence with tint
+  restraint, scroll edge tuning, and toolbar review questions). A
+  `skill_maintenance.md` reference keeps the skill itself current: a
+  volatility map (which guide goes stale on which driver), an annual
+  post-WWDC refresh procedure (verify by search, never from memory; diff the
+  API table; rebuild seeds against the new SDK; re-check the
+  expected-appearance matrix), a dated pending watchlist (Golden Gate HIG
+  republication; macOS 27 final release notes), a five-tier source ranking
+  (Apple docs above sessions above HIG above community above news), and
+  editing rules including the reminder to sync fact changes with the
+  starter-repo-template `LIQUID_GLASS.md`. Ships executable tools under `scripts/`
+  (`list_window_ids.swift` CGWindowList window-id lookup,
+  `capture_glass_evidence.sh` labeled on-screen `screencapture -o -l`
+  captures with appearance/Reduce-Transparency/OS-version in the filename,
+  `compare_captures.py` pixel-differential DIFFERENT/IDENTICAL verdicts) and
+  seed views under `assets/` (`GlassSurface.swift` with accessibility
+  fallbacks and optional contrast scrim, `GlassEvidenceView.swift` harness
+  rendering glass beside a flat material control over a gradient). Registered
+  in `tests/test_expert_skill_parity.py` `EXPERT_SKILLS`,
+  `docs/EXPERT_SKILL-BEST_PRACTICES.md` (roster, counts, applicability
+  table), `docs/SKILL_NAMING.md` (audit row, counts), and the README
+  domain-expert line; manifests regenerated. WWDC26/macOS 27 facts verified
+  against current reporting before authoring.
+
 ## 2026-07-10
 
 ### Additions and New Features

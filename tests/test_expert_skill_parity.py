@@ -1,5 +1,5 @@
 """
-Parity gate for the eight domain-expert skills.
+Parity gate for the domain-expert skills.
 
 Mechanically enforces the required-set parity standard: every expert skill ships
 the same interface (a thin `SKILL.md`, an `agents/openai.yaml`, and the four
@@ -7,10 +7,15 @@ routing / workflow / testing guides), and the four book-backed skills
 additionally ship the two committed corpus files. The gate catches future drift so "consistent"
 stays true without a human re-reading every skill.
 
+Expert skills are discovered by directory suffix (`-expert` / `-engineer`)
+under skills/, minus the PENDING_PARITY set, so a new expert skill is gated
+automatically. The book-backed subset stays an explicit allowlist because its
+marker (the local-only/ corpus) is gitignored and absent on a clean clone.
+
 What is asserted per skill (problems are reported as `skill: missing <path>`
 and similar, so a failure names the exact gap):
 
-- Universal required files for all eight: `SKILL.md`, `agents/openai.yaml`, and
+- Universal required files for every expert skill: `SKILL.md`, `agents/openai.yaml`, and
   `references/{task_selection,topic_index,project_workflow,testing_and_oracles}.md`.
 - Book-backed extras for the four named (geometry, vision, pyside6, ui-ux): the
   two COMMITTED files `references/reference_survey.md` and
@@ -51,19 +56,35 @@ import file_utils
 REPO_ROOT = pathlib.Path(file_utils.get_repo_root())
 SKILLS_DIR = REPO_ROOT / "skills"
 
-# Explicit roster: the eight expert skills and the four book-backed ones.
-# Both are named allowlists, not inferred, so a missing gitignored local-only/
-# corpus on a clean clone cannot flip a skill in or out of either set.
-EXPERT_SKILLS = (
-	"geometry-expert",
-	"vision-expert",
-	"pyside6-engineer",
-	"ui-ux-engineer",
-	"solid-js-expert",
-	"typescript-engineer",
-	"bptools-writer-expert",
-	"webwork-writer-expert",
-)
+# Expert skills are discovered by the naming convention (docs/SKILL_NAMING.md):
+# every skills/ directory ending in -expert or -engineer is gated, so a new
+# expert skill is covered here with no roster edit. Directory names are always
+# present on a clean clone, so suffix discovery is deterministic.
+EXPERT_SUFFIXES = ("-expert", "-engineer")
+# Temporary escape hatch: name a suffix-matched skill here while it is being
+# brought up to parity, then delete its entry. Keep this empty in steady state.
+PENDING_PARITY: frozenset = frozenset()
+
+
+#============================================
+def discover_expert_skills() -> tuple:
+	"""Return sorted expert skill names discovered by directory suffix."""
+	names = []
+	for entry in sorted(SKILLS_DIR.iterdir()):
+		if not entry.is_dir() or entry.name.startswith('.'):
+			continue
+		if not entry.name.endswith(EXPERT_SUFFIXES):
+			continue
+		if entry.name in PENDING_PARITY:
+			continue
+		names.append(entry.name)
+	return tuple(names)
+
+
+EXPERT_SKILLS = discover_expert_skills()
+
+# The book-backed subset stays a named allowlist, not inferred: its marker (the
+# local-only/ corpus) is gitignored, so a clean clone could not infer membership.
 BOOK_BACKED_SKILLS = frozenset({
 	"geometry-expert",
 	"vision-expert",
@@ -267,6 +288,18 @@ def test_expert_skill_parity(skill_name: str) -> None:
 	skill_dir = SKILLS_DIR / skill_name
 	problems = check_skill(skill_dir, skill_name)
 	assert not problems, "parity gaps:\n" + "\n".join(problems)
+
+
+#============================================
+def test_discovery_finds_experts() -> None:
+	"""Canary: suffix discovery yields a non-empty roster.
+
+	An empty EXPERT_SKILLS would make the parametrized gate above generate
+	zero tests and pass silently while gating nothing. geometry-expert is the
+	reference implementation and always present, so its absence means
+	discovery itself broke (wrong root, renamed directory), not the skill.
+	"""
+	assert "geometry-expert" in EXPERT_SKILLS
 
 
 # ---------------------------------------------------------------------------
