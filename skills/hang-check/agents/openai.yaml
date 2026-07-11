@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hang Check"
+  short_description: "Watchdog for stuck background subagents"
+  default_prompt: "Use $hang-check to arm a recurring timer while background subagents run; on each check review each agent's status, recent output, and file activity, investigate any agent that looks stuck before stopping it, and remove the timer when no subagents remain active."

@@ -4,7 +4,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 29
+Total skills: 30
 
 - [agents-md-fixer/SKILL.md](../skills/agents-md-fixer/SKILL.md): Trim `AGENTS.md` aggressively to a small pointer file (prefer ~15 lines, hard cap ~50) that points into `docs/*.md` with bare paths instead of restating rules.
 - [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from current repo evidence.
@@ -16,6 +16,7 @@ Total skills: 29
 - [docset-updater/SKILL.md](../skills/docset-updater/SKILL.md): Refresh the whole repo doc set in one pass by invoking the per-doc skills in dependency order (`arch-docs`, `setup-install-usage-docs`, `readme-docs`, `related-projects-docs`, `news-release-docs`, `screenshot-docs`, `agents-md-fixer`), then audit any remaining `docs/` files those skills do not own.
 - [gas-town-workflow/SKILL.md](../skills/gas-town-workflow/SKILL.md): Gas Town style multi-agent coordination with role-mapped task routing and convoy-based work decomposition.
 - [geometry-expert/SKILL.md](../skills/geometry-expert/SKILL.md): Design, implement, debug, and review computational geometry algorithms in any language, including convex hull, polygon triangulation, Delaunay triangulation, Voronoi diagrams, polygon boolean clipping and overlay, segment intersection and sweep line, proximity and nearest-neighbor queries, point location, spatial data structures (k-d tree, BVH, R-tree, quadtree), arrangements, mesh processing, and distance/intersection queries in 2D, 3D, and nD.
+- [hang-check/SKILL.md](../skills/hang-check/SKILL.md): Watchdog for background subagents that catches a stuck, stalled, or hung agent without killing a healthy one.
 - [html-game-parallel-builder/SKILL.md](../skills/html-game-parallel-builder/SKILL.md): Use when building a TypeScript browser game from modular `src/*.ts` files with parallel subagents to reduce wall-clock time.
 - [news-release-docs/SKILL.md](../skills/news-release-docs/SKILL.md): Create or refresh `docs/RELEASE_HISTORY.md` and `docs/NEWS.md` from `docs/CHANGELOG.md`, authoring two differentiated docs (full versioned dated log vs short curated highlights) and emitting a `/tmp` notes-file body for `devel/make_release.py --notes-file`.
 - [old-python-code-review/SKILL.md](../skills/old-python-code-review/SKILL.md): Single-pass Python correctness, security, and style review on demand; not for multi-reviewer audits before merge (use audit-code-reviewer for that).

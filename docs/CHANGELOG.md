@@ -1,3 +1,24 @@
+## 2026-07-10
+
+### Additions and New Features
+
+- Added the `hang-check` skill (`skills/hang-check/`): a watchdog for
+  background subagents. While one or more subagents run, it arms a single
+  recurring `CronCreate` timer (one watchdog covers all active agents); on
+  each fire it reads up to three evidence signals per agent (`TaskList`
+  status, recent output via `TaskOutput`, and file activity) and treats
+  elapsed time alone as insufficient evidence of a hang. File activity counts
+  only when the agent is expected to touch files, so a researching or
+  remote-waiting agent is not flagged for making no changes. A
+  quiet-on-every-relevant-signal agent is investigated (read its latest
+  output, check for a legitimate long operation, check mtimes) before any
+  `TaskStop`; a confirmed hang is not auto-re-dispatched, the manager decides
+  resume, replace, or cancel. The timer is removed with `CronDelete`
+  (confirmed via `CronList`) once no subagents remain active. Kept harness-
+  and repo-agnostic: no assumptions about auto re-invocation or repository
+  policy files. Regenerated `docs/SKILLS_INDEX.md` and the plugin manifests
+  from the new `SKILL.md`.
+
 ## 2026-07-03
 
 ### Additions and New Features
