@@ -3,9 +3,7 @@ Plugin manifest must list every published skill directory.
 
 The manifest at `.claude-plugin/plugin.json` carries a `skills` array of
 folder paths (e.g. `./skills/audit-code-reviewer`) that should match the
-non-deprecated skill folders under `skills/`. Folders prefixed with
-`old-` are intentionally excluded from the published manifest (see
-`tools/build_plugin_manifest.py` `collect_skill_paths`). The `keywords`
+publishable skill folders returned by shared discovery. The `keywords`
 array is a thematic tag list (`skills`, `claude-code`, ...), not a skill
 roster, and is intentionally not checked here.
 
@@ -14,9 +12,15 @@ forgot to run `tools/build_plugin_manifest.py`.
 """
 
 import json
+import sys
 import pathlib
 
 import file_utils
+
+TOOLS_DIR = pathlib.Path(__file__).resolve().parent.parent / "tools"
+sys.path.insert(0, str(TOOLS_DIR))
+
+import skill_discovery
 
 REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
@@ -28,13 +32,15 @@ SKILL_PATH_PREFIX = "./skills/"
 def test_plugin_manifest_skills_match_skill_dirs() -> None:
 	"""
 	The `skills` array in `.claude-plugin/plugin.json` must list every
-	non-deprecated skill directory under `skills/`, and only those.
+	publishable skill directory returned by shared discovery, and only those.
 	"""
-	# Published manifest excludes `old-*` folders by design.
+	discovery = skill_discovery.collect_skill_files(
+		pathlib.Path(REPO_ROOT),
+		SKILLS_DIR,
+	)
 	skill_dirs = sorted(
-		d.name for d in SKILLS_DIR.iterdir()
-		if d.is_dir() and not d.name.startswith(".")
-		and not d.name.startswith("old-")
+		skill_file.parent.relative_to(SKILLS_DIR).as_posix()
+		for skill_file in discovery.skill_files
 	)
 	manifest_data = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
 	# Strip the leading `./skills/` so entries compare against folder names.

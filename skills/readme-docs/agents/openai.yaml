@@ -1,0 +1,4 @@
+interface:
+  display_name: "README Docs"
+  short_description: "Build a newcomer-friendly, evidence-backed README landing page"
+  default_prompt: "Use $readme-docs to create or refresh README.md as a welcoming project landing page with a clear value proposition, meaningful quick start, project-specific proof, and useful documentation routes."

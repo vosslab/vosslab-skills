@@ -4,25 +4,31 @@ Follow these conventions every time screenshot-docs captures and embeds images.
 
 ## Storage location
 
-Store all committed screenshots in `docs/screenshots/` at the repo root.
+Store all committed screenshots and animated demonstrations in `docs/screenshots/` at
+the repo root.
 
 ```
 docs/
   screenshots/
     main_window.png
     settings_dialog.png
+    concept_map_demo.gif
 ```
 
-Name PNG files using lowercase_underscore with no spaces or special characters.
-Examples: `main_window.png`, `login_screen.png`, `chart_view_dark.png`.
+Name PNG and GIF files with lowercase ASCII letters, digits, and underscores.
+Examples: `main_window.png`, `login_screen.png`, `chart_view_dark.png`, and
+`concept_map_demo.gif`.
 
 ## Size ceiling and budget
 
-Cap the longer edge at 1920 px and keep each PNG under about 1 MB. GitHub
+Cap the longer edge of a PNG at 1920 px and keep each PNG under about 1 MB. Keep an
+animated GIF at 5 seconds or less, 800 to 1200 px wide, 1 to 15 fps, and under about
+5 MB. Use 1 to 4 fps for deliberate terminal states and 8 to 15 fps for smooth GUI or
+web motion; see [capture_animation.md](capture_animation.md). GitHub
 renders an inline README image downscaled to the text column and opens the
 native-resolution file on click, so a 1920 px landscape capture stays crisp in
-the column and reveals full detail when clicked; do not add a separate thumbnail
-file. See [postprocess.md](postprocess.md) for the full rationale.
+the column and reveals full detail when clicked. Use that same file for inline and
+full-detail viewing. See [postprocess.md](postprocess.md) for the full rationale.
 
 Resize a capture whose longer edge exceeds 1920 px under `/tmp` before copying
 it in (see [postprocess.md](postprocess.md) for the full workflow and the /tmp
@@ -59,8 +65,7 @@ cp /tmp/main_window.png docs/screenshots/main_window.png
 
 ## Freshness and pruning
 
-Keep `docs/screenshots/` showing the current app and holding only images that earn
-their place in the repo.
+Keep `docs/screenshots/` showing the current app and holding relevant visual evidence.
 
 Refresh on every run:
 - Reuse the same descriptive slug for each managed view, so a fresh capture
@@ -68,9 +73,12 @@ Refresh on every run:
 - Re-capture each managed view so the committed image matches the current UI.
 
 Prune stale images after embedding:
-- Build the set of `docs/screenshots/*.png` paths still referenced by a live embed
+- Build the set of `docs/screenshots/*.png` and `docs/screenshots/*.gif` paths still
+  referenced by a live embed
   in `README.md` or any `docs/` file.
-- Remove every managed PNG outside that set with `git rm`:
+- Remove every managed PNG or GIF outside that set through the target repository's
+  approved tracked-file removal workflow. For repositories whose rules select `git rm`,
+  run the required git-index preflight first, then use:
 
 ```bash
 git rm docs/screenshots/old_login_screen.png
@@ -89,7 +97,7 @@ Use git as the single source of truth for each screenshot's age and version. The
 commit that last touched a PNG carries both its date and its version hash, so no
 separate metadata file is needed.
 
-Read the last-update date (commit date, `YYYY-MM-DD`) of one screenshot:
+Read the last-update date (commit date, `YYYY-MM-DD`) of one visual:
 
 ```bash
 git log -1 --format=%cs -- docs/screenshots/main_window.png
@@ -129,10 +137,11 @@ Apply an age rule each run:
 Use a relative Markdown image link. The path is relative to the file that
 contains the embed.
 
-From `README.md` at the repo root:
+From `README.md` at the repo root, static and animated images use the same syntax:
 
 ```markdown
 ![Main window showing the toolbar and canvas](docs/screenshots/main_window.png)
+![Dragging a node reconnects the concept map](docs/screenshots/concept_map_demo.gif)
 ```
 
 From a file under `docs/` (for example `docs/USAGE.md`):
@@ -141,11 +150,17 @@ From a file under `docs/` (for example `docs/USAGE.md`):
 ![Main window showing the toolbar and canvas](screenshots/main_window.png)
 ```
 
+For a nested file, compute the path from that document's parent directory to
+`docs/screenshots/`. For example, `docs/guides/WORKFLOW.md` uses:
+
+```markdown
+![Main window showing the toolbar and canvas](../screenshots/main_window.png)
+```
+
 Every embed requires descriptive alt text that names what the screenshot shows.
-Write alt text as a short phrase, not a filename.
+Write alt text as a short phrase that names the visible state or demonstrated result.
 
 Good alt text: `Main window showing the toolbar and canvas`
-Avoid: `screenshot` or `main_window.png`
 
 ## Managed screenshot block
 
@@ -159,6 +174,11 @@ survive every run so repeat runs stay idempotent.
 <!-- screenshots:begin (managed by screenshot-docs) -->
 <!-- screenshots:end -->
 ```
+
+When screenshot-docs runs independently and finds no block, establish the destination
+before capture. Route a landing-page refresh through `readme-docs`, or obtain approval
+for a caller-selected README/docs target and insert the exact empty block above. When
+neither route is in scope, report the missing target and preserve existing assets.
 
 `screenshot-docs` replaces only the lines BETWEEN the sentinels with the embed
 block, and keeps both sentinel lines exactly as written:
@@ -200,8 +220,9 @@ readme_text = pattern.sub(new_block, readme_text)
 - New or updated view: the matching embed line changes; the rest of the block stays.
 - Removed view: drop its embed line from the block and prune its PNG (see
   "Freshness and pruning").
-- No window or no display: leave the existing block in place unchanged and add a
-  Known-gaps line to the report. An empty block (sentinels only) stays empty.
+- Headless or unavailable capture environment: leave the existing block and project
+  documentation unchanged, then add a Known-gaps line to the verification report. An
+  empty block (sentinels only) stays empty.
 
 ## Screenshots section in README
 

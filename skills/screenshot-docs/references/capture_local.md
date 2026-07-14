@@ -21,8 +21,8 @@ When the `screenshot` command is missing, run the module form from the repo:
 cd /Users/vosslab/nsh/easy-screenshot && python3 -m screenshot.screencapture --help
 ```
 
-easy-screenshot is an external macOS-only prerequisite, not a pip dependency of
-this repo. When it is unavailable, use the dependency-free fallback
+Install easy-screenshot separately as a macOS-only prerequisite. When it is
+unavailable, use the dependency-free fallback
 [scripts/mini_capture_window.sh](../scripts/mini_capture_window.sh).
 
 Grant Screen Recording permission to the controlling terminal in System Settings
@@ -89,8 +89,8 @@ screenshot -A "BKChem" -t "BKChem" -f /tmp/bkchem_main.png
 cp /tmp/bkchem_main.png docs/screenshots/bkchem_main.png
 ```
 
-## Fallback when no window or display
+## Headless or unavailable capture environment
 
-When no matching window is open or no display is available, add a Known-gaps line
-to the report, keep existing screenshots and the managed block in place, and
-continue the chain. Capture nothing rather than capturing a wrong window.
+When the intended window or display is unavailable, add a Known-gaps line to the
+report, keep existing screenshots and the managed block in place, and continue the
+chain. Capture only a verified instance of the intended window.

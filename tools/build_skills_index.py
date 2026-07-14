@@ -6,18 +6,12 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+# local repo modules
+import skill_discovery
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SKILLS_ROOT = REPO_ROOT / "skills"
 OUTPUT_PATH = REPO_ROOT / "docs" / "SKILLS_INDEX.md"
-
-
-def collect_skill_stats(skill_files: list[Path], ignored_system_count: int) -> dict[str, int]:
-	"""Count processed and ignored skills for run summaries."""
-	total_count = len(skill_files)
-	return {
-		"skills_processed": total_count,
-		"system_skills_ignored": ignored_system_count,
-	}
 
 
 def extract_description(text: str) -> str:
@@ -65,20 +59,18 @@ def normalize_space(text: str) -> str:
 	return " ".join(text.strip().split())
 
 
-def collect_skill_files() -> tuple[list[Path], int]:
-	all_skill_files = sorted(
-		SKILLS_ROOT.rglob("SKILL.md"),
-		key=lambda p: p.relative_to(SKILLS_ROOT).as_posix().lower(),
-	)
-	skill_files: list[Path] = []
-	ignored_system_count = 0
-	for skill_file in all_skill_files:
-		rel_parts = skill_file.relative_to(SKILLS_ROOT).parts
-		if rel_parts and rel_parts[0] == ".system":
-			ignored_system_count += 1
-			continue
-		skill_files.append(skill_file)
-	return skill_files, ignored_system_count
+def collect_skill_files() -> skill_discovery.SkillDiscovery:
+	"""Collect publishable skills through the shared discovery policy."""
+	result = skill_discovery.collect_skill_files(REPO_ROOT, SKILLS_ROOT)
+	return result
+
+
+def print_run_summary(discovery: skill_discovery.SkillDiscovery) -> None:
+	"""Print discovery and index inclusion with shared generator wording."""
+	for line in skill_discovery.render_discovery_summary(discovery, REPO_ROOT):
+		print(line)
+	print("Generated skill set:")
+	print(f"  Included in index: {len(discovery.skill_files)}")
 
 
 def render_index(skill_files: list[Path]) -> str:
@@ -115,36 +107,22 @@ def main() -> int:
 	if not SKILLS_ROOT.is_dir():
 		raise SystemExit(f"Missing skills directory: {SKILLS_ROOT}")
 
-	skill_files, ignored_system_count = collect_skill_files()
-	stats = collect_skill_stats(skill_files, ignored_system_count)
+	discovery = collect_skill_files()
+	skill_files = discovery.skill_files
 	rendered = render_index(skill_files)
+	print_run_summary(discovery)
 
 	if args.check:
 		current = OUTPUT_PATH.read_text(encoding="utf-8") if OUTPUT_PATH.exists() else ""
 		if current != rendered:
 			print(f"Out of date: {OUTPUT_PATH}")
-			print(
-				"Stats: "
-				+ f"skills_processed={stats['skills_processed']}, "
-				+ f"system_skills_ignored={stats['system_skills_ignored']}"
-			)
 			return 1
 		print(f"Up to date: {OUTPUT_PATH}")
-		print(
-			"Stats: "
-			+ f"skills_processed={stats['skills_processed']}, "
-			+ f"system_skills_ignored={stats['system_skills_ignored']}"
-		)
 		return 0
 
 	OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 	OUTPUT_PATH.write_text(rendered, encoding="utf-8")
 	print(f"Wrote {OUTPUT_PATH}")
-	print(
-		"Stats: "
-		+ f"skills_processed={stats['skills_processed']}, "
-		+ f"system_skills_ignored={stats['system_skills_ignored']}"
-	)
 	return 0
 
 

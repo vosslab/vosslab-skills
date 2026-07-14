@@ -4,7 +4,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 32
+Total skills: 30
 
 - [agents-md-fixer/SKILL.md](../skills/agents-md-fixer/SKILL.md): Trim `AGENTS.md` aggressively to a small pointer file (prefer ~15 lines, hard cap ~50) that points into `docs/*.md` with bare paths instead of restating rules.
 - [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from current repo evidence.
@@ -18,14 +18,12 @@ Total skills: 32
 - [geometry-expert/SKILL.md](../skills/geometry-expert/SKILL.md): Design, implement, debug, and review computational geometry algorithms in any language, including convex hull, polygon triangulation, Delaunay triangulation, Voronoi diagrams, polygon boolean clipping and overlay, segment intersection and sweep line, proximity and nearest-neighbor queries, point location, spatial data structures (k-d tree, BVH, R-tree, quadtree), arrangements, mesh processing, and distance/intersection queries in 2D, 3D, and nD.
 - [glass-expert/SKILL.md](../skills/glass-expert/SKILL.md): Design, implement, verify, and debug Apple Liquid Glass surfaces in SwiftUI on macOS 26+ and iOS 26: `.glassEffect`, `GlassEffectContainer`, `glassEffectID` morphing, `.interactive()`, tint, layer order, and backdrop sampling.
 - [hang-check/SKILL.md](../skills/hang-check/SKILL.md): Watchdog for background subagents that catches a stuck, stalled, or hung agent without killing a healthy one.
-- [hatch-pet/SKILL.md](../skills/hatch-pet/SKILL.md): Create, repair, validate, visually QA, and package Codex-compatible v2 animated pets from character art, generated images, company or prospect brand cues, or visual references.
 - [html-game-parallel-builder/SKILL.md](../skills/html-game-parallel-builder/SKILL.md): Use when building a TypeScript browser game from modular `src/*.ts` files with parallel subagents to reduce wall-clock time.
 - [news-release-docs/SKILL.md](../skills/news-release-docs/SKILL.md): Create or refresh `docs/RELEASE_HISTORY.md` and `docs/NEWS.md` from `docs/CHANGELOG.md`, authoring two differentiated docs (full versioned dated log vs short curated highlights) and emitting a `/tmp` notes-file body for `devel/make_release.py --notes-file`.
-- [old-python-code-review/SKILL.md](../skills/old-python-code-review/SKILL.md): Single-pass Python correctness, security, and style review on demand; not for multi-reviewer audits before merge (use audit-code-reviewer for that).
 - [parallel-plan/SKILL.md](../skills/parallel-plan/SKILL.md): In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that).
 - [pdf-guide/SKILL.md](../skills/pdf-guide/SKILL.md): Use when tasks involve reading, creating, or reviewing PDF files where rendering and layout matter; prefer visual checks by rendering pages (Poppler) and use Python tools such as `reportlab`, `pdfplumber`, and `pypdf` for generation and extraction.
 - [pyside6-engineer/SKILL.md](../skills/pyside6-engineer/SKILL.md): Design, implement, refactor, and review PySide6 desktop applications with strong widget architecture, signal-slot design, and state flow.
-- [readme-docs/SKILL.md](../skills/readme-docs/SKILL.md): Create or refresh `README.md` as a welcoming, evidence-backed GitHub landing page for people unfamiliar with the project.
+- [readme-docs/SKILL.md](../skills/readme-docs/SKILL.md): Create or refresh `README.md` as a distinctive, welcoming, evidence-backed GitHub landing page for people unfamiliar with the project.
 - [related-projects-docs/SKILL.md](../skills/related-projects-docs/SKILL.md): Create or refresh `docs/RELATED_PROJECTS.md` from repo evidence plus bounded web discovery, writing a sourced, confidence-tiered map of upstreams, dependencies, integrations, sibling repos, and alternatives.
 - [repo-rules-reader/SKILL.md](../skills/repo-rules-reader/SKILL.md): Read specified repo rule files (AGENTS.md, docs/REPO_STYLE.md, docs/PYTHON_STYLE.md,.
 - [screenshot-docs/SKILL.md](../skills/screenshot-docs/SKILL.md): Capture static screenshots or short animated GIF demonstrations of a running app and embed them into README.md and docs/ to make GitHub landing pages novice-friendly.

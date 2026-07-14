@@ -86,9 +86,9 @@ img.save('/tmp/capture.png')
 ## Optional: lossless optimize
 
 Resize does the heavy lifting. If `optipng` or `pngcrush` happens to be
-installed, you may crush the resized `/tmp` file for a further 5 to 20 percent;
-skip it entirely when neither is on the PATH, and do not add either as a
-dependency:
+installed, you may crush the resized `/tmp` file for a further 5 to 20 percent.
+Use this optional step when either tool is already on the PATH, and keep the capture
+workflow dependency-free:
 
 ```bash
 optipng -o3 /tmp/capture.png            # or: pngcrush -rem allb -reduce /tmp/capture.png /tmp/capture_crushed.png

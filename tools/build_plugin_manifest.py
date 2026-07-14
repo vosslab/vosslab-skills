@@ -7,6 +7,9 @@ import argparse
 import json
 from pathlib import Path
 
+# local repo modules
+import skill_discovery
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SKILLS_ROOT = REPO_ROOT / "skills"
 AGENTS_DIR = REPO_ROOT / "agents"
@@ -115,33 +118,32 @@ def extract_name(text: str) -> str:
 
 
 #============================================
-def collect_skill_files() -> list[Path]:
-	"""Collect non-system SKILL.md files sorted by path."""
-	all_skill_files = sorted(
-		SKILLS_ROOT.rglob("SKILL.md"),
-		key=lambda p: p.relative_to(SKILLS_ROOT).as_posix().lower(),
+def collect_skill_files() -> skill_discovery.SkillDiscovery:
+	"""Collect publishable SKILL.md files through shared discovery."""
+	discovery = skill_discovery.collect_skill_files(
+		REPO_ROOT,
+		SKILLS_ROOT,
 	)
-	skill_files: list[Path] = []
-	for skill_file in all_skill_files:
-		rel_parts = skill_file.relative_to(SKILLS_ROOT).parts
-		# skip .system skills
-		if rel_parts and rel_parts[0] == ".system":
-			continue
-		skill_files.append(skill_file)
-	return skill_files
+	return discovery
 
 
 #============================================
 def collect_skill_paths(skill_files: list[Path]) -> list[str]:
-	"""Collect skill folder paths as strings, excluding deprecated old-* skills."""
+	"""Collect discovered skill folder paths as manifest strings."""
 	skills: list[str] = []
 	for skill_file in skill_files:
-		skill_name = skill_file.parent.name
-		# exclude deprecated old-* skills from published listings
-		if skill_name.startswith("old-"):
-			continue
-		skills.append(f"./skills/{skill_name}")
+		skill_path = skill_file.parent.relative_to(SKILLS_ROOT).as_posix()
+		skills.append(f"./skills/{skill_path}")
 	return skills
+
+
+#============================================
+def print_run_summary(discovery: skill_discovery.SkillDiscovery) -> None:
+	"""Print discovery and manifest inclusion with shared generator wording."""
+	for line in skill_discovery.render_discovery_summary(discovery, REPO_ROOT):
+		print(line)
+	print("Generated skill set:")
+	print(f"  Included in manifests: {len(discovery.skill_files)}")
 
 
 #============================================
@@ -409,7 +411,8 @@ def main() -> int:
 		raise SystemExit(f"Missing skills directory: {SKILLS_ROOT}")
 
 	# collect data
-	skill_files = collect_skill_files()
+	discovery = collect_skill_files()
+	skill_files = discovery.skill_files
 	skill_paths = collect_skill_paths(skill_files)
 	version = read_version()
 
@@ -427,8 +430,7 @@ def main() -> int:
 	cursor_text = render_json(cursor_data)
 
 	print(f"Version: {version}")
-	print(f"Skills found: {len(skill_files)}")
-	print(f"Published skills: {len(skill_paths)}")
+	print_run_summary(discovery)
 
 	# list of (path, text) pairs for all six generated text files
 	all_files = [

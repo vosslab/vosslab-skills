@@ -5,19 +5,32 @@
 - Reworked `skills/readme-docs/` from a minimal README reducer into a newcomer-first
   landing-page skill. The workflow now requires a clear value proposition, audience and
   usefulness context, a verified path to a meaningful first result, representative
-  examples or visual proof, a curated documentation map, help routes, and licensing
-  when supported by repository evidence. Added
+  examples or visual proof, and a curated documentation map. Help, licensing, citation,
+  and acknowledgment routes are concise optional closing context when they materially
+  serve the intended audience. Added
   `references/readme_best_practices.md`, which locally distills GitHub Docs, Standard
   Readme, READMINE, and six additional README guides, plus an adaptable
-  `assets/README_TEMPLATE.md` scaffold. Reviewed a cross-section of the maintainer's
-  local README corpus and added `references/review_checklist.md` to preserve its strong
-  status, live-demo, visual, output, canonical-command, and dual-license patterns while
-  detecting documentation-first pages, install-only quick starts, missing proof, and
-  weak help or license routes. Added `references/landing_page_ideas.md` so a README
+  `assets/README_TEMPLATE.md` scaffold. Conditional documentation-route instructions
+  keep the Markdown template safe to copy into projects whose deeper docs differ while
+  allowing this repo's link validator to inspect the asset. Reviewed a cross-section of
+  the maintainer's local README corpus and added `references/review_checklist.md` to
+  preserve its strong status, live-demo, visual, output, canonical-command, and
+  dual-license patterns while detecting documentation-first pages, install-only quick
+  starts, missing proof, and weak optional closing routes. Added
+  `references/landing_page_ideas.md` so a README
   develops a project-specific signature promise, proof artifact, voice, headings, and
   visual rhythm instead of stopping at boilerplate compliance. Missing high-impact
   improvements become dispatchable tasks with an owner, exact target files, evidence,
-  work, success criteria, and verification.
+  work, success criteria, and verification. Added `references/scoring_rubric.md`, an
+  evidence-backed 100-point before-and-after rubric covering purpose, distinctiveness,
+  proof, first success, orientation, navigation, adoption context, and accessibility,
+  with quality gates that keep broken commands, links, claims, licensing, adoption
+  warnings, or motion guidance from hiding behind a high numeric score. The rubric now
+  maps each editorial level to exact whole-point values, and the main workflow loads
+  templates, idea prompts, best practices, review checks, and scoring guidance only when their
+  decisions apply. Proof and demonstration carry 20 points; adoption context carries 5
+  points and can receive full credit without help or license sections when those
+  sections add little reader value.
   Length is now treated as a consequence of project complexity rather than a target;
   content is removed for being stale, redundant, unsupported, or misplaced, not merely
   to make the landing page shorter. The skill explicitly places project purpose,
@@ -30,10 +43,35 @@
   animated GIF for motion-dependent interactions. Added
   `references/capture_animation.md` with local and Playwright recording recipes,
   accessibility and reduced-motion guardrails, a 5-second autoplay ceiling, storyboard
-  guidance, file-size targets, and verification checks. Added `scripts/make_gif.sh`,
+  guidance, file-size targets, and verification checks. Frame rates from 1 through 15 fps
+  are supported: 1-4 fps for deliberate terminal states and 8-15 fps for smooth GUI or
+  web motion. Added `scripts/make_gif.sh`,
   which uses FFmpeg palette generation and palette application to produce bounded,
-  looping README GIFs; updated storage, embedding, freshness, pruning, skill metadata,
-  and UI metadata to cover both PNG and GIF assets.
+  one-play README GIFs; updated storage, embedding, freshness, pruning, skill metadata,
+  and UI metadata to cover both PNG and GIF assets. The post-audit pass now computes
+  embed paths relative to each root or nested document, scans `docs/` recursively,
+  keeps transient capture gaps in the verification report, uses one canonical empty
+  managed block, enforces the documented GIF width/FPS/duration/file-size bounds, and
+  routes pruning through the target repository's approved tracked-file workflow.
+  Capture workflows now establish an insertion target before recording and encourage
+  repository-owned, rerunnable capture harnesses with deterministic state, output paths,
+  and commands for refreshing visuals after UI changes. Normal-motion recording and
+  reduced-motion verification use separate passes. GIF conversion now validates a
+  temporary sibling before atomically publishing the final asset, preserving an existing
+  destination when conversion fails or exceeds the size budget.
+- Updated the shared skill discovery used by `tools/build_skills_index.py` and
+  `tools/build_plugin_manifest.py` to respect git ignore rules. Local upstream reference
+  skills can now remain under `skills/` without leaking into published indexes or plugin
+  manifests; unignored new skills still participate before their first commit. Updated
+  the manifest- and index-drift tests to consume the same shared discovery policy, so an
+  ignored upstream skill is covered as an intentional exclusion rather than reported as
+  missing generated output. Both generators now print the same structured discovery and
+  generated-set summaries and list every skipped skill with its path and reason.
+  Deprecated `old-*` skills are now excluded by shared discovery alongside `.system`
+  and git-ignored skills, so every generated consumer receives the same publishable set.
+  Independent discovery tests cover all three exclusions, untracked and unignored skill
+  inclusion, ordered skip reasons, and shared summary wording. Nested skill paths now
+  remain intact in manifests and drift checks.
 
 ## 2026-07-11
 
