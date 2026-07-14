@@ -1,3 +1,40 @@
+## 2026-07-14
+
+### Behavior or Interface Changes
+
+- Reworked `skills/readme-docs/` from a minimal README reducer into a newcomer-first
+  landing-page skill. The workflow now requires a clear value proposition, audience and
+  usefulness context, a verified path to a meaningful first result, representative
+  examples or visual proof, a curated documentation map, help routes, and licensing
+  when supported by repository evidence. Added
+  `references/readme_best_practices.md`, which locally distills GitHub Docs, Standard
+  Readme, READMINE, and six additional README guides, plus an adaptable
+  `assets/README_TEMPLATE.md` scaffold. Reviewed a cross-section of the maintainer's
+  local README corpus and added `references/review_checklist.md` to preserve its strong
+  status, live-demo, visual, output, canonical-command, and dual-license patterns while
+  detecting documentation-first pages, install-only quick starts, missing proof, and
+  weak help or license routes. Added `references/landing_page_ideas.md` so a README
+  develops a project-specific signature promise, proof artifact, voice, headings, and
+  visual rhythm instead of stopping at boilerplate compliance. Missing high-impact
+  improvements become dispatchable tasks with an owner, exact target files, evidence,
+  work, success criteria, and verification.
+  Length is now treated as a consequence of project complexity rather than a target;
+  content is removed for being stale, redundant, unsupported, or misplaced, not merely
+  to make the landing page shorter. The skill explicitly places project purpose,
+  audience, usefulness, and proof before `Quick start`; setup is an onboarding step,
+  not the page's opening argument. The opening paragraph now follows the repo's GitHub
+  About-field contract enforced by `tests/test_readme_first_paragraph.py`: at most 250
+  characters, plain prose, no verbatim repo name, and no links, images, badges, code
+  spans, HTML, or raw URLs.
+- Expanded `skills/screenshot-docs/` to choose between static PNG evidence and a short
+  animated GIF for motion-dependent interactions. Added
+  `references/capture_animation.md` with local and Playwright recording recipes,
+  accessibility and reduced-motion guardrails, a 5-second autoplay ceiling, storyboard
+  guidance, file-size targets, and verification checks. Added `scripts/make_gif.sh`,
+  which uses FFmpeg palette generation and palette application to produce bounded,
+  looping README GIFs; updated storage, embedding, freshness, pruning, skill metadata,
+  and UI metadata to cover both PNG and GIF assets.
+
 ## 2026-07-11
 
 ### Behavior or Interface Changes

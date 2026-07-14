@@ -74,7 +74,7 @@ Put Playwright scripts in `tests/playwright/`.
 
 Store Playwright scripts in `tests/playwright/` with an `.mjs` extension, for example
 `tests/playwright/test_game_ui.mjs`. Helpers (`tests/playwright/helpers.mjs`) live alongside.
-Keep test data inline when practical; see the Fixture policy section in PYTEST_STYLE.md.
+Keep test data inline. For fixture cases, see the Fixture policy in PYTEST_STYLE.md.
 
 Pytest only collects `test_*.py` files and actively excludes `tests/playwright/`
 via `collect_ignore = ["e2e", "playwright"]` in `tests/conftest.py`, so the extension
@@ -93,8 +93,8 @@ Some repos group complete Playwright walkthroughs (multi-step user journeys, rec
 | `playwright-core` | Low-level core without bundled browsers (rarely needed) |
 
 Playwright's "fixtures" are a framework feature of `@playwright/test` (test-runner setup and
-teardown helpers); for repo test data design, follow the Fixture policy section in
-PYTEST_STYLE.md (inline setup first).
+teardown helpers), distinct from repo test data. For fixture cases, see the Fixture policy in
+PYTEST_STYLE.md.
 
 For "open a local HTML file, click things, take screenshots", use `playwright`.
 

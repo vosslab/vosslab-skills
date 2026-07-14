@@ -4,7 +4,9 @@ skills/.system/
 skills/codex-primary-runtime/
 docs/superpowers/
 local-only/
-
+hatch-pet/
+remote_headings.txt
+books_to_process/
 # === UNIVERSAL ===
 output*/
 _temp*.?*
@@ -16,6 +18,7 @@ sdist/
 *.egg
 *.egg-info/
 site/
+
 
 
 

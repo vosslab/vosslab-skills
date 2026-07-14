@@ -99,8 +99,23 @@ export default tseslint.config(
   },
   {
     // OTHER_REPOS/ is the universal sibling-repo checkout dir (gitignored repo-wide);
-    // never lint sibling repos checked out there.
-    ignores: ["dist/**", "node_modules/**", "OTHER_REPOS/**"],
+    // never lint sibling repos checked out there. dist_*/** covers private scratch
+    // build output (e.g. dist_wp5_scratch/) that a lane writes instead of the shared
+    // dist/ to avoid concurrent-build clobbering; it holds a compiled bundle, not
+    // source, so lint rules do not apply. _temp* (root-level) and **/_temp* (any
+    // depth) cover the documented scratch-file convention
+    // (docs/CLAUDE_HOOK_USAGE_GUIDE.md: "Write scratch code to _temp.py or
+    // _temp.sh -- underscore prefix = safe to delete"); scratch drivers are
+    // throwaway and are not held to source lint rules either.
+    ignores: [
+      "dist/**",
+      "dist_*/**",
+      "**/dist_*/**",
+      "node_modules/**",
+      "OTHER_REPOS/**",
+      "_temp*",
+      "**/_temp*",
+    ],
   },
   // Consumer-owned overrides last so they can refine or override the canonical config.
   ...localConfig,

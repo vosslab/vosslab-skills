@@ -48,12 +48,16 @@ SKIP_DIRS = {
 	"site-packages",
 }
 CANDIDATE_FILENAMES = {
+	"Cargo.lock",
+	"Cargo.toml",
 	"pyproject.toml",
 	"VERSION",
 	"version",
 	"version.txt",
 	"version.py",
 }
+CARGO_PACKAGE_HEADER_PATTERN = re.compile(r"^\[\[package\]\]\s*$")
+CARGO_NAME_PATTERN = re.compile(r"^\s*name\s*=\s*['\"](?P<name>[^'\"]+)['\"]\s*$")
 SHORT_BUMP_ALIASES = {
 	"M": "major",
 	"m": "minor",
@@ -304,35 +308,33 @@ def iter_candidate_files(base_dir: str, max_depth: int) -> list[str]:
 
 #============================================
 
-def parse_pyproject(path: str) -> dict | None:
-	"""Parse a pyproject.toml version.
+def parse_toml_version(
+	data: dict,
+	path: str,
+	kind: str,
+	section_paths: dict,
+) -> dict | None:
+	"""Parse version metadata from named TOML sections.
 
 	Args:
-		path (str): pyproject.toml path.
+		data (dict): Parsed TOML data.
+		path (str): TOML file path.
+		kind (str): Version-entry kind.
+		section_paths (dict): Entry section names mapped to TOML key paths.
 
 	Returns:
 		dict | None: Entry describing the version, or None if missing.
 	"""
-	with open(path, "rb") as handle:
-		data = tomllib.load(handle)
-
-	project_version = None
-	poetry_version = None
-
-	project_data = data.get("project", {})
-	if project_data:
-		project_version = project_data.get("version")
-
-	tool_data = data.get("tool", {})
-	poetry_data = tool_data.get("poetry", {})
-	if poetry_data:
-		poetry_version = poetry_data.get("version")
-
 	versions = []
-	if project_version:
-		versions.append(str(project_version))
-	if poetry_version:
-		versions.append(str(poetry_version))
+	sections = []
+	for section_name, section_path in section_paths.items():
+		section_data = data
+		for key in section_path:
+			section_data = section_data.get(key, {})
+		version = section_data.get("version")
+		if version:
+			versions.append(str(version))
+			sections.append(section_name)
 
 	if not versions:
 		return None
@@ -345,16 +347,99 @@ def parse_pyproject(path: str) -> dict | None:
 
 	entry = {
 		"path": path,
-		"kind": "pyproject",
+		"kind": kind,
 		"version": unique_versions[0],
-		"sections": [],
+		"sections": sections,
 	}
-	if project_version:
-		entry["sections"].append("project")
-	if poetry_version:
-		entry["sections"].append("tool.poetry")
 
 	return entry
+
+#============================================
+
+def parse_pyproject(path: str) -> dict | None:
+	"""Parse a pyproject.toml version."""
+	with open(path, "rb") as handle:
+		data = tomllib.load(handle)
+	return parse_toml_version(
+		data,
+		path,
+		"pyproject",
+		{"project": ("project",), "tool.poetry": ("tool", "poetry")},
+	)
+
+#============================================
+
+def parse_cargo_toml(path: str) -> dict | None:
+	"""Parse version metadata from a Cargo.toml manifest.
+
+	Args:
+		path (str): Cargo.toml path.
+
+	Returns:
+		dict | None: Entry describing the version, or None if missing.
+	"""
+	with open(path, "rb") as handle:
+		data = tomllib.load(handle)
+
+	package_data = data.get("package", {})
+	entry = parse_toml_version(
+		data,
+		path,
+		"cargo_toml",
+		{"package": ("package",)},
+	)
+	if entry:
+		entry["package_name"] = str(package_data.get("name", ""))
+	return entry
+
+#============================================
+
+def parse_cargo_lock(path: str, package_names: set[str]) -> list[dict]:
+	"""Parse local package versions from a Cargo.lock file.
+
+	Only package stanzas whose names occur in a discovered Cargo.toml manifest
+	are returned. This avoids treating dependency versions as project versions.
+
+	Args:
+		path (str): Cargo.lock path.
+		package_names (set[str]): Names of local Cargo packages.
+
+	Returns:
+		list[dict]: Entries describing local package versions.
+	"""
+	with open(path, "r", encoding="utf-8") as handle:
+		lines = handle.read().splitlines()
+
+	entries = []
+	package_index = -1
+	index = 0
+	while index < len(lines):
+		if not CARGO_PACKAGE_HEADER_PATTERN.match(lines[index]):
+			index += 1
+			continue
+
+		package_index += 1
+		package_name = ""
+		package_version = ""
+		index += 1
+		while index < len(lines) and not lines[index].startswith("["):
+			match = VERSION_LINE_PATTERN.match(lines[index])
+			if match:
+				package_version = match.group("version")
+			name_match = CARGO_NAME_PATTERN.match(lines[index])
+			if name_match:
+				package_name = name_match.group("name")
+			index += 1
+
+		if package_name in package_names and package_version:
+			entries.append({
+				"path": path,
+				"kind": "cargo_lock",
+				"version": package_version,
+				"package_index": package_index,
+			})
+
+	return entries
 
 #============================================
 
@@ -468,17 +553,29 @@ def parse_versions(base_dir: str, max_depth: int) -> list[dict]:
 		list[dict]: List of version entries.
 	"""
 	entries = []
-	for path in iter_candidate_files(base_dir, max_depth):
+	candidate_paths = iter_candidate_files(base_dir, max_depth)
+	cargo_package_names = set()
+	for path in candidate_paths:
 		filename = os.path.basename(path)
 		if filename == "pyproject.toml":
 			entry = parse_pyproject(path)
+		elif filename == "Cargo.toml":
+			entry = parse_cargo_toml(path)
+			if entry and entry["package_name"]:
+				cargo_package_names.add(entry["package_name"])
 		elif filename == "version.py":
 			entry = parse_version_py(path)
+		elif filename == "Cargo.lock":
+			continue
 		else:
 			force_update = filename == "VERSION"
 			entry = parse_simple_version_file(path, force_update=force_update)
 		if entry:
 			entries.append(entry)
+
+	for path in candidate_paths:
+		if os.path.basename(path) == "Cargo.lock":
+			entries.extend(parse_cargo_lock(path, cargo_package_names))
 
 	return entries
 
@@ -871,6 +968,9 @@ def normalize_target_version(entry: dict, new_version: str) -> str:
 	Returns:
 		str: Adjusted version string.
 	"""
+	if entry["kind"] in ("cargo_toml", "cargo_lock"):
+		if re.fullmatch(r"\d+\.\d+", new_version):
+			return new_version + ".0"
 	if entry.get("patch_optional") and new_version.endswith(".0"):
 		short_version = new_version.replace(".0", "", 1)
 		if SHORT_PEP440_PATTERN.match(short_version):
@@ -936,6 +1036,39 @@ def update_version_py(text: str, new_version: str) -> tuple[str, bool]:
 
 #============================================
 
+def update_cargo_lock(text: str, package_index: int, new_version: str) -> tuple[str, bool]:
+	"""Update one local package version in Cargo.lock.
+
+	Args:
+		text (str): File contents.
+		package_index (int): Zero-based index of the package stanza to update.
+		new_version (str): New version.
+
+	Returns:
+		tuple[str, bool]: Updated text and changed flag.
+	"""
+	lines = text.splitlines(keepends=True)
+	current_package_index = -1
+	for index, line in enumerate(lines):
+		if CARGO_PACKAGE_HEADER_PATTERN.match(line.strip()):
+			current_package_index += 1
+			continue
+		if current_package_index != package_index:
+			continue
+		match = VERSION_LINE_PATTERN.match(line)
+		if not match:
+			continue
+		indent = match.group("indent")
+		quote = match.group("quote")
+		rest = match.group("rest")
+		newline = "\n" if line.endswith("\n") else ""
+		lines[index] = f"{indent}version = {quote}{new_version}{quote}{rest}{newline}"
+		return "".join(lines), True
+
+	return text, False
+
+#============================================
+
 def update_entry(entry: dict, new_version: str, apply: bool) -> dict:
 	"""Update a version entry.
 
@@ -957,6 +1090,14 @@ def update_entry(entry: dict, new_version: str, apply: bool) -> dict:
 	version_value = normalize_target_version(entry, new_version)
 	if entry["kind"] == "pyproject":
 		updated_text, changed = update_pyproject(text, entry["sections"], version_value)
+	elif entry["kind"] == "cargo_toml":
+		updated_text, changed = update_pyproject(text, entry["sections"], version_value)
+	elif entry["kind"] == "cargo_lock":
+		updated_text, changed = update_cargo_lock(
+			text,
+			entry["package_index"],
+			version_value,
+		)
 	elif entry["kind"] == "version_py":
 		updated_text, changed = update_version_py(text, version_value)
 	else:

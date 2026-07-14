@@ -224,7 +224,7 @@ import { writeReport } from "./write_report";
 * For real projects, use a normal test framework and keep tests in a `tests/` folder.
 * Keep tests small and deterministic.
 * Avoid network calls, random behavior, and time-based logic unless mocked.
-* Browser tests live under `tests/playwright/` (see [PLAYWRIGHT_USAGE.md](PLAYWRIGHT_USAGE.md)). Pure Node unit tests via `node --test tests/test_*.mjs`. TS hygiene tests under `tests/test_typescript_*.py` enforce tsc, package.json schema, tsconfig canonical fields, and ESLint flat-config presence. ESLint correctness is gated by `check_codebase.sh` step 3 directly; no separate pytest wrapper.
+* Browser tests live under `tests/playwright/` (see the `PLAYWRIGHT_USAGE.md` doc where it ships). Pure Node unit tests via `node --test tests/test_*.mjs`. TS hygiene tests under `tests/test_typescript_*.py` enforce tsc, package.json schema, tsconfig canonical fields, and ESLint flat-config presence. ESLint correctness is gated by `check_codebase.sh` step 3 directly; no separate pytest wrapper.
 * Node unit tests are `.mjs` and run via `node --test tests/test_*.mjs` (canonical). A `.ts`
   test with the tsx loader (`node --import tsx --test`) is an accepted variant when the test
   itself needs TypeScript (`sports-life-game`).
@@ -234,12 +234,7 @@ import { writeReport } from "./write_report";
 
 ### Node test fixture policy
 
-Inline setup first. Keep durable tests on self-contained inputs such as a literal string or
-short array. Durable tests are usually smaller, clearer, and easier to maintain.
-
-Keep separate test data only when file shape, loader behavior, or shared test infrastructure
-is the behavior under test. See the Fixture policy section in PYTEST_STYLE.md for the
-canonical framing.
+Use inline setup first. For fixture cases, see the Fixture policy in PYTEST_STYLE.md.
 
 ## FORMATTERS AND LINTERS
 
@@ -252,10 +247,11 @@ canonical framing.
 * Do not edit `eslint.config.js` directly; propagation overwrites it every run. Repo-specific ESLint overrides go in `eslint.config.local.js` at the repo root: a consumer-owned file shipped once (never overwritten). The canonical config imports and spreads it last, so local entries refine or override canonical rules.
 * Browser globals are supplied to `tests/playwright/**` and `tests/e2e/**` (page.evaluate callbacks reference `window`, `document`, etc.); node-only tools keep `no-undef` so real bugs still surface. Give a repo-specific browser-context tool file its globals via `eslint.config.local.js`, not by widening the canonical glob.
 * `OTHER_REPOS/**` is in the ESLint `ignores`, matching the repo-wide gitignore for the sibling-repo checkout dir.
+* `_temp*` scratch names and `dist_*/` private lane-build directories are excluded by ESLint, Playwright, Prettier, and repo hygiene discovery. Each collector owns its exclusion; gitignore alone does not prevent directory-globbing tools from collecting an untracked scratch file.
 * Prettier scope in this repo is JS, TypeScript, MJS, CJS, TSX, MTS, CTS only. JSON, YAML, Markdown, and Python files are explicitly NOT prettier-managed.
 * Indent is two spaces for every prettier-managed extension (prettier default; documented in propagated `.prettierrc`). This differs from the Python tabs rule in `docs/PYTHON_STYLE.md`; agents editing `.py` use tabs, agents editing `.ts`/`.mjs`/etc use two spaces. Do not over-generalize one language's rule to the other.
 * Auto-fix path when `./check_codebase.sh` step 4 (`format:check`) fails: run `npx prettier --write '**/*.{ts,tsx,mts,cts,js,mjs,cjs}'` (the `npm run format:write` alias mirrors this).
-* `.prettierignore` ships from the template and covers noisy generated trees (`node_modules/`, `dist/`, `dist-single/`, `_site/`, `generated/`, `coverage/`, `playwright-report/`, `test-results/`, `blob-report/`, `package-lock.json`).
+* `.prettierignore` ships from the template and covers scratch names (`_temp*`), private lane builds (`dist_*/`), and noisy generated trees (`node_modules/`, `dist/`, `dist-single/`, `_site/`, `generated/`, `coverage/`, `playwright-report/`, `test-results/`, `blob-report/`, `package-lock.json`).
 
 ### ESLint canonical rules
 
@@ -437,8 +433,8 @@ locally-installed form (`npx ...`) so the command works without a global install
 | `npm run setup:playwright` | `./devel/setup_playwright.sh` |
 
 The `tools/html_to_pdf.mjs` HTML-to-PDF tool is run directly
-(`node tools/html_to_pdf.mjs`), documented in
-[PLAYWRIGHT_USAGE.md](PLAYWRIGHT_USAGE.md); several repos also expose an optional `pdf` npm
+(`node tools/html_to_pdf.mjs`), documented in the `PLAYWRIGHT_USAGE.md` doc
+where it ships; several repos also expose an optional `pdf` npm
 alias that mirrors it 1:1.
 
 ### Shell scripts versus Python scripts

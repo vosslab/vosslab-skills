@@ -10,10 +10,14 @@ package-lock.json
 
 # Build outputs and bundler artifacts.
 dist/
+dist_*/
 dist-single/
 _site/
 generated/
 coverage/
+
+# Agent scratch files and directories.
+_temp*
 
 # Test runner output trees.
 playwright-report/

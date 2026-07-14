@@ -43,8 +43,8 @@ The repo has four test tiers. Pick the home by what you are testing.
   `test_<name>.mjs` into `tests/`; `./check_codebase.sh` picks it up
   automatically through `node --import tsx --test 'tests/test_*.mjs'`.
 - Browser tests live under `tests/playwright/`. Run them with
-  `./run_playwright_tests.sh`. See [../docs/PLAYWRIGHT_USAGE.md](../docs/PLAYWRIGHT_USAGE.md)
-  for the browser test conventions.
+  `./run_playwright_tests.sh`. See `docs/PLAYWRIGHT_USAGE.md` for the browser
+  test conventions.
 - Whole-system E2E lives under `tests/e2e/` and runs directly, excluded from
   pytest. See `E2E_TESTS.md` for the non-browser E2E conventions.
 
