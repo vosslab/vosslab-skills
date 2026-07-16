@@ -5,8 +5,7 @@
  * full-page screenshot, then exits cleanly.
  *
  * Prerequisites:
- *   npm install --save-dev playwright
- *   npx playwright install chromium
+ *   bash /path/to/screenshot-docs/scripts/install_playwright_capture.sh
  *
  * Usage:
  *   node screenshot_web.mjs <url> <output_path>
@@ -18,11 +17,17 @@
  * After capture, copy the PNG into docs/screenshots/ per embedding.md:
  *   cp /tmp/capture.png docs/screenshots/main_window.png
  *
- * Run this script from the repo root so Node can find node_modules/.
+ * Run this script from the target repo root so Node can find node_modules/.
  * See https://playwright.dev/docs/screenshots for install details and patterns.
  */
 
-import { chromium } from 'playwright';
+import { createRequire } from 'node:module';
+import { resolve } from 'node:path';
+
+// Resolve Playwright from the target repository rather than this shared skill.
+// This supports npm's no-manifest installation used by install_playwright_capture.sh.
+const require = createRequire(resolve(process.cwd(), 'package.json'));
+const { chromium } = require('playwright');
 
 // Read URL and output path from command-line arguments.
 // Falls back to environment variables for non-interactive use.

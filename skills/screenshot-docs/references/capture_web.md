@@ -7,19 +7,16 @@ them in `docs/screenshots/` following the conventions in
 ## Prerequisites
 
 Install Playwright and the Chromium browser binary before running any web
-capture. Run these commands once from the repo root:
+capture. From the target repository root, run the bundled installer:
 
 ```bash
-npm install --save-dev playwright
-npx playwright install chromium
+bash /path/to/vosslab-skills/skills/screenshot-docs/scripts/install_playwright_capture.sh
 ```
 
-If the repo ships `devel/setup_playwright.sh`, that script automates the
-above steps (idempotent, Chromium only):
-
-```bash
-bash devel/setup_playwright.sh
-```
+The installer adds `playwright` to the target repository's untracked
+`node_modules/` directory and installs Chromium. It does not require or create
+`package.json` or a lockfile. Re-run it when the local Playwright installation
+or browser needs repair.
 
 See the official Playwright docs at https://playwright.dev/docs/screenshots for
 full install details and screenshot options.
@@ -114,6 +111,7 @@ server-side component, making it a clean smoke fixture for web capture.
 ```bash
 # 1. Start the local server from the project directory
 cd /path/to/concept-map-maker
+bash /path/to/vosslab-skills/skills/screenshot-docs/scripts/install_playwright_capture.sh
 python3 -m http.server 8080 &
 server_pid=$!
 

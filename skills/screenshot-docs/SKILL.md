@@ -165,7 +165,10 @@ Read [references/capture_web.md](references/capture_web.md) and
 [scripts/screenshot_web.mjs](scripts/screenshot_web.mjs).
 
 Use Playwright (`page.screenshot`) to open the app URL in a headless browser
-and capture the page.
+and capture the page. For a target repository without a Node project setup,
+run [scripts/install_playwright_capture.sh](scripts/install_playwright_capture.sh) from that
+repository root. It installs Playwright and Chromium into untracked
+`node_modules/` without requiring `package.json`.
 
 #### Animated interaction
 
@@ -261,6 +264,8 @@ target repository's changelog workflow.
 - [references/capture_animation.md](references/capture_animation.md) - decide, record,
   optimize, and verify a short animated demonstration
 - [scripts/screenshot_web.mjs](scripts/screenshot_web.mjs) - Playwright web capture script
+- [scripts/install_playwright_capture.sh](scripts/install_playwright_capture.sh) - install
+  Playwright and Chromium without a package manifest
 - [scripts/make_gif.sh](scripts/make_gif.sh) - convert a short source video into an
   optimized README GIF
 - [scripts/screenshot_age.py](scripts/screenshot_age.py) - report a screenshot's date, version, and age from git

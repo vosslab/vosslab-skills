@@ -1,3 +1,12 @@
+## 2026-07-16
+
+### Additions and New Features
+
+- Added `skills/screenshot-docs/scripts/install_playwright_capture.sh`, a one-command installer
+  for Playwright and Chromium that installs to a target repository's untracked `node_modules/`
+  directory without creating or requiring `package.json` or a lockfile. Updated the web-capture
+  guide and screenshot template to resolve that target-local installation.
+
 ## 2026-07-14
 
 ### Behavior or Interface Changes
