@@ -100,9 +100,10 @@ see [reference_survey.md](reference_survey.md) for local-book coverage notes.
 - OpenCV implementation recipes: `references/local-only/Learning_OpenCV.txt` (grep `feature detection`, `Gaussian`).
 - Fast implementation patterns: `references/local-only/OpenCV_Cookbook.txt` (grep `morpholog`, `threshold`).
 - Tracking algorithms and benchmarks: `references/local-only/Video_Object_Tracking.txt` (grep `tracking`, `optical flow`).
-- Multi-view geometry (thin extraction): `references/local-only/Multiple_View_Geometry.txt` (grep `epipolar` to check extraction quality first).
+- Multi-view geometry and reconstruction: `references/local-only/Multiple_View_Geometry.txt` (grep `epipolar geometry`, `fundamental matrix`, `homography`, `triangulation`, `calibration`).
 - Algebraic multi-view theory: `references/local-only/Algebraic_Curves_in_Multiple-View_Geometry.txt` (grep `projective`, `trifocal`).
-- Where coverage is thin (OCR implementation, calibration API, modern detectors),
+- Where implementation coverage is thin or version-sensitive (OCR APIs,
+  calibration APIs, modern detectors),
   route to official library docs (Tesseract, EasyOCR, OpenCV calib3d, PyTorch Hub).
 
 ## New project by shape (greenfield routing)

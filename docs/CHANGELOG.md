@@ -14,6 +14,10 @@
   `references/local-only/` directory and are indexed by committed `local_books.md` and
   `reference_survey.md` files. The misplaced `computer-vision-expert` corpus now resides under
   the existing `vision-expert`; no second computer-vision skill is published.
+- Refreshed `vision-expert` routing after validating the local
+  `Multiple_View_Geometry.txt` conversion. The book is now a primary conceptual source for
+  epipolar geometry, fundamental matrices, homographies, triangulation, calibration, stereo,
+  and reconstruction; official OpenCV and COLMAP docs remain the source for current APIs.
 
 ### Developer Tests and Notes
 

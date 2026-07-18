@@ -10,19 +10,18 @@ Use this reference to choose between the local computer-vision book resources bu
   Use for implementation-oriented OpenCV recipes and patterns that can be adapted quickly.
 - `Video_Object_Tracking.txt`
   Use when the task involves tracking, temporal identity, video datasets, or method selection for object tracking.
-
-## Candidate resource needing verification
-
 - `Multiple_View_Geometry.txt`
-  Intended fit: camera geometry, epipolar geometry, stereo, homographies, triangulation, and calibration-heavy work.
-  Current status: the present text extraction appears empty or unusable, so do not rely on it until the source is re-exported cleanly.
+  Use for camera geometry, epipolar geometry, fundamental matrices, stereo,
+  homographies, triangulation, calibration, and multi-view reconstruction.
 
 ## Practical mapping
 
 - For general OpenCV work, start with `Learning_OpenCV.txt`.
 - For faster recipe-style implementation help, check `OpenCV_Cookbook.txt`.
 - For video tracking pipelines, read `Video_Object_Tracking.txt` first.
-- For multi-camera geometry or reconstruction, use other verified sources until `Multiple_View_Geometry.txt` is fixed.
+- For multi-camera geometry or reconstruction, start with
+  `Multiple_View_Geometry.txt`; verify current APIs against OpenCV calib3d or
+  COLMAP documentation before implementation.
 
 ## Topic-to-book routing
 

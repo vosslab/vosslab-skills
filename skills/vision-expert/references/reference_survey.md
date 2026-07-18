@@ -63,16 +63,19 @@ Coverage: strong.
 
 ### Multi-view geometry
 
-Coverage: thin (Multiple_View_Geometry extraction unreliable; Algebraic_Curves partial).
+Coverage: strong (Multiple_View_Geometry); specialized partial coverage
+(Algebraic_Curves).
 
-- `references/local-only/Multiple_View_Geometry.txt` intended source for epipolar
-  geometry, homographies, camera calibration, and stereo. The present text extraction
-  is unreliable; do not rely on it for content lookup until the source is re-exported.
-  grep `epipolar` to spot-check extraction quality before trusting any passage.
+- `references/local-only/Multiple_View_Geometry.txt` is the primary source for
+  camera models, epipolar geometry, fundamental matrices, homographies,
+  triangulation, calibration, stereo, and multi-view reconstruction. grep
+  `epipolar geometry`, `fundamental matrix`, `homography`, `triangulation`,
+  `calibration`.
 - `references/local-only/Algebraic_Curves_in_Multiple-View_Geometry.txt` algebraic
   treatment of multi-view curves and projective geometry. grep `projective`, `trifocal`.
 - For implementation, route to official OpenCV calib3d docs, COLMAP documentation,
-  and the installed package references; treat these books as secondary support.
+  and installed-package references for current API signatures while using the books
+  for algorithms, derivations, and geometric reasoning.
 
 ### OCR
 
@@ -85,9 +88,9 @@ Coverage: partial (Computer_Vision_Algorithms_and_Applications brief intro); thi
 - For implementation, route to Tesseract, EasyOCR, or PaddleOCR official docs and
   treat the books as background context only.
 
-## Weak-coverage decision (in scope, books secondary)
+## Weak-coverage decision
 
-Multi-view geometry and OCR are in scope for this skill but thin in the local books.
-For these topics, route to official library docs (OpenCV calib3d, COLMAP, Tesseract,
-EasyOCR), trusted benchmarks, brute-force oracles, and first-principles reasoning.
-Treat the local books as secondary support when the text is present and legible.
+OCR implementation remains thin in the local books. Route OCR implementation to
+official Tesseract, EasyOCR, or PaddleOCR documentation, trusted benchmarks, and
+task-specific oracles. Multi-view geometry has strong local conceptual coverage;
+use official OpenCV calib3d or COLMAP documentation alongside it for current APIs.

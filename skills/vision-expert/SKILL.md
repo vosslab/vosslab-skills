@@ -36,6 +36,8 @@ match the user problem to a CV task, default library, and guide file. Then inspe
   - "Learning OpenCV" for broad OpenCV techniques, feature detection, and matching workflows.
   - "OpenCV Cookbook" for practical implementation patterns and utility code.
   - "Video Object Tracking" for tracking-specific tasks, datasets, and methods.
+  - "Multiple View Geometry" for camera models, epipolar geometry, homographies,
+    triangulation, calibration, and multi-view reconstruction.
 
 4. Make data quality explicit.
 - Check label quality, class balance, resolution, compression artifacts, lighting, occlusion, and domain shift.
