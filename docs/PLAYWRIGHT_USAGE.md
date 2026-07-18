@@ -1,251 +1,224 @@
 # Playwright usage
 
-How to use Playwright for browser automation and visual testing in this repo.
+General guidance for using Playwright across repositories. This document covers browser automation,
+screenshots, PDF generation, and browser testing. Repository-specific conventions should complement,
+not replace, the guidance here.
 
-## Install
+## What Playwright is
 
-Playwright is a dev dependency. If the repo does not already have a
-`package.json`, create one first. Then install Playwright and its browsers:
+Playwright is a browser automation library for Chromium, Firefox, and WebKit. Common uses include:
+
+- Browser-driven testing
+- Screenshot generation
+- PDF generation
+- Visual regression
+- Browser automation
+- HTML validation
+- Scripted user workflows
+- Documentation image generation
+
+## Installation
+
+### Existing Node project
+
+If the repository already has a `package.json`:
 
 ```bash
-npm init -y
 npm install --save-dev playwright
 npx playwright install
 ```
 
-`npm init -y` creates a default `package.json` at the repo root. `npm install
---save-dev playwright` gets the `playwright` Node library and records it under
-`devDependencies`. `npx playwright install` downloads browser binaries
-(Chromium, Firefox, WebKit). If `package.json` already exists, skip
-`npm init -y` and just run `npm install` (to pick up existing deps) followed
-by `npx playwright install`.
+If the repository uses the Playwright test runner:
 
-### Quick install script
+```bash
+npm install --save-dev @playwright/test
+npx playwright install
+```
 
-Repos propagated from the starter template ship `devel/setup_playwright.sh`,
-which automates the install end-to-end (chromium only, idempotent):
+### Repository without Node setup
+
+Some repositories use Playwright only as a browser automation tool.
+
+A lightweight install script may install Playwright locally without creating a
+`package.json` or `package-lock.json`:
+
+```bash
+bash devel/install_playwright_capture.sh
+```
+
+Use this approach when browser automation is needed but the repository is not a
+Node project.
+
+### Repository setup script
+
+Some repositories provide a helper such as:
 
 ```bash
 bash devel/setup_playwright.sh
 ```
 
-The script installs `@playwright/test` (the test runner) rather than the bare
-`playwright` library. Use it when the repo's tests rely on the test-runner
-fixtures and assertions; use the manual `npm install --save-dev playwright`
-above when the scripts use the library directly (see [Packages](#packages)).
+Use the repository's preferred setup script when available.
 
-### Shared helper: `repo_root.mjs`
+## Running scripts
 
-`tests/playwright/repo_root.mjs` is centrally propagated by
-`propagate_style_guides.py`. Do not edit it per-repo. It exports `REPO_ROOT`
-resolved via `git rev-parse --show-toplevel`, so test scripts can compute
-absolute paths without brittle relative-path math:
+Run Playwright scripts from the repository root so local dependencies resolve
+correctly.
+
+```bash
+node tools/capture_page.mjs
+```
+
+When a repository provides a runner such as `run_playwright_tests.sh`, prefer that runner over
+invoking `npx playwright test` directly. Repository-owned runners may provide required preflight
+checks, configuration paths, server coordination, argument handling, and consistent result
+reporting.
+
+This general guidance does not assume a TypeScript build, a `dist/` directory, or a development
+server. Each repository owns its build and server lifecycle through its local scripts and
+configuration.
+
+## Common automation
+
+### Open a local HTML file
 
 ```javascript
-import { REPO_ROOT } from "./repo_root.mjs";
+import { chromium } from "playwright";
 import path from "node:path";
 
-const pagePath = path.join(REPO_ROOT, "index.html");
+const html_path = path.resolve("index.html");
+
+const browser = await chromium.launch();
+const page = await browser.newPage();
+
+await page.goto(`file://${html_path}`);
+await browser.close();
 ```
 
-## Key rule: scripts must run from the project root
+### Take a screenshot
 
-Node resolves `import 'playwright'` by searching `node_modules/` starting from the
-script's own directory and walking up. A script in `/tmp/` will not find the project's
-`node_modules/`.
-
-**Wrong:**
-
-```bash
-node /tmp/_test_game_ui.mjs
-# Error: Cannot find module 'playwright'
+```javascript
+await page.screenshot({
+	path: "capture.png",
+	fullPage: true,
+});
 ```
 
-**Right:**
+### Generate a PDF
 
-```bash
-cd /Users/vosslab/nsh/cell-culture-game-claude
-node tests/playwright/test_game_ui.mjs
+```javascript
+await page.pdf({
+	path: "report.pdf",
+	format: "Letter",
+	printBackground: true,
+});
 ```
 
-Put Playwright scripts in `tests/playwright/`.
+### Evaluate JavaScript
 
-## Script location
+```javascript
+const value = await page.evaluate(() => {
+	return document.title;
+});
+```
 
-Store Playwright scripts in `tests/playwright/` with an `.mjs` extension, for example
-`tests/playwright/test_game_ui.mjs`. Helpers (`tests/playwright/helpers.mjs`) live alongside.
-Keep test data inline. For fixture cases, see the Fixture policy in PYTEST_STYLE.md.
+### Wait for animations
 
-Pytest only collects `test_*.py` files and actively excludes `tests/playwright/`
-via `collect_ignore = ["e2e", "playwright"]` in `tests/conftest.py`, so the extension
-and subfolder together ensure Playwright scripts stay outside the fast pytest lane.
+```javascript
+await page.click("#start");
+await page.waitForTimeout(500);
+```
 
-## Optional: full-path Playwright walkthroughs
+### Measure layout
 
-Some repos group complete Playwright walkthroughs (multi-step user journeys, recovery scenarios, full protocol runs) in `tests/playwright/e2e/`. This is an **optional sub-grouping**: use it only when you have multiple full-path walkthroughs worth grouping together. If you have just one or two, keep them flat in `tests/playwright/`. The same E2E exclusion applies: both `tests/playwright/` and its children are excluded from pytest collection.
+```javascript
+const box = await page.locator("#panel").boundingBox();
+console.log(box);
+```
+
+## Output locations
+
+Choose output locations according to the purpose of the generated files.
+
+| Purpose | Suggested location |
+| --- | --- |
+| Temporary test evidence | `test-results/` |
+| Temporary debugging | `/tmp/` or another ignored directory |
+| Documentation assets | `docs/screenshots/` by default |
+| Product assets | Repository output location |
+| Reference images | Repository asset folder |
+
+Playwright does not dictate where generated files belong. Follow the repository's
+normal conventions. Repositories may override `docs/screenshots/` when they have an established
+location for committed documentation captures.
+
+## Repository helpers
+
+Repositories may provide helper modules or wrappers such as:
+
+- `repo_root.mjs`
+- HTML-to-PDF wrappers
+- Browser helper utilities
+- Shared launch functions
+
+These helpers are conveniences rather than Playwright requirements.
 
 ## Packages
 
 | Package | Purpose |
 | --- | --- |
-| `playwright` | Library/API for browser automation (what we use) |
-| `@playwright/test` | Test runner with fixtures, assertions, reporters |
-| `playwright-core` | Low-level core without bundled browsers (rarely needed) |
+| `playwright` | Browser automation library |
+| `@playwright/test` | Playwright test runner |
+| `playwright-core` | Browser library without bundled browsers |
 
-Playwright's "fixtures" are a framework feature of `@playwright/test` (test-runner setup and
-teardown helpers), distinct from repo test data. For fixture cases, see the Fixture policy in
-PYTEST_STYLE.md.
+## Browser testing
 
-For "open a local HTML file, click things, take screenshots", use `playwright`.
+This section applies only when Playwright is used as a browser testing framework.
 
-## Script template
+### Test location
 
-```javascript
-import { chromium } from 'playwright';
-import path from 'path';
+A common convention is:
 
-const gamePath = path.resolve('cell_culture_game.html');
-const url = `file://${gamePath}`;
-
-const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1200, height: 900 } });
-await page.goto(url);
-await page.waitForTimeout(500);
-
-// Interact with the page
-await page.click('#welcome-start-btn');
-await page.waitForTimeout(300);
-
-// Screenshot
-await page.screenshot({ path: 'test-results/screenshot.png' });
-
-// Measure element positions
-const box = await page.locator('#my-element').boundingBox();
-console.log('Position:', box);
-
-await browser.close();
+```
+tests/playwright/
 ```
 
-Run with:
+Some repositories further organize complete browser walkthroughs under:
 
-```bash
-node tests/playwright/my_test.mjs
+```
+tests/playwright/e2e/
 ```
 
-## Headless by default
+Repositories may use different layouts if they better fit the project.
 
-The canonical pattern above uses `chromium.launch()` with no arguments, which
-defaults to `headless: true`. Existing scripts already run headless; do not
-"fix" them.
+### Headless execution
 
-Rule for agents:
+Automated browser tests normally run headless.
 
-- Do not pass `headless: false` to `chromium.launch()`.
-- Do not add `--headed` to invocations.
-- The default is correct.
+Developers may temporarily use headed mode for local debugging when appropriate.
 
-If a human is debugging locally and explicitly wants to watch the browser,
-they can pass `headless: false` themselves. Agents should not do this on
-their behalf.
+### Pytest integration
 
-## Common patterns
+Python repositories commonly exclude browser tests from normal pytest collection.
+See `E2E_TESTS.md` for repository testing conventions.
 
-### Click a hood item
+### Test artifacts
 
-Hood items use `data-item-id`:
-
-```javascript
-await page.click('[data-item-id="ethanol_bottle"]');
-```
-
-### Wait for animations
-
-Use `waitForTimeout` after actions that trigger animations:
-
-```javascript
-await page.click('[data-item-id="flask"]');
-await page.waitForTimeout(2500);  // aspiration takes ~2s
-```
-
-### Check element alignment
-
-Use `boundingBox()` to compare positions of overlapping elements:
-
-```javascript
-const svgRect = await page.locator('#microscope-svg rect[fill="#e8f5e9"]').first().boundingBox();
-const button = await page.locator('.quadrant-btn').first().boundingBox();
-const dx = Math.abs(svgRect.x - button.x);
-const dy = Math.abs(svgRect.y - button.y);
-console.log(`Offset: dx=${dx.toFixed(1)} dy=${dy.toFixed(1)}`);
-```
-
-### Evaluate JavaScript in the page
-
-```javascript
-const result = await page.evaluate(() => {
-    return document.querySelectorAll('.quadrant-btn').length;
-});
-console.log('Button count:', result);
-```
+Temporary screenshots, recordings, traces, and similar evidence normally belong
+in an ignored output directory such as `test-results/`.
 
 ## Troubleshooting
 
-| Problem | Fix |
+| Problem | Possible solution |
 | --- | --- |
-| `Cannot find module 'playwright'` | Run the script from the project root, not `/tmp/` |
-| `browserType.launch: Executable doesn't exist` | Run `npx playwright install` |
-| `npx playwright` works but `node script.mjs` fails | Different issue: npx resolves packages differently than Node require |
-| Timeout clicking an element | Check the selector; use `data-item-id` not `data-item` for hood items |
-| Browser windows pop up during test runs | An agent added `headless: false` or `--headed`; remove it. Default is headless. |
+| Cannot find module `playwright` | Run from the repository root or verify installation. |
+| Browser executable missing | Run `npx playwright install`. |
+| Element timeout | Verify selectors and page state. |
+| PDF generation unavailable | PDF generation requires Chromium. |
+| Browser opens unexpectedly | Check launch options and debugging settings. |
 
-## Verify install
+## Related documentation
 
-```bash
-npm ls playwright
-```
-
-Should show `playwright@x.x.x` under the project.
-
-## File conventions
-
-- Put Playwright scripts in `tests/playwright/` at the repo root.
-- `tests/playwright/` is tool-named: it groups all browser-driven tests regardless of scope (smoke, layout, regression, walkthroughs). Future browser tools (Cypress, Puppeteer) would each get their own tool-named folder; do NOT lump them under `tests/playwright/`.
-- Filenames inside `tests/playwright/` are unconstrained: `test_*.mjs` for tests, `helpers.mjs` for shared utilities, `build_*.mjs` for bootstrap scripts, `*_walkthrough.mjs` for walkthroughs all coexist legitimately. The only restriction enforced by `tests/test_test_naming_conventions.py` is that any file with a Playwright import must live under `tests/playwright/`.
-- Use `.mjs` extension for ES module scripts (e.g., `tests/playwright/test_game_ui.mjs`).
-- Put screenshots in `test-results/` (gitignored).
-- Note: `tests/conftest.py` declares `collect_ignore = ["e2e", "playwright"]` so pytest never collects anything in this tree, regardless of name.
-
-## PDF generation
-
-Render HTML to PDF using `tools/html_to_pdf.mjs`. Run it directly with node:
-
-```bash
-node tools/html_to_pdf.mjs --input report.html --output test-results/report.pdf
-```
-
-The `--output` flag is optional. If not provided, the CLI derives the output filename by replacing the input's extension with `.pdf` in the same directory:
-
-```bash
-node tools/html_to_pdf.mjs --input report.html
-# writes report.pdf alongside report.html
-```
-
-When `--input` is an `http://`, `https://`, or `file://` URL, `--output` is required - the filename cannot be derived from a URL.
-
-Generate landscape orientation by adding the `--landscape` flag:
-
-```bash
-node tools/html_to_pdf.mjs --input wide.html --output /tmp/wide.pdf --landscape
-```
-
-Hardcoded defaults: Letter page size, 0.6 inch margins, screen media, 1440 x 1200 pixel viewport, `networkidle` wait, and backgrounds enabled.
-
-Write PDFs to `/tmp/` or `test-results/` - both are gitignored.
-
-Chromium only. Firefox and WebKit do not implement `page.pdf()`.
-
-The tool needs the `playwright` dev dependency. If it is not installed yet:
-
-```bash
-npm install --save-dev playwright
-```
+- `REPO_STYLE.md`
+- `E2E_TESTS.md`
+- `PLAYWRIGHT_TEST_STYLE.md`
+- `MARKDOWN_STYLE.md`

@@ -1,6 +1,6 @@
 ---
 name: setup-install-usage-docs
-description: "Create or refresh `docs/INSTALL.md` and `docs/USAGE.md` from repo evidence, writing real content when install or usage evidence supports it and reporting gaps when it does not. Use when these two docs are missing, too thin, or stale. Does NOT touch `README.md`, `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`, or the broader doc set (use `readme-docs`, `arch-docs`, or `docset-updater` for those)."
+description: "Create or refresh `docs/INSTALL.md` and `docs/USAGE.md` from repository evidence. Use when installation or usage docs are missing, thin, or stale. Use other documentation skills for README, architecture, file structure, or repo-wide updates."
 ---
 
 # Setup, install, and usage docs

@@ -1,6 +1,6 @@
 ---
 name: agents-md-fixer
-description: "Trim `AGENTS.md` aggressively to a small pointer file (prefer ~15 lines, hard cap ~50) that points into `docs/*.md` with bare paths instead of restating rules. Use when `AGENTS.md` is bloated, philosophical, or duplicates style content already in `docs/*.md`. Does NOT touch `README.md` or files under `docs/` (use `readme-docs`, `arch-docs`, `setup-install-usage-docs`, or `docset-updater` for those)."
+description: "Trim bloated `AGENTS.md` files into concise pointers to canonical `docs/*.md` rules. Use when agent guidance duplicates repo documentation. This skill changes only `AGENTS.md`; use documentation skills for README or `docs/` changes."
 ---
 
 # AGENTS.md fixer

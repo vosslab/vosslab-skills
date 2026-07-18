@@ -1,6 +1,6 @@
 ---
 name: stay-busy
-description: "Use when the user invokes /stay-busy, asks to keep a manager/orchestrator/subagents busy, complains that an agent is waiting too much, or when an active delegate-manager-to-subagents workflow is about to idle despite safe evidence-producing follow-on work. Generates parallel workstreams with blocked fallbacks, ask-only boundaries, and required artifacts. Stay busy by producing evidence, not by creating motion. This is manager/orchestrator anti-idle behavior, not general productivity."
+description: "Keep an agent manager productive through safe, evidence-producing follow-on work. Use for `/stay-busy`, idle orchestrators, waiting subagents, or active delegated workflows. Generates bounded workstreams and fallbacks; not productivity advice."
 ---
 
 # Stay busy
@@ -145,164 +145,74 @@ apply ONLY after this gate is clean.
 
 ## Away mode
 
-When the user signals they are stepping away (sleeping, leaving,
-unattended session), workstream defaults shift. Away mode does NOT
-bypass `## Finish before expanding`: if obvious in-flight work remains,
-finish that first; the expansion below applies only after the obvious
-queue is empty.
-
-- Default workstream scope widens: prefer expansive multi-methodology
-  suites over small concrete recovery tasks. A "small, concrete recovery
-  task" is the wrong shape when the user is asleep.
-- Default tier jumps one level (small -> medium, medium -> large, large
-  -> stress). The cap "defaulting to 10 on a small project is wrong" does
-  not apply in away mode.
-- Suppress confirmation-seeking. Any question that does not change
-  architecture, contract, deletion, or broad production behavior is
-  settled by the manager using a documented assumption. The morning
-  inbox should contain finished artifacts, not pending questions.
-- Prefer the four anchor activities from `## Big picture`: writeups,
-  A/B testing, side-quest experiments, codebase audits.
-- Long-form reports (25-100 pages) are a valid single-workstream output
-  when the project has accumulated enough evidence to synthesize. Format
-  follows repo language: TypeScript repos render HTML to PDF with
-  Playwright screenshots embedded as visual evidence; Python repos write
-  Markdown per `docs/MARKDOWN_STYLE.md`. See
-  [references/workstream_templates.md](references/workstream_templates.md)
-  report-workstream section for templates.
-- Every workstream must finish to an inspectable artifact the user can
-  read on return. No "in progress, ask me when you wake up" handoffs.
+After the finish-before-expanding gate passes, read
+[references/operating_modes.md](references/operating_modes.md). Away mode
+widens the normal tier, favors expansive evidence-producing work, resolves
+reversible choices through documented assumptions, and requires finished
+artifacts rather than pending questions.
 
 ## Manager decision authority
 
-The manager is the decision-maker for everything that does not cross an
-ask-only boundary (see
-[references/boundaries.md](references/boundaries.md)). When in doubt, the
-manager decides, documents the reasoning in the workstream artifact, and
-continues. Stalling on user input is failure.
-
-- React to findings without asking. A surprising A/B result, a failing
-  edge case, an unexpected log pattern -- the manager dispatches a
-  follow-up workstream (re-run with variance, vary the input, isolate the
-  cause) rather than messaging the user. The answer to a surprise is more
-  evidence.
-- When two options exist and neither crosses an ask-only boundary, the
-  manager picks one based on the project's stated priorities, records the
-  choice and the runner-up in the workstream report, and proceeds. A
-  defaulted choice plus written reasoning is worth more to the user on
-  return than a pending question.
-- "Do more testing" is the default response to uncertainty about a
-  finding. If the result might be noise, queue a variance run. If the
-  result might be input-specific, queue a sweep. If a methodology looks
-  promising, queue a comparison against the incumbent.
-- The status labels (`DONE`, `DONE_WITH_CONCERNS`, `NEEDS_CONTEXT`,
-  `BLOCKED`) and the artifact-path requirement are how the manager stays
-  trustworthy across an unattended stretch -- they let the user audit
-  decisions on return. They are the manager's own paper trail, not a
-  checklist to satisfy.
+Read [references/operating_modes.md](references/operating_modes.md) before
+making unattended decisions. The manager chooses and documents every safe,
+reversible option; surprising results trigger more evidence. Choices that
+cross an ask-only boundary route to
+[references/boundaries.md](references/boundaries.md).
 
 ## Default-to-safe-work rules
 
-- If a decision is already given, execute it.
-- If a safe default exists, take it.
-- If one workstream blocks, dispatch another workstream.
-- Do not say "default in 2 minutes" unless the default actually executes.
-- Do not ask user to choose between obvious next steps unless the choice
-  changes architecture, contract, deletion, or broad production behavior.
-- Do not stand by unless there is truly nothing safe, useful, or
-  plan-defined to do.
-- Do not seek confirmation on clear options, stop at task boundaries,
-  detour into unrelated housekeeping, or chase side bugs that do not block
-  gates -- all are forms of passive waiting.
+Apply the decision and situation rules in
+[references/operating_modes.md](references/operating_modes.md). Execute
+given decisions, take safe defaults, fix failed checks, and switch to an
+unblocked workstream when one stalls.
 
 ## Situation to action
 
-| Situation | Action |
-| --- | --- |
-| A task finishes | Dispatch next unblocked task from the plan |
-| A check fails | Fix the failure, rerun the check |
-| A background agent runs | Prepare review checklist, next brief, file list, or test plan; do not wait silently while safe parallel work remains |
-| A non-blocking issue appears | Document it, continue current milestone |
-| A real blocker appears | Stop and ask with 2 to 3 concrete options |
+Use the situation-routing table in
+[references/operating_modes.md](references/operating_modes.md) to select
+the immediate action for completed tasks, failed checks, running agents,
+non-blocking issues, and real boundaries.
 
 ## Workstream scale
 
-Pick a tier from project signals (plan length, active workstream count,
-recent diff size). Emit exactly that many workstreams.
-
-- Small project: 2-3 workstreams.
-- Medium project: 4-6 workstreams.
-- Large project: 7-10 workstreams.
-- Stress/reliability or explicit long-running request: 10+ workstreams,
-  only when the user asks for long-running work.
-
-Defaulting to 10 on a small project is wrong at the keyboard. Away-mode
-lifts the cap (see `## Away mode`).
+Read [references/scaling_and_cleanup.md](references/scaling_and_cleanup.md)
+after the finish-before-expanding gate. Select the tier from plan length,
+active workstreams, recent diff size, and at-keyboard versus away mode.
 
 ## Tier signals
 
-| Project signal | At-keyboard tier | Away-mode tier |
-| --- | --- | --- |
-| Plan has 1-5 tasks; one milestone | small (2-3) | medium (4-6) |
-| Plan has 6-15 tasks; one or two milestones | medium (4-6) | large (7-10) |
-| Plan has 16+ tasks or multi-day request | large (7-10) | stress (10+) |
-| Explicit "keep busy for N days" or "going to bed" | stress (10+) | stress (10+) |
+The complete tier matrix lives in
+[references/scaling_and_cleanup.md](references/scaling_and_cleanup.md).
+Use its workstream range as the dispatch count; away mode applies the
+documented tier bump.
 
 ## Side quest discipline
 
-- `SIDE QUEST` is allowed only when it produces useful evidence, demos,
-  stress tests, reports, or diagnostics related to the active project.
-- Side quests MUST be labeled `SIDE QUEST` in the TaskList.
-- Side quests must not be confused with production-ready work.
-- Random busywork side quests are forbidden.
+Follow the labeling and evidence rules in
+[references/scaling_and_cleanup.md](references/scaling_and_cleanup.md).
+A side quest remains project-related, carries a canonical task status, and
+stays distinct from production-ready work.
 
 ## Stale-workstream cleanup
 
-When more than N workstreams are open (N = upper bound of the current
-tier), emit a workstream status table:
-
-| workstream | status | next action |
-| --- | --- | --- |
-| A | `DONE` | close, write changelog entry |
-| B | active | (no action) |
-| C | `BLOCKED` | ask-only boundary or blocked fallback path |
-| D | abandoned | delete or absorb into workstream E |
-| E | needs cleanup | finalize evidence artifact |
-
-Cleanup-table values combine the four canonical task-status labels with
-two workstream-level lifecycle values (`active`, `abandoned`,
-`needs cleanup`). The four canonical labels (`DONE`,
-`DONE_WITH_CONCERNS`, `NEEDS_CONTEXT`, `BLOCKED`) remain authoritative
-for individual tasks; the cleanup table aggregates per workstream.
+When open workstreams exceed the current tier, use the status table and
+closure actions in
+[references/scaling_and_cleanup.md](references/scaling_and_cleanup.md)
+before generating more work.
 
 ## Workstream taxonomy
 
-Full prompt templates and per-type artifact requirements live in
+Use [references/ideas_checklist.md](references/ideas_checklist.md) to choose
+project-relevant work and reject busywork. Then load the selected type's
+prompt and artifact requirements from
 [references/workstream_templates.md](references/workstream_templates.md).
-Types:
-
-- audit workstream
-- implementation workstream
-- test workstream
-- screenshot and evidence workstream
-- report workstream
-- cleanup workstream
-- benchmark/profiling workstream
-- failure investigation workstream
-- alternative prototype workstream
-- regression/bisect workstream
-- stress and clutter workstream
-- next-iteration push workstream
 
 ## Blocked-fallback contract
 
 Every workstream includes an explicit blocked fallback before dispatch.
-Examples:
-
-- If generator fails, hand-author 10 stress scenes.
-- If Playwright blocks, produce static screenshots and document the
-  blocker.
-- If a production seam blocks, continue with read-only audit and tests.
+Choose a starter from
+[references/ideas_checklist.md](references/ideas_checklist.md) and adapt it
+to the task's actual dependency.
 
 ## Boundaries
 
@@ -325,51 +235,23 @@ per `delegate-manager-to-subagents` status handling.
 
 ## Breadth before convergence
 
-For uncertain problems, fan out multiple prototypes, hypotheses, scene
-classes, best-case and worst-case galleries. Do not force a single plan
-too early.
+For uncertain problems, apply the breadth-before-convergence rule in
+[references/scaling_and_cleanup.md](references/scaling_and_cleanup.md):
+fan out comparable evidence, then converge.
 
 ## Standard output template
 
-Emit this every time. Replace every `<...>` placeholder with a
-project-specific value before dispatching.
-
-```text
-Do not idle. Dispatch these workstreams now.
-
-Active workstreams:
-A. <workstream name> - <task> - artifact: <type> - blocked fallback: <if blocked>
-B. ...
-
-Blocked only by:
-- <hard boundary 1>
-
-Allowed without asking:
-- <items from allowed list pulled in for this project>
-
-Ask only for:
-- <items from ask-only list pulled in for this project>
-
-Final handoff must include:
-- tasks dispatched
-- files changed
-- tests run
-- screenshots or evidence artifacts
-- metrics before/after
-- blockers
-- next workstream already started
-```
+Use the standard output template in
+[references/workstream_templates.md](references/workstream_templates.md).
+Fill every placeholder before dispatch and populate its boundary lists from
+[references/boundaries.md](references/boundaries.md).
 
 ## What the skill must not do
 
-- Invent fake progress.
-- Push high-risk changes without approval.
-- Hide uncertainty.
-- Start broad migration just to stay busy.
-- Spam tiny tasks.
-- Create endless planning documents.
-- Override explicit user instructions.
-- Let "busy" replace "useful".
+Run the reject-before-dispatch checklist in
+[references/ideas_checklist.md](references/ideas_checklist.md). It excludes
+fake progress, risky unapproved scope, test weakening, tiny task spam, and
+motion without evidence.
 
 ## Handoff to manager
 
@@ -386,7 +268,9 @@ task-text-discipline rule.
    verification, documentation, or final handoff, queue them first.
 3. Pick workstream-scale tier from project signals.
 4. Select workstream types from the taxonomy that fit current project
-   state. Pull prompt templates from
+   state. Run
+   [references/ideas_checklist.md](references/ideas_checklist.md), then pull
+   prompt templates from
    [references/workstream_templates.md](references/workstream_templates.md).
 5. Attach a blocked fallback to each workstream.
 6. Build TaskList: one task per workstream entry, with status-label and

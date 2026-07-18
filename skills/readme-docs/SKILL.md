@@ -1,6 +1,6 @@
 ---
 name: readme-docs
-description: "Create or refresh `README.md` as a distinctive, welcoming, evidence-backed GitHub landing page for people unfamiliar with the project. Use when a README is missing, thin, overly stripped down, generic, stale, or hard to navigate; explain what the project does, why it is useful, who it serves, and how to get a meaningful first result, then provide project-specific proof, examples, and documentation routes. This skill owns `README.md` and routes deeper-doc or visual-asset work to the appropriate skill."
+description: "Create or refresh a distinctive, evidence-backed `README.md` landing page for newcomers. Use when a README is missing, thin, generic, stale, or hard to navigate. Covers purpose, audience, first success, proof, examples, and documentation routes."
 ---
 
 # README landing page

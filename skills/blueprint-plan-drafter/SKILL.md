@@ -1,6 +1,6 @@
 ---
 name: blueprint-plan-drafter
-description: Create forward-looking implementation plans from scratch for coding teams without writing code. Use when the user needs a new plan document, major rewrite, milestone restructuring, acceptance gates, migration strategy, risk handling, or rollout planning for future work; produces parallel-plan-ready milestones when work can be split across independent workstreams; do not use this skill for post-implementation audits of an existing plan.
+description: Create forward-looking implementation plans without writing code. Use for new plans, major rewrites, milestones, migrations, risks, rollout strategy, and acceptance gates. Not for post-implementation audits of existing plans.
 ---
 
 # Blueprint Plan Drafter

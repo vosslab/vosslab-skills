@@ -1,6 +1,6 @@
 ---
 name: bptools-writer-expert
-description: Create, edit, and validate biology-problems bptools Python question generators and supporting YAML content. Use when requests involve authoring question scripts, updating files under problems/*-problems, tuning randomization or anti-cheat behavior, or debugging BBQ/QTI output that depends on bptools.py and qti_package_maker.
+description: Create, edit, and validate biology-problems bptools Python question generators and YAML content. Use for question scripts, randomization, anti-cheat behavior, or BBQ/QTI output involving `bptools.py` and `qti_package_maker`.
 ---
 
 # Bptools question authoring

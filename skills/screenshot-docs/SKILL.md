@@ -1,6 +1,6 @@
 ---
 name: screenshot-docs
-description: "Capture static screenshots or short animated GIF demonstrations of a running app and embed them into README.md and docs/ to make GitHub landing pages novice-friendly. Classifies the app as PySide6 GUI, Swift GUI, terminal/CLI, or web app; chooses static versus animated proof; captures with the appropriate backend; writes PNG or GIF assets to `docs/screenshots/`; and idempotently rewrites the `readme-docs` managed block. Use after `readme-docs`, when visuals are stale or absent, or when a compact interaction or transformation is easier to understand in motion. Preserves app code while updating documentation assets."
+description: "Capture static screenshots or short GIF demonstrations of a GUI, CLI, or web app and embed them in README or docs. Use after `readme-docs`, when visuals are missing or stale, or when motion explains an interaction better than prose."
 ---
 
 # Screenshot docs

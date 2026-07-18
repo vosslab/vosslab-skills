@@ -1,6 +1,6 @@
 ---
 name: geometry-expert
-description: Design, implement, debug, and review computational geometry algorithms in any language, including convex hull, polygon triangulation, Delaunay triangulation, Voronoi diagrams, polygon boolean clipping and overlay, segment intersection and sweep line, proximity and nearest-neighbor queries, point location, spatial data structures (k-d tree, BVH, R-tree, quadtree), arrangements, mesh processing, and distance/intersection queries in 2D, 3D, and nD. Use when working on geometric robustness, degeneracy and exact predicates, orientation and in-circle tests, winding and point-in-polygon, kernel/library choice (CGAL, Shapely/GEOS, SciPy spatial, Boost.Geometry), or geometry correctness, performance, and failure analysis.
+description: Design, implement, debug, and review computational geometry algorithms and spatial data structures. Use for polygons, meshes, intersections, proximity, Voronoi or Delaunay methods, geometric robustness, exact predicates, and geometry libraries.
 ---
 
 # Geometry expert

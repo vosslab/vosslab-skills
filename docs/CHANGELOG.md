@@ -1,3 +1,29 @@
+## 2026-07-18
+
+### Behavior or Interface Changes
+
+- Capped every authored `SKILL.md` frontmatter description at 250 characters to preserve
+  Codex's shared discovery budget, documented that repository policy in `skill-writing-guide`,
+  and regenerated `docs/SKILLS_INDEX.md` from the concise trigger descriptions.
+- Refactored `html-game-parallel-builder` and `stay-busy` below the 300-line advisory threshold
+  without dropping behavior. Batched game ownership and prompt requirements now live in
+  `references/BATCH_DISPATCH.md`; stay-busy operating modes, scaling and cleanup, workstream
+  ideas, dispatch checks, fallbacks, and its standard output progressively load from focused
+  reference guides.
+- Clarified that large book conversions belong inside the live expert skill's gitignored
+  `references/local-only/` directory and are indexed by committed `local_books.md` and
+  `reference_survey.md` files. The misplaced `computer-vision-expert` corpus now resides under
+  the existing `vision-expert`; no second computer-vision skill is published.
+
+### Developer Tests and Notes
+
+- Added a hard 250-character repository check alongside the Agent Skills specification's
+  1,024-character compatibility check. Added an advisory pytest warning when an authored
+  `SKILL.md` exceeds 300 physical lines or 24,000 normalized Unicode characters, with guidance
+  to move conditional detail into supporting resources.
+- Added local-corpus placement guidance to `.gitignore` and the expert-skill standards so large,
+  intentionally uncommitted books do not create incomplete suffix-discovered expert directories.
+
 ## 2026-07-16
 
 ### Additions and New Features

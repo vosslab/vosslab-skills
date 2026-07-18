@@ -15,6 +15,37 @@ delegation contract on top.
 After Workstream A0 (Types and contracts) finishes, dispatch the four
 batches below.
 
+## Preassigned workstreams
+
+Use these defaults unless project requirements force a different split.
+Lane count, scope splits, and merges go through `parallel-plan` before
+Batch 1.
+
+| Workstream | Ownership | Goal |
+| --- | --- | --- |
+| A0: Types and contracts | `src/types/*.ts`, `src/brands.ts`; orchestrator or one pre-Batch-1 agent | Cross-workstream contracts |
+| A: Foundation and state | `src/constants.ts`, `src/characters.ts`, `src/game_state.ts` | Stable stage and state backbone |
+| B: UI shell and styling | HTML fragments, `src/index.html`, `src/style.css`, `src/ui_rendering.ts` | Interaction shell and shared controls |
+| C: Core gameplay | `src/scene_stage.ts`, `src/data_generation.ts` | Contract-conformant playable loop |
+| D: Advanced gameplay | Lab, gel, case-board, scoring, and educational modules | Analysis stages, scoring, and outcomes |
+| E: Runtime utilities | `src/timer.ts`, `src/save_load.ts`, `src/init.ts` | Bootstrap, persistence, and timers |
+
+## Agent prompt requirements
+
+Use [`../templates/agent_prompt_template.md`](../templates/agent_prompt_template.md)
+for every coding subagent. It adds these game-specific requirements to
+the manager dispatch contract:
+
+- Use ES `import` and `export` with extensionless imports.
+- Import contracts from `src/types/*.ts` with `import type`.
+- Keep cross-module shapes centralized; never redeclare them locally.
+- Use no unchecked `as` casts except brand constructors and save-file
+  guards routed through `typescript-engineer`.
+- Run `npx tsc --noEmit -p tsconfig.json` before reporting done.
+
+For type-design help, invoke `typescript-engineer`; game-shape questions
+start at `typescript-engineer/references/game-type-patterns.md`.
+
 The contracts named in this file (per-agent gate, batch gate, agent
 return fields, type-delegation pause-and-wait) exist because this
 skill ships a game inside a live podcast window. They are not

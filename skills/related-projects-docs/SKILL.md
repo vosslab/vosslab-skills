@@ -1,6 +1,6 @@
 ---
 name: related-projects-docs
-description: "Create or refresh `docs/RELATED_PROJECTS.md` from repo evidence plus bounded web discovery, writing a sourced, confidence-tiered map of upstreams, dependencies, integrations, sibling repos, and alternatives. Use when the user asks to document, discover, or refresh related or sibling projects, prior art, or alternatives for a repo. Does NOT touch `README.md`, `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`, `docs/INSTALL.md`, `docs/USAGE.md`, or the broader doc set (use `arch-docs`, `readme-docs`, or `docset-updater` for those)."
+description: "Create or refresh `docs/RELATED_PROJECTS.md` using repository evidence and bounded web research. Use to map upstreams, dependencies, integrations, sibling projects, prior art, or alternatives with sources and confidence levels."
 ---
 
 # Related projects docs

@@ -1,6 +1,6 @@
 ---
 name: news-release-docs
-description: "Create or refresh `docs/RELEASE_HISTORY.md` and `docs/NEWS.md` from `docs/CHANGELOG.md`, authoring two differentiated docs (full versioned dated log vs short curated highlights) and emitting a `/tmp` notes-file body for `devel/make_release.py --notes-file`. Use when preparing a release or when the release docs are drifted, empty, or out of sync with the changelog. Does NOT touch `docs/CHANGELOG.md`, `README.md`, or the broader doc set (use `docset-updater` for the rest)."
+description: "Create or refresh `docs/RELEASE_HISTORY.md` and `docs/NEWS.md` from the changelog, plus release-note input for `devel/make_release.py`. Use when preparing a release or synchronizing release docs. Does not edit the changelog or README."
 ---
 
 # News and release docs

@@ -1,6 +1,6 @@
 ---
 name: gas-town-workflow
-description: "Gas Town style multi-agent coordination with role-mapped task routing and convoy-based work decomposition. Use when the user explicitly requests Gas Town workflow, convoy-style task decomposition, theatrical role-mapped coordination, or this repo's specific agent role system. Do not trigger on generic multi-agent or parallel task requests."
+description: "Coordinate agents with Gas Town role mapping and convoy-based task decomposition. Use only when the user explicitly requests Gas Town, convoy workflow, theatrical roles, or this repo's agent-role system; not for generic parallel work."
 ---
 
 # Gas Town workflow

@@ -1,6 +1,6 @@
 ---
 name: hang-check
-description: "Watchdog for background subagents that catches a stuck, stalled, or hung agent without killing a healthy one. Use when one or more subagents or background agents are running and you want periodic hang detection. Trigger phrases: hang check, agent stuck, agent hung, stalled subagent, watchdog, no output, monitor running agents."
+description: "Watch running background agents for evidence of a genuine stall without killing healthy work. Use for hang checks, stuck or silent subagents, stalled agents, watchdog monitoring, or periodic status detection."
 ---
 
 # Hang check

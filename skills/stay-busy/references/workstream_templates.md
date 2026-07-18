@@ -61,6 +61,41 @@ Artifact path: output/<expected output path>
 Blocked fallback: <one-line summary; full text in template file>
 ```
 
+## Standard manager output
+
+Emit this after selecting and filling the workstream templates. Replace
+every placeholder with project-specific content before dispatching.
+
+```text
+Do not idle. Dispatch these workstreams now.
+
+Active workstreams:
+A. <workstream name> - <task> - artifact: <type> - blocked fallback: <fallback>
+B. ...
+
+Blocked only by:
+- <hard boundary>
+
+Allowed without asking:
+- <project-specific allowed action>
+
+Ask only for:
+- <project-specific ask-only boundary>
+
+Final handoff must include:
+- tasks dispatched
+- files changed
+- tests run
+- screenshots or evidence artifacts
+- metrics before and after
+- blockers
+- next workstream already started
+```
+
+Populate `Allowed without asking` and `Ask only for` from
+[boundaries.md](boundaries.md). The final handoff retains one canonical
+status label and one inspectable artifact path per task.
+
 Common composition patterns:
 
 - **Coverage gap -> test**: a coverage_gap workstream produces the

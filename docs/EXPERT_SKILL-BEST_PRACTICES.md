@@ -132,7 +132,8 @@ The entrypoint is a YAML frontmatter block followed by a thin Markdown body. Kee
 it short and push detail into the reference guides.
 
 - Frontmatter carries exactly two keys that matter: `name` (equals the directory
-  name) and `description` (a keyword-packed trigger under 1024 characters).
+  name) and `description` (a keyword-packed trigger no longer than this repo's
+  250-character ceiling).
 - Body section order, mirrored from `skills/geometry-expert/SKILL.md`: Overview,
   Workflow, Implementation defaults, Quality bar, Output expectations.
 - Keep the entrypoint thin, roughly 70-100 lines. Each Workflow step routes to a
@@ -178,6 +179,10 @@ to GitHub.
 - The skill ships the small committed survey; the user supplies the large books
   locally. Example corpus: `skills/vision-expert/references/local-only/` holds
   six computer-vision books.
+- Put a corpus only inside its live skill's `references/local-only/` directory.
+  A corpus directory is not a skill and must not be placed in a sibling
+  `skills/<alternate-name>/` wrapper; suffix-based discovery would treat that
+  wrapper as an incomplete live expert.
 - Reference a local-only book by bare backtick path plus a grep term, for example
   `` `references/local-only/About_Face.txt` `` searched for `posture`. Flat-text
   conversions have no headings, so route by book plus keyword.

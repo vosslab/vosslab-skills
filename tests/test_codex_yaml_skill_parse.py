@@ -15,7 +15,8 @@ SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 REQUIRED_KEYS = ("name", "description")
 SKILL_NAME_PATTERN = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 MAX_NAME_CHARS = 64
-MAX_DESCRIPTION_CHARS = 1024
+SPEC_MAX_DESCRIPTION_CHARS = 1024
+REPO_MAX_DESCRIPTION_CHARS = 250
 
 
 #============================================
@@ -174,8 +175,8 @@ def test_codex_skill_name_matches_directory() -> None:
 
 
 #============================================
-def test_codex_skill_description_fits_initial_list_budget() -> None:
-	"""Skill descriptions must stay within the Codex initial-list budget."""
+def test_codex_skill_description_fits_spec_limit() -> None:
+	"""Skill descriptions must stay within the Agent Skills specification limit."""
 	too_long = []
 	for skill_dir in list_skill_dirs():
 		skill_md = skill_dir / "SKILL.md"
@@ -186,12 +187,38 @@ def test_codex_skill_description_fits_initial_list_budget() -> None:
 		if not isinstance(description, str):
 			continue
 		length = len(description)
-		if length > MAX_DESCRIPTION_CHARS:
+		if length > SPEC_MAX_DESCRIPTION_CHARS:
 			too_long.append(
-				f"{skill_dir.name}: {length} characters; limit: {MAX_DESCRIPTION_CHARS}"
+				f"{skill_dir.name}: {length} characters; "
+				+ f"limit: {SPEC_MAX_DESCRIPTION_CHARS}"
 			)
 	assert not too_long, (
 		"Codex skill descriptions must be 1024 Python characters or fewer "
 		"(len(description)):\n" +
+		"\n".join(too_long)
+	)
+
+
+#============================================
+def test_codex_skill_description_fits_repo_budget() -> None:
+	"""Skill descriptions must fit this repo's discovery-metadata budget."""
+	too_long = []
+	for skill_dir in list_skill_dirs():
+		skill_md = skill_dir / "SKILL.md"
+		if not skill_md.is_file():
+			continue
+		fm = parse_codex_frontmatter(skill_md)
+		description = fm.get("description", "")
+		if not isinstance(description, str):
+			continue
+		length = len(description)
+		if length > REPO_MAX_DESCRIPTION_CHARS:
+			too_long.append(
+				f"{skill_dir.name}: {length} characters; "
+				+ f"limit: {REPO_MAX_DESCRIPTION_CHARS}"
+			)
+	assert not too_long, (
+		"SKILL.md frontmatter descriptions must be 250 Python characters or fewer "
+		"to preserve Codex's shared discovery budget (len(description)):\n" +
 		"\n".join(too_long)
 	)

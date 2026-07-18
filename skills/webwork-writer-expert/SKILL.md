@@ -1,6 +1,6 @@
 ---
 name: webwork-writer-expert
-description: Create, edit, and lint WeBWorK PG/PGML questions following docs/webwork guidance, HTML whitelist constraints, and renderer-based lint checks. Use for tasks like authoring new PGML problems, adjusting randomization or grading, fixing PGML rendering issues, and running renderer API linting.
+description: Create, edit, and lint WeBWorK PG/PGML questions. Use for problem authoring, randomization, grading, HTML whitelist constraints, PGML rendering failures, or renderer API validation under the repository's WebWork guidance.
 ---
 
 # WebWork question authoring

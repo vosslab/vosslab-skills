@@ -1,6 +1,6 @@
 ---
 name: html-game-parallel-builder
-description: "Use when building a TypeScript browser game from modular `src/*.ts` files with parallel subagents to reduce wall-clock time. Layered on the `starter-repo-template/templates/typescript/` scaffold; this skill owns only the game overlay: workstreams, batched smoke testing, web-platform gotchas, single-file export, and GitHub Pages deploy. Immediate live target is `run_web_server.sh`; GitHub Pages and portable HTML export are post-show release paths. Delegates type design to `typescript-engineer`, manager dispatch to `delegate-manager-to-subagents`, and lane decisions to `parallel-plan`."
+description: "Build modular TypeScript browser games with parallel agents. Use for game workstreams, batched smoke tests, web-platform issues, local serving, single-file export, or GitHub Pages deployment on the starter TypeScript scaffold."
 ---
 
 # Web Game Parallel Build
@@ -118,32 +118,11 @@ naming and do not introduce new planning-phase names into code.
 
 ## Preassigned workstreams
 
-Use these defaults unless project requirements force a different
-split. Lane count, scope splits, and merges go through `parallel-plan`
+Use the A0-E ownership map in
+[`references/BATCH_DISPATCH.md`](references/BATCH_DISPATCH.md) unless
+project requirements force a different split. Read it before assigning
+files. Lane count, scope splits, and merges go through `parallel-plan`
 before Batch 1.
-
-- Workstream A0: Types and contracts
-  - Files: `src/types/*.ts`, `src/brands.ts`
-  - Owner: orchestrator (or a dedicated agent before Batch 1)
-  - Goal: cross-workstream contracts so all later batches can compile
-    in isolation.
-- Workstream A: Foundation and state
-  - Files: `src/constants.ts`, `src/characters.ts`, `src/game_state.ts`
-  - Goal: stable contracts and stage/state backbone.
-- Workstream B: UI shell and styling
-  - Files: `src/head.html`, `src/body.html`, `src/tail.html`,
-    `src/index.html`, `src/style.css`, `src/ui_rendering.ts`
-  - Goal: interaction shell, layout, and shared UI controls.
-- Workstream C: Core gameplay stage
-  - Files: `src/scene_stage.ts`, `src/data_generation.ts`
-  - Goal: core playable loop with contract-conformant data.
-- Workstream D: Advanced gameplay and outcomes
-  - Files: `src/lab_stage.ts`, `src/gel_rendering.ts`,
-    `src/case_board.ts`, `src/scoring.ts`, `src/educational.ts`
-  - Goal: analysis/review stages, scoring, and endgame flow.
-- Workstream E: Runtime utilities
-  - Files: `src/timer.ts`, `src/save_load.ts`, `src/init.ts`
-  - Goal: lifecycle bootstrap, persistence, timers.
 
 ## When to use
 
@@ -282,22 +261,10 @@ without them:
 ## Agent prompt template
 
 Use [`templates/agent_prompt_template.md`](templates/agent_prompt_template.md)
-for every coding subagent. The template adds these web-game-specific
-rules on top of the manager dispatch contract from
-`delegate-manager-to-subagents`:
-
-- Files are `.ts`. Use ES `import` / `export` for everything.
-- Imports are extensionless.
-- Import contract types from `src/types/*.ts` using
-  `import type { ... }`.
-- Do not redefine cross-module shapes locally.
-- Zero unchecked `as` casts (brand constructors and save-file type
-  guards excepted; see
-  `typescript-engineer/references/opaque-types.md`).
-- Run `npx tsc --noEmit -p tsconfig.json` before reporting done.
-
-For type-design help, the agent invokes `typescript-engineer` and
-follows its decision tree. Game-shape questions start at
+for every coding subagent. Read
+[`references/BATCH_DISPATCH.md`](references/BATCH_DISPATCH.md) before
+dispatch for the required prompt fields, evidence contract, and
+type-design pause-and-delegate procedure. Game-shape questions route to
 `typescript-engineer/references/game-type-patterns.md`.
 
 ## Subagent dispatch

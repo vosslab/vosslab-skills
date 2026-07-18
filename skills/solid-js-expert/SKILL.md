@@ -1,6 +1,6 @@
 ---
 name: solid-js-expert
-description: 'Design, build, debug, and review SolidJS applications and their full stack -- core reactivity (`createSignal`, `createMemo`, `createEffect`, `createResource`), stores, control-flow components (`<For>`, `<Show>`, `<Switch>`), Solid Router, SolidStart, and Solid Meta. Use whenever the user works with SolidJS, Solid Router, SolidStart, or Solid Meta: signals not updating, "don''t destructure props", `<For>` vs `<Index>`, `createStore` nested state, `useParams` / `action` / `createAsync` routing, `"use server"` server functions and data mutations, document head and SEO, or migrating React-shaped code to Solid''s run-once reactive model.'
+description: 'Design, build, debug, and review SolidJS and SolidStart applications. Use for Solid reactivity, signals, stores, components, control flow, routing, server functions, data mutations, Solid Meta, or migration from React-shaped patterns.'
 ---
 
 # SolidJS Expert

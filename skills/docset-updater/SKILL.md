@@ -1,6 +1,6 @@
 ---
 name: docset-updater
-description: "Refresh the whole repo doc set in one pass by invoking the per-doc skills in dependency order (`arch-docs`, `setup-install-usage-docs`, `readme-docs`, `related-projects-docs`, `news-release-docs`, `screenshot-docs`, `agents-md-fixer`), then audit any remaining `docs/` files those skills do not own. Use when the user wants all docs brought current at once, or the doc set as a whole is missing, drifted, or unaudited."
+description: "Refresh a repository's complete documentation set through the specialized documentation skills in dependency order, then audit unowned docs. Use for coordinated repo-wide documentation updates, missing docs, or broad documentation drift."
 ---
 
 # Docset refresh

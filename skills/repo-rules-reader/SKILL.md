@@ -1,10 +1,6 @@
 ---
 name: repo-rules-reader
-description: Read specified repo rule files (AGENTS.md, docs/REPO_STYLE.md, docs/PYTHON_STYLE.md,
-  docs/PYTEST_STYLE.md, docs/CLAUDE_HOOK_USAGE_GUIDE.md, docs/CHANGELOG.md) and answer
-  targeted repo-rule questions, with missing-file handling and explicit-path checks. For
-  docs/CHANGELOG.md, report only the latest dated entry. Use when a prompt asks for repo
-  instruction answers about code execution, pytest style, Claude hook usage, or recent changes.
+description: Read named repository rule files and answer targeted questions with explicit-path and missing-file checks. Use for `AGENTS.md`, code-execution rules, Python or pytest style, Claude hook guidance, or the latest changelog entry.
 ---
 
 # Read Repo Rules

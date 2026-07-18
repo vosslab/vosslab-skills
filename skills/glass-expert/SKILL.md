@@ -1,6 +1,6 @@
 ---
 name: glass-expert
-description: 'Design, implement, verify, and debug Apple Liquid Glass surfaces in SwiftUI on macOS 26+ and iOS 26: `.glassEffect`, `GlassEffectContainer`, `glassEffectID` morphing, `.interactive()`, tint, layer order, and backdrop sampling. Use when glass looks flat, gray, missing, or invisible, when a screenshot cannot prove the effect is live, when deciding which surfaces should be glass versus stable content, or when guaranteeing text contrast over glass (Reduce Transparency, Increase Contrast, vibrancy, scrims, WCAG ratios). Covers capture-path hazards (cacheDisplay / bitmapImageRepForCachingDisplay / ImageRenderer omit backdrop compositing; capture on screen with screencapture), differential proof via Reduce Transparency, expected appearance per backdrop, and a drop-in GlassSurface wrapper with accessibility fallbacks.'
+description: 'Design, implement, verify, and debug Apple Liquid Glass in SwiftUI on macOS 26+ and iOS 26. Use for `.glassEffect`, morphing, backdrop sampling, flat or invisible glass, on-screen capture proof, surface placement, and accessible contrast.'
 ---
 
 # Liquid Glass Expert

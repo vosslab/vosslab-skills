@@ -1,6 +1,6 @@
 ---
 name: skill-writing-guide
-description: "Guide for authoring Agent Skills (SKILL.md). Covers the open standard format, required frontmatter, directory layout, progressive disclosure, description writing, and best practices. Use when creating a new skill, improving an existing skill, or learning how skills work."
+description: "Author and improve Agent Skills following the open standard. Use for `SKILL.md` frontmatter, trigger descriptions, progressive disclosure, directories, scripts, references, assets, UI metadata, validation, or skill-design guidance."
 ---
 
 # Skill writing guide
@@ -99,6 +99,11 @@ Rules:
 - Put all trigger information in the description, not in the body. The body only loads after activation.
 - Stay under 1024 characters.
 
+This repository uses a stricter 250-character ceiling so its enabled skill set
+fits Codex's shared discovery context. Treat 250 as a hard maximum, not a target
+to fill. Shorter descriptions are preferable when they preserve capability,
+trigger terms, and an important boundary.
+
 Good:
 
 ```yaml
@@ -127,7 +132,8 @@ Skills use three-level loading to manage context efficiently:
 
 Key guidelines:
 
-- Keep SKILL.md body under 500 lines.
+- Keep the complete `SKILL.md` at or below 300 lines and 24,000 characters when
+  practical. This repository emits an advisory warning above either threshold.
 - Move detailed reference material to separate files in `references/`.
 - Reference those files from SKILL.md with clear guidance on when to read them.
 - For large reference files (100+ lines), include a table of contents at the top.
@@ -215,7 +221,8 @@ Before shipping a skill, verify:
 - [ ] `name` field matches directory name exactly.
 - [ ] `name` is lowercase, hyphens only, max 64 chars, no leading/trailing/consecutive hyphens.
 - [ ] `description` is non-empty, under 1024 characters, includes what and when.
-- [ ] SKILL.md body is under 500 lines.
+- [ ] Complete SKILL.md is at or below 300 lines and 24,000 characters,
+  or an advisory warning has a documented justification.
 - [ ] All referenced files exist and paths are relative from SKILL.md.
 - [ ] File references are one level deep (no nested chains).
 - [ ] Large reference files have a table of contents.
