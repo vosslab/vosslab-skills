@@ -2,6 +2,17 @@
 
 ### Behavior or Interface Changes
 
+- Refined `blueprint-plan-drafter` for ab initio planning: removed legacy and default compatibility
+  planning, favored clean redesigns for failed designs, grounded gate precision in real contracts
+  and evidence, replaced fixed command, capacity, and model-role requirements with repository-led
+  choices, made gates and decisions completable by managers, subagents, and matching dedicated
+  agent classes, added evidence-led method selection, removed arbitrary stabilization counts, and
+  replaced universal milestone and execution scaffolding with a small required core plus optional
+  sections shaped by the work. `stay-busy` now sits within active plan implementation when the
+  manager has no obvious next plan task. A follow-up audit aligned the quality references,
+  templates, and metadata with that flexible no-code contract, removed the redundant
+  `CAPACITY_AND_SIZING.md`, and consolidated durable naming guidance and the plan-section glossary
+  into `DEFINITIONS.md`.
 - Reworked `delegate-manager-to-subagents` so the approved plan defines tasks, sequencing, roles,
   verification, and acceptance. The shorter skill now supplies delegation practices, flexible
   briefs, evidence-rich handoffs, parallel dispatch, and independent review, with `pytest tests/`

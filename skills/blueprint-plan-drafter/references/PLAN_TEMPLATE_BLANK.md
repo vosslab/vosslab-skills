@@ -1,6 +1,6 @@
-<!-- Copy everything below the rule into your plan file and fill each field. Heading rules: PLAN_HEADINGS.md. Worked examples and reasoning: PLAN_TEMPLATE_EXAMPLE.md. Delete sections the archetype does not use. -->
+<!-- Copy the template below, fill its core, and keep the optional sections the plan needs. Heading rules: PLAN_HEADINGS.md. Archetype outlines: PLAN_TEMPLATE_EXAMPLE.md. -->
 
-# Plan:
+# Plan: <descriptive title>
 
 ## Context
 
@@ -9,6 +9,8 @@
 -
 
 ## Design philosophy
+
+- Evidence strategy for uncertain methods:
 
 ## Scope
 
@@ -24,7 +26,7 @@
 
 ### Mapping (milestones / workstreams -> components / patches)
 
-| Milestone / Workstream | Component | Expected patches |
+| Milestone / Workstream | Component | Review boundary |
 | --- | --- | --- |
 |  |  |  |
 
@@ -37,6 +39,7 @@
 ### Milestone:
 
 - Depends on:
+- Deliverables:
 - Workstreams:
 - Entry criteria:
 - Exit criteria:
@@ -46,10 +49,12 @@
 
 ### Workstream:
 
+- Goal:
 - Owner:
+- Work packages:
 - Needs:
 - Provides:
-- Expected patches:
+- Review boundary, when modifying the repository:
 
 ## Work packages
 
@@ -59,23 +64,16 @@
 - Touch points:
 - Depends on:
 - Acceptance criteria:
-- Verification commands:
+- Evidence or review, when useful:
 - Obvious follow-ons:
 
 ## Acceptance criteria and gates
 
 - Per-patch gate:
 - Integration gate:
-- Manual review gate:
+- Independent review gate, when useful:
 
 ## Test and verification strategy
-
-## Migration and compatibility policy
-
-- Additive rollout:
-- Backward compatibility:
-- Legacy deletion criteria:
-- Rollback strategy:
 
 ## Risk register
 
@@ -96,8 +94,11 @@
 ## Patch plan and reporting format
 
 - Patch 1:
-- Patch N: tests, migration, docs
+- Patch N: remaining repository-required work
 
 ## Open questions and decisions needed
 
--
+- Manager/subagent decision procedure:
+  - Decision owner or dedicated class:
+  - Evidence and decision rule:
+- Non-blocking follow-up:

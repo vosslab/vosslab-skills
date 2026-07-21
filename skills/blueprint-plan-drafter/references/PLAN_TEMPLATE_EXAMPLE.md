@@ -1,15 +1,13 @@
-# Plan Template Examples
+# Plan template outlines
 
-Annotated skeleton plus worked archetype examples, for learning the plan shape.
+Annotated skeleton plus archetype outlines for learning the plan shape.
 To start a real plan, copy the clean blank in `PLAN_TEMPLATE_BLANK.md`; that
 file is the pure form with no examples. This file teaches; that file is what you
 copy.
 For naming, casing, ordering, tier classification, and rejected variants,
 see `PLAN_HEADINGS.md` -- this file is the form, that file is the rules.
 
-For sizing and capacity ranges, see `CAPACITY_AND_SIZING.md`.
 For owner / agent-type choices, see `EXECUTION_RESOURCES.md`.
-For symbol-collision avoidance, see `NAMING_GUARDRAILS.md`.
 For terminology, see `DEFINITIONS.md`.
 
 Replace every `<...>` placeholder with concrete content. Delete sections that
@@ -17,9 +15,7 @@ do not apply rather than leaving them empty. Keep code samples inside fenced
 blocks so heading scanners do not pick up `#` lines from code.
 
 The skeleton below uses every Tier 1 (canonical core) heading plus the Tier 2
-sections most commonly needed. Three worked use-case examples follow the
-skeleton, showing how the same skeleton fills in differently for each plan
-archetype.
+sections most commonly needed. Three archetype outlines follow the skeleton.
 
 ---
 
@@ -37,6 +33,8 @@ archetype.
 ## Design philosophy
 
 `<Name this plan's own trade-off and the rejected alternative in 2-4 sentences. Cite the four core philosophies from docs/REPO_STYLE.md by name only when this plan actually leans on one; do not copy/paste them. Empty stub bodies are rejected.>`
+
+- Evidence strategy for uncertain methods: `<small experiment, comparison, or measurement used to choose>`
 
 ## Scope
 
@@ -64,26 +62,26 @@ blocked. -->
 
 ### Mapping (milestones / workstreams -> components / patches)
 
-This mapping table is for execution routing, not human review: it ties each
-milestone/workstream to the durable code component it touches and the expected
-patch count. The plain-language what/why overview lives in the separate
+This mapping table is for execution routing: it ties each
+milestone/workstream to the durable code component and natural review boundary. The
+plain-language what/why overview lives in the separate
 milestone summary table under `## Milestone plan`.
 
-| Milestone / Workstream | Component | Expected patches |
+| Milestone / Workstream | Component | Review boundary |
 | --- | --- | --- |
-| `<M1 / WS-A>` | `<component name>` | `<count, see CAPACITY_AND_SIZING.md>` |
+| `<M1 / WS-A>` | `<component name>` | `<natural review boundary>` |
 
 ## Milestone plan
 
 Lead with this at-a-glance milestone summary table, then give the detailed
-per-milestone subsections below it. This table is for human review: a reader
-should grasp the whole milestone arc from it alone. Keep the columns to plain
+per-milestone subsections below it. A reader should grasp the whole milestone
+arc from it alone. Keep the columns to plain
 what/why content only -- no workstream IDs, dependency IDs, or patch counts.
 That routing detail belongs to the separate milestone mapping table under
 `## Architecture boundaries and ownership` (`### Mapping (milestones /
 workstreams -> components / patches)`), which exists for execution, not review.
 
-Milestone summary table (human review):
+Milestone summary table:
 
 | M | Title | Summary | Goal |
 | --- | --- | --- | --- |
@@ -93,6 +91,7 @@ Milestone summary table (human review):
 ### Milestone `<N>`: `<title>`
 
 - Depends on: `<dependency IDs, or none>` -- `<short reason>`
+- Deliverables: `<files, behavior, decisions, or evidence produced>`
 - Workstreams: `<WS-A, WS-B, ...>` (IDs that can run in parallel)
 - Entry criteria: `<observable preconditions, or none>`
 - Exit criteria:
@@ -106,11 +105,13 @@ Milestone summary table (human review):
 
 ### Workstream `<id>`: `<title>`
 
+- Goal: `<workstream outcome>`
 - Owner: `<agent type from EXECUTION_RESOURCES.md>`
+- Work packages: `<owned work-package IDs>`
 - Interfaces:
   - Needs: `<inputs from other workstreams>`
   - Provides: `<outputs other workstreams consume>`
-- Expected patches: `<count and rough grouping; see CAPACITY_AND_SIZING.md>`
+- Review boundary, when modifying the repository: `<component or behavior boundary>`
 
 ## Work packages
 
@@ -121,8 +122,8 @@ Milestone summary table (human review):
 - Depends on: `<work-package IDs, or none>`
 - Acceptance criteria:
   - `<observable, independently verifiable check>`
-- Verification commands:
-  - `<exact command, e.g., source source_me.sh && pytest tests/test_foo.py>`
+- Evidence or review, when useful:
+  - `<repository-appropriate command, captured result, comparison, or independent review>`
 - Obvious follow-ons:
   - `<finish-the-obvious step the doer must complete before stopping>`
 
@@ -132,18 +133,11 @@ Milestone summary table (human review):
 
 - Per-patch gate: `<criterion>`
 - Integration gate: `<criterion>`
-- Manual review gate: `<criterion>`
+- Independent review gate, when useful: `<criterion>`
 
 ## Test and verification strategy
 
-`<unit / integration / regression / smoke gate plan, mapped to milestones. For small plans, replace this section with ## Verification (Tier 3 add-on) instead.>`
-
-## Migration and compatibility policy
-
-- Additive rollout: `<what ships first>`
-- Backward compatibility promises: `<scope and limits>`
-- Deletion criteria for legacy paths: `<conditions>`
-- Rollback strategy: `<steps>` (when risk is non-trivial)
+`<verification appropriate to the change and repository rules. For small plans, replace this section with ## Verification (Tier 3 add-on) instead.>`
 
 ## Risk register
 
@@ -166,13 +160,14 @@ Milestone summary table (human review):
 
 - Patch 1: `<component> <intent>`
 - Patch 2: `<component> <intent>`
-- Patch N: tests, migration, docs
-
-(Patch counts and cadence follow `CAPACITY_AND_SIZING.md`.)
+- Patch N: `<remaining repository-required work>`
 
 ## Open questions and decisions needed
 
-- `<question>` -- decision owner: `<name or agent type>`
+- Manager/subagent decision procedure:
+  - Decision owner or dedicated class: `<manager, subagent, or matching agent class>`
+  - Evidence and decision rule: `<evidence, comparison, or rule used to choose>`
+- Non-blocking follow-up: `<question or none>`
 
 (When the plan records meaningful settled decisions, add an optional
 `## Resolved decisions` section above this one. See `PLAN_HEADINGS.md` for
@@ -180,18 +175,15 @@ when to use that Tier 3 add-on.)
 
 ---
 
-# Use-case examples
+# Archetype outlines
 
-The skeleton above is the same for every plan; the three examples below show
-how it fills in differently for each plan archetype defined in
-`PLAN_HEADINGS.md`. Copy the example that fits and replace the placeholder
-content. Delete sections that do not apply for the archetype.
+The outlines below show the heading shape for each archetype defined in
+`PLAN_HEADINGS.md`.
 
 ## Example 1: Multi-workstream archetype
 
-Use when the plan has 2+ independent workstreams, multiple milestones, or a
-non-trivial migration / risk surface. All Tier 1 core sections plus the
-Tier 2 sections in the skeleton above.
+Use when coordination benefits from explicit workstreams, ownership boundaries, or milestone
+dependencies.
 
 Heading sequence used:
 
@@ -210,7 +202,6 @@ Heading sequence used:
 ## Work packages
 ## Acceptance criteria and gates
 ## Test and verification strategy
-## Migration and compatibility policy
 ## Risk register
 ## Rollout and release checklist
 ## Documentation close-out requirements
@@ -220,9 +211,8 @@ Heading sequence used:
 
 ## Example 2: Step-list / small archetype
 
-Use when the plan has 1 milestone or 1 workstream and edits a small file set.
-Drop most Tier 2 sections; use Tier 3 add-ons (`Approach`, `Files to modify`,
-`Verification`) in their place.
+Use when a direct sequence is enough to coordinate the work. Use Tier 3 add-ons (`Approach`,
+`Files to modify`, `Verification`) where useful.
 
 Heading sequence used:
 
@@ -268,6 +258,6 @@ Heading sequence used:
 ```
 
 The diagnostic archetype intentionally omits `Workstream breakdown`, `Work
-packages`, `Migration and compatibility policy`, `Rollout and release
+packages`, `Rollout and release
 checklist`, and `Patch plan and reporting format` because the deliverable is
 a finding document, not a code change.

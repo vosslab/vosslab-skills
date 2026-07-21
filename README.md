@@ -59,7 +59,7 @@ See [docs/INSTALL.md](docs/INSTALL.md) for local clone and individual skill impo
 A few representative skills from the collection:
 
 - `audit-code-reviewer`: Parallel multi-reviewer audit before merge or release.
-- `blueprint-plan-drafter`: Create forward-looking implementation plans from scratch.
+- `blueprint-plan-drafter`: Create forward-looking implementation plans without writing code.
 - `delegate-manager-to-subagents`: Manage execution of an approved plan through subagents.
 - `docset-updater`: Audit and refresh the full repo doc set against REPO_STYLE.md.
 - `readme-docs`: Standardize README.md to match repo conventions.
