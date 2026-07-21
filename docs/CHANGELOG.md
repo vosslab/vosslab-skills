@@ -1,3 +1,17 @@
+## 2026-07-21
+
+### Behavior or Interface Changes
+
+- Reworked `delegate-manager-to-subagents` so the approved plan defines tasks, sequencing, roles,
+  verification, and acceptance. The shorter skill now supplies delegation practices, flexible
+  briefs, evidence-rich handoffs, parallel dispatch, and independent review, with `pytest tests/`
+  as the fallback for pytest repositories when the plan gives no test command.
+- Refocused `repo-rules-reader` on loading a fixed repository-template rule set for subsequent
+  coding, review, or delegation: `AGENTS.md`, `docs/*_STYLE.md`, Claude hook guidance, and the
+  latest changelog entry. Its concise receipt covers the files read, Python execution, fragile
+  pytests, file search, and the most recent change. After loading, the reader continues the task or
+  remains ready for one to be provided.
+
 ## 2026-07-18
 
 ### Behavior or Interface Changes

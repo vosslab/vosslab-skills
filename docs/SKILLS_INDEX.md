@@ -12,7 +12,7 @@ Total skills: 30
 - [blueprint-plan-drafter/SKILL.md](../skills/blueprint-plan-drafter/SKILL.md): Create forward-looking implementation plans without writing code.
 - [bptools-writer-expert/SKILL.md](../skills/bptools-writer-expert/SKILL.md): Create, edit, and validate biology-problems bptools Python question generators and YAML content.
 - [color-accessibility-expert/SKILL.md](../skills/color-accessibility-expert/SKILL.md): Detect and fix WCAG color-contrast failures in source files and images using measured, hue-preserving replacements.
-- [delegate-manager-to-subagents/SKILL.md](../skills/delegate-manager-to-subagents/SKILL.md): Use only when the user has an approved plan AND wants the main agent to manage execution through subagents instead of editing files directly.
+- [delegate-manager-to-subagents/SKILL.md](../skills/delegate-manager-to-subagents/SKILL.md): Manage execution of an approved plan through subagents.
 - [docset-updater/SKILL.md](../skills/docset-updater/SKILL.md): Refresh a repository's complete documentation set through the specialized documentation skills in dependency order, then audit unowned docs.
 - [gas-town-workflow/SKILL.md](../skills/gas-town-workflow/SKILL.md): Coordinate agents with Gas Town role mapping and convoy-based task decomposition.
 - [geometry-expert/SKILL.md](../skills/geometry-expert/SKILL.md): Design, implement, debug, and review computational geometry algorithms and spatial data structures.
@@ -25,7 +25,7 @@ Total skills: 30
 - [pyside6-engineer/SKILL.md](../skills/pyside6-engineer/SKILL.md): Design, implement, refactor, and review PySide6 desktop applications.
 - [readme-docs/SKILL.md](../skills/readme-docs/SKILL.md): Create or refresh a distinctive, evidence-backed `README.md` landing page for newcomers.
 - [related-projects-docs/SKILL.md](../skills/related-projects-docs/SKILL.md): Create or refresh `docs/RELATED_PROJECTS.md` using repository evidence and bounded web research.
-- [repo-rules-reader/SKILL.md](../skills/repo-rules-reader/SKILL.md): Read named repository rule files and answer targeted questions with explicit-path and missing-file checks.
+- [repo-rules-reader/SKILL.md](../skills/repo-rules-reader/SKILL.md): Load required repo rules before coding, reviewing, or delegating.
 - [screenshot-docs/SKILL.md](../skills/screenshot-docs/SKILL.md): Capture static screenshots or short GIF demonstrations of a GUI, CLI, or web app and embed them in README or docs.
 - [setup-install-usage-docs/SKILL.md](../skills/setup-install-usage-docs/SKILL.md): Create or refresh `docs/INSTALL.md` and `docs/USAGE.md` from repository evidence.
 - [skill-writing-guide/SKILL.md](../skills/skill-writing-guide/SKILL.md): Author and improve Agent Skills following the open standard.

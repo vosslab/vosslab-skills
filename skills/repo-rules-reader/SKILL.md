@@ -1,40 +1,27 @@
 ---
 name: repo-rules-reader
-description: Read named repository rule files and answer targeted questions with explicit-path and missing-file checks. Use for `AGENTS.md`, code-execution rules, Python or pytest style, Claude hook guidance, or the latest changelog entry.
+description: Load required repo rules before coding, reviewing, or delegating. Reads `AGENTS.md`, `docs/*_STYLE.md`, Claude hook guidance, and the latest changelog entry; use for rule orientation or targeted questions.
 ---
 
-# Read Repo Rules
+# Read repo rules
 
-## Overview
-Answer key repo-rule questions with enough context to be useful, while preserving missing-file stop
-conditions.
+## Purpose
+
+Load the repository's current instructions into working context for subsequent work.
 
 ## Workflow
-1. Verify each requested file path exists using explicit paths only, such as `ls <paths>` or
-   `test -f`. If any requested file is missing, output `MISSING: <path>` and stop.
-2. Read only the requested repo rule files. For the default repo-rule output, read:
-   AGENTS.md, docs/REPO_STYLE.md, docs/PYTHON_STYLE.md, docs/PYTEST_STYLE.md,
-   docs/CLAUDE_HOOK_USAGE_GUIDE.md, and docs/CHANGELOG.md.
-3. Read normal rule files with the Read tool, using `file_path` and optional `offset`/`limit`
-   (e.g. `Read(file_path=..., limit=200)`). Do not use `sed -n` or `head`/`tail` on file paths;
-   the Claude hook denies those forms.
-4. For docs/CHANGELOG.md, identify the latest dated entry and read only that entry section, from
-   its heading to the line before the next dated heading or the end of file.
-5. Answer the prompt's exact questions when provided. When the prompt asks for the default
-   repo-rule output, answer these six questions:
-   - AGENTS.md: how should agents run repo-local Python code? Include
-     `source source_me.sh && python3` when the file says so.
-   - docs/REPO_STYLE.md: what repo-wide workflow or file organization rule matters for the
-     current task?
-   - docs/PYTHON_STYLE.md: what Python implementation rule matters for the current task?
-   - docs/PYTEST_STYLE.md: what is considered a fragile pytest?
-   - docs/CLAUDE_HOOK_USAGE_GUIDE.md: how should Claude search or grep files?
-   - docs/CHANGELOG.md: what is the most recent change?
-6. Ground each answer in the file content. Keep answers concise unless more context is needed to
-   avoid ambiguity.
-7. Use the prompt's requested order and prefixes when provided, such as `AGENTS: ...`,
-   `REPO_STYLE: ...`, `PYTHON_STYLE: ...`, `PYTEST_STYLE: ...`,
-   `CLAUDE_HOOK_USAGE_GUIDE: ...`, and `CHANGELOG: ...`.
-8. When the prompt requests exact lines, exact prefixes, or no extra text, follow that format
-   exactly and do not add commentary.
-9. Use explicit requested paths for listings; avoid recursive listings such as `ls -R`.
+
+1. Read these required paths:
+   - `AGENTS.md`
+   - `docs/*_STYLE.md`
+   - `docs/CLAUDE_HOOK_USAGE_GUIDE.md`
+   - the latest dated entry in `docs/CHANGELOG.md`
+2. Retain and apply the rules throughout subsequent work.
+3. Give a concise read receipt:
+   - Name the files read.
+   - From `AGENTS.md`, include `source source_me.sh && python3` when specified.
+   - From `docs/PYTEST_STYLE.md`, state what is considered a fragile pytest.
+   - From `docs/CLAUDE_HOOK_USAGE_GUIDE.md`, state how Claude should search or grep files.
+   - From `docs/CHANGELOG.md`, state the most recent change.
+4. Answer any exact questions or requested format from the file content.
+5. Continue the task with the rules applied, or be ready for a task to be provided.
