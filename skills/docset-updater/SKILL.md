@@ -20,7 +20,7 @@ owners run together:
 
 - `arch-docs` -> `docs/CODE_ARCHITECTURE.md`, `docs/FILE_STRUCTURE.md`
 - `setup-install-usage-docs` -> `docs/USAGE.md`, `docs/INSTALL.md`
-- `related-projects-docs` -> `docs/RELATED_PROJECTS.md`
+- `see-also-docs` -> `docs/RELATED_PROJECTS.md`
 - `news-release-docs` -> `docs/RELEASE_HISTORY.md`, `docs/NEWS.md`
 - `readme-docs` -> `README.md` (sole owner; links the core docs by convention,
   reserves the screenshot block)
@@ -36,20 +36,20 @@ Dispatch by dependency edges, not a fixed barrier, so each owner starts as early
 its inputs allow:
 
 - Start immediately, no dependencies (one concurrent batch): `arch-docs`,
-  `setup-install-usage-docs`, `related-projects-docs`, `news-release-docs`,
+  `setup-install-usage-docs`, `see-also-docs`, `news-release-docs`,
   `readme-docs`, and the remaining-docs audit (step 3). Each owns separate files, so
   they carry no write conflict. `readme-docs` links the core docs
   (`CODE_ARCHITECTURE`, `FILE_STRUCTURE`, `INSTALL`, `USAGE`) by convention, so it runs
   alongside their producers; the final Markdown link check confirms the files exist.
 - `screenshot-docs` <- `readme-docs`: start as soon as `readme-docs` has reserved the
   screenshot block. It does not depend on the other producers, so it runs concurrently
-  with the still-running batch (including the slow `related-projects-docs`) instead of
+  with the still-running batch (including the slow `see-also-docs`) instead of
   waiting behind it.
 - `agents-md-fixer` <- the doc producers and audit outputs: start once the `docs/*.md`
   files it links exist. It points `AGENTS.md` at created paths, not prose, so it waits
   for file existence only, not content quality.
 
-`related-projects-docs` is the likely long pole: its bounded web discovery (search,
+`see-also-docs` is the likely long pole: its bounded web discovery (search,
 fetch, and package/repo metadata with rate-limit sleeps) is network-bound and may
 dominate wall time. The dependency-edge model matters because it lets the
 `readme-docs` -> `screenshot-docs` path finish in parallel rather than stall behind
@@ -70,11 +70,11 @@ guaranteed a README link in the same run; link it on a later pass when it is pre
    - List `docs/` contents and root docs (`AGENTS.md`, `README.md`, `LICENSE`).
 2. Dispatch the per-doc skills by dependency edges
    - Start immediately in one concurrent batch (no dependencies): `arch-docs`,
-     `setup-install-usage-docs`, `related-projects-docs`, `news-release-docs`,
+     `setup-install-usage-docs`, `see-also-docs`, `news-release-docs`,
      `readme-docs`, and the remaining-docs audit (step 3).
    - `screenshot-docs` <- `readme-docs`: dispatch as soon as `readme-docs` has reserved
      the screenshot block, concurrently with the still-running producers (do not wait
-     for the slow `related-projects-docs`).
+     for the slow `see-also-docs`).
    - `agents-md-fixer` <- doc producers and audit outputs: dispatch once the `docs/*.md`
      files it links exist.
    - `screenshot-docs` runs after README prose exists. When no app window or display is
@@ -157,6 +157,6 @@ Dispatch every dependency-free task as one parallel batch, then release
 `screenshot-docs` and `agents-md-fixer` the moment their edges in "Owned-doc routing"
 resolve rather than waiting on the whole batch (this keeps the fast
 `readme-docs` -> `screenshot-docs` path off the critical path of the network-bound
-`related-projects-docs`). Give each task one owner, one clear outcome, and one
+`see-also-docs`). Give each task one owner, one clear outcome, and one
 verification step. See `docs/REPO_STYLE.md#core-philosophies` ("Be efficient with
 time", "Atomic task decomposition", "Prompt positively") and the `parallel-plan` skill.

@@ -1,15 +1,20 @@
 ---
-name: related-projects-docs
+name: see-also-docs
 description: "Create or refresh `docs/RELATED_PROJECTS.md` using repository evidence and bounded web research. Use to map upstreams, dependencies, integrations, sibling projects, prior art, or alternatives with sources and confidence levels."
 ---
 
-# Related projects docs
+# See also docs
 
 ## Overview
 
 Create or refresh `docs/RELATED_PROJECTS.md`: a sourced map of projects related to
 this repo (upstreams and forks, dependencies, integration targets, companion repos,
 same-author siblings, same-domain alternatives, and prior art).
+
+Mental model: this is the repo's "See also" section, in the sense a Wikipedia
+article uses it. It points a reader to the surrounding landscape -- upstreams,
+alternatives, competitors, prior art, and related tools -- without implying the
+entries are only code repositories.
 
 This skill is evidence-first, not search-result-first. Web discovery finds candidates;
 repo evidence and reciprocal links decide whether a candidate belongs and at what

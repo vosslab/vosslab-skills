@@ -1,3 +1,15 @@
+## 2026-07-23
+
+### Behavior or Interface Changes
+
+- Renamed the skill `related-projects-docs` to `see-also-docs` to end frequent
+  Codex skill-sort collisions with `repo-rules-reader` (both began with `re`).
+  The new name follows Wikipedia's "See also" section and better fits the broad
+  scope (upstreams, dependencies, integrations, competitors, alternatives, prior
+  art), not just repositories. Updated the `docset-updater` and `README.md`
+  references and regenerated the plugin manifests and `docs/SKILLS_INDEX.md`. The
+  output doc `docs/RELATED_PROJECTS.md` is unchanged.
+
 ## 2026-07-21
 
 ### Behavior or Interface Changes

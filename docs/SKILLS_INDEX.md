@@ -24,9 +24,9 @@ Total skills: 30
 - [pdf-guide/SKILL.md](../skills/pdf-guide/SKILL.md): Use when tasks involve reading, creating, or reviewing PDF files where rendering and layout matter; prefer visual checks by rendering pages (Poppler) and use Python tools such as `reportlab`, `pdfplumber`, and `pypdf` for generation and extraction.
 - [pyside6-engineer/SKILL.md](../skills/pyside6-engineer/SKILL.md): Design, implement, refactor, and review PySide6 desktop applications.
 - [readme-docs/SKILL.md](../skills/readme-docs/SKILL.md): Create or refresh a distinctive, evidence-backed `README.md` landing page for newcomers.
-- [related-projects-docs/SKILL.md](../skills/related-projects-docs/SKILL.md): Create or refresh `docs/RELATED_PROJECTS.md` using repository evidence and bounded web research.
 - [repo-rules-reader/SKILL.md](../skills/repo-rules-reader/SKILL.md): Load required repo rules before coding, reviewing, or delegating.
 - [screenshot-docs/SKILL.md](../skills/screenshot-docs/SKILL.md): Capture static screenshots or short GIF demonstrations of a GUI, CLI, or web app and embed them in README or docs.
+- [see-also-docs/SKILL.md](../skills/see-also-docs/SKILL.md): Create or refresh `docs/RELATED_PROJECTS.md` using repository evidence and bounded web research.
 - [setup-install-usage-docs/SKILL.md](../skills/setup-install-usage-docs/SKILL.md): Create or refresh `docs/INSTALL.md` and `docs/USAGE.md` from repository evidence.
 - [skill-writing-guide/SKILL.md](../skills/skill-writing-guide/SKILL.md): Author and improve Agent Skills following the open standard.
 - [solid-js-expert/SKILL.md](../skills/solid-js-expert/SKILL.md): Design, build, debug, and review SolidJS and SolidStart applications.

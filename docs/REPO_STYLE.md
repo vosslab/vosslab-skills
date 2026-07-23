@@ -6,13 +6,17 @@ Repo-wide conventions for this project and related repos.
 
 Core principles guide work in this repo. Cite them by name when making judgment calls. This file is the canonical home for all core principles; sibling docs and `AGENTS.md` should cross-reference, not restate.
 
-- **Long-term over short-term.** Accept a small cost now to avoid larger costs later. Prefer the durable fix over the quick patch, even when the durable fix takes more effort today.
-- **Fix the design, not the symptom.** When something behaves wrong, fix the design that allowed the problem. Do not add fallbacks, special cases, or broad try/except blocks just to hide the symptom.
 - **Focus on important issues.** Make sure we are worrying about the correct things, and not bikeshedding i.e. spending excessive time discussing trivial issues while neglecting more important ones.
-- **Prompt positively.** Tell the model what to do, not what to avoid. Small LMs can confuse negative prompting with positive instructions, which can lead to poor code and seriously flawed results.     Prefer direct instructions like "use explicit key access" over negative ones, like "do not use dict.get()"
+- **Use the scientific method.** Treat plans as hypotheses, not conclusions. Use small experiments, comparisons, and measurements to reduce uncertainty before locking in a design. Let evidence refine the plan as work proceeds.
+- **Fix the design, not the symptom.** When something behaves wrong, fix the design that allowed the problem. Do not add fallbacks, special cases, or broad try/except blocks just to hide the symptom.
+- **Long-term over short-term.** Accept a small cost now to avoid larger costs later. Prefer the durable fix over the quick patch, even when the durable fix takes more effort today.
+- **Design for adaptability.** Favor systems that can evolve as requirements and understanding change. Keep responsibilities clear and components replaceable so the software remains useful without repeated rewrites.
+- **Dream big.** Build on the ambition already present. Pursue the strongest, most durable, and most complete version of the work, then turn that ambition into practical next steps.
+- **Perfect is the enemy of good.** Prefer a good solution delivered promptly when further refinement would not materially improve the outcome. Spend additional effort where it changes correctness, durability, or user value.
 - **Atomic task decomposition.** Break hard problems into the smallest independently completable tasks. Each task should have one owner, one clear outcome, and one verification step.
-- **Be efficient with time.** Subagents and tokens are cheap, but wall time is not. Optimize for implementation time by spreading atomic tasks in parallel.
+- **Prompt positively.** Tell the model what to do, not what to avoid. Small LMs can confuse negative prompting with positive instructions, which can lead to poor code and seriously flawed results.     Prefer direct instructions like "use explicit key access" over negative ones, like "do not use dict.get()"
 - **Fresh subagent per task.** Give each independent task to a new subagent with a self-contained prompt. Reusing a subagent across tasks carries stale context, encourages drift, and weakens independent judgment. When a subagent is performing suboptimal, kill and replace it rather than negotiating.
+- **Be efficient with time.** Subagents and tokens are cheap; wall time is not. Use parallel atomic tasks when the work is independent and doing so shortens implementation time.
 - **Finish the obvious.** Continue while the next safe step is defined by the plan, implied by the task, or required to verify the work. Obvious follow-on work is part of the task, not a bonus. Stop only at a real blocker, risky action, or change to the user's requested outcome.
 
 ## Repository structure
