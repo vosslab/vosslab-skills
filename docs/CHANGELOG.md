@@ -47,6 +47,9 @@
 - Restored recognized entity-escaped EPUB container markup before narrow HTML
   cleanup and removed entity-escaped image tags while preserving escaped URLs,
   generic types, and literal markup inside code blocks.
+- Standardized canonical book filenames on actual source metadata: Camel_Case
+  title words joined by underscores, meaningful internal hyphens preserved, and
+  the edition publication year appended as `-YYYY.md`.
 
 ### Developer Tests and Notes
 

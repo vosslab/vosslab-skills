@@ -75,11 +75,18 @@ one canonical result:
    missing code, operands, table rows, captions, bibliography entries, or prose at the
    correct location in the primary document. Prefer the cleaner primary wording when both
    candidates preserve the same meaning.
-4. Name the final file from the book title, without source suffixes such as `_from_pdf`
-   or `_from_epub`. Keep raw candidates, reports, and removal sidecars in a temporary or
-   review location outside the delivery directory.
-5. Deliver one `.md` file for the title. Do not concatenate whole candidates, duplicate
-   chapters, or leave source-specific Markdown files beside the canonical result.
+4. Name the final file from the actual title and publication year recorded in the
+   book metadata or title/copyright pages. Convert title words to Camel_Case joined
+   by underscores, preserve meaningful internal hyphens, normalize the basename to
+   ASCII, and append `-YYYY.md`. For example, use
+   `User_Experience_Methods_and_Tools_in_Human-Computer_Interaction-2025.md`.
+   Use the edition's publication year, not the conversion, download, or access year;
+   inspect the source instead of guessing when the year is unclear. Do not add source
+   suffixes such as `_from_pdf` or `_from_epub`. Keep raw candidates, reports, and
+   removal sidecars in a temporary or review location outside the delivery directory.
+5. Deliver one title-and-year `.md` file for the title. Do not concatenate whole
+   candidates, duplicate chapters, or leave source-specific Markdown files beside the
+   canonical result.
 
 If comparison finds no meaningful omission, the evidence-backed primary candidate is the
 merged result; record both sources in its metadata or work record. Multiple inputs improve
