@@ -33,7 +33,6 @@ source source_me.sh && python3 tools/<script>.py
 | `tools/build_skills_index.py` | Regenerate `docs/SKILLS_INDEX.md` from `skills/**/SKILL.md` | `--check` exits nonzero if the index is stale |
 | `tools/build_plugin_manifest.py` | Regenerate the platform plugin manifests (Claude, Codex, Cursor, OpenCode) | `-c` / `--check` exits nonzero if manifests are stale |
 | `tools/list_loaded_skills.py` | List loaded skills across repo, personal, plugin cache, and harness | `-n` / `--names-only`, `-c NAME` / `--check NAME`, `-x` / `--collisions` |
-| `tools/pdftomd.py` | Convert a PDF to text-first Markdown | `-o` output, `-p` pages, `--ocr` / `--no-ocr` |
 
 Generated files (`docs/SKILLS_INDEX.md`, the `.claude-plugin/` manifests, and
 sibling platform manifests) are produced by these tools. Edit the source
@@ -54,10 +53,17 @@ source source_me.sh && python3 tools/build_skills_index.py --check
 source source_me.sh && python3 tools/build_plugin_manifest.py --check
 ```
 
-Convert a PDF to Markdown, writing `paper.md` next to the input:
+Convert a technical or scientific PDF book to agent-ready Markdown with the
+`book-pdf-to-markdown` skill. Its scripts support a measured sample before a
+whole-book conversion:
 
 ```bash
-source source_me.sh && python3 tools/pdftomd.py paper.pdf
+source source_me.sh && python3 skills/book-pdf-to-markdown/scripts/pdf_to_markdown.py \
+  paper.pdf --pages 0,1,25-30 --measure --json-report /tmp/paper.measure.json
+source source_me.sh && python3 skills/book-pdf-to-markdown/scripts/pdf_to_markdown.py \
+  paper.pdf -o /tmp/paper.raw.md
+source source_me.sh && python3 skills/book-pdf-to-markdown/scripts/clean_markdown.py \
+  -i /tmp/paper.raw.md -o /tmp/paper.clean.md
 ```
 
 ## Run the tests
@@ -86,5 +92,3 @@ pytest tests/test_skills_index_in_sync.py
 
 - [ ] Confirm the exact set of platform manifest output paths emitted by
   `tools/build_plugin_manifest.py` against the directories tracked in git.
-- [ ] Confirm `tools/pdftomd.py` runtime dependency: it imports `fitz`
-  (listed in `pip_extras.txt`) and may require an OCR backend for `--ocr`.

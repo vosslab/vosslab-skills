@@ -4,12 +4,13 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 30
+Total skills: 31
 
 - [agents-md-fixer/SKILL.md](../skills/agents-md-fixer/SKILL.md): Trim bloated `AGENTS.md` files into concise pointers to canonical `docs/*.md` rules.
 - [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from repository evidence.
 - [audit-code-reviewer/SKILL.md](../skills/audit-code-reviewer/SKILL.md): Parallel multi-reviewer audit launched before merge or release; not for single-pass review.
 - [blueprint-plan-drafter/SKILL.md](../skills/blueprint-plan-drafter/SKILL.md): Create forward-looking implementation plans without writing code.
+- [book-pdf-to-markdown/SKILL.md](../skills/book-pdf-to-markdown/SKILL.md): Convert technical/scientific PDF books into page-free Markdown for AI agents.
 - [bptools-writer-expert/SKILL.md](../skills/bptools-writer-expert/SKILL.md): Create, edit, and validate biology-problems bptools Python question generators and YAML content.
 - [color-accessibility-expert/SKILL.md](../skills/color-accessibility-expert/SKILL.md): Detect and fix WCAG color-contrast failures in source files and images using measured, hue-preserving replacements.
 - [delegate-manager-to-subagents/SKILL.md](../skills/delegate-manager-to-subagents/SKILL.md): Manage execution of an approved plan through subagents.

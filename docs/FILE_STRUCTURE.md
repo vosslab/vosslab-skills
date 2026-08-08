@@ -24,6 +24,7 @@ vosslab-skills/
 +- README.md                   project overview and quick start
 +- REPO_TYPE                   repo-type marker for style propagation
 +- VERSION                     repo version (mirrored in plugin manifests)
++- pip_requirements.txt        standard Python dependencies
 +- pip_requirements-dev.txt    developer Python dependencies
 +- pip_extras.txt              extra Python dependencies
 `- source_me.sh                shell entry: exports PYTHONUNBUFFERED, etc.
@@ -53,7 +54,6 @@ Per-role markdown files used by orchestration skills. Current roles:
   rerun: [tools/build_skills_index.py](../tools/build_skills_index.py),
   [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py),
   [tools/list_loaded_skills.py](../tools/list_loaded_skills.py),
-  [tools/pdftomd.py](../tools/pdftomd.py),
   [tools/sync_typescript_package_pins.py](../tools/sync_typescript_package_pins.py),
   [tools/plan_headings.sh](../tools/plan_headings.sh).
 - [devel/](../devel/) holds developer-only helpers:

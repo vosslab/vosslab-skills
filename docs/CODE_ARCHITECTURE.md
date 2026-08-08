@@ -39,8 +39,6 @@ Version is tracked in [VERSION](../VERSION) and mirrored in the manifests.
     folders and [agents/](../agents/).
   - [tools/list_loaded_skills.py](../tools/list_loaded_skills.py) walks the
     repo and `~/.claude/` to report which skills are loaded by Claude Code.
-  - [tools/pdftomd.py](../tools/pdftomd.py) converts PDF files to text-first
-    Markdown.
   - [tools/sync_typescript_package_pins.py](../tools/sync_typescript_package_pins.py)
     bumps `package.json` dependency pins from the npm registry.
   - [tools/plan_headings.sh](../tools/plan_headings.sh) reports plan files that
@@ -160,8 +158,7 @@ See [docs/PLAYWRIGHT_USAGE.md](PLAYWRIGHT_USAGE.md).
 
 ## Known gaps
 
-- No `pyproject.toml`; the tracked dependency manifests are
-  [pip_requirements-dev.txt](../pip_requirements-dev.txt) and
-  [pip_extras.txt](../pip_extras.txt). Confirm whether a primary
-  `pip_requirements.txt` and a `Brewfile` are intentionally omitted per
-  [docs/REPO_STYLE.md](REPO_STYLE.md#dependency-manifests).
+- No `pyproject.toml`; Python dependencies are declared at the repository root
+  in [pip_requirements.txt](../pip_requirements.txt),
+  [pip_requirements-dev.txt](../pip_requirements-dev.txt), and
+  [pip_extras.txt](../pip_extras.txt).

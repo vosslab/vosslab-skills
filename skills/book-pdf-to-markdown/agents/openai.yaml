@@ -1,0 +1,4 @@
+interface:
+  display_name: "Book PDF to Markdown"
+  short_description: "Evidence-based technical book conversion"
+  default_prompt: "Use $book-pdf-to-markdown to measure, convert, and verify this technical PDF book for agent reference."

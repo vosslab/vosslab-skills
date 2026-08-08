@@ -1,3 +1,35 @@
+## 2026-08-08
+
+### Additions and New Features
+
+- Added the `book-pdf-to-markdown` skill for technical and scientific books.
+  Its measured, structured-first PDF extractor and standalone Markdown cleaner
+  produce page-free agent reference text while preserving headings, tables,
+  equations, code, captions, references, and visible scientific symbols.
+
+### Behavior or Interface Changes
+
+- Replaced the root `tools/pdftomd.py` helper with the skill-local,
+  clearly named `scripts/pdf_to_markdown.py`. The image-free cleanup policy
+  drops image syntax, image-derived label text, and placeholders while keeping
+  nearby figure and table captions as prose.
+- Made book conversion evidence-led and manager-flexible: bounded page or line
+  samples, measure-only reports, JSON comparison, audit sidecars, pass toggles,
+  and a small set of measured cleanup overrides support experiments without a
+  configuration framework. Structured extraction remains preferred unless a
+  same-sample OCR comparison improves semantic evidence without losing
+  structure.
+- Made recurring-heading promotion operational and conservative: an unmarked,
+  full-line, off-edge occurrence inherits a heading level only when the same
+  template is already marked consistently elsewhere.
+
+### Developer Tests and Notes
+
+- Added fast deterministic behavior tests for semantic OCR fallback decisions,
+  conservative page-seam joining, image/caption handling, technical HTML and
+  formula cleanup, ASCII-safe scientific symbols, and corroborated recurring
+  heading promotion.
+
 ## 2026-07-23
 
 ### Behavior or Interface Changes
