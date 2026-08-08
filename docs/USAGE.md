@@ -53,17 +53,26 @@ source source_me.sh && python3 tools/build_skills_index.py --check
 source source_me.sh && python3 tools/build_plugin_manifest.py --check
 ```
 
-Convert a technical or scientific PDF book to agent-ready Markdown with the
-`book-pdf-to-markdown` skill. Its scripts support a measured sample before a
-whole-book conversion:
+Convert a technical or scientific book to agent-ready Markdown with the
+`book-to-markdown` skill. It selects a source-aware conversion tool and supports
+a measured PDF sample before a whole-book conversion:
 
 ```bash
-source source_me.sh && python3 skills/book-pdf-to-markdown/scripts/pdf_to_markdown.py \
+source source_me.sh && python3 skills/book-to-markdown/scripts/pdf_to_markdown.py \
   paper.pdf --pages 0,1,25-30 --measure --json-report /tmp/paper.measure.json
-source source_me.sh && python3 skills/book-pdf-to-markdown/scripts/pdf_to_markdown.py \
+source source_me.sh && python3 skills/book-to-markdown/scripts/pdf_to_markdown.py \
   paper.pdf -o /tmp/paper.raw.md
-source source_me.sh && python3 skills/book-pdf-to-markdown/scripts/clean_markdown.py \
+source source_me.sh && python3 skills/book-to-markdown/scripts/clean_markdown.py \
   -i /tmp/paper.raw.md -o /tmp/paper.clean.md
+```
+
+For EPUB, HTML, DOCX, or ODT, use Pandoc first; existing Markdown or text can
+go directly to the cleaner:
+
+```bash
+pandoc book.epub --from epub --to gfm --wrap=none -o /tmp/book.raw.md
+source source_me.sh && python3 skills/book-to-markdown/scripts/clean_markdown.py \
+  -i /tmp/book.raw.md -o /tmp/book.clean.md
 ```
 
 ## Run the tests

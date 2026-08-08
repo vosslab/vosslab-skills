@@ -1,9 +1,9 @@
 ---
-name: book-pdf-to-markdown
-description: "Convert technical/scientific PDF books into page-free Markdown for AI agents. Preserve equations, code, tables, captions, references, and headings; remove page furniture and extraction debris. Use for extraction, cleanup, calibration, or repair."
+name: book-to-markdown
+description: "Convert technical/scientific books from PDF, EPUB, HTML, DOCX, ODT, Markdown, or text into page-free Markdown for AI agents. Select the simplest structure-preserving tool; use for book extraction, cleanup, calibration, or repair."
 ---
 
-# Book PDF to Markdown
+# Book to Markdown
 
 Produce clean, greppable reference text for agents, not a visually faithful facsimile.
 Prioritize stable headings, semantic chunks, plain-text math, tables, captions, and
@@ -16,11 +16,11 @@ measure -> hypothesize -> sample -> compare -> whole book -> verify
 ```
 
 The target project need not be the skill directory. Before invoking a script,
-set `book_pdf_skill_dir` to the absolute directory containing this loaded
+set `book_skill_dir` to the absolute directory containing this loaded
 `SKILL.md`, then invoke scripts through that variable:
 
 ```bash
-book_pdf_skill_dir="/absolute/path/to/book-pdf-to-markdown"
+book_skill_dir="/absolute/path/to/book-to-markdown"
 ```
 
 The defaults are confident starting points for technical and scientific books
@@ -30,13 +30,41 @@ books and support material from technical UI and vision books on 2026-08-08. The
 are not a promise for narrative prose, poetry, non-English, image-only, or
 code-first manuals: measure a representative sample before trusting them.
 
+## Choose the source tool
+
+Use the simplest installed tool that preserves the source's existing structure,
+then pass its Markdown through `clean_markdown.py`:
+
+- For PDF, start with `pdf_to_markdown.py`. Its page-aware pass can classify
+  running heads and page numbers, repair page seams, and measure when OCR is
+  justified.
+- For EPUB, start with Pandoc. EPUB already contains structured HTML, so unpacking
+  it through a PDF-oriented or OCR path discards useful semantics.
+
+  ```bash
+  pandoc book.epub --from epub --to gfm --wrap=none -o /tmp/book.raw.md
+  python3 "$book_skill_dir/scripts/clean_markdown.py" \
+    -i /tmp/book.raw.md -o /tmp/book.clean.md
+  ```
+
+- For existing Markdown or plain text, run `clean_markdown.py` directly.
+- For HTML, DOCX, ODT, or another structured format Pandoc reads well, use Pandoc
+  first and the cleaner second.
+- Use OCR only for a PDF sample whose measured evidence shows that normal text
+  extraction failed. Do not OCR EPUB or other structured text sources.
+
+If the preferred tool fails or visibly damages headings, code, equations, or tables,
+compare a small representative sample with another installed converter such as
+`ebook-convert`. Choose from semantic preservation and readable structure, not word
+count or a universal tool preference.
+
 ## Start with evidence
 
 1. Pick a 6-30 page spread containing front matter, normal body, a table or figure,
    and end matter when present. Use zero-based PDF page numbers.
 
    ```bash
-   python3 "$book_pdf_skill_dir/scripts/pdf_to_markdown.py" book.pdf --pages 0,1,25-30,150-155 \
+   python3 "$book_skill_dir/scripts/pdf_to_markdown.py" book.pdf --pages 0,1,25-30,150-155 \
      --measure --json-report /tmp/book.extract.measure.json
    ```
 
@@ -49,7 +77,7 @@ code-first manuals: measure a representative sample before trusting them.
    pages for headings, word retention, table rows, and readable paragraph boundaries.
 
    ```bash
-   python3 "$book_pdf_skill_dir/scripts/pdf_to_markdown.py" book.pdf --pages 0,1,25-30,150-155 \
+   python3 "$book_skill_dir/scripts/pdf_to_markdown.py" book.pdf --pages 0,1,25-30,150-155 \
      --ocr --measure --json-report /tmp/book.ocr.measure.json
    ```
 
@@ -69,16 +97,20 @@ state is discarded after page-aware cleanup. The PDF extractor takes the PDF as 
 positional input; the standalone cleaner requires `-i` or `--input`.
 
 ```bash
-python3 "$book_pdf_skill_dir/scripts/pdf_to_markdown.py" book.pdf -o /tmp/book.raw.md \
+python3 "$book_skill_dir/scripts/pdf_to_markdown.py" book.pdf -o /tmp/book.raw.md \
   --json-report /tmp/book.extract.json
-python3 "$book_pdf_skill_dir/scripts/clean_markdown.py" -i /tmp/book.raw.md -o /tmp/book.clean.md
+python3 "$book_skill_dir/scripts/clean_markdown.py" -i /tmp/book.raw.md -o /tmp/book.clean.md
 ```
 
 `pdf_to_markdown.py` writes a small YAML metadata block, selects extraction, removes
 edge page numbers and classified running heads, synthesizes only safe dotted-number
 headings, and joins conservative page seams. A recurring off-edge full-line template
 inherits a heading level only when the same template is already marked consistently
-elsewhere; recurrence or capitalization alone never promotes it. It writes
+elsewhere; recurrence or capitalization alone never promotes it. Fenced code and
+code-shaped fragments are excluded from running-head classification and rewriting. A
+consistently marked majority of repeated real section headings outranks edge position.
+One-word all-caps section labels and command-flag fragments are retained as technical
+content rather than inferred to be page furniture. It writes
 `<output>.removed.md` and,
 for a normal conversion, `<output>.report.json`. Its compact terminal report and JSON
 show the chosen pass, quality, headings, table rows, seams, and bounded samples of
@@ -87,7 +119,10 @@ running-head decisions and removals.
 `clean_markdown.py` repairs flat Markdown or text, so it is also useful for a
 pre-existing conversion. Its image pass deliberately drops image syntax, HTML image
 forms, placeholders, and picture-text blocks while preserving nearby figure and table
-captions as prose. It preserves recognized non-image HTML semantics; guards
+captions as prose. It repairs single-line pseudo-fences before protected-span analysis,
+normalizes EPUB non-breaking-space indentation before code-sensitive reflow,
+keeps HTML line breaks inside pipe cells on one table row, preserves recognized
+non-image HTML semantics, guards
 de-hyphenation and reflow; maps technical symbols to ASCII or entities; and removes
 only caption-backed figure-label floods. Without `-o`, it writes
 `<input>.clean.md`, `<input>.clean.md.report.json`, and
@@ -97,9 +132,9 @@ only caption-backed figure-label floods. Without `-o`, it writes
 The cleanup pass accepts a one-based inclusive line sample:
 
 ```bash
-python3 "$book_pdf_skill_dir/scripts/clean_markdown.py" -i /tmp/book.raw.md --lines 1200:1800 \
+python3 "$book_skill_dir/scripts/clean_markdown.py" -i /tmp/book.raw.md --lines 1200:1800 \
   --measure --json-report /tmp/book.clean.measure.json
-python3 "$book_pdf_skill_dir/scripts/clean_markdown.py" -i /tmp/book.raw.md --lines 1200:1800 \
+python3 "$book_skill_dir/scripts/clean_markdown.py" -i /tmp/book.raw.md --lines 1200:1800 \
   --skip figure-debris -o /tmp/book.no_debris.md
 ```
 

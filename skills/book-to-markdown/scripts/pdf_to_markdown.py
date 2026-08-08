@@ -386,13 +386,53 @@ def is_markdown_pipe_table_row(line: str) -> bool:
 
 
 #============================================
+def fenced_code_line_indexes(lines: list[str]) -> set[int]:
+	"""Return indexes belonging to fenced Markdown code blocks."""
+	indexes: set[int] = set()
+	active_marker: str | None = None
+	for line_index, line in enumerate(lines):
+		fence_match = re.match(r"^\s*(`{3,}|~{3,})", line)
+		if fence_match is not None:
+			indexes.add(line_index)
+			marker = fence_match.group(1)[0]
+			if active_marker is None:
+				active_marker = marker
+			elif marker == active_marker:
+				active_marker = None
+			continue
+		if active_marker is not None:
+			indexes.add(line_index)
+	return indexes
+
+
+#============================================
+def is_code_template(template: str) -> bool:
+	"""Return whether a recurring fragment has strong code syntax."""
+	if not any(character.isalpha() for character in template):
+		return True
+	if re.fullmatch(r"\[[A-Za-z0-9_.-]+\]", template) is not None:
+		return True
+	return re.search(r"[{};]|::|->|=>|\s=\s|--[A-Za-z]", template) is not None
+
+
+#============================================
+def is_single_word_section_template(template: str) -> bool:
+	"""Return whether a template can be an all-caps section label."""
+	return template.isalpha() and template.isupper()
+
+
+#============================================
 def running_head_decisions(results: list[PageResult], defaults: dict[str, int | float]) -> list[RunningHeadDecision]:
 	"""Classify recurrent short edge templates using the measured three-way rule."""
 	occurrences: dict[str, list[tuple[int, int, int, int | None]]] = collections.defaultdict(list)
 	for result in results:
-		lines = [line.strip() for line in result.text.splitlines() if line.strip()]
+		original_lines = result.text.splitlines()
+		code_indexes = fenced_code_line_indexes(original_lines)
+		lines = [(source_index, line.strip()) for source_index, line in enumerate(original_lines) if line.strip()]
 		last_index = len(lines) - 1
-		for line_index, line in enumerate(lines):
+		for line_index, (source_index, line) in enumerate(lines):
+			if source_index in code_indexes:
+				continue
 			if is_markdown_pipe_table_row(line):
 				continue
 			plain_line = re.sub(r"^#{1,6}\s+", "", line).strip("*_` ")
@@ -405,6 +445,8 @@ def running_head_decisions(results: list[PageResult], defaults: dict[str, int | 
 			templates = [canonical_template(line), *uppercase_edge_templates(line)]
 			for template in dict.fromkeys(templates):
 				if not template or len(template) > int(defaults["max_length"]):
+					continue
+				if is_code_template(template):
 					continue
 				if "START OF PICTURE TEXT" in template.upper() or "END OF PICTURE TEXT" in template.upper():
 					continue
@@ -420,11 +462,23 @@ def running_head_decisions(results: list[PageResult], defaults: dict[str, int | 
 		if count < int(defaults["min_recurrence"]):
 			continue
 		heading_levels = {level for _page, _distance, _line, level in rows if level is not None}
+		heading_count = sum(1 for _page, _distance, _line, level in rows if level is not None)
+		heading_fraction = heading_count / count
 		# A real heading can be fused with page furniture on one page. Recurrence at
-		# the measured edge boundary is stronger evidence than that single marker.
+		# the measured edge boundary is stronger evidence than a single marker, but
+		# not than a consistently marked majority of real section headings.
 		if edge_fraction >= float(defaults["edge_fraction"]):
-			disposition = "delete"
-			heading_level = None
+			if len(heading_levels) == 1 and heading_fraction >= 0.5:
+				disposition = "promote"
+				heading_level = next(iter(heading_levels))
+			elif is_single_word_section_template(template):
+				if len(heading_levels) != 1:
+					continue
+				disposition = "promote"
+				heading_level = next(iter(heading_levels))
+			else:
+				disposition = "delete"
+				heading_level = None
 		elif len(heading_levels) == 1:
 			disposition = "promote"
 			heading_level = next(iter(heading_levels))
@@ -481,13 +535,15 @@ def remove_running_heads(results: list[PageResult], removals: list[Removal], def
 	]
 	for result in results:
 		original_lines = result.text.splitlines()
+		code_indexes = fenced_code_line_indexes(original_lines)
 		nonblank_indexes = [index for index, line in enumerate(original_lines) if line.strip()]
 		edge_indexes = set(nonblank_indexes[:int(defaults["edge_distance"]) + 1])
 		edge_indexes.update(nonblank_indexes[-int(defaults["edge_distance"]) - 1:])
 		new_lines: list[str] = []
 		for line_number, line in enumerate(original_lines, start=1):
 			remaining_line = line
-			if line_number - 1 in edge_indexes and not is_markdown_pipe_table_row(remaining_line):
+			line_index = line_number - 1
+			if line_index in edge_indexes and line_index not in code_indexes and not is_markdown_pipe_table_row(remaining_line):
 				for decision, pattern in patterns:
 					match = pattern.search(remaining_line)
 					if match is None:
@@ -496,7 +552,7 @@ def remove_running_heads(results: list[PageResult], removals: list[Removal], def
 					remaining_line = (remaining_line[:match.start()] + remaining_line[match.end():]).strip(" *_`")
 					removals.append(Removal("running_head", result.page_number + 1, line_number, removed_text,
 						f"recurrent edge template: {decision.template}"))
-			if line_number - 1 not in edge_indexes and not is_markdown_pipe_table_row(remaining_line):
+			if line_index not in edge_indexes and line_index not in code_indexes and not is_markdown_pipe_table_row(remaining_line):
 				for decision, pattern in promotion_patterns:
 					if re.match(r"^\s*#{1,6}\s+", remaining_line) or pattern.fullmatch(remaining_line) is None:
 						continue

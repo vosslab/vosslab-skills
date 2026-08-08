@@ -6,7 +6,7 @@ import sys
 
 
 REPOSITORY_ROOT = pathlib.Path(__file__).resolve().parents[1]
-MODULE_PATH = REPOSITORY_ROOT / "skills/book-pdf-to-markdown/scripts/clean_markdown.py"
+MODULE_PATH = REPOSITORY_ROOT / "skills/book-to-markdown/scripts/clean_markdown.py"
 SPEC = importlib.util.spec_from_file_location("clean_markdown_test_module", MODULE_PATH)
 MODULE = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = MODULE
@@ -31,3 +31,25 @@ def test_cleanup_keeps_distinct_scientific_symbol_meaning() -> None:
 	"""Greek variants and operators remain readable in ASCII-safe output."""
 	cleaned, _removals, _metrics = MODULE.clean_text("\u03f5 \u03d1 \u2209 \u00bc\n", {"figure-debris", "reflow"}, 5, 15)
 	assert cleaned == "&epsiv; &thetasym; &notin; &frac14;"
+
+
+def test_cleanup_repairs_single_line_fenced_payload() -> None:
+	"""A one-line pseudo-fence cannot protect the rest of the document."""
+	input_text = "before\n``` payload ```\nafter <b>visible</b>\n"
+	cleaned, _removals, _metrics = MODULE.clean_text(input_text, {"figure-debris", "reflow"}, 5, 15)
+	assert "` payload `" in cleaned
+	assert "after visible" in cleaned
+
+
+def test_cleanup_replaces_table_break_without_splitting_row() -> None:
+	"""A br tag inside a pipe cell stays on one Markdown table row."""
+	input_text = "| Value | Meaning |\n| --- | --- |\n| u8<br>i32 | numeric types |\n"
+	cleaned, _removals, _metrics = MODULE.clean_text(input_text, {"figure-debris", "reflow"}, 5, 15)
+	assert "| u8 / i32 | numeric types |" in cleaned
+
+
+def test_cleanup_preserves_epub_code_indented_with_nonbreaking_spaces() -> None:
+	"""EPUB indentation is normalized before code-sensitive reflow."""
+	input_text = "Example:\n\n\u00a0\u00a0\u00a0\u00a0fn main() {\n\u00a0\u00a0\u00a0\u00a0    println!(\"hi\");\n"
+	cleaned, _removals, _metrics = MODULE.clean_text(input_text, {"figure-debris"}, 5, 15)
+	assert "\n\n    fn main() {\n        println!(\"hi\");" in cleaned

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Book to Markdown"
+  short_description: "Convert technical books to clean Markdown"
+  default_prompt: "Use $book-to-markdown to select the simplest source tool, then convert and verify this technical book as agent-ready Markdown."

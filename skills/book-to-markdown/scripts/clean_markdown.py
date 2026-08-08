@@ -149,6 +149,36 @@ def record(removals: list[Removal], pass_name: str, reason: str, text: str, star
 
 
 #============================================
+def repair_single_line_fences(text: str, removals: list[Removal]) -> str:
+	"""Convert one-line fenced payloads into valid inline code."""
+	output: list[str] = []
+	pattern = re.compile(r"^(\s*)(`{3,}|~{3,})\s+(.+?)\s+\2\s*$")
+	for line_number, line in enumerate(text.splitlines(), start=1):
+		match = pattern.fullmatch(line)
+		if match is None:
+			output.append(line)
+			continue
+		content = match.group(3)
+		backtick_runs = [len(item) for item in re.findall(r"`+", content)]
+		marker = "`" * (max(backtick_runs, default=0) + 1)
+		replacement = f"{match.group(1)}{marker} {content} {marker}"
+		record(removals, "markdown", "single-line fence converted to inline code",
+			line, line_number, line_number)
+		output.append(replacement)
+	cleaned = "\n".join(output)
+	return cleaned
+
+
+#============================================
+def is_markdown_pipe_table_row(line: str) -> bool:
+	"""Return whether a line has Markdown pipe-table row structure."""
+	stripped_line = line.strip()
+	if "|" not in stripped_line:
+		return False
+	return stripped_line.startswith("|") or stripped_line.endswith("|") or stripped_line.count("|") >= 2
+
+
+#============================================
 def protected_spans(text: str) -> list[tuple[int, int]]:
 	"""Return verbatim front matter, code, and quote spans for destructive passes."""
 	lines = text.splitlines(keepends=True)
@@ -392,7 +422,12 @@ def clean_html(text: str, removals: list[Removal]) -> str:
 		def br_replace(match: re.Match[str]) -> str:
 			line = chunk.count("\n", 0, match.start()) + 1
 			record(removals, "html", "recognized br tag stripped", match.group(0), line, line)
-			return "\n"
+			line_start = chunk.rfind("\n", 0, match.start()) + 1
+			line_end = chunk.find("\n", match.end())
+			line_end = len(chunk) if line_end == -1 else line_end
+			source_line = chunk[line_start:line_end]
+			replacement = " / " if is_markdown_pipe_table_row(source_line) else "\n"
+			return replacement
 		chunk = re.sub(r"<br\b[^<>\n]*/?\s*>", br_replace, chunk, flags=re.IGNORECASE)
 		# Escaping the full malformed/unknown construct keeps every source character
 		# visible.  A lone comparison '<' has no closing delimiter and stays literal.
@@ -630,10 +665,14 @@ def symbol_findings(text: str) -> list[dict[str, object]]:
 def clean_text(text: str, skipped: set[str], min_lines: int, caption_window: int) -> tuple[str, list[Removal], dict[str, object]]:
 	"""Run enabled passes and return output, audit records, and measurements."""
 	removals: list[Removal] = []
+	text = repair_single_line_fences(text, removals)
 	metrics = measure_text(text, min_lines, caption_window)
 	metrics["before_lines"] = len(text.splitlines())
 	metrics["before_characters"] = len(text)
 	metrics["symbol_findings"] = symbol_findings(text)
+	# EPUB HTML commonly uses non-breaking spaces to indent code. Normalize them
+	# before protected-span detection so reflow treats that indentation as code.
+	text = text.replace("\N{NO-BREAK SPACE}", " ")
 	if "html" not in skipped:
 		text = clean_html(text, removals)
 	if "dehyphenate" not in skipped:

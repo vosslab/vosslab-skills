@@ -2,13 +2,31 @@
 
 ### Additions and New Features
 
-- Added the `book-pdf-to-markdown` skill for technical and scientific books.
+- Added the `book-to-markdown` skill for technical and scientific books.
   Its measured, structured-first PDF extractor and standalone Markdown cleaner
   produce page-free agent reference text while preserving headings, tables,
   equations, code, captions, references, and visible scientific symbols.
 
 ### Behavior or Interface Changes
 
+- Renamed `book-pdf-to-markdown` to `book-to-markdown` so the skill name
+  reflects its PDF, EPUB, HTML, DOCX, ODT, Markdown, and text inputs.
+- Added source-aware book conversion guidance: use the page-aware extractor for
+  PDFs, Pandoc first for EPUB and other structured formats, and OCR only when a
+  measured PDF sample shows that normal extraction failed. A bounded comparison
+  with another installed converter remains available for malformed sources.
+- Prevented recurring-head cleanup from deleting or promoting fenced code and
+  code-shaped fragments. Code-book conversions now keep repeated Rust braces,
+  TOML section labels, and program output as content rather than page furniture.
+- Kept repeated real section headings when a consistent heading level marks at
+  least half their occurrences, even when those headings recur near page edges.
+- Repaired one-line pseudo-fences before Markdown protection and converted HTML
+  breaks inside pipe cells to plain separators, preventing a malformed extracted
+  code fragment from swallowing the remainder of a book or splitting table rows.
+- Normalized EPUB non-breaking-space indentation before reflow so code blocks
+  remain structurally protected.
+- Preserved recurring one-word CLI section labels and command-flag output instead
+  of deleting `NAME`, `SYNOPSIS`, or `--help` examples as running heads.
 - Replaced the root `tools/pdftomd.py` helper with the skill-local,
   clearly named `scripts/pdf_to_markdown.py`. The image-free cleanup policy
   drops image syntax, image-derived label text, and placeholders while keeping
@@ -25,6 +43,12 @@
 
 ### Developer Tests and Notes
 
+- Added deterministic running-head regression checks for fenced Rust code and
+  code-shaped TOML section labels, plus repeated edge section headings, after a
+  whole-book Rust conversion exposed destructive false cleanup decisions.
+- Added cleaner regressions for a same-line fenced payload and an HTML break in
+  a Markdown table cell, plus EPUB code indentation.
+- Added running-head regressions for recurring CLI section labels and help output.
 - Added fast deterministic behavior tests for semantic OCR fallback decisions,
   conservative page-seam joining, image/caption handling, technical HTML and
   formula cleanup, ASCII-safe scientific symbols, and corroborated recurring

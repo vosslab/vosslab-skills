@@ -118,7 +118,7 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `arch-docs` | compliant | (unchanged) | Clean `-docs` suffix, unique leading token. |
 | `audit-code-reviewer` | compliant | review-code-changes | First-2 "audit code" reads as the activity; user-confirmed acceptable. |
 | `blueprint-plan-drafter` | accepted-rename | planning-manager / manager-make-new-plan | Verb-first; first-2 "blueprint plan" carries the artifact + domain; `manager-` lead retired. |
-| `book-pdf-to-markdown` | compliant | (new) | Rejected the obvious `pdf-book-to-markdown`: rule 2 (first-3-character prefix uniqueness) fails because `pdf` is already taken by `pdf-guide`. `boo` is unique, verified with `tools/list_loaded_skills.py --check`. |
+| `book-to-markdown` | accepted-rename | book-pdf-to-markdown | The broader name matches its PDF, EPUB, HTML, DOCX, ODT, Markdown, and text inputs. `boo` remains unique, verified with `tools/list_loaded_skills.py --check`. |
 | `bptools-writer-expert` | accepted-rename | bptools-writer | Standardized suffix to `-expert`; `bpt` 3-char prefix unique; `writer` kept mid-name for discoverability. |
 | `vision-expert` | accepted-rename | computer-vision-expert | Domain-noun-first; `vis` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `delegate-manager-to-subagents` | accepted-rename | execution-manager / manager-driven-execution | Verb-first; first-2 "delegate manager"; "subagents" keyword in token 4 for searchability. |
@@ -140,7 +140,7 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `unit-test-starter` | compliant | (unchanged) | Unique leading token, `-starter` suffix. |
 | `webwork-writer-expert` | accepted-rename | webwork-writer | Standardized suffix to `-expert`; `web` 3-char prefix unique; `writer` kept mid-name for discoverability. |
 
-Counts (25 active skills): 17 compliant or borderline-no-change, 7
+Counts (25 active skills): 16 compliant or borderline-no-change, 8
 accepted-rename, 1 deprecated (`old-` prefix). The post-rename canonical
 record matches the output of
 `tools/list_loaded_skills.py --names-only` on the repo. Two additional
