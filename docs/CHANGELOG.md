@@ -49,7 +49,10 @@
   generic types, and literal markup inside code blocks.
 - Standardized canonical book filenames on actual source metadata: Camel_Case
   title words joined by underscores, meaningful internal hyphens preserved, and
-  the edition publication year appended as `-YYYY.md`.
+  the edition publication year appended as `-YYYY.md`; bibliographic subtitles
+  are included when they materially distinguish subject scope. Complete filenames
+  are capped at 90 characters using word-boundary shortening that retains important
+  scope terms and avoids truncation collisions.
 
 ### Developer Tests and Notes
 

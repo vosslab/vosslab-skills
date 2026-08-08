@@ -76,10 +76,19 @@ one canonical result:
    correct location in the primary document. Prefer the cleaner primary wording when both
    candidates preserve the same meaning.
 4. Name the final file from the actual title and publication year recorded in the
-   book metadata or title/copyright pages. Convert title words to Camel_Case joined
-   by underscores, preserve meaningful internal hyphens, normalize the basename to
-   ASCII, and append `-YYYY.md`. For example, use
+   book metadata or title/copyright pages. Include a bibliographic subtitle when it
+   materially distinguishes the book's scope, such as Rust from Rust and
+   WebAssembly. Convert title words to Camel_Case joined by underscores, preserve
+   meaningful internal hyphens, normalize the basename to ASCII, and append
+   `-YYYY.md`. For example, use
    `User_Experience_Methods_and_Tools_in_Human-Computer_Interaction-2025.md`.
+   Limit the complete filename, including `-YYYY.md`, to 90 characters. Reserve
+   eight characters for that suffix and shorten an overlong title slug at a word
+   boundary. Remove trailing underscores or hyphens, and retain the title words
+   that best distinguish the book's subject; do not blindly discard a scope term
+   such as `WebAssembly` merely because it appears late in a subtitle. Resolve a
+   truncation collision with the shortest metadata-derived distinguishing phrase
+   that keeps the filename within the same limit.
    Use the edition's publication year, not the conversion, download, or access year;
    inspect the source instead of guessing when the year is unclear. Do not add source
    suffixes such as `_from_pdf` or `_from_epub`. Keep raw candidates, reports, and
