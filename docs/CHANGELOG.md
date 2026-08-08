@@ -40,6 +40,13 @@
 - Made recurring-heading promotion operational and conservative: an unmarked,
   full-line, off-edge occurrence inherits a heading level only when the same
   template is already marked consistently elsewhere.
+- Made the book title the final-output boundary: multiple PDF, EPUB, or other
+  copies now act as corroborating sources for one canonical Markdown file, with
+  secondary-only technical content repaired in place and source-specific
+  candidates kept outside the delivery directory.
+- Restored recognized entity-escaped EPUB container markup before narrow HTML
+  cleanup and removed entity-escaped image tags while preserving escaped URLs,
+  generic types, and literal markup inside code blocks.
 
 ### Developer Tests and Notes
 
@@ -49,6 +56,8 @@
 - Added cleaner regressions for a same-line fenced payload and an HTML break in
   a Markdown table cell, plus EPUB code indentation.
 - Added running-head regressions for recurring CLI section labels and help output.
+- Added a cleaner regression for entity-escaped EPUB containers and images,
+  including preservation checks for code-like angle text and fenced examples.
 - Added fast deterministic behavior tests for semantic OCR fallback decisions,
   conservative page-seam joining, image/caption handling, technical HTML and
   formula cleanup, ASCII-safe scientific symbols, and corroborated recurring

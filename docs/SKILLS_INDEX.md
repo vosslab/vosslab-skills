@@ -10,7 +10,7 @@ Total skills: 31
 - [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from repository evidence.
 - [audit-code-reviewer/SKILL.md](../skills/audit-code-reviewer/SKILL.md): Parallel multi-reviewer audit launched before merge or release; not for single-pass review.
 - [blueprint-plan-drafter/SKILL.md](../skills/blueprint-plan-drafter/SKILL.md): Create forward-looking implementation plans without writing code.
-- [book-to-markdown/SKILL.md](../skills/book-to-markdown/SKILL.md): Convert technical/scientific books from PDF, EPUB, HTML, DOCX, ODT, Markdown, or text into page-free Markdown for AI agents.
+- [book-to-markdown/SKILL.md](../skills/book-to-markdown/SKILL.md): Convert technical/scientific books from PDF, EPUB, HTML, DOCX, ODT, Markdown, or text into one page-free Markdown file per title.
 - [bptools-writer-expert/SKILL.md](../skills/bptools-writer-expert/SKILL.md): Create, edit, and validate biology-problems bptools Python question generators and YAML content.
 - [color-accessibility-expert/SKILL.md](../skills/color-accessibility-expert/SKILL.md): Detect and fix WCAG color-contrast failures in source files and images using measured, hue-preserving replacements.
 - [delegate-manager-to-subagents/SKILL.md](../skills/delegate-manager-to-subagents/SKILL.md): Manage execution of an approved plan through subagents.

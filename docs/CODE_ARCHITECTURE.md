@@ -97,44 +97,6 @@ Indexing flow (maintainer side):
    refreshes the Claude Code, Codex, Cursor, and OpenCode manifests.
 4. The change is recorded in [docs/CHANGELOG.md](CHANGELOG.md).
 
-## Testing and verification
-
-The fast-lane test suite lives in [tests/](../tests/) and is run with
-`pytest tests/`. Active gates include:
-
-- [tests/test_pyflakes_code_lint.py](../tests/test_pyflakes_code_lint.py)
-  (static analysis)
-- [tests/test_ascii_compliance.py](../tests/test_ascii_compliance.py)
-  (ASCII / ISO-8859-1 only)
-- [tests/test_indentation.py](../tests/test_indentation.py)
-  (tabs in Python)
-- [tests/test_whitespace.py](../tests/test_whitespace.py)
-- [tests/test_shebangs.py](../tests/test_shebangs.py)
-- [tests/test_init_files.py](../tests/test_init_files.py)
-  (minimal `__init__.py` rule)
-- [tests/test_import_dot.py](../tests/test_import_dot.py),
-  [tests/test_import_star.py](../tests/test_import_star.py),
-  [tests/test_import_requirements.py](../tests/test_import_requirements.py)
-- [tests/test_function_typing.py](../tests/test_function_typing.py)
-  (type-hint enforcement)
-- [tests/test_test_naming_conventions.py](../tests/test_test_naming_conventions.py),
-  [tests/test_pytest_hygiene.py](../tests/test_pytest_hygiene.py)
-- [tests/test_bandit_security.py](../tests/test_bandit_security.py)
-- Skill and manifest gates:
-  [tests/test_skill_frontmatter.py](../tests/test_skill_frontmatter.py),
-  [tests/test_skill_internal_links.py](../tests/test_skill_internal_links.py),
-  [tests/test_skill_prefix_uniqueness.py](../tests/test_skill_prefix_uniqueness.py),
-  [tests/test_skills_index_in_sync.py](../tests/test_skills_index_in_sync.py),
-  [tests/test_plugin_manifest_drift.py](../tests/test_plugin_manifest_drift.py),
-  [tests/test_codex_yaml_skill_parse.py](../tests/test_codex_yaml_skill_parse.py),
-  [tests/test_expert_skill_parity.py](../tests/test_expert_skill_parity.py)
-- Markdown and link gates:
-  [tests/test_markdown_links.py](../tests/test_markdown_links.py),
-  [tests/test_no_local_only_markdown_links.py](../tests/test_no_local_only_markdown_links.py),
-  [tests/test_relative_paths.py](../tests/test_relative_paths.py),
-  [tests/test_reserved_leading_tokens.py](../tests/test_reserved_leading_tokens.py),
-  [tests/test_readme_first_paragraph.py](../tests/test_readme_first_paragraph.py)
-
 Browser-driven Playwright tests live under
 [tests/playwright/](../tests/playwright/) and are excluded from `pytest tests/`.
 See [docs/PLAYWRIGHT_USAGE.md](PLAYWRIGHT_USAGE.md).

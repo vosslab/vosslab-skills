@@ -53,3 +53,22 @@ def test_cleanup_preserves_epub_code_indented_with_nonbreaking_spaces() -> None:
 	input_text = "Example:\n\n\u00a0\u00a0\u00a0\u00a0fn main() {\n\u00a0\u00a0\u00a0\u00a0    println!(\"hi\");\n"
 	cleaned, _removals, _metrics = MODULE.clean_text(input_text, {"figure-debris"}, 5, 15)
 	assert "\n\n    fn main() {\n        println!(\"hi\");" in cleaned
+
+
+def test_cleanup_handles_entity_escaped_epub_markup() -> None:
+	"""Escaped EPUB containers and images are removed without changing code-like angles."""
+	input_text = (
+		"&lt;div id=&quot;chapter&quot;&gt;\nReadable Thing<T> text\n&lt;/div&gt;\n"
+		"&lt;img src=&quot;figure.png&quot; /&gt;\n"
+		"Vec&lt;T&gt; &lt;https://example.com&gt;\n"
+		"```html\n&lt;div&gt;literal example&lt;/div&gt;\n```\n"
+	)
+	cleaned, removals, _metrics = MODULE.clean_text(
+		input_text, {"figure-debris", "reflow", "ascii"}, 5, 15,
+	)
+	assert "Readable Thing&lt;T&gt; text" in cleaned
+	assert "&lt;div id=" not in cleaned
+	assert "figure.png" not in cleaned
+	assert "Vec&lt;T&gt; &lt;https://example.com&gt;" in cleaned
+	assert "&lt;div&gt;literal example&lt;/div&gt;" in cleaned
+	assert any(item.pass_name == "images" for item in removals)

@@ -29,6 +29,10 @@ PASS_NAMES = (
 	"ascii",
 )
 INLINE_TAGS = {"p", "div", "span", "b", "i", "em", "strong", "u", "s", "small", "font"}
+RESTORABLE_ESCAPED_TAGS = INLINE_TAGS | {
+	"br", "table", "tr", "th", "td", "math", "mrow", "mi", "mn", "mo", "mtext",
+	"mfrac", "msup", "msub", "svg", "text", "tspan", "sup", "sub",
+}
 
 # Corpus-derived safe folds and named entities.  The dictionary is intentionally
 # explicit: its edits are reviewable policy, while unknown codepoints use a
@@ -283,7 +287,11 @@ def remove_images(text: str, removals: list[Removal]) -> str:
 			index += 1
 		return "".join(output)
 	text = transform_unprotected(text, remove_picture_text)
-	patterns = (r"!\[[^\]]*\]\([^\n)]*\)", r"<img\b[^>]*>")
+	patterns = (
+		r"!\[[^\]]*\]\([^\n)]*\)",
+		r"<img\b[^>]*>",
+		r"&lt;img\b[^\n]*?/?&gt;",
+	)
 	def remove_chunk(chunk: str) -> str:
 		for pattern in patterns:
 			def replace(match: re.Match[str]) -> str:
@@ -392,6 +400,16 @@ def convert_sup_sub(text: str, removals: list[Removal]) -> str:
 
 
 #============================================
+def restore_escaped_known_markup(text: str) -> str:
+	"""Restore recognized entity-escaped tags outside verbatim Markdown spans."""
+	tag_names = "|".join(sorted(RESTORABLE_ESCAPED_TAGS))
+	pattern = re.compile(rf"&lt;/?(?:{tag_names})\b[^\n]*?&gt;", re.IGNORECASE)
+	def restore_chunk(chunk: str) -> str:
+		return pattern.sub(lambda match: html.unescape(match.group(0)), chunk)
+	return transform_unprotected(text, restore_chunk)
+
+
+#============================================
 def clean_html(text: str, removals: list[Removal]) -> str:
 	"""Convert complete allowlisted markup and escape every other angle form."""
 	def clean_chunk(chunk: str) -> str:
@@ -419,6 +437,18 @@ def clean_html(text: str, removals: list[Removal]) -> str:
 		pair_pattern = rf"<({pair_tags})\b[^<>\n]*>([^<>]*)</\1\s*>"
 		while re.search(pair_pattern, chunk, flags=re.IGNORECASE):
 			chunk = re.sub(pair_pattern, pair_replace, chunk, flags=re.IGNORECASE)
+		def standalone_replace(match: re.Match[str]) -> str:
+			tag = match.group(1).lower()
+			line = chunk.count("\n", 0, match.start()) + 1
+			record(removals, "html", f"recognized {tag} tag stripped", match.group(0), line, line)
+			return "\n" if tag in {"p", "div"} else ""
+		# A recognized container can enclose code-like angle forms that deliberately
+		# prevent pair matching. Strip its standalone markers outside protected spans;
+		# the later unknown-angle escape retains the enclosed technical expression.
+		chunk = re.sub(
+			rf"</?({pair_tags})\b[^<>\n]*>", standalone_replace, chunk,
+			flags=re.IGNORECASE,
+		)
 		def br_replace(match: re.Match[str]) -> str:
 			line = chunk.count("\n", 0, match.start()) + 1
 			record(removals, "html", "recognized br tag stripped", match.group(0), line, line)
@@ -674,6 +704,7 @@ def clean_text(text: str, skipped: set[str], min_lines: int, caption_window: int
 	# before protected-span detection so reflow treats that indentation as code.
 	text = text.replace("\N{NO-BREAK SPACE}", " ")
 	if "html" not in skipped:
+		text = restore_escaped_known_markup(text)
 		text = clean_html(text, removals)
 	if "dehyphenate" not in skipped:
 		text = guarded_dehyphenate(text, removals)

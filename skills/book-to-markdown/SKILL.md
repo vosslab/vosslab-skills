@@ -1,13 +1,15 @@
 ---
 name: book-to-markdown
-description: "Convert technical/scientific books from PDF, EPUB, HTML, DOCX, ODT, Markdown, or text into page-free Markdown for AI agents. Select the simplest structure-preserving tool; use for book extraction, cleanup, calibration, or repair."
+description: "Convert technical/scientific books from PDF, EPUB, HTML, DOCX, ODT, Markdown, or text into one page-free Markdown file per title. Compare multiple formats as corroborating sources; use for extraction, cleanup, calibration, or repair."
 ---
 
 # Book to Markdown
 
 Produce clean, greppable reference text for agents, not a visually faithful facsimile.
 Prioritize stable headings, semantic chunks, plain-text math, tables, captions, and
-bibliography entries. Work one book at a time.
+bibliography entries. Work one book title at a time and deliver exactly one canonical
+Markdown file for that title. Treat PDF, EPUB, or other copies of the same book as
+corroborating sources for one deliverable, not as requests for separate final files.
 
 Use the scripts as instruments. The default workflow is:
 
@@ -57,6 +59,31 @@ If the preferred tool fails or visibly damages headings, code, equations, or tab
 compare a small representative sample with another installed converter such as
 `ebook-convert`. Choose from semantic preservation and readable structure, not word
 count or a universal tool preference.
+
+## Combine same-title sources
+
+When the user supplies the same book in multiple formats, use every format to improve
+one canonical result:
+
+1. Confirm that the inputs represent the same title and edition. Treat a materially
+   different edition as a separate source only when the requested output should mix it.
+2. Convert representative samples from each format and select the structurally strongest
+   candidate as the primary document. EPUB often preserves native headings and code while
+   PDF can corroborate page order, tables, equations, captions, and text missing from the
+   structured source; choose from the actual evidence.
+3. Compare the secondary candidates with the primary for meaningful omissions. Insert
+   missing code, operands, table rows, captions, bibliography entries, or prose at the
+   correct location in the primary document. Prefer the cleaner primary wording when both
+   candidates preserve the same meaning.
+4. Name the final file from the book title, without source suffixes such as `_from_pdf`
+   or `_from_epub`. Keep raw candidates, reports, and removal sidecars in a temporary or
+   review location outside the delivery directory.
+5. Deliver one `.md` file for the title. Do not concatenate whole candidates, duplicate
+   chapters, or leave source-specific Markdown files beside the canonical result.
+
+If comparison finds no meaningful omission, the evidence-backed primary candidate is the
+merged result; record both sources in its metadata or work record. Multiple inputs improve
+confidence and recovery even when no secondary passage needs insertion.
 
 ## Start with evidence
 
@@ -118,8 +145,11 @@ running-head decisions and removals.
 
 `clean_markdown.py` repairs flat Markdown or text, so it is also useful for a
 pre-existing conversion. Its image pass deliberately drops image syntax, HTML image
-forms, placeholders, and picture-text blocks while preserving nearby figure and table
-captions as prose. It repairs single-line pseudo-fences before protected-span analysis,
+forms (including entity-escaped EPUB image tags), placeholders, and picture-text blocks
+while preserving nearby figure and table captions as prose. It restores recognized
+entity-escaped EPUB container markup before narrow HTML cleanup, keeps escaped URL and
+code-like angle forms literal, and repairs single-line pseudo-fences before
+protected-span analysis,
 normalizes EPUB non-breaking-space indentation before code-sensitive reflow,
 keeps HTML line breaks inside pipe cells on one table row, preserves recognized
 non-image HTML semantics, guards
