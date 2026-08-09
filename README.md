@@ -17,6 +17,13 @@ Repository internals:
 - [docs/FILE_STRUCTURE.md](docs/FILE_STRUCTURE.md): Directory map and where to add new work.
 - [docs/EXPERT_SKILL-BEST_PRACTICES.md](docs/EXPERT_SKILL-BEST_PRACTICES.md): Conventions for authoring domain-expert skills.
 
+Book-backed expert skills:
+
+- [skills/rust-code-expert/SKILL.md](skills/rust-code-expert/SKILL.md): Core Rust language, native targets, tooling, FFI, and idiomatic refactoring.
+- [skills/wasm-rust-expert/SKILL.md](skills/wasm-rust-expert/SKILL.md): Rust/WebAssembly browser and runtime delivery with measurable parity and performance.
+- [skills/human-interact-expert/SKILL.md](skills/human-interact-expert/SKILL.md): HCI research, task modeling, cognitive guidance, and evaluation methods.
+- [skills/postgresql-expert/SKILL.md](skills/postgresql-expert/SKILL.md): PostgreSQL schema, query, migration, performance, and operational engineering.
+
 Conventions and standards:
 
 - [docs/REPO_STYLE.md](docs/REPO_STYLE.md): Repository organization and documentation conventions.

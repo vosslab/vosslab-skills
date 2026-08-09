@@ -4,7 +4,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 31
+Total skills: 35
 
 - [agents-md-fixer/SKILL.md](../skills/agents-md-fixer/SKILL.md): Trim bloated `AGENTS.md` files into concise pointers to canonical `docs/*.md` rules.
 - [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from repository evidence.
@@ -20,12 +20,15 @@ Total skills: 31
 - [glass-expert/SKILL.md](../skills/glass-expert/SKILL.md): Design, implement, verify, and debug Apple Liquid Glass in SwiftUI on macOS 26+ and iOS 26.
 - [hang-check/SKILL.md](../skills/hang-check/SKILL.md): Watch running background agents for evidence of a genuine stall without killing healthy work.
 - [html-game-parallel-builder/SKILL.md](../skills/html-game-parallel-builder/SKILL.md): Build modular TypeScript browser games with parallel agents.
+- [human-interact-expert/SKILL.md](../skills/human-interact-expert/SKILL.md): Design and evaluate human-computer interaction methods.
 - [news-release-docs/SKILL.md](../skills/news-release-docs/SKILL.md): Create or refresh `docs/RELEASE_HISTORY.md` and `docs/NEWS.md` from the changelog, plus release-note input for `devel/make_release.py`.
 - [parallel-plan/SKILL.md](../skills/parallel-plan/SKILL.md): In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that).
 - [pdf-guide/SKILL.md](../skills/pdf-guide/SKILL.md): Use when tasks involve reading, creating, or reviewing PDF files where rendering and layout matter; prefer visual checks by rendering pages (Poppler) and use Python tools such as `reportlab`, `pdfplumber`, and `pypdf` for generation and extraction.
+- [postgresql-expert/SKILL.md](../skills/postgresql-expert/SKILL.md): Design, tune, migrate, and operate PostgreSQL databases.
 - [pyside6-engineer/SKILL.md](../skills/pyside6-engineer/SKILL.md): Design, implement, refactor, and review PySide6 desktop applications.
 - [readme-docs/SKILL.md](../skills/readme-docs/SKILL.md): Create or refresh a distinctive, evidence-backed `README.md` landing page for newcomers.
 - [repo-rules-reader/SKILL.md](../skills/repo-rules-reader/SKILL.md): Load required repo rules before coding, reviewing, or delegating.
+- [rust-code-expert/SKILL.md](../skills/rust-code-expert/SKILL.md): Engineer idiomatic Rust with ownership, borrow checker, lifetimes, traits, cargo, clippy, async/Tokio, unsafe, FFI/PyO3, Result error handling, CLI tools, and performance.
 - [screenshot-docs/SKILL.md](../skills/screenshot-docs/SKILL.md): Capture static screenshots or short GIF demonstrations of a GUI, CLI, or web app and embed them in README or docs.
 - [see-also-docs/SKILL.md](../skills/see-also-docs/SKILL.md): Create or refresh `docs/RELATED_PROJECTS.md` using repository evidence and bounded web research.
 - [setup-install-usage-docs/SKILL.md](../skills/setup-install-usage-docs/SKILL.md): Create or refresh `docs/INSTALL.md` and `docs/USAGE.md` from repository evidence.
@@ -36,4 +39,5 @@ Total skills: 31
 - [ui-ux-engineer/SKILL.md](../skills/ui-ux-engineer/SKILL.md): Review, improve, and engineer UI/UX quality in any framework.
 - [unit-test-starter/SKILL.md](../skills/unit-test-starter/SKILL.md): Generate thorough Python 3 pytest unit tests across a repo by scanning Python files.
 - [vision-expert/SKILL.md](../skills/vision-expert/SKILL.md): Design, implement, debug, and review Python computer-vision systems.
+- [wasm-rust-expert/SKILL.md](../skills/wasm-rust-expert/SKILL.md): WebAssembly, wasm-bindgen, wasm-pack, web-sys, wasm32 targets, WASI, browser Canvas, and Wasm performance engineering.
 - [webwork-writer-expert/SKILL.md](../skills/webwork-writer-expert/SKILL.md): Create, edit, and lint WeBWorK PG/PGML questions.

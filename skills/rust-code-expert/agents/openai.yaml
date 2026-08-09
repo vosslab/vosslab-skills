@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rust Code Expert"
+  short_description: "Engineer safe, idiomatic native Rust projects"
+  default_prompt: "Use $rust-code-expert to inspect, implement, and verify this Rust task."

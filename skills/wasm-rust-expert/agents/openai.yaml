@@ -1,0 +1,4 @@
+interface:
+  display_name: "Wasm Rust Expert"
+  short_description: "Ship Rust computations safely to WebAssembly"
+  default_prompt: "Use $wasm-rust-expert to build, debug, or optimize a Rust WebAssembly target."

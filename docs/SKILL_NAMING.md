@@ -127,23 +127,27 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `geometry-expert` | compliant | (new) | Domain-noun-first; `geo` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `glass-expert` | compliant | (new) | Domain-noun-first; `gla` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `html-game-parallel-builder` | accepted-rename | web-game-parallel-builder | Drops `web-` collision with `webwork-`; `html` is short, evergreen. |
+| `human-interact-expert` | compliant | (new) | Domain-noun-first HCI specialist; `hum` is unique and `-expert` matches its method and evaluation role. |
 | `install-usage-docs` | accepted-rename | setup-install-usage-docs | Both `install` and `usage` collide with built-in CLI args; `setup-` lead token clears the collision while keeping `install`/`usage` mid-name for discoverability, with the `-docs` suffix. |
 | `old-python-code-review` | deprecated | python-reviewer / python-code-review | `old-` prefix marks for occasional use. |
 | `parallel-plan` | borderline-no-change | (unchanged) | Leading token distinct; in-flight nudge skill. |
 | `pdf-guide` | compliant | pdf-skill | Drops redundant `-skill` token. |
+| `postgresql-expert` | compliant | (new) | Lowercase domain-noun-first specialist; `pos` is unique and the spelling matches the other 35 skill directories. |
 | `pyside6-engineer` | compliant | (unchanged) | Framework token plus `-engineer` suffix. |
 | `readme-docs` | compliant | readme-fix | Joins `-docs` family. |
 | `repo-rules-reader` | compliant | read-repo-rules | `-reader` suffix; user-confirmed acceptable. |
+| `rust-code-expert` | compliant | (new) | Domain-noun-first specialist; `rus` is unique and `code` keeps core Rust engineering distinct from WebAssembly delivery. |
 | `skill-writing-guide` | compliant | (unchanged) | Clear `-guide` suffix, unique leading token. |
 | `typescript-engineer` | compliant | (unchanged) | Language token plus `-engineer` suffix. |
 | `ui-ux-engineer` | compliant | (unchanged) | Domain token plus `-engineer` suffix. |
 | `unit-test-starter` | compliant | (unchanged) | Unique leading token, `-starter` suffix. |
+| `wasm-rust-expert` | compliant | (new) | WebAssembly domain first; `was` is unique and the Rust token makes the implementation toolchain searchable. |
 | `webwork-writer-expert` | accepted-rename | webwork-writer | Standardized suffix to `-expert`; `web` 3-char prefix unique; `writer` kept mid-name for discoverability. |
 
-Counts (25 active skills): 16 compliant or borderline-no-change, 8
-accepted-rename, 1 deprecated (`old-` prefix). The post-rename canonical
-record matches the output of
-`tools/list_loaded_skills.py --names-only` on the repo. Two additional
+This table records 29 naming decisions: 20 compliant or borderline-no-change,
+8 accepted-renames, and 1 deprecated skill (`old-` prefix). Use
+`tools/list_loaded_skills.py --names-only` for the complete live skill set,
+including skills added outside this audit table. Two additional
 `old-*` skills (`old-manager-review-existing-plan`,
 `old-orchestrate-next-milestone`) were archived to
 [docs/archive/skills/](archive/skills/) and are no longer indexed under

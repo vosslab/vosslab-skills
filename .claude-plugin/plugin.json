@@ -34,12 +34,15 @@
     "./skills/glass-expert",
     "./skills/hang-check",
     "./skills/html-game-parallel-builder",
+    "./skills/human-interact-expert",
     "./skills/news-release-docs",
     "./skills/parallel-plan",
     "./skills/pdf-guide",
+    "./skills/postgresql-expert",
     "./skills/pyside6-engineer",
     "./skills/readme-docs",
     "./skills/repo-rules-reader",
+    "./skills/rust-code-expert",
     "./skills/screenshot-docs",
     "./skills/see-also-docs",
     "./skills/setup-install-usage-docs",
@@ -50,6 +53,7 @@
     "./skills/ui-ux-engineer",
     "./skills/unit-test-starter",
     "./skills/vision-expert",
+    "./skills/wasm-rust-expert",
     "./skills/webwork-writer-expert"
   ]
 }

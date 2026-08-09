@@ -1,0 +1,4 @@
+interface:
+  display_name: "Human Interaction Expert"
+  short_description: "Plan evidence-based HCI methods and studies"
+  default_prompt: "Use $human-interact-expert to select an HCI method, model a user task, justify guidelines, or plan an evaluation study."

@@ -74,7 +74,19 @@ one canonical result:
 3. Compare the secondary candidates with the primary for meaningful omissions. Insert
    missing code, operands, table rows, captions, bibliography entries, or prose at the
    correct location in the primary document. Prefer the cleaner primary wording when both
-   candidates preserve the same meaning.
+   candidates preserve the same meaning. Use the read-only comparator when candidates are
+   large or differently wrapped:
+
+   ```bash
+   python3 "$book_skill_dir/scripts/compare_markdown_candidates.py" \
+     /tmp/book.primary.md /tmp/book.secondary.md \
+     --json-report /tmp/book.candidate-comparison.json
+   ```
+
+   Review the reported unmatched runs against both sources. They are omission leads, not
+   automatic merge instructions: extraction wording, equations, indexes, and block order
+   can create legitimate differences. Fold confirmed secondary-only content into the
+   primary at its semantic location.
 4. Name the final file from the actual title and publication year recorded in the
    book metadata or title/copyright pages. Include a bibliographic subtitle when it
    materially distinguishes the book's scope, such as Rust from Rust and
@@ -224,6 +236,20 @@ Treat these as preservation gates, not cosmetic checks:
 - Keep a visible paragraph break when a seam is uncertain. False joins corrupt agent
   chunks more severely than missed joins.
 
+When extracted mathematical vertical bars form an inconsistent active pipe block without
+a valid table delimiter, create a separate protected candidate for review:
+
+```bash
+python3 "$book_skill_dir/scripts/wrap_malformed_tables.py" \
+  --input /tmp/book.clean.md --output /tmp/book.tables-protected.md \
+  --json-report /tmp/book.tables-protected.json
+```
+
+The wrapper preserves the original block inside a `text` fence. It leaves recognizable
+tables with delimiter rows for source-guided repair, never overwrites its input, and does
+not claim to reconstruct table semantics. Prefer a source-verified Markdown table or
+labeled prose repair when the original rows can be recovered.
+
 Use [references/repair_playbook.md](references/repair_playbook.md) after the scripts
 for table, reference, contents, hierarchy, and source-page judgment. It also records
 the calibration provenance, default boundaries, recovery procedure, and compact
@@ -232,6 +258,19 @@ acceptance checks.
 ## Final verification
 
 Verify the whole book only after the sample supports the chosen settings:
+
+```bash
+python3 "$book_skill_dir/scripts/validate_markdown_delivery.py" \
+  /path/to/delivery-directory --json-report /tmp/book.delivery.json
+```
+
+The validator checks the metadata filename shape and 90-character limit, one H1, one
+canonical file per title and edition, ASCII content, page-only lines, image or active HTML
+markup, balanced fences, and malformed active pipe blocks. A nonzero exit status blocks
+delivery. It checks structural invariants; source-page spot checks still establish semantic
+completeness.
+
+Use focused searches when diagnosing a reported failure:
 
 ```bash
 rg -n '^[0-9]+$|^![[]|</?[A-Za-z][A-Za-z0-9-]*[^<>]*>' /tmp/book.clean.md

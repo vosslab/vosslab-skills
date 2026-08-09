@@ -1,0 +1,4 @@
+interface:
+  display_name: "PostgreSQL Expert"
+  short_description: "Design and operate PostgreSQL safely"
+  default_prompt: "Use $postgresql-expert to design, tune, migrate, or operate a PostgreSQL database with measured evidence."

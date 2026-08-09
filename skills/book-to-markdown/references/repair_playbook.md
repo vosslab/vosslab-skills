@@ -2,7 +2,7 @@
 
 ## Purpose and boundary
 
-Use this playbook after the two scripts produce a candidate reference document.
+Use this playbook after the extraction and cleanup scripts produce a candidate reference document.
 Optimize for agents that grep and read chunks: clean headings, compact prose,
 preserved technical meaning, and recoverable decisions. Do not reproduce print
 layout, page numbers, image placement, or a browser-oriented linked table of
@@ -19,6 +19,13 @@ a hypothesis and test the smallest relevant variation. Use `--ocr` for an
 OCR-assisted extraction comparison and `clean_markdown.py -i INPUT --lines ...
 --skip ...` for cleanup A/B tests. Compare JSON reports, removal sidecars, and
 source pages.
+
+When two full candidates are difficult to compare by inspection, run
+`compare_markdown_candidates.py PRIMARY SECONDARY --json-report REPORT`. Review
+both directional unmatched-run lists. Treat them as bounded leads for source
+inspection, not proof that either candidate should be copied wholesale. Confirmed
+secondary-only content is inserted at the matching semantic location in the
+primary candidate.
 
 Run the whole book only after the sample supports the settings. Preserve the JSON
 reports and sidecars with the candidate output when their decisions need later
@@ -102,6 +109,14 @@ header separator, and leaves no orphaned cell content on its own line. Compare t
 table with the rendered source page, retain data over visual alignment, and convert
 an exceptional table manually to a compact pipe table.
 
+If inconsistent pipe counts cause mathematical vertical bars to form an ambiguous
+pipe block without a delimiter row, run `wrap_malformed_tables.py` with separate
+input and output paths. The tool places only those detected blocks in `text` fences
+and records their line ranges. It leaves recognizable tables for source-guided
+repair. Review the protected candidate before using it; replace the fence with a
+source-verified table or labeled prose whenever the original semantics can be
+recovered.
+
 Keep equations and code outside a table unless the source truly places them in a
 cell. Preserve cell text, units, comparison operators, and labels. If a complex
 layout cannot be expressed safely as a pipe table, use a short labeled prose list
@@ -136,6 +151,11 @@ Confirm that the output has no bare page-number lines, image syntax, active HTML
 tags, or raw non-ASCII bytes. These removal checks do not prove quality by themselves:
 the source-page checks must show that semantic content survived. Attribute material
 word-count changes to reportable passes rather than enforcing a guessed percentage.
+
+Run `validate_markdown_delivery.py` on the canonical file or flat delivery directory
+before delivery. A failure blocks delivery until its filename, duplicate-title,
+single-H1, ASCII, page-debris, image, active-tag, fence, or pipe-block issue is
+resolved. The validator complements rather than replaces the source-page checks.
 
 ## Known residual cases
 

@@ -3,7 +3,7 @@ Parity gate for the domain-expert skills.
 
 Mechanically enforces the required-set parity standard: every expert skill ships
 the same interface (a thin `SKILL.md`, an `agents/openai.yaml`, and the four
-routing / workflow / testing guides), and the four book-backed skills
+routing / workflow / testing guides), and the eight book-backed skills
 additionally ship the two committed corpus files. The gate catches future drift so "consistent"
 stays true without a human re-reading every skill.
 
@@ -17,7 +17,8 @@ and similar, so a failure names the exact gap):
 
 - Universal required files for every expert skill: `SKILL.md`, `agents/openai.yaml`, and
   `references/{task_selection,topic_index,project_workflow,testing_and_oracles}.md`.
-- Book-backed extras for the four named (geometry, vision, pyside6, ui-ux): the
+- Book-backed extras for the eight named (geometry, vision, pyside6, ui-ux,
+  Rust, Rust/WebAssembly, human interaction, and PostgreSQL): the
   two COMMITTED files `references/reference_survey.md` and
   `references/local_books.md`. The gitignored `references/local-only/` corpus is
   deliberately NOT asserted; it is absent on a clean clone.
@@ -87,9 +88,13 @@ EXPERT_SKILLS = discover_expert_skills()
 # local-only/ corpus) is gitignored, so a clean clone could not infer membership.
 BOOK_BACKED_SKILLS = frozenset({
 	"geometry-expert",
-	"vision-expert",
+	"human-interact-expert",
+	"postgresql-expert",
 	"pyside6-engineer",
+	"rust-code-expert",
 	"ui-ux-engineer",
+	"vision-expert",
+	"wasm-rust-expert",
 })
 
 # Required guides every expert carries under references/.
@@ -99,7 +104,7 @@ REQUIRED_GUIDES = (
 	"project_workflow.md",
 	"testing_and_oracles.md",
 )
-# Committed corpus files the four book-backed skills add (NOT the local-only/ dir).
+# Committed corpus files the eight book-backed skills add (NOT the local-only/ dir).
 BOOK_BACKED_FILES = (
 	"reference_survey.md",
 	"local_books.md",

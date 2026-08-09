@@ -2,6 +2,16 @@
 
 ### Additions and New Features
 
+- Added three permanent `book-to-markdown` review tools: a bidirectional
+  unmatched-passage comparator for corroborating candidates, a canonical delivery
+  validator, and an opt-in malformed-pipe wrapper that writes a separate protected
+  candidate for source-guided repair.
+- Added four book-backed expert skills: `rust-code-expert` for core Rust
+  engineering, `wasm-rust-expert` for Rust/WebAssembly delivery,
+  `human-interact-expert` for HCI methods and evaluation, and
+  `postgresql-expert` for database design, tuning, and operations. Each skill
+  includes project-shape workflows, topic routing, executable oracles, and a
+  passage-verified survey of its gitignored local book corpus.
 - Added the `book-to-markdown` skill for technical and scientific books.
   Its measured, structured-first PDF extractor and standalone Markdown cleaner
   produce page-free agent reference text while preserving headings, tables,
@@ -9,6 +19,9 @@
 
 ### Behavior or Interface Changes
 
+- Expanded expert-skill book-backed parity from four to eight skills and
+  documented the new naming, corpus survey, current-documentation fallback,
+  routing-boundary, and positive-prompting contracts.
 - Renamed `book-pdf-to-markdown` to `book-to-markdown` so the skill name
   reflects its PDF, EPUB, HTML, DOCX, ODT, Markdown, and text inputs.
 - Added source-aware book conversion guidance: use the page-aware extractor for
