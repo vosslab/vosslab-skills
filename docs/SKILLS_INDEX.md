@@ -16,7 +16,7 @@ Total skills: 35
 - [delegate-manager-to-subagents/SKILL.md](../skills/delegate-manager-to-subagents/SKILL.md): Manage execution of an approved plan through subagents.
 - [docset-updater/SKILL.md](../skills/docset-updater/SKILL.md): Refresh a repository's complete documentation set through the specialized documentation skills in dependency order, then audit unowned docs.
 - [gas-town-workflow/SKILL.md](../skills/gas-town-workflow/SKILL.md): Coordinate agents with Gas Town role mapping and convoy-based task decomposition.
-- [geometry-expert/SKILL.md](../skills/geometry-expert/SKILL.md): Design, implement, debug, and review computational geometry algorithms and spatial data structures.
+- [geometry-expert/SKILL.md](../skills/geometry-expert/SKILL.md): Design, implement, debug, and review computational geometry.
 - [glass-expert/SKILL.md](../skills/glass-expert/SKILL.md): Design, implement, verify, and debug Apple Liquid Glass in SwiftUI on macOS 26+ and iOS 26.
 - [hang-check/SKILL.md](../skills/hang-check/SKILL.md): Watch running background agents for evidence of a genuine stall without killing healthy work.
 - [html-game-parallel-builder/SKILL.md](../skills/html-game-parallel-builder/SKILL.md): Build modular TypeScript browser games with parallel agents.

@@ -1,44 +1,58 @@
 # Task selection
 
-Use this reference to classify a geometry request before consulting the topic index or algorithm guides.
+Classify a request before choosing an algorithm or opening a book.
 
-## Task dimensions
+## Choose the geometry branch
 
-Answer these questions to frame the task:
+- Classical computational geometry: predicates, intersections, polygons,
+  hulls, proximity, spatial queries, arrangements, meshes, visibility, or
+  motion planning.
+- Discrete and combinatorial geometry: incidence types, arrangements,
+  realizability, stretchability, segment graphs, or complexity of geometric
+  representations.
+- Computational algebraic geometry: ideals, varieties, polynomial systems,
+  Groebner bases, elimination, or exact symbolic coordinates.
+- Conformal surface geometry: discrete curvature, Ricci flow, surface
+  parameterization, registration, or intrinsic mesh metrics.
 
-- Dimension: 2D (plane geometry, polygons, lines), 3D (meshes, volumes, solids), or nD (k-d trees,
-  high-dimensional proximity).
-- Primitive type: point, segment, ray, line, polygon, polyhedron, curve, or surface.
-- Operation type: construction (build a structure: hull, triangulation, Voronoi diagram), query
-  (answer a question: contains, nearest, intersects, locate), or transformation (clip, union,
-  offset, simplify).
-- Exactness: exact combinatorial answer (inside/outside, crossing yes/no) or approximate numeric
-  result (distance, area, centroid).
-- Dynamism: static (all input known upfront, batch processing) or dynamic/online (points arrive
-  one at a time, support insertions/deletions).
-- Scale: hundreds of points (any algorithm works), thousands (O(n log n) algorithms), millions
-  (spatial indexes, streaming, or approximate methods).
-- Interaction: batch (results computed offline) or interactive (latency budget under 50 ms per
-  frame).
+Route by the mathematical operation, not by a shared word. A Voronoi diagram on
+the plane is classical; a centroidal Voronoi tessellation used during conformal
+surface processing may need the conformal branch.
 
-## Common task types
+## Frame the input and output
 
-- Containment: point-in-polygon, point-in-convex-hull, inside/outside solid.
-- Proximity: nearest neighbor, k-nearest neighbors, range search, closest pair.
-- Intersection: segment/segment, polygon/polygon, ray/mesh, line/plane.
-- Construction: convex hull, triangulation, Delaunay triangulation, Voronoi diagram.
-- Boolean operations: polygon union, intersection, difference, clipping.
-- Distance: point-to-segment, segment-to-segment, point-to-mesh, Hausdorff distance.
-- Decomposition: triangulation, convex decomposition, arrangement of lines/segments.
-- Spatial indexing: k-d tree, BVH, R-tree, grid hash for batch proximity or scene queries.
-- Mesh operations: Delaunay mesh generation, remeshing, normal estimation, mesh repair.
+Record:
 
-## Clarifying questions to answer internally
+- Dimension and ambient space: 2D, 3D, nD, surface-in-3D, projective, or
+  algebraic.
+- Primitives: points, segments, curves, polygons, polyhedra, meshes, graphs,
+  equations, ideals, or parameterized surfaces.
+- Operation: construct, query, transform, decide existence, optimize, or
+  approximate.
+- Answer type: numeric measurement, coordinates, combinatorial topology,
+  symbolic object, Boolean decision, or path.
+- Exactness: exact sign/topology, certified approximation, or ordinary numeric
+  estimate.
+- Input promises: simple polygon, manifold mesh, general position, exact
+  coefficients, orientability, or none.
+- Workload: object count, dimension, static vs dynamic, batch vs interactive,
+  expected query count, and memory limit.
 
-- What dimension and primitive types are involved?
-- Is the answer combinatorial (topology) or numeric (coordinates, distances)?
-- How many geometric objects exist, and do they change at runtime?
-- What is the failure mode: wrong topology, wrong numeric answer, slow query, or crash on
-  degenerate input?
-- Is a trusted library available for this language and platform?
-- Does correctness require exact arithmetic, or is floating-point tolerance acceptable?
+## Diagnose the failure class
+
+- Wrong topology: a sign, incidence, winding, or degeneracy policy is unstable.
+- Wrong numeric answer: units, frame, conditioning, or formula is wrong.
+- Wrong model: align the algorithm's preconditions with the polygon, mesh,
+  surface, field, or motion constraints.
+- Slow query: align preprocessing and data structure with workload shape.
+- Non-realizability or excessive precision: the task belongs to discrete theory,
+  not routine coordinate construction.
+- API failure: inspect the installed library and current official documentation.
+
+## Decide whether custom code is justified
+
+Prefer a trusted library or computer algebra system when topology or symbolic
+correctness matters. Custom code is justified for teaching, an unsupported
+primitive/model, a proven performance constraint, or a small independently
+testable kernel. In every case, retain a brute-force, library, or theorem-based
+oracle for small inputs.

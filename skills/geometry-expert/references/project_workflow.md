@@ -1,66 +1,67 @@
 # Project workflow
 
-Use this reference when the skill is invoked on a target project, not while building geometry-expert.
+Use this guide on a target project after the task has been classified.
 
-## Detect project state
+## Build an evidence inventory
 
-Inspect the target repo before writing geometry code:
-- Search for geometry source files (primitives, predicates, algorithm implementations).
-- Search for geometry tests and fixtures.
-- Search for architecture docs that describe a coordinate system, tolerance, or geometry model.
+Inspect source, tests, fixtures, data import/export, visualization, and existing
+documentation. Identify who owns:
 
-If any of these exist, follow the existing-project path. If none exist, follow the greenfield path.
+- Coordinate frames, units, primitives, meshes, equations, and serialization.
+- Predicates, topology, tolerance/exactness, and normalization.
+- Algorithms, spatial structures, solvers, and external libraries.
+- Rendering/debug artifacts and user-visible error handling.
 
-## Geometry contract
+Treat existing behavior and a dirty tree as user-owned evidence. Characterize
+it before changing an algorithm.
 
-Both paths write and maintain a geometry contract. Use the target repo's existing docs location when
-present; otherwise create `docs/GEOMETRY_MODEL.md`. The contract records:
-- Coordinate frame and axis directions; units (meters, pixels, normalized).
-- 2D vs 3D (or both); primitive types in use.
-- Polygon openness convention (open or closed; first vertex repeated or not).
-- Winding order (clockwise or counterclockwise for positive area).
-- Tolerance policy: one location, one value, documented reason.
-- Valid and invalid input definitions.
-- Expected degeneracy behavior (collinear points, duplicate vertices, zero-area polygons).
+## Write the geometry contract
 
-## Existing project path
+Use an existing canonical document when present; otherwise create
+`docs/GEOMETRY_MODEL.md` if the target repository permits it. Record only the
+fields relevant to the branch:
 
-1. Build a geometry inventory: list files owning primitives, predicates, algorithms,
-   serialization/import, rendering/debug output, and tests.
-2. Update the geometry contract from the inventory; fill in any gaps.
-3. Write characterization tests around current behavior before changing any algorithm
-   (migration safety). Investigation and instrumentation are free before this step.
-4. Build or extend the fixture corpus (degenerate and representative cases).
-5. Make algorithm changes tied to failing fixtures, one change at a time.
+- Ambient space, axes, units, dimension, and transformations.
+- Primitive and topology conventions: open/closed rings, winding, holes,
+  manifoldness, boundary, incidence, and empty/lower-dimensional results.
+- Exactness and tolerance policy, including who owns predicates.
+- Valid input promises and explicit rejection/normalization behavior.
+- Scale, update/query workload, latency, and memory expectations.
+- Algebraic field, variables, monomial order, and symbolic output when relevant.
+- Surface topology, curvature/boundary conditions, and distortion goals for
+  conformal work.
+- Robot degrees of freedom, obstacle model, and clearance/contact semantics for
+  planning.
+
+## Existing-project path
+
+1. Trace one representative input through parsing, model, computation, output,
+   and rendering.
+2. Reconcile the contract with current behavior and document unknowns.
+3. Add characterization tests around behavior that a change might affect.
+4. Add the smallest degenerate and representative oracle cases.
+5. Make one bounded change tied to one failing case.
+6. Re-run invariants, artifacts, and representative performance checks.
 
 ## Greenfield path
 
-1. Write the geometry contract first as the design source of truth.
-2. Choose the geometry library against explicit criteria:
-   - Language ecosystem and packaging.
-   - Exactness needs (floating-point tolerance acceptable, or exact arithmetic required).
-   - Topology support (2D polygon booleans, 3D mesh, or higher).
-   - Licensing and deployment constraints.
-   - Performance at expected input size.
-   - Candidates: Shapely/GEOS (Python 2D polygon ops), CGAL (C++ exact 2D/3D),
-     scipy.spatial (Delaunay/Voronoi/kd-tree), Boost.Geometry (C++ 2D), custom.
-3. State early performance assumptions: input size (hundreds vs millions), interactive vs batch,
-   static vs dynamic structure, exactness or tolerance-based.
-4. Seed a fixture corpus: happy-path, boundary, degenerate, and small random cases with
-   oracle-verified expected outputs.
-5. Build the minimal geometry kernel milestone. The kernel is complete only when all of these pass:
-   primitives defined and constructed; predicates implemented and tested; fixture loading working;
-   oracle comparison tests passing; one debug artifact (SVG, JSON dump, or coordinate printout)
-   generated.
-6. Build feature algorithms on top of the validated kernel.
+1. Write the contract before choosing permanent data structures.
+2. Compare candidate libraries on model fit, exactness, topology, dimensions,
+   license, packaging, performance, and deployment.
+3. Create hand-checkable, boundary, degenerate, and fixed-seed oracle cases.
+4. Build the smallest kernel: primitives/model, centralized predicates or
+   symbolic types, fixture loading, oracle comparison, and one artifact.
+5. Add one feature family at a time and preserve the kernel invariants.
 
-## Geometry review checklist
+## Review checklist
 
-Before closing any geometry task, verify:
-- Coordinate system is documented in the contract.
-- Degeneracy cases are exercised in fixtures.
-- Tolerance policy is explicit: one location, one value, documented reason.
-- Predicates are centralized (no scattered epsilons).
-- Oracle or brute-force comparison is present for the core algorithm.
-- At least one inspectable artifact is generated.
-- Performance is tested at expected input size, not just on tiny examples.
+- The geometry branch and mathematical model are explicit.
+- Coordinate, topology, and exactness conventions have one owner.
+- Preconditions are validated or clearly delegated to a trusted library.
+- Degenerate cases and multiple legal outputs are tested correctly.
+- The oracle is independent and small random cases are reproducible.
+- At least one artifact makes boundary/topology behavior inspectable.
+- Performance evidence matches expected scale and workload shape.
+- Current library behavior comes from official docs or installed-version
+  inspection; book conversions supply concepts and judgment.
+- Limitations and unsupported inputs are stated plainly.

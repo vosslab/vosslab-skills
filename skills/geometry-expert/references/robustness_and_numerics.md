@@ -1,59 +1,96 @@
 # Robustness and numerics
 
-Use this reference when a geometry algorithm fails on degenerate inputs or produces wrong
-topological answers.
+Use this guide when numerical error can change a geometric decision, topology,
+or iterative model.
+
+## Separate measurement from decision
+
+A distance or area may tolerate bounded error. Orientation, in-circle,
+incidence, containment, and edge ordering are sign decisions whose wrong sign
+can corrupt topology. Centralize these predicates, define the zero case, and
+place all epsilon comparisons in that policy.
+
+The sampled sources explain why:
+
+- `local-only/Geometric_Tools_for_Computer_Graphics-2003.md`, `1.2 Issues of
+  Numerical Computation`, shows nonassociativity, cancellation, tangency, and
+  order-dependent Boolean results.
+- `local-only/Computational_Geometry_Algorithms_and_Applications-2008.md`, `1.1
+  An Example: Convex Hulls`, shows near-collinear rounding producing an
+  inconsistent combinatorial hull.
+- `local-only/Handbook_of_Discrete_and_Computational_Geometry-2018.md`, `45
+  ROBUST GEOMETRIC COMPUTATION`, develops exact, filtered, and soft-exact
+  strategies and explains the missing robustness guarantee in ad hoc epsilon.
 
 ## Degeneracy catalog
 
-Test against all of these before declaring an algorithm correct:
-- Collinear points: three or more points on the same line.
-- Coincident points: duplicate or near-duplicate vertices.
-- Cocircular points: four or more points on the same circle (Delaunay edge flip ambiguity).
-- Near-parallel segments: intersection computed at large coordinate values, amplifying rounding
-  error.
-- Points exactly on an edge or boundary (containment test ambiguity).
-- Zero-area polygons or zero-length segments.
-- Self-intersecting polygons passed to algorithms that assume simple polygon input.
-- Very large or very small coordinates (loss of precision in floating-point subtraction).
+Exercise at least the cases relevant to the contract:
 
-## Predicate-based design
+- Collinear, cocircular, coplanar, concurrent, or parallel inputs.
+- Duplicate points, zero-length edges, repeated vertices, and zero-area faces.
+- Shared endpoints, coincident edges, tangency, and touch-only intersections.
+- Points exactly on boundaries and queries exactly on subdivision vertices.
+- Self-intersecting polygons passed to simple-polygon algorithms.
+- Nonmanifold, unoriented, inverted, sliver, or disconnected meshes.
+- Very large/small coordinates and subtraction of nearly equal values.
+- Polynomial coefficients outside the declared base field or silently rounded.
+- Conformal iterations on invalid topology or poor triangles.
 
-Centralize all geometric decisions in explicit predicates; place every epsilon decision in one module.
+Degeneracy is not always invalid input. The contract must say whether each case
+is rejected, normalized, represented as a lower-dimensional result, or resolved
+by a deterministic tie-break.
 
-## Curated predicate summary
+## Core predicates
 
-| Predicate | What it decides | Robust implementation |
+| Predicate | Decision | Robust default |
 | --- | --- | --- |
-| orientation(p, q, r) | Sign of signed area of triangle pqr (CCW, CW, collinear). | Cross product sign; use adaptive predicates for the collinear borderline. |
-| in-circle(p, q, r, s) | Whether s is inside the circumcircle of (p, q, r). | 4x4 determinant sign; exact arithmetic required for Delaunay correctness. |
-| distance-compare(p, q, r) | Whether d(p,q) < d(p,r) without a square root. | Compare squared distances; exact with integer or rational arithmetic. |
-| side-of-line(p, q, r) | Which side of line pq point r lies on. | Same sign as orientation; choose a consistent convention for the zero case. |
-| point-in-polygon | Strictly inside, on boundary, or outside. | Ray-casting or winding number; special-case points on edges explicitly. |
+| `orientation(p, q, r)` | Counterclockwise, clockwise, or collinear | Filtered/adaptive determinant sign; exact fallback near zero |
+| `in_circle(p, q, r, s)` | Site inside, on, or outside an oriented circumcircle | Filtered/adaptive determinant with orientation convention |
+| `side_of_line(p, q, r)` | Side or boundary | Reuse orientation and its zero policy |
+| `distance_compare(p, q, r)` | Which squared distance is smaller | Compare squared values; exact integers/rationals when available |
+| `point_in_polygon(p, ring)` | Inside, boundary, or outside | Explicit boundary predicate plus winding/ray logic |
+| `incidence(a, b)` | Whether algebraic/geometric objects meet | Preserve exact symbolic input or use certified predicates |
 
-Use a trusted library predicate (GEOS orientation, CGAL orientation_2) before writing your own.
-Locate all epsilon decisions in one file or module; document the value and the reason.
+Test permutation signs and boundary classifications directly. A robust
+predicate has a documented input domain and does not expose an arbitrary
+epsilon as mathematical truth.
 
-## Exact vs floating arithmetic
+## Arithmetic strategy
 
-- Double-precision floating point is correct when inputs are well-separated and coordinates are
-  not extreme.
-- Switch to exact arithmetic when: collinear or cocircular cases must be resolved correctly;
-  coordinates are very large or involve many subtractions; or a wrong topological answer causes
-  downstream failures.
-- Libraries with embedded exact predicates: CGAL, Shewchuk's predicates (C), GEOS (internally).
+Choose deliberately:
 
-## Epsilon pitfalls
+1. Ordinary floating point for measurements on well-scaled, well-separated
+   data when a numeric error bound is acceptable.
+2. Filtered predicates: evaluate quickly, estimate the error bound, and fall
+   back to exact arithmetic when the sign is uncertain.
+3. Exact integers, rationals, expansions, or an exact geometry kernel when a
+   sign or incidence must be certified.
+4. Symbolic computer algebra for ideal and elimination tasks; preserve exact
+   coefficients through the decisive operation.
 
-- Additive epsilon (a == b +/- eps): fails at large coordinates; use relative epsilon instead.
-- Relative epsilon (|a - b| / max(|a|, |b|) < eps): more robust but still fails near zero.
-- Cascading comparisons: one epsilon decision that leaks into a second comparison produces
-  inconsistent results. Centralize predicates to prevent this.
-- Asymmetric results: orientation(p, q, r) may not equal -orientation(r, q, p) under floating
-  point. Use consistent argument ordering throughout.
+Exact predicates with inexact constructions can still produce inconsistent
+derived coordinates. State whether the kernel guarantees exact decisions only
+or exact constructions too.
 
-## Further reading
+## Tolerance policy
 
-For robust predicate theory and adaptive exact arithmetic: Goodman Handbook ch.45 at
-`references/local-only/Goodman-Handbook_of_discrete_and_computational_geometry_2018.md`;
-grep `robust`, `floating point`, or `predicate`.
-For orientation and in-circle implementation details: O'Rourke; grep `orientation`.
+- Attach tolerances to measured quantities with units and scale.
+- Use absolute tolerance near zero and relative tolerance at scale only for
+  approximate numeric comparisons.
+- Apply topology-changing tolerance only through a contract-defined
+  snapping/normalization operation.
+- Normalize or rescale coordinates only when the transformation preserves the
+  intended model, and test inverse mapping.
+- Keep one policy owner so every algorithm makes the same decision.
+
+## Specialized numerical checks
+
+- Delaunay/Voronoi: accept multiple legal triangulations for cocircular sites;
+  test empty-circle and dual invariants rather than one edge list.
+- Mesh/conformal: track inverted elements, minimum angle, area, curvature error,
+  energy, and boundary constraints alongside solver residuals.
+- GJK/separating axes: define touching vs overlap and test support-map extrema.
+- Motion planning: numeric waypoints require continuous or conservative segment
+  collision checks; sampled collision-free points are insufficient.
+- Algebraic geometry: record coefficient field and monomial order; verify
+  reductions and substitutions exactly when the input is exact.

@@ -19,6 +19,11 @@
 
 ### Behavior or Interface Changes
 
+- Rebuilt `geometry-expert` around its 12 current local Markdown books. The
+  routing now distinguishes core algorithm sources, overlapping teaching
+  complements, and specialist algebraic, conformal, motion-planning, and
+  realizability branches, with passage-verified coverage, explicit corpus
+  fallbacks, stronger robustness/oracle guidance, and target-repo fixture rules.
 - Expanded expert-skill book-backed parity from four to eight skills and
   documented the new naming, corpus survey, current-documentation fallback,
   routing-boundary, and positive-prompting contracts.
@@ -69,6 +74,9 @@
 
 ### Developer Tests and Notes
 
+- Verified all 12 `geometry-expert` books, all 12 routed paths, 51 named
+  passage terms, and one dedicated sampled section heading per book. The full
+  ten-test expert-skill validation gate passes all 859 cases.
 - Added deterministic running-head regression checks for fenced Rust code and
   code-shaped TOML section labels, plus repeated edge section headings, after a
   whole-book Rust conversion exposed destructive false cleanup decisions.

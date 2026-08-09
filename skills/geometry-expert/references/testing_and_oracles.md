@@ -1,60 +1,100 @@
 # Testing and oracles
 
-Use this reference when building the fixture corpus and oracle comparisons for any geometry algorithm.
+Build a minimal corpus covering the contract, boundaries, degeneracies, and invariants.
 
-## Degenerate fixture corpus
+## Fixture layers
 
-Include at least these cases in the fixture corpus:
-- Collinear points (all on one line, or k out of n on one line).
-- Duplicate or coincident vertices.
-- Near-duplicate points (coordinates differ by less than 1e-10).
-- Near-overlapping or nearly-parallel segments.
-- Self-intersecting polygon (figure-eight shape).
-- Polygon with a zero-area spur (repeated edge traversed in both directions).
-- Tiny triangles (area under 1e-20).
-- Very large coordinates (values near floating-point range limits).
-- Points exactly on an edge or vertex of another polygon.
-- Empty input (zero points, zero segments).
-- Single-point and two-point inputs.
+1. Minimal examples with hand-verifiable answers.
+2. Boundary and degeneracy cases from [robustness_and_numerics.md](robustness_and_numerics.md).
+3. Fixed-seed randomized small cases compared with an independent oracle.
+4. Representative performance cases matching real scale and distribution.
+5. Regression fixtures reduced from every discovered failure.
 
-## Oracles
+Keep small fixtures inline and follow the target repository's test conventions.
+Add a committed fixture directory only when the project already establishes one
+or a human approves the new test data.
 
-Validate a custom algorithm against a trusted oracle before declaring it correct.
+## Independent oracles
 
-- Shapely/GEOS: polygon containment, intersection, union, difference, buffer, convex hull.
-- scipy.spatial: Delaunay triangulation, Voronoi diagram, convex hull, k-d tree nearest neighbor.
-- CGAL (via bindings or a separate program): exact predicates, constrained Delaunay, arrangement.
-- Brute force on small random input: O(n^2) nearest neighbor, O(n^2) all-pairs intersection,
-  O(n) point-in-polygon scan.
+- GEOS/Shapely or Boost.Geometry for polygon topology and hull behavior.
+- scipy.spatial/Qhull for hull, Delaunay, Voronoi, and k-d tree workflows.
+- CGAL or another exact kernel for predicates, constrained triangulations, arrangements, and meshes.
+- A computer algebra system for Groebner bases, normal forms, elimination, and exact solutions.
+- Brute force for small intersection, nearest, range, containment, visibility, and collision cases.
+- Theorem-derived invariants when multiple outputs are legal.
 
-For brute-force oracles: generate 100-1000 random small inputs, run both implementations, and
-assert agreement. Use a fixed seed for reproducibility.
+Use an oracle independent of the implementation under test. Two wrappers around
+the same underlying library provide one implementation, not corroboration.
 
-## Property and stress invariants
+## Family invariants
 
-Test these invariants in addition to exact-output comparisons:
-- Convex hull: all input points lie inside or on the hull; hull vertices are a subset of input.
-- Triangulation: all input vertices present; no crossing edges; Euler formula V - E + F = 2 for
-  closed mesh.
-- Nearest neighbor: result matches brute force on 500 random points.
-- Polygon clipping: output polygon lies entirely inside the clip region.
-- Orientation predicate: result is invariant under translation and uniform scaling.
-- Area: non-negative after normalization; doubles under a 2x uniform scale.
+### Predicates and polygons
+
+- Orientation changes sign under an odd point swap and is translation invariant.
+- Segment intersection is symmetric and classifies disjoint, point, and overlap
+  results distinctly when the contract requires them.
+- Polygon area obeys winding convention; containment distinguishes boundary.
+- Boolean output has valid ring topology and expected area identities.
+
+### Hull, triangulation, Voronoi, and Delaunay
+
+- Hull vertices come from input and all sites lie inside/on the hull.
+- Triangles preserve the domain, remain interior-disjoint, and satisfy
+  appropriate Euler and incidence counts.
+- Delaunay triangles satisfy the chosen empty-circle convention.
+- Voronoi adjacency agrees with the Delaunay dual where general-position
+  assumptions apply.
+
+### Spatial structures and arrangements
+
+- Nearest and range results equal brute force on fixed-seed small inputs.
+- Index queries remain correct after every allowed update.
+- Arrangement incidences are reciprocal and cell counts satisfy the applicable
+  planar invariant.
+
+### Distance, collision, visibility, and planning
+
+- Distance is nonnegative, symmetric where appropriate, and zero under the
+  contract's touching/overlap definition.
+- GJK/support results agree with a separate primitive or sampled oracle.
+- Visibility edges have unobstructed interiors.
+- Every returned path begins/ends at the requested configurations and every
+  path segment passes a continuous or conservative collision check.
+
+### Mesh and conformal processing
+
+- Mesh boundary, orientation, manifoldness, Euler characteristic, and quality
+  metrics match the contract.
+- Parameterization checks inverted triangles, boundary conditions, angle or
+  conformal distortion, and round-trip/registration error.
+- Solver convergence is necessary but not sufficient; topology and element
+  quality must remain valid.
+
+### Algebraic and realizability tasks
+
+- Ideal membership agrees with normal-form reduction under the declared order.
+- Elimination output vanishes when substituted into known exact solutions.
+- A claimed realization satisfies every incidence/non-incidence relation using
+  exact or certified checks.
+- Failure of a numeric search is not evidence of non-realizability.
+
+## Randomized and metamorphic checks
+
+Use fixed seeds and shrink failures. Useful transformations include
+translation, rotation, reflection, uniform scale, input permutation, duplicate
+insertion, and coordinate normalization, but assert only invariants preserved
+by the model. Run enough small cases to expose topology errors, then keep the
+minimal failing example permanently.
 
 ## Inspectable artifacts
 
-Generate at least one inspectable artifact when the algorithm produces geometric output:
-- SVG file: 2D points, segments, polygons, and computed results (hull, triangulation edges,
-  Voronoi cells).
-- JSON dump: raw coordinates and computed structure (triangle vertex indices, nearest-neighbor
-  IDs).
-- OBJ or PLY file: 3D mesh output.
-- Overlay image: input drawn with output to reveal boundary handling and degenerate-case
-  treatment.
+Emit at least one artifact when output is geometric:
 
-## Project locations
+- SVG or overlay for 2D points, edges, cells, paths, and boundary cases.
+- JSON for coordinates, incidences, indices, exact coefficients, and metrics.
+- OBJ/PLY plus a mesh-quality report for 3D or surface work.
+- Solver trace for algebraic/conformal iterations, paired with invariant checks.
 
-Place fixtures and artifacts in these standard locations:
-- `tests/fixtures/geometry/` for fixture files (input/expected pairs, degenerate cases).
-- `debug/geometry/` for temporary debug artifacts generated during development.
-- `docs/images/` for artifacts included in project documentation.
+Temporary artifacts belong in the target repository's established, gitignored
+scratch location. Documentation images follow that repository's documentation
+placement rules.
