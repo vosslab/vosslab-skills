@@ -1,3 +1,11 @@
+## 2026-08-10
+
+### Behavior or Interface Changes
+
+- Refocused `repo-rules-reader` on repository rules used by every coding agent.
+  The Claude hook guide is now one brief, conditional read for Claude instead
+  of required context and receipt content for Codex and other agents.
+
 ## 2026-08-08
 
 ### Additions and New Features
