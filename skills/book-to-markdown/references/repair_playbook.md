@@ -31,6 +31,37 @@ Run the whole book only after the sample supports the settings. Preserve the JSO
 reports and sidecars with the candidate output when their decisions need later
 explanation.
 
+For self-contained HTML pages, compare plain Pandoc GFM with the bundled
+`semantic_markdown.lua` filter when site chrome, classed anchors, decorative
+images, or layout containers survive. Confirm that the filtered candidate keeps
+the article title/date, heading order, links, code, table cells, image alt text or
+nearby captions, and end references. Use `shift-headings=true` only when multiple
+chapter H1s must sit below the canonical title H1.
+
+## Recover flat EPUB hierarchy
+
+Run `epub_structure.py` when visible chapter, section, or topic labels arrive as
+plain paragraphs. The compact report measures only declared body matter when an
+EPUB landmark is available. It reports native heading count, navigation coverage,
+and bounded samples from visually prominent paragraph classes. A paragraph class
+also qualifies when its font size is heading-like and a child span supplies the
+bold emphasis; this catches exporters that split presentation across elements.
+
+Choose class-to-level rules from repeated source evidence. Inspect every reported
+sample for the selected class, especially when it also appears on a title page,
+code label, or callout. Use exact-text rules only for stable labels such as
+`Conclusion`; class rules take precedence when the final book conclusion needs a
+different level from repeated chapter conclusions. Repair starts at the EPUB's
+`bodymatter` landmark, or at the explicit `--body-start` spine document, so the
+same labels in a printed table of contents stay as prose.
+
+The tool writes a separate EPUB and refuses to overwrite its input. Convert that
+candidate through the normal Pandoc filter and cleaner. Compare heading order and
+counts with the original source, confirm that leading visual bullets were removed
+only from promoted headings, and retain the JSON record of applied class and text
+rules. Leave unmatched or ambiguous labels for local Markdown repair rather than
+broadening a class rule.
+
 ## Defaults and provenance
 
 These defaults were measured on 2026-08-08 from eight technical/scientific
@@ -161,6 +192,10 @@ resolved. The validator complements rather than replaces the source-page checks.
 
 - OCR-inserted punctuation can leave a missed page seam; keep the visible break or
   repair the local paragraph after comparison, rather than broadening the join rule.
+- EPUB exporters may encode code as colored paragraph and span fragments without a
+  `pre` or `code` container. The text can remain readable while copyable fencing is
+  weak. Group and fence those fragments only after a source sample establishes
+  stable block boundaries; background color or monospace styling alone is not enough.
 - Private-use glyphs and unusual font mappings may survive as numeric entities;
   inspect context before replacing them.
 - MathML, SVG, superscript, and subscript conversion is a narrow standalone-cleaner

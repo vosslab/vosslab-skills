@@ -11,6 +11,8 @@ import re
 import fitz
 import pymupdf4llm
 
+import markdown_quality
+
 
 # Defaults measured on eight technical/scientific books on 2026-08-08. They are
 # starting diagnostics, not claims about narrative, non-English, or image-only PDFs.
@@ -799,7 +801,19 @@ def build_frontmatter(input_path: pathlib.Path) -> str:
 	frontmatter += f'author: "{author}"\n'
 	frontmatter += f'source_pdf: "{input_path.name}"\n'
 	frontmatter += "---\n\n"
+	frontmatter += f"# {title}\n\n"
 	return frontmatter
+
+
+#============================================
+def demote_source_h1s(markdown_text: str) -> str:
+	"""Reserve H1 for the canonical PDF metadata title without changing code."""
+	lines = markdown_text.splitlines()
+	fenced, _unclosed = markdown_quality.fenced_line_numbers(lines)
+	for index, line in enumerate(lines):
+		if index not in fenced and re.match(r"^#\s+", line):
+			lines[index] = "#" + line
+	return "\n".join(lines).rstrip() + "\n"
 
 
 #============================================
@@ -851,6 +865,7 @@ def convert_pdf(input_path: pathlib.Path, pages: list[int] | None, ocr_mode: str
 		remove_edge_page_numbers(selected_pages, removals)
 	synthesized_headings = synthesize_numbered_headings(selected_pages) if heading_synthesis else []
 	markdown_text, seams_seen, seams_joined = flatten_pages(selected_pages, seams)
+	markdown_text = demote_source_h1s(markdown_text)
 	markdown_text = build_frontmatter(input_path) + markdown_text
 	final_score = score_pages(selected_pages)
 	warnings = build_warnings(selected_pages, final_score)

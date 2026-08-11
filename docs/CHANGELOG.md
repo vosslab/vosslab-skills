@@ -1,10 +1,70 @@
 ## 2026-08-10
 
+### Additions and New Features
+
+- Added a semantic Pandoc filter to `book-to-markdown` for HTML and EPUB inputs.
+  It removes presentation wrappers and decorative anchors, preserves links, code,
+  captions, and tables, establishes one metadata-backed title heading, and compacts
+  heading levels left sparse by removed presentation wrappers.
+- Added `epub_structure.py` to measure EPUB body landmarks, native headings,
+  navigation coverage, and prominent CSS paragraph classes, then promote selected
+  class or exact-text evidence in a separate semantic EPUB candidate.
+- Added `archive_processed_sources.py` with a dry-run default and explicit move
+  mode. It validates Markdown, maps `source` metadata, preserves relative source
+  folders under `done_processed/`, and blocks missing, duplicate, or colliding moves.
+
 ### Behavior or Interface Changes
 
 - Refocused `repo-rules-reader` on repository rules used by every coding agent.
   The Claude hook guide is now one brief, conditional read for Claude instead
   of required context and receipt content for Codex and other agents.
+
+### Fixes and Maintenance
+
+- Replaced standard-library EPUB XML parsing with hardened `lxml` parsing that
+  disables DTD loading, entity resolution, network access, recovery, and huge-tree
+  mode, and rejects `DOCTYPE` declarations before parsing.
+- Protected Markdown inline-code spans during book HTML cleanup and delivery
+  validation so literal examples such as `<div>` remain readable technical text.
+- Excluded indented compiler diagnostics from malformed-table detection so Rust
+  error guide lines remain protected code.
+- Kept standalone numeric output from EPUB, HTML, and document sources while
+  retaining the page-label gate for PDF-derived Markdown.
+- Established the PDF metadata title as the canonical Markdown H1 so PDF and
+  structured-format conversions share the same one-title delivery contract.
+- Converted Pandoc and publisher HTML figure containers to caption prose while
+  discarding decorative wrappers and internal asset labels.
+- Converted publisher `pre` wrappers into fenced code while retaining their
+  complete command and program listings.
+- Removed hidden publisher build comments and listing wrappers so they cannot
+  masquerade as Markdown headings or visible book content.
+- Split PDF seam prose from closing code fences so later headings and examples
+  retain their intended Markdown structure.
+- Removed embedded video and error-fallback figure wrappers from semantic HTML
+  conversion without affecting neighboring article content.
+
+### Decisions and Failures
+
+- Publisher code encoded only as colored paragraph and span fragments remains
+  readable but is not automatically fenced. The skill requires source-proven block
+  boundaries because background color or monospace styling alone also marks callouts.
+
+### Developer Tests and Notes
+
+- Added deterministic inline EPUB tests for body-matter-only heading repair,
+  CSS font-size plus child-emphasis detection, visual bullet removal, and printed
+  table-of-contents preservation.
+- Added processed-source archive tests for validated metadata mapping, dry-run
+  selection, explicit moves, relative-folder preservation, and unmapped inputs.
+- Forward-tested the EPUB repair on two publisher-flat CSS books. It recovered
+  Background Magic's introduction, ten chapters, repeated conclusions, and final
+  conclusion, plus CSS MagiC's introduction, four sections, and all 48 trick
+  headings. Both full converted candidates passed delivery validation.
+- A fresh-context forward test independently discovered the new EPUB workflow,
+  rebuilt CSS MagiC's printed contents as a nested outline, and delivered one
+  canonical file with 1 H1, 6 H2s, and 48 H3s at zero validation issues.
+- Re-audited the live 37-book processing tree with the archive tool: all 37 source
+  mappings were valid and already archived, with no active or unmapped inputs.
 
 ## 2026-08-08
 

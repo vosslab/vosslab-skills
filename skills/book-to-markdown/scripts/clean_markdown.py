@@ -17,6 +17,8 @@ import re
 import unicodedata
 from collections.abc import Callable
 
+import markdown_quality
+
 
 DEFAULT_DEBRIS_MIN_LINES = 5
 DEFAULT_DEBRIS_CAPTION_WINDOW = 15
@@ -30,7 +32,8 @@ PASS_NAMES = (
 )
 INLINE_TAGS = {"p", "div", "span", "b", "i", "em", "strong", "u", "s", "small", "font"}
 RESTORABLE_ESCAPED_TAGS = INLINE_TAGS | {
-	"br", "table", "tr", "th", "td", "math", "mrow", "mi", "mn", "mo", "mtext",
+	"br", "figure", "figcaption", "h1", "h2", "h3", "h4", "h5", "h6", "pre",
+	"table", "tr", "th", "td", "math", "mrow", "mi", "mn", "mo", "mtext",
 	"mfrac", "msup", "msub", "svg", "text", "tspan", "sup", "sub",
 }
 
@@ -174,6 +177,88 @@ def repair_single_line_fences(text: str, removals: list[Removal]) -> str:
 
 
 #============================================
+def repair_trailing_fence_text(text: str, removals: list[Removal]) -> str:
+	"""Split prose joined to a closing fence while preserving opening info strings."""
+	output: list[str] = []
+	marker_character = ""
+	marker_length = 0
+	for line_number, line in enumerate(text.splitlines(), start=1):
+		marker = markdown_quality.fence_marker(line)
+		if not marker_character:
+			if marker is not None:
+				marker_character, marker_length = marker
+			output.append(line)
+			continue
+		closing = re.match(
+			rf"^(\s*)({re.escape(marker_character)}{{{marker_length},}})\s+(\S.*)$", line,
+		)
+		if closing is not None:
+			output.extend((closing.group(1) + closing.group(2), closing.group(3)))
+			record(removals, "markdown", "text split from closing fence", line, line_number, line_number)
+			marker_character = ""
+			marker_length = 0
+			continue
+		if marker is not None:
+			character, length = marker
+			if (
+				character == marker_character and length >= marker_length
+				and re.fullmatch(r"\s*(?:`{3,}|~{3,})\s*", line)
+			):
+				marker_character = ""
+				marker_length = 0
+		output.append(line)
+	return "\n".join(output)
+
+
+#============================================
+def convert_pre_wrappers(text: str, removals: list[Removal]) -> str:
+	"""Replace standalone publisher pre markers while leaving their body verbatim."""
+	opening = re.compile(r"^([ \t]*)(?:<pre\b[^>\n]*>|&lt;pre\b[^\n]*?&gt;)[ \t]*$", re.IGNORECASE)
+	closing = re.compile(r"^([ \t]*)(?:</pre\s*>|&lt;/pre\s*&gt;)[ \t]*$", re.IGNORECASE)
+	output: list[str] = []
+	in_fence = False
+	in_pre = False
+	for line_number, line in enumerate(text.splitlines(), start=1):
+		fence = re.match(r"^[ \t]*(`{3,}|~{3,})", line)
+		if fence and not in_pre:
+			in_fence = not in_fence
+		if not in_fence:
+			open_match = opening.fullmatch(line)
+			close_match = closing.fullmatch(line)
+			if open_match is not None and not in_pre:
+				record(removals, "html", "pre opening converted to fence", line, line_number, line_number)
+				output.append(open_match.group(1) + "~~~~text")
+				in_pre = True
+				continue
+			if close_match is not None and in_pre:
+				record(removals, "html", "pre closing converted to fence", line, line_number, line_number)
+				output.append(close_match.group(1) + "~~~~")
+				in_pre = False
+				continue
+		output.append(line)
+	return "\n".join(output)
+
+
+#============================================
+def normalize_br_tags(text: str, removals: list[Removal]) -> str:
+	"""Convert HTML line breaks outside code, including breaks in pipe cells."""
+	lines = text.splitlines()
+	fenced, _unclosed = markdown_quality.fenced_line_numbers(lines)
+	pattern = re.compile(r"<br\b[^<>\n]*/?\s*>", re.IGNORECASE)
+	for index, line in enumerate(lines):
+		if index in fenced or pattern.search(line) is None:
+			continue
+		replacement = " / " if is_markdown_pipe_table_row(line) else "\n"
+		def replace_chunk(chunk: str) -> str:
+			return pattern.sub(replacement, chunk)
+		converted = transform_unprotected(line, replace_chunk)
+		if converted != line:
+			record(removals, "html", "br tag converted", line, index + 1, index + 1)
+			lines[index] = converted
+	return "\n".join(lines)
+
+
+#============================================
 def is_markdown_pipe_table_row(line: str) -> bool:
 	"""Return whether a line has Markdown pipe-table row structure."""
 	stripped_line = line.strip()
@@ -183,10 +268,11 @@ def is_markdown_pipe_table_row(line: str) -> bool:
 
 
 #============================================
-def protected_spans(text: str) -> list[tuple[int, int]]:
+def protected_spans(
+		text: str, protect_indented: bool = True, protect_quotes: bool = True) -> list[tuple[int, int]]:
 	"""Return verbatim front matter, code, and quote spans for destructive passes."""
 	lines = text.splitlines(keepends=True)
-	spans: list[tuple[int, int]] = []
+	spans = markdown_quality.inline_code_spans(text)
 	offset = 0
 	index = 0
 	if lines and lines[0].strip() == "---":
@@ -211,7 +297,10 @@ def protected_spans(text: str) -> list[tuple[int, int]]:
 		elif in_fence and fence and fence.group(1)[0] == fence_marker:
 			spans.append((span_start, offset + len(line)))
 			in_fence = False
-		elif not in_fence and (line.startswith("    ") or line.startswith("\t") or stripped.startswith(">")):
+		elif not in_fence and (
+			(protect_indented and line.startswith(("    ", "\t")))
+			or (protect_quotes and stripped.startswith(">"))
+		):
 			spans.append((offset, offset + len(line)))
 		offset += len(line)
 	if in_fence:
@@ -232,11 +321,13 @@ def merge_spans(spans: list[tuple[int, int]]) -> list[tuple[int, int]]:
 
 
 #============================================
-def transform_unprotected(text: str, transform: Callable[[str], str]) -> str:
+def transform_unprotected(
+		text: str, transform: Callable[[str], str], protect_indented: bool = True,
+		protect_quotes: bool = True) -> str:
 	"""Apply a text transformer around source regions that must remain verbatim."""
 	chunks: list[str] = []
 	offset = 0
-	for start, end in protected_spans(text):
+	for start, end in protected_spans(text, protect_indented, protect_quotes):
 		chunks.append(transform(text[offset:start]))
 		chunks.append(text[start:end])
 		offset = end
@@ -379,6 +470,20 @@ def convert_svg(match: re.Match[str], removals: list[Removal], source_text: str)
 
 
 #============================================
+def convert_figure(match: re.Match[str], removals: list[Removal], source_text: str) -> str:
+	"""Keep a figure caption while discarding image wrappers and asset labels."""
+	block = match.group(0)
+	caption_match = re.search(
+		r"<(?:figcaption|h[1-6])\b[^>]*>(.*?)</(?:figcaption|h[1-6])\s*>",
+		block, flags=re.DOTALL | re.IGNORECASE,
+	)
+	converted = descendant_text(caption_match.group(1)) if caption_match else descendant_text(block)
+	line = source_text.count("\n", 0, match.start()) + 1
+	record(removals, "html", "figure tag converted to caption prose", block, line, line)
+	return converted
+
+
+#============================================
 def convert_sup_sub(text: str, removals: list[Removal]) -> str:
 	"""Convert recognized superscript and subscript spans without citation guesses."""
 	pattern = re.compile(r"<(sup|sub)\b[^>]*>(.*?)</\1>", re.DOTALL | re.IGNORECASE)
@@ -412,6 +517,16 @@ def restore_escaped_known_markup(text: str) -> str:
 #============================================
 def clean_html(text: str, removals: list[Removal]) -> str:
 	"""Convert complete allowlisted markup and escape every other angle form."""
+	text = transform_unprotected(
+		text, lambda chunk: convert_sup_sub(chunk, removals), protect_quotes=False,
+	)
+	def comment_replace(match: re.Match[str]) -> str:
+		line = text.count("\n", 0, match.start()) + 1
+		record(removals, "html", "HTML comment removed", match.group(0), line, line)
+		return ""
+	text = transform_unprotected(
+		text, lambda chunk: re.sub(r"<!--.*?-->", comment_replace, chunk, flags=re.DOTALL),
+	)
 	def clean_chunk(chunk: str) -> str:
 		# Only opening tags with no embedded angle delimiter qualify.  This prevents a
 		# malformed formula such as <i and vector<pt> from eating its readable text.
@@ -421,6 +536,12 @@ def clean_html(text: str, removals: list[Removal]) -> str:
 			return convert_mathml(item, removals, chunk)
 		def svg_replace(item: re.Match[str]) -> str:
 			return convert_svg(item, removals, chunk)
+		def figure_replace(item: re.Match[str]) -> str:
+			return convert_figure(item, removals, chunk)
+		chunk = re.sub(
+			r"<figure\b[^<>\n]*>.*?</figure\s*>", figure_replace, chunk,
+			flags=re.DOTALL | re.IGNORECASE,
+		)
 		chunk = re.sub(r"<table\b[^<>\n]*>.*?</table\s*>", table_replace, chunk, flags=re.DOTALL | re.IGNORECASE)
 		chunk = re.sub(r"<math\b[^<>\n]*>.*?</math\s*>", math_replace, chunk, flags=re.DOTALL | re.IGNORECASE)
 		chunk = re.sub(r"<svg\b[^<>\n]*>.*?</svg\s*>", svg_replace, chunk, flags=re.DOTALL | re.IGNORECASE)
@@ -695,11 +816,14 @@ def symbol_findings(text: str) -> list[dict[str, object]]:
 def clean_text(text: str, skipped: set[str], min_lines: int, caption_window: int) -> tuple[str, list[Removal], dict[str, object]]:
 	"""Run enabled passes and return output, audit records, and measurements."""
 	removals: list[Removal] = []
+	text = repair_trailing_fence_text(text, removals)
 	text = repair_single_line_fences(text, removals)
 	metrics = measure_text(text, min_lines, caption_window)
 	metrics["before_lines"] = len(text.splitlines())
 	metrics["before_characters"] = len(text)
 	metrics["symbol_findings"] = symbol_findings(text)
+	text = convert_pre_wrappers(text, removals)
+	text = normalize_br_tags(text, removals)
 	# EPUB HTML commonly uses non-breaking spaces to indent code. Normalize them
 	# before protected-span detection so reflow treats that indentation as code.
 	text = text.replace("\N{NO-BREAK SPACE}", " ")

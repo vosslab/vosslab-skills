@@ -40,18 +40,60 @@ then pass its Markdown through `clean_markdown.py`:
 - For PDF, start with `pdf_to_markdown.py`. Its page-aware pass can classify
   running heads and page numbers, repair page seams, and measure when OCR is
   justified.
-- For EPUB, start with Pandoc. EPUB already contains structured HTML, so unpacking
-  it through a PDF-oriented or OCR path discards useful semantics.
+- For EPUB, start with Pandoc plus the bundled semantic filter. Supply the title
+  and publication date from EPUB metadata. `shift-headings=true` moves chapter
+  H1s below the canonical title H1 inserted by the filter.
 
   ```bash
-  pandoc book.epub --from epub --to gfm --wrap=none -o /tmp/book.raw.md
+  pandoc book.epub --from epub --to gfm --wrap=none --standalone \
+    --lua-filter="$book_skill_dir/scripts/semantic_markdown.lua" \
+    --metadata title="Recorded title" --metadata date="YYYY-MM-DD" \
+    --metadata source="book.epub" --metadata shift-headings=true -o /tmp/book.raw.md
   python3 "$book_skill_dir/scripts/clean_markdown.py" \
     -i /tmp/book.raw.md -o /tmp/book.clean.md
   ```
 
+  If the source visibly has chapters or topic labels but the candidate has few
+  or no headings, measure the EPUB before editing Markdown:
+
+  ```bash
+  python3 "$book_skill_dir/scripts/epub_structure.py" book.epub \
+    --json-report /tmp/book.epub-structure.json
+  ```
+
+  The report identifies the body-matter boundary and samples prominent
+  paragraph classes whose font size or child emphasis may encode hierarchy.
+  Select publisher-specific mappings from those samples, then write a separate
+  semantic EPUB candidate. Exact-text rules apply only in body matter, so a
+  printed table of contents remains prose; a selected class level wins when the
+  same paragraph also matches a text rule.
+
+  ```bash
+  python3 "$book_skill_dir/scripts/epub_structure.py" book.epub \
+    --heading-class chapter=2 --heading-class topic=3 \
+    --heading-text Conclusion=2 -o /tmp/book.semantic.epub \
+    --json-report /tmp/book.epub-repair.json
+  ```
+
+  Use `--body-start FILE` when the EPUB has no `bodymatter` landmark. Convert
+  the repaired candidate through Pandoc and the cleaner, then compare it with
+  the original candidate. Treat class names and levels as source evidence, not
+  universal defaults.
+
 - For existing Markdown or plain text, run `clean_markdown.py` directly.
-- For HTML, DOCX, ODT, or another structured format Pandoc reads well, use Pandoc
-  first and the cleaner second.
+- For a self-contained HTML article, use the filter without
+  `shift-headings=true`; use it for an HTML book whose chapters start at H1.
+  Inspect `datePublished` or equivalent metadata instead of a download timestamp.
+
+  ```bash
+  pandoc article.html --from html --to gfm --wrap=none --standalone \
+    --lua-filter="$book_skill_dir/scripts/semantic_markdown.lua" \
+    --metadata title="Recorded title" --metadata date="YYYY-MM-DD" \
+    --metadata source="article.html" -o /tmp/article.raw.md
+  ```
+
+- The semantic filter compacts sparse source headings without changing their relative nesting.
+- For DOCX or ODT, use Pandoc first, then the cleaner; add the filter when presentation-heavy.
 - Use OCR only for a PDF sample whose measured evidence shows that normal text
   extraction failed. Do not OCR EPUB or other structured text sources.
 
@@ -269,6 +311,20 @@ canonical file per title and edition, ASCII content, page-only lines, image or a
 markup, balanced fences, and malformed active pipe blocks. A nonzero exit status blocks
 delivery. It checks structural invariants; source-page spot checks still establish semantic
 completeness.
+
+After validation, audit processed-source archiving before moving anything:
+
+```bash
+python3 "$book_skill_dir/scripts/archive_processed_sources.py" /path/to/book-root
+python3 "$book_skill_dir/scripts/archive_processed_sources.py" \
+  /path/to/book-root --move --json-report /tmp/book.archive.json
+```
+
+The dry run is the default. The tool moves only unique source basenames declared
+by valid Markdown `source` or `source_*` frontmatter, preserves their relative
+folders under `done_processed/`, recognizes already archived sources, and leaves
+unmapped active inputs in place. Missing sources, duplicate basenames, invalid
+Markdown, or archive collisions block the move.
 
 Use focused searches when diagnosing a reported failure:
 

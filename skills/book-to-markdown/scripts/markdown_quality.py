@@ -55,6 +55,43 @@ def fenced_line_numbers(lines: list[str]) -> tuple[set[int], int | None]:
 
 
 #============================================
+def inline_code_spans(text: str) -> list[tuple[int, int]]:
+	"""Return complete Markdown inline-code spans as character offsets."""
+	spans: list[tuple[int, int]] = []
+	index = 0
+	while index < len(text):
+		if text[index] != "`":
+			index += 1
+			continue
+		run_end = index
+		while run_end < len(text) and text[run_end] == "`":
+			run_end += 1
+		marker_length = run_end - index
+		closing_pattern = re.compile(rf"(?<!`)`{{{marker_length}}}(?!`)")
+		closing = closing_pattern.search(text, run_end)
+		if closing is None:
+			index = run_end
+			continue
+		spans.append((index, closing.end()))
+		index = closing.end()
+	return spans
+
+
+#============================================
+def without_inline_code(text: str) -> str:
+	"""Return text with complete inline-code spans hidden from markup checks."""
+	chunks: list[str] = []
+	offset = 0
+	for start, end in inline_code_spans(text):
+		chunks.append(text[offset:start])
+		chunks.append(" " * (end - start))
+		offset = end
+	chunks.append(text[offset:])
+	visible = "".join(chunks)
+	return visible
+
+
+#============================================
 def pipe_separator_count(line: str) -> int:
 	"""Count unescaped pipe separators outside inline-code spans."""
 	count = 0
@@ -116,6 +153,8 @@ def split_pipe_cells(line: str) -> list[str]:
 #============================================
 def is_pipe_like(line: str) -> bool:
 	"""Return whether a line can participate in an active Markdown pipe block."""
+	if line.startswith(("    ", "\t")):
+		return False
 	stripped = line.strip()
 	separator_count = pipe_separator_count(line)
 	pipe_like = separator_count >= 1 and (stripped.startswith("|") or stripped.endswith("|"))

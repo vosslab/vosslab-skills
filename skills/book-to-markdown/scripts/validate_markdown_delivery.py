@@ -15,12 +15,16 @@ TERMINAL_ISSUE_LIMIT = 50
 CANONICAL_FILENAME_PATTERN = re.compile(
 	r"^(?P<title>[A-Z0-9][A-Za-z0-9]*(?:[_-][A-Za-z0-9]+)*)-(?P<year>\d{4})\.md$"
 )
-BARE_PAGE_PATTERN = re.compile(r"^\s*\d+\s*$")
+BARE_PAGE_PATTERN = re.compile(r"^\d+\s*$")
+STRUCTURED_SOURCE_PATTERN = re.compile(
+	r'^source:\s*["\']?[^"\'\n]+\.(?:docx|epub|htm|html|odt)["\']?\s*$',
+	re.IGNORECASE | re.MULTILINE,
+)
 IMAGE_PATTERN = re.compile(r"!\[[^]]*\]\([^)]*\)|<img\b|\[Start Picture-Text\]", re.IGNORECASE)
 ACTIVE_TAG_PATTERN = re.compile(
-	r"</?(?:a|abbr|article|aside|b|blockquote|br|code|details|div|em|figure|font|"
+	r"(?<!\\)</?(?:a|abbr|article|aside|b|blockquote|br|code|details|div|em|figure|font|"
 	r"h[1-6]|hr|i|img|li|math|ol|p|pre|section|span|strong|sub|summary|sup|svg|"
-	r"table|tbody|td|th|thead|tr|ul)\b[^<>]*>",
+	r"table|tbody|td|th|thead|tr|ul)\b(?:\s[^<>]*|/?)>",
 	re.IGNORECASE,
 )
 
@@ -90,6 +94,7 @@ def validate_text(path: pathlib.Path, text: str) -> list[ValidationIssue]:
 	"""Check page-free content and structural delivery invariants."""
 	issues: list[ValidationIssue] = []
 	lines = text.splitlines()
+	structured_source = STRUCTURED_SOURCE_PATTERN.search(text) is not None
 	fenced, unclosed_line = markdown_quality.fenced_line_numbers(lines)
 	if unclosed_line is not None:
 		issues.append(issue("unclosed-fence", path, unclosed_line, "close the fenced block"))
@@ -106,14 +111,20 @@ def validate_text(path: pathlib.Path, text: str) -> list[ValidationIssue]:
 			break
 		if index in fenced:
 			continue
-		if BARE_PAGE_PATTERN.fullmatch(line):
+		if line.startswith(("    ", "\t")):
+			continue
+		quote_content = re.sub(r"^(?:> ?)+", "", line)
+		if quote_content.startswith(("    ", "\t")):
+			continue
+		visible_line = markdown_quality.without_inline_code(line)
+		if not structured_source and BARE_PAGE_PATTERN.fullmatch(line):
 			issues.append(issue("bare-page-number", path, line_number, "remove the page-only line"))
-		if IMAGE_PATTERN.search(line):
+		if IMAGE_PATTERN.search(visible_line):
 			issues.append(issue(
 				"image-markup", path, line_number,
 				"remove image markup while retaining useful captions",
 			))
-		if ACTIVE_TAG_PATTERN.search(line):
+		if ACTIVE_TAG_PATTERN.search(visible_line):
 			issues.append(issue("active-html", path, line_number, "convert or escape active HTML markup"))
 	for table_issue in markdown_quality.find_malformed_pipe_blocks(text):
 		issues.append(issue(
