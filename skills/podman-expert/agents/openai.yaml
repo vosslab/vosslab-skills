@@ -1,0 +1,4 @@
+interface:
+  display_name: "Podman Expert"
+  short_description: "Build rootless Podman container workflows"
+  default_prompt: "Use $podman-expert to design and verify this rootless Podman workflow."

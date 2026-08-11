@@ -19,8 +19,8 @@ Classify the skill on that axis first, then follow the matching sections below.
 ## Required reference set
 
 Parity is a required interface, not geometry-like depth. Every expert skill ships
-the same universal set; the eight book-backed skills add two more committed files.
-This required-set definition is the standard the parity gate enforces.
+the same universal set; a book-backed skill adds two more committed files. This
+required-set definition is the standard the parity gate enforces.
 
 Universal required set, present in every expert:
 
@@ -32,10 +32,7 @@ Universal required set, present in every expert:
   workflows for an outside target project.
 - `references/testing_and_oracles.md`: how the skill proves the target improved.
 
-Book-backed required extras, present only in the eight skills with a local book
-corpus (`geometry-expert`, `human-interact-expert`, `postgresql-expert`,
-`pyside6-engineer`, `rust-code-expert`, `ui-ux-engineer`, `vision-expert`, and
-`wasm-rust-expert`):
+Book-backed required extras, present in each skill with a local book corpus:
 
 - `references/reference_survey.md`: topic-to-book coverage map with bare-path
   references, validated grep terms, and coverage-strength ratings.
@@ -50,9 +47,10 @@ the `reference_survey.md` machine (bare-path references, grep routing,
 coverage-strength ratings, graceful-absent fallback). A committed, linkable,
 heading-anchored guide set needs a routing index instead, which the non-book
 skills satisfy through their committed `topic_index.md` front door.
-Book-backed membership is an explicit allowlist of those eight names, not inferred
-from the corpus directory, so a missing `local-only/` on a clean clone never
-flips a skill out of the set.
+Book-backed membership is derived from the committed pair: presence of either
+`reference_survey.md` or `local_books.md` requires both. The gate never infers
+membership from `local-only/`, so a missing corpus on a clean clone does not
+change the required set.
 
 ### Design intent: a complete tool for an outside target
 
@@ -67,9 +65,9 @@ is a behavior requirement, not just a file requirement.
 
 The parity gate `tests/test_expert_skill_parity.py` enforces this required set per
 skill: the universal files plus the project-shape step for every expert, and the
-book trio for the eight book-backed names. The gate discovers experts by the
-`-expert` / `-engineer` directory suffix, so a new expert skill is gated with no
-test edit.
+two committed corpus files for every book-backed expert. The gate discovers
+experts by the `-expert` / `-engineer` directory suffix and book-backed status by
+the committed pair, so a new expert skill is gated with no test edit.
 
 ## Purpose and scope
 
@@ -310,8 +308,8 @@ changes:
 - `tests/test_no_local_only_markdown_links.py`: no Markdown link targets a
   `local-only/` path (bare backtick mentions stay allowed).
 - `tests/test_expert_skill_parity.py`: each expert skill carries the required
-  reference set (universal files plus a project-shape step; the book trio for the
-  eight book-backed skills).
+  reference set (universal files plus a project-shape step; the committed survey
+  and source-map pair for a book-backed skill).
 
 Actionable rule: run the gate before reporting a skill change complete, and treat
 any manifest drift as diagnostic evidence (inspect whether a frontmatter actually
@@ -322,16 +320,18 @@ changed) before regenerating.
 Every expert carries the universal required set (SKILL.md with a
 project-shape step, `agents/openai.yaml`, and the four reference guides). The
 book trio (`reference_survey.md`, `local_books.md`, and the gitignored
-`local-only/` corpus) lives only in the eight book-backed skills. The table below
+`local-only/` corpus) lives only in book-backed skills. The table below
 classifies every expert on the corpus-format axis: a gitignored, opaque book
 corpus needs a `reference_survey.md`; a committed, structured guide set needs a
 linkable routing index. Each falls cleanly on one side.
 
 | Skill | Universal set | Corpus format | Book trio / routing mechanism |
 | --- | --- | --- | --- |
+| `css-creative-expert` | yes | gitignored book corpus | book trio; CSS craft, layout, color design, effects, and motion survey |
 | `geometry-expert` | yes | gitignored book corpus | book trio; `reference_survey.md` reference implementation |
 | `glass-expert` | yes | committed guide set | routes via `topic_index.md`; survey not applicable; adds `scripts/` capture tools and `assets/` seed views |
 | `human-interact-expert` | yes | gitignored book corpus | book trio; HCI methods, cognition, evaluation, and accessibility survey |
+| `podman-expert` | yes | gitignored book corpus | book trio; rootless container lifecycle and operations survey |
 | `postgresql-expert` | yes | gitignored book corpus | book trio; PostgreSQL documentation plus judgment and recipe survey |
 | `vision-expert` | yes | gitignored book corpus | book trio; survey added by this pattern |
 | `pyside6-engineer` | yes | gitignored book corpus | book trio; survey added by this pattern |
@@ -344,7 +344,7 @@ linkable routing index. Each falls cleanly on one side.
 | `color-accessibility-expert` | yes | committed guide set | routes via `topic_index.md`; survey not applicable; scripts-first skill with the full CLI toolchain |
 | `webwork-writer-expert` | yes | committed guide set | routes via `topic_index.md`; survey not applicable |
 
-- The eight gitignored-corpus skills carry book conversions under
+- The gitignored-corpus skills carry book conversions under
   `references/local-only/` and exploit them through a committed survey plus a
   graceful-absent fallback.
 - The committed-set skills carry heading-anchored guides that are always

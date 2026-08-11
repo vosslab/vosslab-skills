@@ -3,25 +3,26 @@ Parity gate for the domain-expert skills.
 
 Mechanically enforces the required-set parity standard: every expert skill ships
 the same interface (a thin `SKILL.md`, an `agents/openai.yaml`, and the four
-routing / workflow / testing guides), and the eight book-backed skills
-additionally ship the two committed corpus files. The gate catches future drift so "consistent"
-stays true without a human re-reading every skill.
+routing / workflow / testing guides), and each book-backed skill additionally
+ships the two committed corpus files. The gate catches future drift so
+"consistent" stays true without a human re-reading every skill.
 
 Expert skills are discovered by directory suffix (`-expert` / `-engineer`)
 under skills/, minus the PENDING_PARITY set, so a new expert skill is gated
-automatically. The book-backed subset stays an explicit allowlist because its
-marker (the local-only/ corpus) is gitignored and absent on a clean clone.
+automatically. Book-backed membership is derived from the committed
+`reference_survey.md` / `local_books.md` pair, so discovery works on a clean
+clone without a maintained name roster or the gitignored local-only/ corpus.
 
 What is asserted per skill (problems are reported as `skill: missing <path>`
 and similar, so a failure names the exact gap):
 
 - Universal required files for every expert skill: `SKILL.md`, `agents/openai.yaml`, and
   `references/{task_selection,topic_index,project_workflow,testing_and_oracles}.md`.
-- Book-backed extras for the eight named (geometry, vision, pyside6, ui-ux,
-  Rust, Rust/WebAssembly, human interaction, and PostgreSQL): the
-  two COMMITTED files `references/reference_survey.md` and
-  `references/local_books.md`. The gitignored `references/local-only/` corpus is
-  deliberately NOT asserted; it is absent on a clean clone.
+- Book-backed extras: the two COMMITTED files
+  `references/reference_survey.md` and `references/local_books.md`. Presence of
+  either marks the skill as book-backed and requires both. The gitignored
+  `references/local-only/` corpus is deliberately NOT asserted; it is absent on
+  a clean clone.
 - `agents/openai.yaml` parses as YAML and carries `interface.display_name`,
   `interface.short_description`, and `interface.default_prompt`.
 - Each required guide passes a light content guard: non-trivial length, a
@@ -84,19 +85,6 @@ def discover_expert_skills() -> tuple:
 
 EXPERT_SKILLS = discover_expert_skills()
 
-# The book-backed subset stays a named allowlist, not inferred: its marker (the
-# local-only/ corpus) is gitignored, so a clean clone could not infer membership.
-BOOK_BACKED_SKILLS = frozenset({
-	"geometry-expert",
-	"human-interact-expert",
-	"postgresql-expert",
-	"pyside6-engineer",
-	"rust-code-expert",
-	"ui-ux-engineer",
-	"vision-expert",
-	"wasm-rust-expert",
-})
-
 # Required guides every expert carries under references/.
 REQUIRED_GUIDES = (
 	"task_selection.md",
@@ -104,7 +92,7 @@ REQUIRED_GUIDES = (
 	"project_workflow.md",
 	"testing_and_oracles.md",
 )
-# Committed corpus files the eight book-backed skills add (NOT the local-only/ dir).
+# Committed corpus files each book-backed skill adds (NOT the local-only/ dir).
 BOOK_BACKED_FILES = (
 	"reference_survey.md",
 	"local_books.md",
@@ -125,11 +113,19 @@ BACKTICK_REF_RE = re.compile(r"`(references/[^`]+)`")
 
 
 #============================================
-def required_files(skill_name: str) -> list[str]:
+def is_book_backed(skill_dir: pathlib.Path) -> bool:
+	"""Return whether either committed book-backed marker is present."""
+	refs_root = skill_dir / "references"
+	has_marker = any((refs_root / name).is_file() for name in BOOK_BACKED_FILES)
+	return has_marker
+
+
+#============================================
+def required_files(skill_dir: pathlib.Path) -> list[str]:
 	"""Return the references-relative required-file list for one skill."""
 	files = ["SKILL.md", "agents/openai.yaml"]
 	files += [f"references/{guide}" for guide in REQUIRED_GUIDES]
-	if skill_name in BOOK_BACKED_SKILLS:
+	if is_book_backed(skill_dir):
 		files += [f"references/{name}" for name in BOOK_BACKED_FILES]
 	return files
 
@@ -247,7 +243,7 @@ def check_guide_content(refs_root: pathlib.Path, skill_name: str, guide: str) ->
 def check_required_files(skill_dir: pathlib.Path, skill_name: str) -> list[str]:
 	"""Return a `skill: missing <path>` problem for each absent required file."""
 	problems = []
-	for rel in required_files(skill_name):
+	for rel in required_files(skill_dir):
 		if not (skill_dir / rel).is_file():
 			problems.append(f"{skill_name}: missing {rel}")
 	return problems
@@ -266,7 +262,7 @@ def check_skill(skill_dir: pathlib.Path, skill_name: str) -> list[str]:
 	problems += check_openai_yaml(refs_root, skill_name)
 	# Every required guide gets the content guard.
 	guides = list(REQUIRED_GUIDES)
-	if skill_name in BOOK_BACKED_SKILLS:
+	if is_book_backed(skill_dir):
 		guides += list(BOOK_BACKED_FILES)
 	for guide in guides:
 		problems += check_guide_content(refs_root, skill_name, guide)
@@ -360,10 +356,24 @@ def build_valid_skill(skill_dir: pathlib.Path) -> None:
 
 #============================================
 def test_synthetic_valid_skill_passes(tmp_path: pathlib.Path) -> None:
-	"""The constructed baseline skill reports no parity problems."""
+	"""A universal-only skill reports no parity problems."""
 	skill_dir = tmp_path / "synthetic-expert"
 	build_valid_skill(skill_dir)
 	assert check_skill(skill_dir, "synthetic-expert") == []
+
+
+#============================================
+def test_synthetic_half_book_pair_fails(tmp_path: pathlib.Path) -> None:
+	"""One committed book marker requires the missing half of the pair."""
+	skill_dir = tmp_path / "synthetic-expert"
+	build_valid_skill(skill_dir)
+	write_guide(
+		skill_dir / "references",
+		"reference_survey.md",
+		routing_to="topic_index.md",
+	)
+	problems = check_skill(skill_dir, "synthetic-expert")
+	assert any("missing references/local_books.md" in p for p in problems)
 
 
 #============================================

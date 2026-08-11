@@ -120,6 +120,7 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `blueprint-plan-drafter` | accepted-rename | planning-manager / manager-make-new-plan | Verb-first; first-2 "blueprint plan" carries the artifact + domain; `manager-` lead retired. |
 | `book-to-markdown` | accepted-rename | book-pdf-to-markdown | The broader name matches its PDF, EPUB, HTML, DOCX, ODT, Markdown, and text inputs. `boo` remains unique, verified with `tools/list_loaded_skills.py --check`. |
 | `bptools-writer-expert` | accepted-rename | bptools-writer | Standardized suffix to `-expert`; `bpt` 3-char prefix unique; `writer` kept mid-name for discoverability. |
+| `css-creative-expert` | compliant | (new) | Domain-noun-first CSS specialist; `css` is unique, `creative` identifies visual craft, and `-expert` matches design and review work. |
 | `vision-expert` | accepted-rename | computer-vision-expert | Domain-noun-first; `vis` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `delegate-manager-to-subagents` | accepted-rename | execution-manager / manager-driven-execution | Verb-first; first-2 "delegate manager"; "subagents" keyword in token 4 for searchability. |
 | `docset-updater` | compliant | docset-refresh | Agent-form suffix matches update-if-drifted behavior. |
@@ -132,6 +133,7 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `old-python-code-review` | deprecated | python-reviewer / python-code-review | `old-` prefix marks for occasional use. |
 | `parallel-plan` | borderline-no-change | (unchanged) | Leading token distinct; in-flight nudge skill. |
 | `pdf-guide` | compliant | pdf-skill | Drops redundant `-skill` token. |
+| `podman-expert` | compliant | (new) | Domain-noun-first container specialist; `pod` is unique and `-expert` matches lifecycle design and review work. |
 | `postgresql-expert` | compliant | (new) | Lowercase domain-noun-first specialist; `pos` is unique and the spelling matches the other 35 skill directories. |
 | `pyside6-engineer` | compliant | (unchanged) | Framework token plus `-engineer` suffix. |
 | `readme-docs` | compliant | readme-fix | Joins `-docs` family. |
@@ -144,11 +146,11 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `wasm-rust-expert` | compliant | (new) | WebAssembly domain first; `was` is unique and the Rust token makes the implementation toolchain searchable. |
 | `webwork-writer-expert` | accepted-rename | webwork-writer | Standardized suffix to `-expert`; `web` 3-char prefix unique; `writer` kept mid-name for discoverability. |
 
-This table records 29 naming decisions: 20 compliant or borderline-no-change,
-8 accepted-renames, and 1 deprecated skill (`old-` prefix). Use
+This table records the audited naming decisions across compliant,
+borderline-no-change, accepted-rename, and deprecated statuses. Use
 `tools/list_loaded_skills.py --names-only` for the complete live skill set,
-including skills added outside this audit table. Two additional
-`old-*` skills (`old-manager-review-existing-plan`,
+including skills added outside this audit table. Additional `old-*` skills
+(`old-manager-review-existing-plan`,
 `old-orchestrate-next-milestone`) were archived to
 [docs/archive/skills/](archive/skills/) and are no longer indexed under
 `skills/`; see [docs/archive/skills/README.md](archive/skills/README.md)

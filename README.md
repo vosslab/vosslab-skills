@@ -19,9 +19,11 @@ Repository internals:
 
 Book-backed expert skills:
 
+- [skills/css-creative-expert/SKILL.md](skills/css-creative-expert/SKILL.md): CSS visual craft, layout, responsive design, theming, effects, and motion.
 - [skills/rust-code-expert/SKILL.md](skills/rust-code-expert/SKILL.md): Core Rust language, native targets, tooling, FFI, and idiomatic refactoring.
 - [skills/wasm-rust-expert/SKILL.md](skills/wasm-rust-expert/SKILL.md): Rust/WebAssembly browser and runtime delivery with measurable parity and performance.
 - [skills/human-interact-expert/SKILL.md](skills/human-interact-expert/SKILL.md): HCI research, task modeling, cognitive guidance, and evaluation methods.
+- [skills/podman-expert/SKILL.md](skills/podman-expert/SKILL.md): Rootless Podman builds, runtime, storage, networking, compose, and service deployment.
 - [skills/postgresql-expert/SKILL.md](skills/postgresql-expert/SKILL.md): PostgreSQL schema, query, migration, performance, and operational engineering.
 
 Conventions and standards:
@@ -75,8 +77,8 @@ A few representative skills from the collection:
 - `skill-writing-guide`: Guide for authoring Agent Skills (SKILL.md) in open standard format.
 
 Domain-expert skills cover computational geometry, Apple Liquid Glass, computer vision,
-PySide6, SolidJS, TypeScript, PDF work, and education-content generators (bptools and
-WeBWorK).
+CSS craft, rootless Podman containers, PySide6, SolidJS, TypeScript, PDF work, and
+education-content generators (bptools and WeBWorK).
 
 Full index with one-line descriptions: [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md).
 

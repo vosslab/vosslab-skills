@@ -1,0 +1,4 @@
+interface:
+  display_name: "CSS Creative Expert"
+  short_description: "Craft polished, responsive CSS"
+  default_prompt: "Use $css-creative-expert to improve this page while preserving its purpose and accessibility."

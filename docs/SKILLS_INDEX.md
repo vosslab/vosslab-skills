@@ -4,7 +4,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 35
+Total skills: 37
 
 - [agents-md-fixer/SKILL.md](../skills/agents-md-fixer/SKILL.md): Trim bloated `AGENTS.md` files into concise pointers to canonical `docs/*.md` rules.
 - [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from repository evidence.
@@ -13,6 +13,7 @@ Total skills: 35
 - [book-to-markdown/SKILL.md](../skills/book-to-markdown/SKILL.md): Convert technical/scientific books from PDF, EPUB, HTML, DOCX, ODT, Markdown, or text into one page-free Markdown file per title.
 - [bptools-writer-expert/SKILL.md](../skills/bptools-writer-expert/SKILL.md): Create, edit, and validate biology-problems bptools Python question generators and YAML content.
 - [color-accessibility-expert/SKILL.md](../skills/color-accessibility-expert/SKILL.md): Detect and fix WCAG color-contrast failures in source files and images using measured, hue-preserving replacements.
+- [css-creative-expert/SKILL.md](../skills/css-creative-expert/SKILL.md): Design, implement, debug, and review polished CSS.
 - [delegate-manager-to-subagents/SKILL.md](../skills/delegate-manager-to-subagents/SKILL.md): Manage execution of an approved plan through subagents.
 - [docset-updater/SKILL.md](../skills/docset-updater/SKILL.md): Refresh a repository's complete documentation set through the specialized documentation skills in dependency order, then audit unowned docs.
 - [gas-town-workflow/SKILL.md](../skills/gas-town-workflow/SKILL.md): Coordinate agents with Gas Town role mapping and convoy-based task decomposition.
@@ -24,6 +25,7 @@ Total skills: 35
 - [news-release-docs/SKILL.md](../skills/news-release-docs/SKILL.md): Create or refresh `docs/RELEASE_HISTORY.md` and `docs/NEWS.md` from the changelog, plus release-note input for `devel/make_release.py`.
 - [parallel-plan/SKILL.md](../skills/parallel-plan/SKILL.md): In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that).
 - [pdf-guide/SKILL.md](../skills/pdf-guide/SKILL.md): Use when tasks involve reading, creating, or reviewing PDF files where rendering and layout matter; prefer visual checks by rendering pages (Poppler) and use Python tools such as `reportlab`, `pdfplumber`, and `pypdf` for generation and extraction.
+- [podman-expert/SKILL.md](../skills/podman-expert/SKILL.md): Engineer rootless Podman containers, pods, Containerfile/Buildah builds, images, registries, Skopeo, volumes, compose, Quadlet/systemd, networking, podman kube generate, and macOS podman machine.
 - [postgresql-expert/SKILL.md](../skills/postgresql-expert/SKILL.md): Design, tune, migrate, and operate PostgreSQL databases.
 - [pyside6-engineer/SKILL.md](../skills/pyside6-engineer/SKILL.md): Design, implement, refactor, and review PySide6 desktop applications.
 - [readme-docs/SKILL.md](../skills/readme-docs/SKILL.md): Create or refresh a distinctive, evidence-backed `README.md` landing page for newcomers.

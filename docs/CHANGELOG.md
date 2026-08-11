@@ -2,6 +2,14 @@
 
 ### Additions and New Features
 
+- Added `css-creative-expert`, a book-backed CSS craft specialist for layout,
+  cascade structure, responsive design, accessible color design, themes,
+  backgrounds, effects, and motion. Its optional local corpus maps 21 converted
+  books through verified topic routes and current-documentation fallbacks.
+- Added `podman-expert`, a rootless-first, book-backed container specialist for
+  Containerfile and Buildah builds, images and registries, Skopeo, pods,
+  volumes, networking, compose, Quadlet/systemd, Kubernetes YAML, and macOS
+  `podman machine`. Its optional local corpus maps three converted books.
 - Added a semantic Pandoc filter to `book-to-markdown` for HTML and EPUB inputs.
   It removes presentation wrappers and decorative anchors, preserves links, code,
   captions, and tables, establishes one metadata-backed title heading, and compacts
@@ -15,6 +23,10 @@
 
 ### Behavior or Interface Changes
 
+- Derived book-backed expert membership from the committed
+  `reference_survey.md` and `local_books.md` pair. Presence of either now
+  requires both, so adding a book-backed skill no longer requires editing a
+  name allowlist and remains deterministic on a clean clone.
 - Refocused `repo-rules-reader` on repository rules used by every coding agent.
   The Claude hook guide is now one brief, conditional read for Claude instead
   of required context and receipt content for Codex and other agents.
@@ -45,12 +57,24 @@
 
 ### Decisions and Failures
 
+- Replaced the hand-maintained book-backed roster instead of extending it with
+  two more names. The committed survey/source-map pair is the durable evidence;
+  the ignored `local-only/` corpus remains optional and outside parity checks.
 - Publisher code encoded only as colored paragraph and span fragments remains
   readable but is not automatically fenced. The skill requires source-proven block
   boundaries because background color or monospace styling alone also marks callouts.
 
 ### Developer Tests and Notes
 
+- Kept corpus counts, survey grep replay, routing review, and forward-use probes
+  as one-time implementation evidence rather than permanent content tests. All
+  32 unique survey routes hit their named local books (18 CSS and 14 Podman).
+- Fresh-context read-only forward uses routed an existing CSS page through a
+  mobile/dark-mode visual contract and an existing Podman setup through a
+  rootless macOS build-then-run contract with explicit operator handoffs.
+- Validated both skill folders with `quick_validate.py`; the ten expert gates
+  passed 894 tests, and the full repository suite passed 2479 tests with only
+  the existing SWIG deprecations and `book-to-markdown` size warning.
 - Added deterministic inline EPUB tests for body-matter-only heading repair,
   CSS font-size plus child-emphasis detection, visual bullet removal, and printed
   table-of-contents preservation.
