@@ -1,0 +1,165 @@
+#!/usr/bin/env bash
+# pick — randomly select a method tuple from the ideonomy catalog
+#
+# Usage:
+#   bin/pick                    # default: 2 operators, 1 organon, 3 dim-prompts
+#   bin/pick --more             # bigger tuple: 3 operators, 2 organons, 5 dim-prompts
+#   bin/pick --less             # smaller: 1 operator, 1 organon, 2 dim-prompts
+#   bin/pick --print            # only print the picks; don't cat the bodies
+#   bin/pick --random-org       # seed the picker from random.org (network)
+#   bin/pick --seed N           # deterministic pick for a given seed (no mtime side-effects)
+#
+# Silent behavior (no flags): each picked file is `touch`ed at the end. The
+# picker weights against recently-touched files (1-hour half-life), so the
+# catalog rotates naturally within a session — a method picked five minutes
+# ago is much less likely to be picked again. --seed mode skips the touch
+# so reproducibility is preserved.
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+METHODS="$ROOT/methods"
+HALF_LIFE=3600   # 1 hour, in seconds
+
+OPS_N=2
+ORG_N=1
+DIM_N=3
+PRINT_ONLY=0
+SEED=""
+SOURCE="local"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --print)       PRINT_ONLY=1; shift ;;
+    --random-org)  SOURCE="random.org"; shift ;;
+    --seed)        SEED="${2:-}"; shift 2 ;;
+    --more)        OPS_N=3; ORG_N=2; DIM_N=5; shift ;;
+    --less)        OPS_N=1; ORG_N=1; DIM_N=2; shift ;;
+    -h|--help)
+      sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'
+      exit 0
+      ;;
+    *)
+      echo "Unknown arg: $1" >&2
+      exit 2
+      ;;
+  esac
+done
+
+# Seed the bash RNG.
+if [[ -n "$SEED" ]]; then
+  RANDOM=$SEED
+elif [[ "$SOURCE" == "random.org" ]]; then
+  ENTROPY=$(curl -fsS --max-time 5 \
+    "https://www.random.org/integers/?num=1&min=0&max=32767&col=1&base=10&format=plain&rnd=new" \
+    2>/dev/null || true)
+  if [[ -n "${ENTROPY:-}" && "$ENTROPY" =~ ^[0-9]+$ ]]; then
+    RANDOM=$ENTROPY
+  else
+    echo "warning: random.org request failed, falling back to local entropy" >&2
+    RANDOM=$(( $(date +%s) ^ $$ ))
+  fi
+else
+  RANDOM=$(( $(date +%s) ^ $$ ))
+fi
+
+# Detect stat flavor (BSD/macOS vs GNU/Linux).
+if stat -f %m / >/dev/null 2>&1; then
+  STAT_MTIME=( -f %m )
+else
+  STAT_MTIME=( -c %Y )
+fi
+NOW=$(date +%s)
+
+# pick_n DIR N SEED — echo N files (one per line), weighted against recency.
+# Searches recursively under DIR. Skips README.md and files starting "_".
+# Under --seed, weighting is disabled so picks stay reproducible.
+pick_n() {
+  local dir="$1" n="$2" seed="$3"
+  if [[ ! -d "$dir" ]]; then return; fi
+  local weight_enabled=1
+  [[ -n "$SEED" ]] && weight_enabled=0
+  find "$dir" -type f -name '*.md' ! -name 'README.md' ! -name '_*' 2>/dev/null \
+    | sort \
+    | while read -r f; do
+        m=$(stat "${STAT_MTIME[@]}" "$f" 2>/dev/null || echo 0)
+        printf '%s\t%s\n' "$m" "$f"
+      done \
+    | awk -F'\t' -v seed="$seed" -v now="$NOW" -v half="$HALF_LIFE" -v weighted="$weight_enabled" '
+        BEGIN { srand(seed) }
+        {
+          mtime = $1
+          file  = $2
+          if (weighted) {
+            age   = now - mtime
+            if (age < 0) age = 0
+            penalty = exp(-age / half)   # ~1 just-touched, ~0 long-cold
+            score   = rand() + penalty   # bigger = less likely to be picked
+          } else {
+            score = rand()               # pure rand under --seed
+          }
+          print score "\t" file
+        }
+      ' \
+    | sort -k1,1n \
+    | head -"$n" \
+    | cut -f2-
+}
+
+# Pre-evaluate $RANDOM in the parent shell. In bash 3.2, $RANDOM inside a
+# command substitution's args is evaluated in the *subshell's* RNG, which has
+# its own (non-deterministic) seed — so reproducibility under --seed only
+# works if we capture the seeds here first.
+SEED_OPS=$RANDOM
+SEED_ORGS=$RANDOM
+SEED_DIMS=$RANDOM
+
+OPS=$(pick_n  "$METHODS/operators"          "$OPS_N" "$SEED_OPS")
+ORGS=$(pick_n "$METHODS/organons"           "$ORG_N" "$SEED_ORGS")
+DIMS=$(pick_n "$METHODS/dimension-prompts"  "$DIM_N" "$SEED_DIMS")
+
+# --- Header ---
+printf '=== IDEONOMY METHOD TUPLE (this invocation) ===\n\n'
+
+print_block() {
+  local label="$1" files="$2"
+  [[ -z "$files" ]] && return
+  printf '%s:\n' "$label"
+  while IFS= read -r f; do
+    [[ -z "$f" ]] && continue
+    name=$(basename "$f" .md)
+    printf '  - %s\n' "$name"
+  done <<< "$files"
+  printf '\n'
+}
+
+print_block "OPERATORS"         "$OPS"
+print_block "ORGANONS"          "$ORGS"
+print_block "DIMENSION-PROMPTS" "$DIMS"
+
+printf '==============================================\n'
+
+# --- Bodies ---
+if (( ! PRINT_ONLY )); then
+  cat_files() {
+    local files="$1"
+    [[ -z "$files" ]] && return
+    while IFS= read -r f; do
+      [[ -z "$f" ]] && continue
+      printf '\n----- %s -----\n' "$f"
+      cat "$f"
+    done <<< "$files"
+  }
+
+  cat_files "$OPS"
+  cat_files "$ORGS"
+  cat_files "$DIMS"
+fi
+
+# --- mtime memory: touch the picked files so they cool off in future picks.
+# Skipped under --seed for reproducible picks during testing/demo.
+if [[ -z "$SEED" ]]; then
+  printf '%s\n%s\n%s\n' "$OPS" "$ORGS" "$DIMS" | while IFS= read -r f; do
+    [[ -n "$f" ]] && touch "$f" 2>/dev/null || true
+  done
+fi
