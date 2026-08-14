@@ -1,6 +1,5 @@
 """Behavior checks for book-candidate comparison and delivery repair tools."""
 
-import sys
 import pathlib
 import zipfile
 import importlib
@@ -9,9 +8,6 @@ import importlib
 import pytest
 
 
-REPOSITORY_ROOT = pathlib.Path(__file__).resolve().parents[1]
-SCRIPT_DIRECTORY = REPOSITORY_ROOT / "skills/book-to-markdown/scripts"
-sys.path.insert(0, str(SCRIPT_DIRECTORY))
 MARKDOWN_QUALITY = importlib.import_module("markdown_quality")
 COMPARE = importlib.import_module("compare_markdown_candidates")
 VALIDATE = importlib.import_module("validate_markdown_delivery")

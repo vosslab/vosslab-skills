@@ -1,9 +1,8 @@
 """
 Forbid `..` relative paths that exit a skill's own folder.
 
-Skills get loaded from many places: the repo's own `skills/<name>/`, the user's
-personal overlay at `~/.claude/skills/<name>/`, marketplace plugin caches at
-`~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/skills/<name>/`, and
+Skills get loaded from many places: the repo's own `skills/<category>/<name>/`,
+the user's personal overlay, marketplace plugin caches, and
 symlinked installs. A markdown link like `[audit-code-reviewer](../audit-code-reviewer/SKILL.md)`
 or `[docs/PYTHON_STYLE.md](../../docs/PYTHON_STYLE.md)` only resolves when the
 skill lives under this repo's tree; in every other install location the `..`
@@ -54,13 +53,14 @@ def find_skill_markdown_files() -> list[pathlib.Path]:
 #============================================
 def skill_root_for(md_path: pathlib.Path) -> pathlib.Path:
 	"""
-	Return the skill folder that contains md_path: skills/<skill-name>/.
+	Return the nearest ancestor skill folder that contains md_path.
 	"""
-	# md_path is somewhere under SKILLS_DIR; walk up until the parent is SKILLS_DIR.
 	current = md_path.parent
-	while current.parent != SKILLS_DIR:
+	while current != SKILLS_DIR:
+		if (current / "SKILL.md").is_file():
+			return current
 		current = current.parent
-	return current
+	raise ValueError(f"Markdown file is not inside a skill folder: {md_path}")
 
 
 #============================================

@@ -5,6 +5,15 @@ names stay distinct, predictable, and free of collisions with plugin skills
 and Claude Code harness built-ins. Apply it to every skill under `skills/`
 in this repo and any sibling vosslab repos that ship skills.
 
+Category folders organize the catalog but do not change skill names or
+invocation syntax. Public skills live at
+`skills/<category>/<skill-name>/SKILL.md`; the final folder still matches the
+frontmatter `name` exactly. Categories follow workflow role rather than subject:
+`orient`, `plan`, `manage`, `experts`, `docs`, and `quality`. All `-expert` and
+`-engineer` skills belong in `experts`, where the shared parity rules apply.
+Use the primary role for hybrids; for example, a skill that coordinates a
+parallel build belongs in `manage` even when its deliverable is software.
+
 ## Rules
 
 1. **Front-load the distinguisher.** The first two hyphen-delimited tokens of a
@@ -14,7 +23,10 @@ in this repo and any sibling vosslab repos that ship skills.
 2. **First-3-character prefix uniqueness.** No two active vosslab skills may
    share the same first three characters. This is a stricter form of rule 1
    that catches near-collisions like `web-` vs `webwork-`. Skills prefixed
-   with `old-` are exempt (deprecation marker).
+   with `old-` are exempt (deprecation marker). A deliberate presentation
+   variant pair may be exempt only when each description names the selection
+   boundary and the pair is recorded in
+   `tools/list_loaded_skills.py INTENTIONAL_PREFIX_GROUPS`.
 3. **Avoid plugin and harness leading tokens.** Do not use a leading token
    that overlaps with a currently-loaded plugin skill or a harness built-in
    (see the reserved list below). Use

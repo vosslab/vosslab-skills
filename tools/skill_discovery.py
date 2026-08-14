@@ -5,6 +5,16 @@ import pathlib
 import subprocess
 
 
+SKILL_CATEGORIES = {
+	"orient": "Rules and authoring guidance loaded when an agent starts unfamiliar work.",
+	"plan": "Idea exploration and forward-looking plans used before implementation.",
+	"manage": "Delegation, parallel execution, monitoring, and multi-agent workflows.",
+	"experts": "Domain-specialist implementation workflows governed by expert-skill guidance.",
+	"docs": "Documentation creation, conversion, release notes, and visual capture.",
+	"quality": "Code review, auditing, and test generation during delivery.",
+}
+
+
 #============================================
 @dataclasses.dataclass(frozen=True)
 class SkippedSkill:
@@ -21,6 +31,26 @@ class SkillDiscovery:
 
 	skill_files: list[pathlib.Path]
 	skipped_skills: list[SkippedSkill]
+
+
+#============================================
+def skill_category(skill_file: pathlib.Path, skills_root: pathlib.Path) -> str:
+	"""Return and validate the category for a publishable skill path."""
+	relative_dir = skill_file.parent.relative_to(skills_root)
+	parts = relative_dir.parts
+	if len(parts) != 2:
+		raise ValueError(
+			"Skill folders must use skills/<category>/<skill-name>: "
+			+ relative_dir.as_posix()
+		)
+	category = parts[0]
+	if category not in SKILL_CATEGORIES:
+		known = ", ".join(SKILL_CATEGORIES)
+		raise ValueError(
+			f"Unknown skill category {category!r} for {relative_dir.as_posix()}; "
+			+ f"expected one of: {known}"
+		)
+	return category
 
 
 #============================================
@@ -75,12 +105,13 @@ def collect_skill_files(
 			skipped = SkippedSkill(skill_file, "system skill")
 			skipped_skills.append(skipped)
 			continue
-		if skill_file.parent.name.startswith("old-"):
-			skipped = SkippedSkill(skill_file, "deprecated old-* skill")
-			skipped_skills.append(skipped)
-			continue
 		if is_git_ignored(repo_root, skill_file):
 			skipped = SkippedSkill(skill_file, "git-ignored")
+			skipped_skills.append(skipped)
+			continue
+		skill_category(skill_file, skills_root)
+		if skill_file.parent.name.startswith("old-"):
+			skipped = SkippedSkill(skill_file, "deprecated old-* skill")
 			skipped_skills.append(skipped)
 			continue
 		skill_files.append(skill_file)

@@ -1,3 +1,25 @@
+# Standard Library
+import sys
+import pathlib
+
+# local repo modules
+import file_utils
+
+
+# Pytest owns the repository import environment. Tests can import shared tools
+# and book-conversion modules without depending on shell-specific PYTHONPATH.
+REPO_ROOT = pathlib.Path(file_utils.get_repo_root())
+TEST_IMPORT_PATHS = (
+	REPO_ROOT,
+	REPO_ROOT / "tools",
+	REPO_ROOT / "skills" / "docs" / "book-to-markdown" / "scripts",
+)
+for import_path in reversed(TEST_IMPORT_PATHS):
+	path_text = str(import_path)
+	if path_text not in sys.path:
+		sys.path.insert(0, path_text)
+
+
 # Exclude both end-to-end tiers from pytest collection. tests/playwright/
 # holds browser-driven tests (Playwright), and tests/e2e/ holds heavier
 # shell/Python whole-system runners. Both run outside pytest -- see
@@ -23,14 +45,16 @@ collect_ignore = ["e2e", "playwright"]
 #   - Recursive directory exclusions need an explicit /** because fnmatch's *
 #     does not cross "/". Use "temp_scripts/**" to exclude a whole subtree.
 #
-# This template has no repo-specific exclusions, so the registry is empty.
-# Example entries (commented out; this repo needs none):
+# Example entries:
 #   REPO_HYGIENE_FILTERS = {
 #       "all": ["temp_scripts/**", "TEMPLATE.py"],
 #       "ascii_compliance": ["human_readable-*.html"],
 #       "pyflakes_code_lint": ["devel/scratch_*.py"],
 #   }
-REPO_HYGIENE_FILTERS = {}
+REPO_HYGIENE_FILTERS = {
+	# These skills use intentional Unicode typography and terminal-art source data.
+	"ascii_compliance": ["skills/plan/ideonomy-*/**"],
+}
 
 # === OPTIONAL_HELPERS_MENU ===
 # See meta/docs/PROPAGATION_RULES.md for the managed-block propagation contract.
@@ -40,8 +64,8 @@ REPO_HYGIENE_FILTERS = {}
 # untouched consumer behaves exactly as it did before propagation added this
 # block.
 #
-# Note: inserting the repo root onto sys.path is now done unconditionally at the
-# top of this file via file_utils.get_repo_root(), so it is no longer a recipe.
+# Import paths are configured unconditionally at the top of this file, so they
+# are no longer a per-test or shell-setup responsibility.
 #
 # --- Recipe 1: redirect matplotlib config dir to a per-repo tmp location ---
 # Prevents matplotlib from writing to the home-directory config cache during

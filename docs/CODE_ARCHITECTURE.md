@@ -20,8 +20,8 @@ Version is tracked in [VERSION](../VERSION) and mirrored in the manifests.
 
 ## Major components
 
-- [skills/](../skills/): one folder per skill, each containing a `SKILL.md`
-  with frontmatter (`name`, `description`) and skill
+- [skills/](../skills/): category folders containing one directory per skill,
+  each with a `SKILL.md` carrying frontmatter (`name`, `description`) and skill
   instructions. These are the user-invocable units (for example
   `/vosslab-skills:audit-code-reviewer`).
 - [agents/](../agents/): per-role markdown files (`architect.md`,
@@ -29,8 +29,8 @@ Version is tracked in [VERSION](../VERSION) and mirrored in the manifests.
   `maintainer.md`, `monitor.md`, `orchestrator.md`, `parallelizer.md`,
   `planner.md`, `playwright_operator.md`, `reviewer.md`,
   `scheduler.md`, `tester.md`) used by orchestration skills such as
-  [skills/gas-town-workflow/SKILL.md](../skills/gas-town-workflow/SKILL.md)
-  and [skills/delegate-manager-to-subagents/SKILL.md](../skills/delegate-manager-to-subagents/SKILL.md).
+  [skills/manage/gas-town-workflow/SKILL.md](../skills/manage/gas-town-workflow/SKILL.md)
+  and [skills/manage/delegate-manager-to-subagents/SKILL.md](../skills/manage/delegate-manager-to-subagents/SKILL.md).
 - [tools/](../tools/): Python and shell generators run from the repo root.
   - [tools/build_skills_index.py](../tools/build_skills_index.py) regenerates
     [docs/SKILLS_INDEX.md](SKILLS_INDEX.md) from `skills/**/SKILL.md`.
@@ -77,7 +77,8 @@ Primary use case (invoke a skill):
 1. The user installs the plugin via `claude plugin marketplace add vosslab/vosslab-skills`
    then `claude plugin install vosslab-skills@vosslab-skills`, or clones the repo
    locally; [docs/INSTALL.md](INSTALL.md) covers both paths.
-2. Claude Code (or Codex / Gemini) discovers each `skills/<name>/SKILL.md`
+2. Claude Code (or Codex / Gemini) discovers each
+   `skills/<category>/<name>/SKILL.md`
    and loads its frontmatter for triggering.
 3. The user invokes a skill by name (for example
    `/vosslab-skills:arch-docs`).
@@ -103,9 +104,9 @@ See [docs/PLAYWRIGHT_USAGE.md](PLAYWRIGHT_USAGE.md).
 
 ## Extension points
 
-- Add a new skill: create `skills/<new-skill>/SKILL.md` following
+- Add a new skill: create `skills/<category>/<new-skill>/SKILL.md` following
   [docs/SKILL_NAMING.md](SKILL_NAMING.md) and the
-  [skills/skill-writing-guide/SKILL.md](../skills/skill-writing-guide/SKILL.md)
+  [skills/orient/skill-writing-guide/SKILL.md](../skills/orient/skill-writing-guide/SKILL.md)
   guide; for the expert-skill subclass (naming, skeleton, survey pattern) see
   [docs/EXPERT_SKILL-BEST_PRACTICES.md](EXPERT_SKILL-BEST_PRACTICES.md);
   regenerate [docs/SKILLS_INDEX.md](SKILLS_INDEX.md) with

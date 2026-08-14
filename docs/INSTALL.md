@@ -58,11 +58,14 @@ If you only want specific skills rather than the full set, copy the skill folder
 
 ```bash
 git clone https://github.com/vosslab/vosslab-skills.git /tmp/vosslab-skills
-cp -r /tmp/vosslab-skills/skills/old-python-code-review ./skills/
-cp -r /tmp/vosslab-skills/skills/readme-docs ./skills/
+cp -r /tmp/vosslab-skills/skills/quality/audit-code-reviewer ./skills/
+cp -r /tmp/vosslab-skills/skills/docs/readme-docs ./skills/
 ```
 
-Each skill is self-contained in its `skills/<name>/` folder. The `SKILL.md` file is the entry point; some skills also include `references/` and `agents/` subdirectories.
+Each skill is self-contained in its `skills/<category>/<name>/` source folder.
+Copying that folder into another skill root keeps the skill portable. The
+`SKILL.md` file is the entry point; some skills also include `references/` and
+`agents/` subdirectories.
 
 ## Verify install
 

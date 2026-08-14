@@ -17,16 +17,17 @@ import file_utils
 REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 
+import skill_discovery
+import list_loaded_skills
+
 PREFIX_LEN = 3
 
 
 #============================================
 def active_skill_names() -> list[str]:
-	"""Return non-old-* skill directory names."""
-	return sorted(
-		d.name for d in SKILLS_DIR.iterdir()
-		if d.is_dir() and not d.name.startswith("old-")
-	)
+	"""Return names for every publishable skill across category folders."""
+	discovery = skill_discovery.collect_skill_files(pathlib.Path(REPO_ROOT), SKILLS_DIR)
+	return sorted(skill_file.parent.name for skill_file in discovery.skill_files)
 
 
 #============================================
@@ -46,6 +47,7 @@ def test_active_skills_have_unique_3char_prefix() -> None:
 	collisions = [
 		(prefix, members) for prefix, members in by_prefix.items()
 		if len(members) > 1
+		and frozenset(members) not in list_loaded_skills.INTENTIONAL_PREFIX_GROUPS
 	]
 	if collisions:
 		lines = []

@@ -16,6 +16,8 @@ import file_utils
 REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 
+import skill_discovery
+
 REQUIRED_KEYS = ("name", "description")
 MAX_DESCRIPTION_CHARS = 1024
 
@@ -59,27 +61,9 @@ def parse_frontmatter(text: str) -> dict:
 
 #============================================
 def list_skill_dirs() -> list[pathlib.Path]:
-	"""Return every direct subdirectory of skills/ as Path objects.
-
-	Hidden dot-prefixed directories like `.system/` are excluded - those
-	are local configuration/scratch areas, not skills.
-	"""
-	return sorted([
-		d for d in SKILLS_DIR.iterdir()
-		if d.is_dir() and not d.name.startswith(".")
-	])
-
-
-#============================================
-def test_every_skill_has_skill_md() -> None:
-	"""Every skill directory must contain a SKILL.md file."""
-	missing = []
-	for skill_dir in list_skill_dirs():
-		if not (skill_dir / "SKILL.md").is_file():
-			missing.append(skill_dir.name)
-	assert not missing, (
-		f"{len(missing)} skill folder(s) missing SKILL.md: {', '.join(missing)}"
-	)
+	"""Return every publishable skill directory at a supported category path."""
+	discovery = skill_discovery.collect_skill_files(pathlib.Path(REPO_ROOT), SKILLS_DIR)
+	return [skill_file.parent for skill_file in discovery.skill_files]
 
 
 #============================================

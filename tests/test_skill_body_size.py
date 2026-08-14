@@ -7,6 +7,8 @@ import file_utils
 
 REPO_ROOT = pathlib.Path(file_utils.get_repo_root())
 SKILLS_DIR = REPO_ROOT / "skills"
+
+import skill_discovery
 WARN_LINES = 300
 WARN_CHARS = 24_000
 
@@ -14,11 +16,8 @@ WARN_CHARS = 24_000
 #============================================
 def _authored_skill_files() -> list[pathlib.Path]:
 	"""Return non-system SKILL.md files authored in this repository."""
-	return sorted(
-		path
-		for path in SKILLS_DIR.glob("*/SKILL.md")
-		if not path.parent.name.startswith(".")
-	)
+	discovery = skill_discovery.collect_skill_files(REPO_ROOT, SKILLS_DIR)
+	return discovery.skill_files
 
 
 #============================================

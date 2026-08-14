@@ -6,8 +6,7 @@ import sys
 
 
 REPOSITORY_ROOT = pathlib.Path(__file__).resolve().parents[1]
-MODULE_PATH = REPOSITORY_ROOT / "skills/book-to-markdown/scripts/clean_markdown.py"
-sys.path.insert(0, str(MODULE_PATH.parent))
+MODULE_PATH = REPOSITORY_ROOT / "skills/docs/book-to-markdown/scripts/clean_markdown.py"
 SPEC = importlib.util.spec_from_file_location("clean_markdown_test_module", MODULE_PATH)
 MODULE = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = MODULE

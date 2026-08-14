@@ -37,6 +37,13 @@ HARNESS_BUILTINS = {
 # them are acceptable and not interesting).
 MIN_PREFIX_CHARS = 3
 
+# Deliberate presentation variants share one conceptual namespace. Their
+# descriptions make the output-channel boundary explicit, so they are not
+# ambiguous activation collisions.
+INTENTIONAL_PREFIX_GROUPS = {
+	frozenset({"ideonomy-plain", "ideonomy-rich"}),
+}
+
 
 #============================================================
 # Helper functions
@@ -85,32 +92,37 @@ def read_installed_plugins() -> list:
 	return result
 
 
+def find_skill_files(skills_dir: pathlib.Path) -> list[pathlib.Path]:
+	"""Return nested SKILL.md files while excluding hidden category trees."""
+	return sorted(
+		skill_md for skill_md in skills_dir.rglob("SKILL.md")
+		if not any(
+			part.startswith(".")
+			for part in skill_md.relative_to(skills_dir).parts[:-1]
+		)
+	)
+
+
 def collect_skills() -> list:
 	"""Collect skills from all sources (repo, personal, plugins, harness)."""
 	skills = []
 	repo_root = get_repo_root()
 
-	# Repo skills: <repo>/skills/*/
+	# Repo skills: <repo>/skills/<category>/<skill>/
 	if repo_root:
 		repo_skills_dir = pathlib.Path(repo_root) / "skills"
 		if repo_skills_dir.is_dir():
-			for skill_dir in repo_skills_dir.iterdir():
-				if skill_dir.is_dir():
-					skill_md = skill_dir / "SKILL.md"
-					if skill_md.is_file():
-						skills.append((skill_dir.name, "repo", skill_md))
+			for skill_md in find_skill_files(repo_skills_dir):
+				skills.append((skill_md.parent.name, "repo", skill_md))
 
-	# Personal skills: ~/.claude/skills/*/
+	# Personal skills may be flat or organized into category folders.
 	personal_skills_dir = pathlib.Path.home() / ".claude" / "skills"
 	if personal_skills_dir.is_dir():
-		for skill_dir in personal_skills_dir.iterdir():
-			if skill_dir.is_dir():
-				skill_md = skill_dir / "SKILL.md"
-				if skill_md.is_file():
-					skills.append((skill_dir.name, "personal", skill_md))
+		for skill_md in find_skill_files(personal_skills_dir):
+			skills.append((skill_md.parent.name, "personal", skill_md))
 
 	# Plugin skills: read active install paths from installed_plugins.json
-	# and walk <install_path>/skills/<skill>/SKILL.md. This avoids guessing
+	# and walk every nested SKILL.md below <install_path>/skills/. This avoids guessing
 	# the cache layout (cache/<marketplace>/<plugin>/<version>/skills/...)
 	# and ensures we only see currently-installed plugins (no stale cached versions).
 	installed_plugins = read_installed_plugins()
@@ -118,12 +130,9 @@ def collect_skills() -> list:
 		plugin_skills_dir = install_path / "skills"
 		if not plugin_skills_dir.is_dir():
 			continue
-		for skill_dir in plugin_skills_dir.iterdir():
-			if skill_dir.is_dir():
-				skill_md = skill_dir / "SKILL.md"
-				if skill_md.is_file():
-					source = f"plugin:{plugin_name}"
-					skills.append((skill_dir.name, source, skill_md))
+		for skill_md in find_skill_files(plugin_skills_dir):
+			source = f"plugin:{plugin_name}"
+			skills.append((skill_md.parent.name, source, skill_md))
 
 	# Harness builtins
 	for name in HARNESS_BUILTINS:
@@ -223,6 +232,8 @@ def find_prefix_collisions(name: str, all_names: list) -> list:
 		if other == name:
 			continue
 		if other.startswith("old-"):
+			continue
+		if frozenset({name, other}) in INTENTIONAL_PREFIX_GROUPS:
 			continue
 		if longest_common_prefix_len(name, other) >= MIN_PREFIX_CHARS:
 			collisions.append(other)

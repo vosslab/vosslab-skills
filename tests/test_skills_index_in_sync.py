@@ -8,13 +8,9 @@ ordering or descriptions, so cosmetic edits to the index don't fail.
 """
 
 import re
-import sys
 import pathlib
 
 import file_utils
-
-TOOLS_DIR = pathlib.Path(__file__).resolve().parent.parent / "tools"
-sys.path.insert(0, str(TOOLS_DIR))
 
 import skill_discovery
 

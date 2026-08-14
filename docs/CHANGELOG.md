@@ -1,3 +1,48 @@
+## 2026-08-13
+
+### Behavior or Interface Changes
+
+- Organized every tracked public and deprecated skill under one of six
+  workflow-role categories: `orient`, `plan`, `manage`, `experts`, `docs`, and
+  `quality`. Moved all 40 skill directories with `git mv` so history remains
+  traceable while invocation names and frontmatter names stay unchanged.
+- Made `skills/<category>/<skill-name>/` the enforced public layout. Shared
+  discovery now rejects flat skills, unknown categories, and deeper category
+  nesting, while continuing to exclude `.system/`, gitignored, and `old-*`
+  skills from publication as appropriate.
+- Grouped the generated skills index by category and taught the loaded-skill
+  listing, metadata gates, expert-parity gate, path-boundary checks, and
+  supporting tests to discover nested skill directories.
+- Made `experts` the single home for all 16 domain specialist skills so its
+  contents are governed directly by the shared expert-skill parity standard.
+
+### Fixes and Maintenance
+
+- Updated active documentation, examples, archived changelog links, script
+  output, and test module paths to the categorized skill locations.
+- Registered the intentional `ideonomy-plain` / `ideonomy-rich` presentation
+  pair as a naming-prefix exception with explicit activation boundaries, and
+  scoped the ASCII hygiene exception to their deliberate Unicode typography
+  and terminal-art source data.
+- Moved `color-accessibility-expert` compatibility metadata under the standard
+  `metadata` frontmatter key so every moved skill passes the bundled validator.
+- Centralized repository and skill-script import paths in `tests/conftest.py`
+  so plain `pytest tests/` owns its environment instead of relying on shell
+  `PYTHONPATH` edits in individual test modules. Deferred `pymupdf4llm` loading
+  until structured PDF extraction so its absence does not block collection of
+  unrelated book-tool tests.
+
+### Developer Tests and Notes
+
+- Regenerated `docs/SKILLS_INDEX.md` and all Claude, Codex, Cursor, and OpenCode
+  plugin artifacts. Both `tools/build_skills_index.py --check` and
+  `tools/build_plugin_manifest.py --check` report 39 included publishable skills
+  and clean generated outputs.
+- Validated all 40 categorized skill folders with `quick_validate.py`.
+- Passed all 2872 repository tests with six advisory or dependency warnings by
+  running plain `pytest tests/`; `pymupdf4llm` remains absent from the current
+  environment but is required only when structured PDF extraction runs.
+
 ## 2026-08-10
 
 ### Additions and New Features

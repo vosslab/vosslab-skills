@@ -4,7 +4,7 @@ skills/.system/
 skills/codex-primary-runtime/
 docs/superpowers/
 # Optional large reference corpora live at
-# skills/<skill>/references/local-only/. They are intentionally machine-local,
+# skills/<category>/<skill>/references/local-only/. They are intentionally machine-local,
 # absent from published plugins, and indexed by committed local_books.md and
 # reference_survey.md files. Do not create a sibling skill directory for them.
 local-only/
@@ -22,7 +22,6 @@ sdist/
 *.egg
 *.egg-info/
 site/
-
 
 
 

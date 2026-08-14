@@ -10,7 +10,12 @@ import file_utils
 
 REPO_ROOT = file_utils.get_repo_root()
 _MODULE_PATH = os.path.join(
-	REPO_ROOT, "skills", "color-accessibility-expert", "scripts", "color_utils.py"
+	REPO_ROOT,
+	"skills",
+	"experts",
+	"color-accessibility-expert",
+	"scripts",
+	"color_utils.py",
 )
 _SPEC = importlib.util.spec_from_file_location("color_utils", _MODULE_PATH)
 color_utils = importlib.util.module_from_spec(_SPEC)

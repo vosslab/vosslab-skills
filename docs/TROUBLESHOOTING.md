@@ -2,7 +2,7 @@
 
 ## Skill file not found
 
-- Confirm the path exists: `ls skills/<skill-name>/SKILL.md`.
+- Confirm the path exists: `ls skills/<category>/<skill-name>/SKILL.md`.
 - Check spelling and case of the skill name.
 
 ## Missing docs links

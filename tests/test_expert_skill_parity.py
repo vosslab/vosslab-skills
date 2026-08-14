@@ -7,9 +7,9 @@ routing / workflow / testing guides), and each book-backed skill additionally
 ships the two committed corpus files. The gate catches future drift so
 "consistent" stays true without a human re-reading every skill.
 
-Expert skills are discovered by directory suffix (`-expert` / `-engineer`)
-under skills/, minus the PENDING_PARITY set, so a new expert skill is gated
-automatically. Book-backed membership is derived from the committed
+Expert skills are discovered from `skills/experts/`, minus the PENDING_PARITY
+set, so every skill filed as an expert is gated automatically. Expert folder
+names retain the `-expert` / `-engineer` convention. Book-backed membership is derived from the committed
 `reference_survey.md` / `local_books.md` pair, so discovery works on a clean
 clone without a maintained name roster or the gitignored local-only/ corpus.
 
@@ -57,29 +57,25 @@ import file_utils
 
 REPO_ROOT = pathlib.Path(file_utils.get_repo_root())
 SKILLS_DIR = REPO_ROOT / "skills"
+EXPERTS_DIR = SKILLS_DIR / "experts"
 
-# Expert skills are discovered by the naming convention (docs/SKILL_NAMING.md):
-# every skills/ directory ending in -expert or -engineer is gated, so a new
-# expert skill is covered here with no roster edit. Directory names are always
-# present on a clean clone, so suffix discovery is deterministic.
+# Expert skills have a dedicated workflow-role category. The suffix convention
+# remains a naming guard, while category membership controls parity coverage.
 EXPERT_SUFFIXES = ("-expert", "-engineer")
-# Temporary escape hatch: name a suffix-matched skill here while it is being
+# Temporary escape hatch: name an expert skill here while it is being
 # brought up to parity, then delete its entry. Keep this empty in steady state.
 PENDING_PARITY: frozenset = frozenset()
 
 
 #============================================
 def discover_expert_skills() -> tuple:
-	"""Return sorted expert skill names discovered by directory suffix."""
+	"""Return sorted expert skill paths from the dedicated category."""
 	names = []
-	for entry in sorted(SKILLS_DIR.iterdir()):
-		if not entry.is_dir() or entry.name.startswith('.'):
+	for skill_md in sorted(EXPERTS_DIR.glob("*/SKILL.md")):
+		skill_dir = skill_md.parent
+		if skill_dir.name in PENDING_PARITY:
 			continue
-		if not entry.name.endswith(EXPERT_SUFFIXES):
-			continue
-		if entry.name in PENDING_PARITY:
-			continue
-		names.append(entry.name)
+		names.append(skill_dir.relative_to(SKILLS_DIR).as_posix())
 	return tuple(names)
 
 
@@ -283,24 +279,33 @@ def check_skill(skill_dir: pathlib.Path, skill_name: str) -> list[str]:
 
 
 #============================================
-@pytest.mark.parametrize("skill_name", EXPERT_SKILLS)
-def test_expert_skill_parity(skill_name: str) -> None:
+@pytest.mark.parametrize("skill_path", EXPERT_SKILLS)
+def test_expert_skill_parity(skill_path: str) -> None:
 	"""Every live expert skill satisfies the required-set parity standard."""
-	skill_dir = SKILLS_DIR / skill_name
+	skill_dir = SKILLS_DIR / skill_path
+	skill_name = skill_dir.name
 	problems = check_skill(skill_dir, skill_name)
 	assert not problems, "parity gaps:\n" + "\n".join(problems)
 
 
 #============================================
 def test_discovery_finds_experts() -> None:
-	"""Canary: suffix discovery yields a non-empty roster.
+	"""Canary: category discovery yields the reference implementation.
 
 	An empty EXPERT_SKILLS would make the parametrized gate above generate
 	zero tests and pass silently while gating nothing. geometry-expert is the
 	reference implementation and always present, so its absence means
 	discovery itself broke (wrong root, renamed directory), not the skill.
 	"""
-	assert "geometry-expert" in EXPERT_SKILLS
+	assert "experts/geometry-expert" in EXPERT_SKILLS
+
+
+#============================================
+def test_expert_category_uses_expert_names() -> None:
+	"""Every skill in the expert category retains the specialist suffix."""
+	invalid = [path for path in EXPERT_SKILLS if not path.endswith(EXPERT_SUFFIXES)]
+	message = "expert skills need -expert or -engineer names: " + ", ".join(invalid)
+	assert not invalid, message
 
 
 # ---------------------------------------------------------------------------

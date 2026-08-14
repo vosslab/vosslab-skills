@@ -12,6 +12,8 @@ import file_utils
 REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 
+import skill_discovery
+
 REQUIRED_KEYS = ("name", "description")
 SKILL_NAME_PATTERN = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 MAX_NAME_CHARS = 64
@@ -57,11 +59,9 @@ def parse_codex_frontmatter(skill_md: pathlib.Path) -> dict:
 
 #============================================
 def list_skill_dirs() -> list[pathlib.Path]:
-	"""Return every direct non-system skill directory."""
-	return sorted([
-		d for d in SKILLS_DIR.iterdir()
-		if d.is_dir() and not d.name.startswith(".")
-	])
+	"""Return every publishable skill directory at a supported category path."""
+	discovery = skill_discovery.collect_skill_files(pathlib.Path(REPO_ROOT), SKILLS_DIR)
+	return [skill_file.parent for skill_file in discovery.skill_files]
 
 
 #============================================

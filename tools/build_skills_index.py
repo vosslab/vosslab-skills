@@ -83,14 +83,23 @@ def render_index(skill_files: list[Path]) -> str:
 		"Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.",
 		"",
 		f"Total skills: {len(skill_files)}",
-		"",
 	]
 
-	for skill_file in skill_files:
-		skill_name = skill_file.parent.relative_to(SKILLS_ROOT).as_posix()
-		rel_link = "../" + skill_file.relative_to(REPO_ROOT).as_posix()
-		description = first_sentence(extract_description(skill_file.read_text(encoding="utf-8")))
-		lines.append(f"- [{skill_name}/SKILL.md]({rel_link}): {description}")
+	for category, category_description in skill_discovery.SKILL_CATEGORIES.items():
+		category_files = [
+			skill_file for skill_file in skill_files
+			if skill_discovery.skill_category(skill_file, SKILLS_ROOT) == category
+		]
+		if not category_files:
+			continue
+		category_title = category.replace("-", " ").capitalize()
+		lines.extend(["", f"## {category_title}", "", category_description, ""])
+		for skill_file in category_files:
+			skill_name = skill_file.parent.relative_to(SKILLS_ROOT).as_posix()
+			rel_link = "../" + skill_file.relative_to(REPO_ROOT).as_posix()
+			text = skill_file.read_text(encoding="utf-8")
+			description = first_sentence(extract_description(text))
+			lines.append(f"- [{skill_name}/SKILL.md]({rel_link}): {description}")
 
 	return "\n".join(lines) + "\n"
 

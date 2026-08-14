@@ -4,42 +4,73 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 37
+Total skills: 39
 
-- [agents-md-fixer/SKILL.md](../skills/agents-md-fixer/SKILL.md): Trim bloated `AGENTS.md` files into concise pointers to canonical `docs/*.md` rules.
-- [arch-docs/SKILL.md](../skills/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from repository evidence.
-- [audit-code-reviewer/SKILL.md](../skills/audit-code-reviewer/SKILL.md): Parallel multi-reviewer audit launched before merge or release; not for single-pass review.
-- [blueprint-plan-drafter/SKILL.md](../skills/blueprint-plan-drafter/SKILL.md): Create forward-looking implementation plans without writing code.
-- [book-to-markdown/SKILL.md](../skills/book-to-markdown/SKILL.md): Convert technical/scientific books from PDF, EPUB, HTML, DOCX, ODT, Markdown, or text into one page-free Markdown file per title.
-- [bptools-writer-expert/SKILL.md](../skills/bptools-writer-expert/SKILL.md): Create, edit, and validate biology-problems bptools Python question generators and YAML content.
-- [color-accessibility-expert/SKILL.md](../skills/color-accessibility-expert/SKILL.md): Detect and fix WCAG color-contrast failures in source files and images using measured, hue-preserving replacements.
-- [css-creative-expert/SKILL.md](../skills/css-creative-expert/SKILL.md): Design, implement, debug, and review polished CSS.
-- [delegate-manager-to-subagents/SKILL.md](../skills/delegate-manager-to-subagents/SKILL.md): Manage execution of an approved plan through subagents.
-- [docset-updater/SKILL.md](../skills/docset-updater/SKILL.md): Refresh a repository's complete documentation set through the specialized documentation skills in dependency order, then audit unowned docs.
-- [gas-town-workflow/SKILL.md](../skills/gas-town-workflow/SKILL.md): Coordinate agents with Gas Town role mapping and convoy-based task decomposition.
-- [geometry-expert/SKILL.md](../skills/geometry-expert/SKILL.md): Design, implement, debug, and review computational geometry.
-- [glass-expert/SKILL.md](../skills/glass-expert/SKILL.md): Design, implement, verify, and debug Apple Liquid Glass in SwiftUI on macOS 26+ and iOS 26.
-- [hang-check/SKILL.md](../skills/hang-check/SKILL.md): Watch running background agents for evidence of a genuine stall without killing healthy work.
-- [html-game-parallel-builder/SKILL.md](../skills/html-game-parallel-builder/SKILL.md): Build modular TypeScript browser games with parallel agents.
-- [human-interact-expert/SKILL.md](../skills/human-interact-expert/SKILL.md): Design and evaluate human-computer interaction methods.
-- [news-release-docs/SKILL.md](../skills/news-release-docs/SKILL.md): Create or refresh `docs/RELEASE_HISTORY.md` and `docs/NEWS.md` from the changelog, plus release-note input for `devel/make_release.py`.
-- [parallel-plan/SKILL.md](../skills/parallel-plan/SKILL.md): In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that).
-- [pdf-guide/SKILL.md](../skills/pdf-guide/SKILL.md): Use when tasks involve reading, creating, or reviewing PDF files where rendering and layout matter; prefer visual checks by rendering pages (Poppler) and use Python tools such as `reportlab`, `pdfplumber`, and `pypdf` for generation and extraction.
-- [podman-expert/SKILL.md](../skills/podman-expert/SKILL.md): Engineer rootless Podman containers, pods, Containerfile/Buildah builds, images, registries, Skopeo, volumes, compose, Quadlet/systemd, networking, podman kube generate, and macOS podman machine.
-- [postgresql-expert/SKILL.md](../skills/postgresql-expert/SKILL.md): Design, tune, migrate, and operate PostgreSQL databases.
-- [pyside6-engineer/SKILL.md](../skills/pyside6-engineer/SKILL.md): Design, implement, refactor, and review PySide6 desktop applications.
-- [readme-docs/SKILL.md](../skills/readme-docs/SKILL.md): Create or refresh a distinctive, evidence-backed `README.md` landing page for newcomers.
-- [repo-rules-reader/SKILL.md](../skills/repo-rules-reader/SKILL.md): Load required repo rules before coding, reviewing, or delegating.
-- [rust-code-expert/SKILL.md](../skills/rust-code-expert/SKILL.md): Engineer idiomatic Rust with ownership, borrow checker, lifetimes, traits, cargo, clippy, async/Tokio, unsafe, FFI/PyO3, Result error handling, CLI tools, and performance.
-- [screenshot-docs/SKILL.md](../skills/screenshot-docs/SKILL.md): Capture static screenshots or short GIF demonstrations of a GUI, CLI, or web app and embed them in README or docs.
-- [see-also-docs/SKILL.md](../skills/see-also-docs/SKILL.md): Create or refresh `docs/RELATED_PROJECTS.md` using repository evidence and bounded web research.
-- [setup-install-usage-docs/SKILL.md](../skills/setup-install-usage-docs/SKILL.md): Create or refresh `docs/INSTALL.md` and `docs/USAGE.md` from repository evidence.
-- [skill-writing-guide/SKILL.md](../skills/skill-writing-guide/SKILL.md): Author and improve Agent Skills following the open standard.
-- [solid-js-expert/SKILL.md](../skills/solid-js-expert/SKILL.md): Design, build, debug, and review SolidJS and SolidStart applications.
-- [stay-busy/SKILL.md](../skills/stay-busy/SKILL.md): Keep an agent manager productive through safe, evidence-producing follow-on work.
-- [typescript-engineer/SKILL.md](../skills/typescript-engineer/SKILL.md): Resolve TypeScript errors, remove `any`, and design strict, modular types.
-- [ui-ux-engineer/SKILL.md](../skills/ui-ux-engineer/SKILL.md): Review, improve, and engineer UI/UX quality in any framework.
-- [unit-test-starter/SKILL.md](../skills/unit-test-starter/SKILL.md): Generate thorough Python 3 pytest unit tests across a repo by scanning Python files.
-- [vision-expert/SKILL.md](../skills/vision-expert/SKILL.md): Design, implement, debug, and review Python computer-vision systems.
-- [wasm-rust-expert/SKILL.md](../skills/wasm-rust-expert/SKILL.md): WebAssembly, wasm-bindgen, wasm-pack, web-sys, wasm32 targets, WASI, browser Canvas, and Wasm performance engineering.
-- [webwork-writer-expert/SKILL.md](../skills/webwork-writer-expert/SKILL.md): Create, edit, and lint WeBWorK PG/PGML questions.
+## Orient
+
+Rules and authoring guidance loaded when an agent starts unfamiliar work.
+
+- [orient/repo-rules-reader/SKILL.md](../skills/orient/repo-rules-reader/SKILL.md): Load required repo rules before coding, reviewing, or delegating.
+- [orient/skill-writing-guide/SKILL.md](../skills/orient/skill-writing-guide/SKILL.md): Author and improve Agent Skills following the open standard.
+
+## Plan
+
+Idea exploration and forward-looking plans used before implementation.
+
+- [plan/blueprint-plan-drafter/SKILL.md](../skills/plan/blueprint-plan-drafter/SKILL.md): Create forward-looking implementation plans without writing code.
+- [plan/ideonomy-plain/SKILL.md](../skills/plan/ideonomy-plain/SKILL.md): Expand, vary, invert, or recombine an idea with randomized ideonomy methods.
+- [plan/ideonomy-rich/SKILL.md](../skills/plan/ideonomy-rich/SKILL.md): Expand an idea with randomized ideonomy methods and expressive monospace art.
+
+## Manage
+
+Delegation, parallel execution, monitoring, and multi-agent workflows.
+
+- [manage/delegate-manager-to-subagents/SKILL.md](../skills/manage/delegate-manager-to-subagents/SKILL.md): Manage execution of an approved plan through subagents.
+- [manage/gas-town-workflow/SKILL.md](../skills/manage/gas-town-workflow/SKILL.md): Coordinate agents with Gas Town role mapping and convoy-based task decomposition.
+- [manage/hang-check/SKILL.md](../skills/manage/hang-check/SKILL.md): Watch running background agents for evidence of a genuine stall without killing healthy work.
+- [manage/html-game-parallel-builder/SKILL.md](../skills/manage/html-game-parallel-builder/SKILL.md): Build modular TypeScript browser games with parallel agents.
+- [manage/parallel-plan/SKILL.md](../skills/manage/parallel-plan/SKILL.md): In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that).
+- [manage/stay-busy/SKILL.md](../skills/manage/stay-busy/SKILL.md): Keep an agent manager productive through safe, evidence-producing follow-on work.
+
+## Experts
+
+Domain-specialist implementation workflows governed by expert-skill guidance.
+
+- [experts/bptools-writer-expert/SKILL.md](../skills/experts/bptools-writer-expert/SKILL.md): Create, edit, and validate biology-problems bptools Python question generators and YAML content.
+- [experts/color-accessibility-expert/SKILL.md](../skills/experts/color-accessibility-expert/SKILL.md): Detect and fix WCAG color-contrast failures in source files and images using measured, hue-preserving replacements.
+- [experts/css-creative-expert/SKILL.md](../skills/experts/css-creative-expert/SKILL.md): Design, implement, debug, and review polished CSS.
+- [experts/geometry-expert/SKILL.md](../skills/experts/geometry-expert/SKILL.md): Design, implement, debug, and review computational geometry.
+- [experts/glass-expert/SKILL.md](../skills/experts/glass-expert/SKILL.md): Design, implement, verify, and debug Apple Liquid Glass in SwiftUI on macOS 26+ and iOS 26.
+- [experts/human-interact-expert/SKILL.md](../skills/experts/human-interact-expert/SKILL.md): Design and evaluate human-computer interaction methods.
+- [experts/podman-expert/SKILL.md](../skills/experts/podman-expert/SKILL.md): Engineer rootless Podman containers, pods, Containerfile/Buildah builds, images, registries, Skopeo, volumes, compose, Quadlet/systemd, networking, podman kube generate, and macOS podman machine.
+- [experts/postgresql-expert/SKILL.md](../skills/experts/postgresql-expert/SKILL.md): Design, tune, migrate, and operate PostgreSQL databases.
+- [experts/pyside6-engineer/SKILL.md](../skills/experts/pyside6-engineer/SKILL.md): Design, implement, refactor, and review PySide6 desktop applications.
+- [experts/rust-code-expert/SKILL.md](../skills/experts/rust-code-expert/SKILL.md): Engineer idiomatic Rust with ownership, borrow checker, lifetimes, traits, cargo, clippy, async/Tokio, unsafe, FFI/PyO3, Result error handling, CLI tools, and performance.
+- [experts/solid-js-expert/SKILL.md](../skills/experts/solid-js-expert/SKILL.md): Design, build, debug, and review SolidJS and SolidStart applications.
+- [experts/typescript-engineer/SKILL.md](../skills/experts/typescript-engineer/SKILL.md): Resolve TypeScript errors, remove `any`, and design strict, modular types.
+- [experts/ui-ux-engineer/SKILL.md](../skills/experts/ui-ux-engineer/SKILL.md): Review, improve, and engineer UI/UX quality in any framework.
+- [experts/vision-expert/SKILL.md](../skills/experts/vision-expert/SKILL.md): Design, implement, debug, and review Python computer-vision systems.
+- [experts/wasm-rust-expert/SKILL.md](../skills/experts/wasm-rust-expert/SKILL.md): WebAssembly, wasm-bindgen, wasm-pack, web-sys, wasm32 targets, WASI, browser Canvas, and Wasm performance engineering.
+- [experts/webwork-writer-expert/SKILL.md](../skills/experts/webwork-writer-expert/SKILL.md): Create, edit, and lint WeBWorK PG/PGML questions.
+
+## Docs
+
+Documentation creation, conversion, release notes, and visual capture.
+
+- [docs/agents-md-fixer/SKILL.md](../skills/docs/agents-md-fixer/SKILL.md): Trim bloated `AGENTS.md` files into concise pointers to canonical `docs/*.md` rules.
+- [docs/arch-docs/SKILL.md](../skills/docs/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from repository evidence.
+- [docs/book-to-markdown/SKILL.md](../skills/docs/book-to-markdown/SKILL.md): Convert technical/scientific books from PDF, EPUB, HTML, DOCX, ODT, Markdown, or text into one page-free Markdown file per title.
+- [docs/docset-updater/SKILL.md](../skills/docs/docset-updater/SKILL.md): Refresh a repository's complete documentation set through the specialized documentation skills in dependency order, then audit unowned docs.
+- [docs/news-release-docs/SKILL.md](../skills/docs/news-release-docs/SKILL.md): Create or refresh `docs/RELEASE_HISTORY.md` and `docs/NEWS.md` from the changelog, plus release-note input for `devel/make_release.py`.
+- [docs/pdf-guide/SKILL.md](../skills/docs/pdf-guide/SKILL.md): Use when tasks involve reading, creating, or reviewing PDF files where rendering and layout matter; prefer visual checks by rendering pages (Poppler) and use Python tools such as `reportlab`, `pdfplumber`, and `pypdf` for generation and extraction.
+- [docs/readme-docs/SKILL.md](../skills/docs/readme-docs/SKILL.md): Create or refresh a distinctive, evidence-backed `README.md` landing page for newcomers.
+- [docs/screenshot-docs/SKILL.md](../skills/docs/screenshot-docs/SKILL.md): Capture static screenshots or short GIF demonstrations of a GUI, CLI, or web app and embed them in README or docs.
+- [docs/see-also-docs/SKILL.md](../skills/docs/see-also-docs/SKILL.md): Create or refresh `docs/RELATED_PROJECTS.md` using repository evidence and bounded web research.
+- [docs/setup-install-usage-docs/SKILL.md](../skills/docs/setup-install-usage-docs/SKILL.md): Create or refresh `docs/INSTALL.md` and `docs/USAGE.md` from repository evidence.
+
+## Quality
+
+Code review, auditing, and test generation during delivery.
+
+- [quality/audit-code-reviewer/SKILL.md](../skills/quality/audit-code-reviewer/SKILL.md): Parallel multi-reviewer audit launched before merge or release; not for single-pass review.
+- [quality/unit-test-starter/SKILL.md](../skills/quality/unit-test-starter/SKILL.md): Generate thorough Python 3 pytest unit tests across a repo by scanning Python files.
