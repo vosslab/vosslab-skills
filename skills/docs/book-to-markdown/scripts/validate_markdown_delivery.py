@@ -23,7 +23,7 @@ STRUCTURED_SOURCE_PATTERN = re.compile(
 IMAGE_PATTERN = re.compile(r"!\[[^]]*\]\([^)]*\)|<img\b|\[Start Picture-Text\]", re.IGNORECASE)
 ACTIVE_TAG_PATTERN = re.compile(
 	r"(?<!\\)</?(?:a|abbr|article|aside|b|blockquote|br|code|details|div|em|figure|font|"
-	r"h[1-6]|hr|i|img|li|math|ol|p|pre|section|span|strong|sub|summary|sup|svg|"
+	r"h[1-6]|hr|i|img|li|math|ol|p|pre|section|span|strong|summary|svg|"
 	r"table|tbody|td|th|thead|tr|ul)\b(?:\s[^<>]*|/?)>",
 	re.IGNORECASE,
 )

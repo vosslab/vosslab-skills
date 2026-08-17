@@ -190,7 +190,18 @@ def count_words(text: str) -> int:
 #============================================
 def extract_ocr_text(page: fitz.Page) -> str:
 	"""Extract one OCR text page with PyMuPDF's Tesseract bridge."""
-	textpage = page.get_textpage_ocr(full=True)
+	try:
+		textpage = page.get_textpage_ocr(full=True)
+	except RuntimeError as error:
+		message = str(error)
+		if "Tesseract" in message or "tessdata" in message:
+			raise RuntimeError(
+				"OCR requires Tesseract with English traineddata. "
+				"Install system-wide with: sudo apt install tesseract-ocr tesseract-ocr-eng  "
+				"or rootless: download the .debs, extract with dpkg -x, and export "
+				"PATH/LD_LIBRARY_PATH/TESSDATA_PREFIX to the extracted prefix."
+			) from error
+		raise
 	text = page.get_text("text", textpage=textpage)
 	clean_text = normalize_text(text)
 	return clean_text
@@ -225,7 +236,9 @@ def extract_structured(input_path: pathlib.Path, pages: list[int] | None) -> lis
 			raise
 		message = (
 			"Structured PDF extraction requires pymupdf4llm. "
-			"Install the dependencies from pip_requirements.txt."
+			"Install it with: pip install pymupdf4llm  "
+			"(see pip_requirements.txt in the repository root; "
+			"system Pythons may need --user or a virtualenv)."
 		)
 		raise RuntimeError(message) from error
 	document = fitz.open(input_path)
@@ -1007,10 +1020,13 @@ def result_report(input_path: pathlib.Path, output_path: pathlib.Path, result: C
 
 
 #============================================
-def print_report(report: dict) -> None:
+def print_report(report: dict, measure_only: bool = False) -> None:
 	"""Print aggregate evidence plus bounded samples for manager review."""
 	print(f"PDF: {report['pdf']}")
-	print(f"Markdown: {report['markdown']}")
+	if measure_only:
+		print("Markdown: (measure only - no output file written)")
+	else:
+		print(f"Markdown: {report['markdown']}")
 	print(f"Pages converted: {report['pages_converted']}")
 	print(f"Pass chosen: {'structured' if report['structured_pass_used'] else 'OCR-assisted flat'}")
 	print(f"OCR comparison run: {'yes' if report['ocr_comparison_run'] else 'no'}")
@@ -1086,7 +1102,7 @@ def main() -> None:
 		result = convert_pdf(input_path, pages, args.ocr_mode, args.running_heads, args.page_numbers,
 			args.seams, args.heading_synthesis, running_head_defaults)
 	report = result_report(input_path, output_path, result)
-	print_report(report)
+	print_report(report, measure_only=args.measure_only)
 	if args.json_report or not args.measure_only:
 		json_path = pathlib.Path(args.json_report) if args.json_report else pathlib.Path(str(output_path) + ".report.json")
 		json_path.write_text(json.dumps(report, indent="\t", ensure_ascii=True) + "\n", encoding="utf-8")

@@ -190,6 +190,12 @@ resolved. The validator complements rather than replaces the source-page checks.
 
 ## Known residual cases
 
+- A real section heading that coincides with its own running head can be
+  deleted when the heading is marked once but the furniture repeats at the
+  page edge (measured Aug 2026: `Preface` / `Editors and Contributors` in a
+  Springer PDF — the classifier's edge-recurrence rule outranks the single
+  heading marker). Restore the heading from the removal sidecar when the
+  output loses a section that the source clearly starts there.
 - OCR-inserted punctuation can leave a missed page seam; keep the visible break or
   repair the local paragraph after comparison, rather than broadening the join rule.
 - EPUB exporters may encode code as colored paragraph and span fragments without a

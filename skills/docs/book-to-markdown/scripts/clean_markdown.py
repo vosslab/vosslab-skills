@@ -249,7 +249,7 @@ def normalize_br_tags(text: str, removals: list[Removal]) -> str:
 		if index in fenced or pattern.search(line) is None:
 			continue
 		replacement = " / " if is_markdown_pipe_table_row(line) else "\n"
-		def replace_chunk(chunk: str) -> str:
+		def replace_chunk(chunk: str, _base_line: int) -> str:
 			return pattern.sub(replacement, chunk)
 		converted = transform_unprotected(line, replace_chunk)
 		if converted != line:
@@ -322,16 +322,18 @@ def merge_spans(spans: list[tuple[int, int]]) -> list[tuple[int, int]]:
 
 #============================================
 def transform_unprotected(
-		text: str, transform: Callable[[str], str], protect_indented: bool = True,
-		protect_quotes: bool = True) -> str:
+	text: str, transform: Callable[[str, int], str], protect_indented: bool = True,
+	protect_quotes: bool = True) -> str:
 	"""Apply a text transformer around source regions that must remain verbatim."""
 	chunks: list[str] = []
 	offset = 0
 	for start, end in protected_spans(text, protect_indented, protect_quotes):
-		chunks.append(transform(text[offset:start]))
+		base_line = text.count("\n", 0, start) + 1
+		chunks.append(transform(text[offset:start], base_line))
 		chunks.append(text[start:end])
 		offset = end
-	chunks.append(transform(text[offset:]))
+	base_line = text.count("\n", 0, offset) + 1
+	chunks.append(transform(text[offset:], base_line))
 	output = "".join(chunks)
 	return output
 
@@ -339,7 +341,7 @@ def transform_unprotected(
 #============================================
 def remove_images(text: str, removals: list[Removal]) -> str:
 	"""Remove image markup and explicit image-text extraction sentinels."""
-	def remove_picture_text(chunk: str) -> str:
+	def remove_picture_text(chunk: str, base_line: int) -> str:
 		lines = chunk.splitlines(keepends=True)
 		output: list[str] = []
 		index = 0
@@ -355,7 +357,7 @@ def remove_images(text: str, removals: list[Removal]) -> str:
 					end += 1
 				if end < len(lines):
 					removed = "".join(lines[index:end + 1])
-					record(removals, "images", "picture-text sentinel block", removed, index + 1, end + 1)
+					record(removals, "images", "picture-text sentinel block", removed, base_line + index, base_line + end)
 					index = end + 1
 					continue
 			if picture_text_pattern.fullmatch(line.strip()):
@@ -367,11 +369,11 @@ def remove_images(text: str, removals: list[Removal]) -> str:
 					end += 1
 				if end < len(lines):
 					removed = "".join(lines[index:end])
-					record(removals, "images", "picture-text caption block", removed, index + 1, end)
+					record(removals, "images", "picture-text caption block", removed, base_line + index, base_line + end - 1)
 					index = end
 					continue
 			if placeholder_pattern.fullmatch(line.strip()):
-				record(removals, "images", "picture placeholder", line, index + 1, index + 1)
+				record(removals, "images", "picture placeholder", line, base_line + index, base_line + index)
 				index += 1
 				continue
 			output.append(line)
@@ -383,10 +385,10 @@ def remove_images(text: str, removals: list[Removal]) -> str:
 		r"<img\b[^>]*>",
 		r"&lt;img\b[^\n]*?/?&gt;",
 	)
-	def remove_chunk(chunk: str) -> str:
+	def remove_chunk(chunk: str, base_line: int) -> str:
 		for pattern in patterns:
 			def replace(match: re.Match[str]) -> str:
-				line = chunk.count("\n", 0, match.start()) + 1
+				line = base_line + chunk.count("\n", 0, match.start())
 				record(removals, "images", "image markup", match.group(0), line, line)
 				return ""
 			chunk = re.sub(pattern, replace, chunk, flags=re.IGNORECASE)
@@ -396,13 +398,13 @@ def remove_images(text: str, removals: list[Removal]) -> str:
 
 
 #============================================
-def convert_table(match: re.Match[str], removals: list[Removal], source_text: str) -> str:
+def convert_table(match: re.Match[str], removals: list[Removal], source_text: str, base_line: int = 0) -> str:
 	"""Convert a complete simple HTML table to a lossless pipe table."""
 	parser = TableParser()
 	parser.feed(match.group(0))
 	parser.close()
 	if not parser.rows:
-		line = source_text.count("\n", 0, match.start()) + 1
+		line = base_line + source_text.count("\n", 0, match.start())
 		record(removals, "html", "unparsed complete HTML table", match.group(0), line, line)
 		return html.escape(re.sub(r"<[^>]+>", "", match.group(0)))
 	width = max(len(row) for row in parser.rows)
@@ -416,7 +418,7 @@ def convert_table(match: re.Match[str], removals: list[Removal], source_text: st
 	output_lines = ["| " + " | ".join(header) + " |", "| " + " | ".join(separator) + " |"]
 	for row in rows[1:]:
 		output_lines.append("| " + " | ".join(row) + " |")
-	line = source_text.count("\n", 0, match.start()) + 1
+	line = base_line + source_text.count("\n", 0, match.start())
 	record(removals, "html", "table tag converted", match.group(0), line, line)
 	converted = "\n".join(output_lines)
 	return converted
@@ -432,7 +434,7 @@ def descendant_text(block: str) -> str:
 
 
 #============================================
-def convert_mathml(match: re.Match[str], removals: list[Removal], source_text: str) -> str:
+def convert_mathml(match: re.Match[str], removals: list[Removal], source_text: str, base_line: int = 0) -> str:
 	"""Keep common MathML semantics in compact ASCII-shaped notation."""
 	block = match.group(0)
 	def fraction_replace(fraction: re.Match[str]) -> str:
@@ -453,24 +455,24 @@ def convert_mathml(match: re.Match[str], removals: list[Removal], source_text: s
 	block = re.sub(r"<mfrac\b[^>]*>(.*?)</mfrac>", fraction_replace, block, flags=re.DOTALL | re.IGNORECASE)
 	block = re.sub(r"<(msup|msub)\b[^>]*>(.*?)</\1>", script_replace, block, flags=re.DOTALL | re.IGNORECASE)
 	converted = descendant_text(block)
-	line = source_text.count("\n", 0, match.start()) + 1
+	line = base_line + source_text.count("\n", 0, match.start())
 	record(removals, "html", "math tag converted", match.group(0), line, line)
 	return converted
 
 
 #============================================
-def convert_svg(match: re.Match[str], removals: list[Removal], source_text: str) -> str:
+def convert_svg(match: re.Match[str], removals: list[Removal], source_text: str, base_line: int = 0) -> str:
 	"""Preserve semantic SVG text while discarding drawing-only markup."""
 	block = match.group(0)
 	parts = re.findall(r"<(?:text|tspan)\b[^>]*>(.*?)</(?:text|tspan)>", block, re.DOTALL | re.IGNORECASE)
 	converted = " ".join(descendant_text(part) for part in parts)
-	line = source_text.count("\n", 0, match.start()) + 1
+	line = base_line + source_text.count("\n", 0, match.start())
 	record(removals, "html", "svg tag converted", block, line, line)
 	return converted
 
 
 #============================================
-def convert_figure(match: re.Match[str], removals: list[Removal], source_text: str) -> str:
+def convert_figure(match: re.Match[str], removals: list[Removal], source_text: str, base_line: int = 0) -> str:
 	"""Keep a figure caption while discarding image wrappers and asset labels."""
 	block = match.group(0)
 	caption_match = re.search(
@@ -478,13 +480,13 @@ def convert_figure(match: re.Match[str], removals: list[Removal], source_text: s
 		block, flags=re.DOTALL | re.IGNORECASE,
 	)
 	converted = descendant_text(caption_match.group(1)) if caption_match else descendant_text(block)
-	line = source_text.count("\n", 0, match.start()) + 1
+	line = base_line + source_text.count("\n", 0, match.start())
 	record(removals, "html", "figure tag converted to caption prose", block, line, line)
 	return converted
 
 
 #============================================
-def convert_sup_sub(text: str, removals: list[Removal]) -> str:
+def convert_sup_sub(text: str, removals: list[Removal], base_line: int = 0) -> str:
 	"""Convert recognized superscript and subscript spans without citation guesses."""
 	pattern = re.compile(r"<(sup|sub)\b[^>]*>(.*?)</\1>", re.DOTALL | re.IGNORECASE)
 	def replace(match: re.Match[str]) -> str:
@@ -497,7 +499,7 @@ def convert_sup_sub(text: str, removals: list[Removal]) -> str:
 			if len(content) > 1:
 				content = "{" + content + "}"
 			converted = operator + content
-		line = text.count("\n", 0, match.start()) + 1
+		line = base_line + text.count("\n", 0, match.start())
 		record(removals, "html", f"{match.group(1).lower()} tag converted", match.group(0), line, line)
 		return converted
 	text = pattern.sub(replace, text)
@@ -509,7 +511,7 @@ def restore_escaped_known_markup(text: str) -> str:
 	"""Restore recognized entity-escaped tags outside verbatim Markdown spans."""
 	tag_names = "|".join(sorted(RESTORABLE_ESCAPED_TAGS))
 	pattern = re.compile(rf"&lt;/?(?:{tag_names})\b[^\n]*?&gt;", re.IGNORECASE)
-	def restore_chunk(chunk: str) -> str:
+	def restore_chunk(chunk: str, _base_line: int) -> str:
 		return pattern.sub(lambda match: html.unescape(match.group(0)), chunk)
 	return transform_unprotected(text, restore_chunk)
 
@@ -518,26 +520,31 @@ def restore_escaped_known_markup(text: str) -> str:
 def clean_html(text: str, removals: list[Removal]) -> str:
 	"""Convert complete allowlisted markup and escape every other angle form."""
 	text = transform_unprotected(
-		text, lambda chunk: convert_sup_sub(chunk, removals), protect_quotes=False,
+		text, lambda chunk, base_line: convert_sup_sub(chunk, removals, base_line),
+		protect_quotes=False,
 	)
-	def comment_replace(match: re.Match[str]) -> str:
-		line = text.count("\n", 0, match.start()) + 1
+	def comment_replace(match: re.Match[str], chunk: str, base_line: int) -> str:
+		line = base_line + chunk.count("\n", 0, match.start())
 		record(removals, "html", "HTML comment removed", match.group(0), line, line)
 		return ""
 	text = transform_unprotected(
-		text, lambda chunk: re.sub(r"<!--.*?-->", comment_replace, chunk, flags=re.DOTALL),
+		text,
+		lambda chunk, base_line: re.sub(
+			r"<!--.*?-->", lambda item: comment_replace(item, chunk, base_line), chunk,
+			flags=re.DOTALL,
+		),
 	)
-	def clean_chunk(chunk: str) -> str:
+	def clean_chunk(chunk: str, base_line: int) -> str:
 		# Only opening tags with no embedded angle delimiter qualify.  This prevents a
 		# malformed formula such as <i and vector<pt> from eating its readable text.
 		def table_replace(item: re.Match[str]) -> str:
-			return convert_table(item, removals, chunk)
+			return convert_table(item, removals, chunk, base_line)
 		def math_replace(item: re.Match[str]) -> str:
-			return convert_mathml(item, removals, chunk)
+			return convert_mathml(item, removals, chunk, base_line)
 		def svg_replace(item: re.Match[str]) -> str:
-			return convert_svg(item, removals, chunk)
+			return convert_svg(item, removals, chunk, base_line)
 		def figure_replace(item: re.Match[str]) -> str:
-			return convert_figure(item, removals, chunk)
+			return convert_figure(item, removals, chunk, base_line)
 		chunk = re.sub(
 			r"<figure\b[^<>\n]*>.*?</figure\s*>", figure_replace, chunk,
 			flags=re.DOTALL | re.IGNORECASE,
@@ -545,10 +552,10 @@ def clean_html(text: str, removals: list[Removal]) -> str:
 		chunk = re.sub(r"<table\b[^<>\n]*>.*?</table\s*>", table_replace, chunk, flags=re.DOTALL | re.IGNORECASE)
 		chunk = re.sub(r"<math\b[^<>\n]*>.*?</math\s*>", math_replace, chunk, flags=re.DOTALL | re.IGNORECASE)
 		chunk = re.sub(r"<svg\b[^<>\n]*>.*?</svg\s*>", svg_replace, chunk, flags=re.DOTALL | re.IGNORECASE)
-		chunk = convert_sup_sub(chunk, removals)
+		chunk = convert_sup_sub(chunk, removals, base_line)
 		def pair_replace(match: re.Match[str]) -> str:
 			tag = match.group(1).lower()
-			line = chunk.count("\n", 0, match.start()) + 1
+			line = base_line + chunk.count("\n", 0, match.start())
 			record(removals, "html", f"recognized {tag} tag stripped", match.group(0), line, line)
 			content = match.group(2)
 			return "\n" + content + "\n" if tag in {"p", "div"} else content
@@ -560,7 +567,7 @@ def clean_html(text: str, removals: list[Removal]) -> str:
 			chunk = re.sub(pair_pattern, pair_replace, chunk, flags=re.IGNORECASE)
 		def standalone_replace(match: re.Match[str]) -> str:
 			tag = match.group(1).lower()
-			line = chunk.count("\n", 0, match.start()) + 1
+			line = base_line + chunk.count("\n", 0, match.start())
 			record(removals, "html", f"recognized {tag} tag stripped", match.group(0), line, line)
 			return "\n" if tag in {"p", "div"} else ""
 		# A recognized container can enclose code-like angle forms that deliberately
@@ -571,7 +578,7 @@ def clean_html(text: str, removals: list[Removal]) -> str:
 			flags=re.IGNORECASE,
 		)
 		def br_replace(match: re.Match[str]) -> str:
-			line = chunk.count("\n", 0, match.start()) + 1
+			line = base_line + chunk.count("\n", 0, match.start())
 			record(removals, "html", "recognized br tag stripped", match.group(0), line, line)
 			line_start = chunk.rfind("\n", 0, match.start()) + 1
 			line_end = chunk.find("\n", match.end())

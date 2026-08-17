@@ -1,3 +1,64 @@
+## 2026-08-16
+
+### Fixes and Maintenance
+
+- `book-to-markdown`: fixed `clean_markdown.py` audit sidecar line numbers.
+  Removal records emitted by the `images` and `html` passes were chunk-relative,
+  so after any protected span (fenced code, indented code, blockquote,
+  frontmatter) the sidecar's reported lines pointed at the wrong source lines.
+  `transform_unprotected` now threads the chunk's absolute starting line into
+  every transform, and `convert_table`/`convert_mathml`/`convert_svg`/
+  `convert_figure`/`convert_sup_sub` take the base line as a parameter.
+  Verified on a fixture with protected spans before and after image/HTML
+  removals.
+- `book-to-markdown`: `epub_ocr.py` now fails fast with an actionable message
+  when Tesseract is missing (instead of emitting one `[OCR ERROR page N]` per
+  page), skips non-page images (covers, logos, decoration) whose filenames
+  carry no trailing page digits, and drops an unused import. Both skill copies
+  updated.
+- `book-to-markdown`: documented in SKILL.md that
+  `validate_markdown_delivery.py` skips the bare-page-number check when
+  frontmatter declares a structured source (docx/epub/htm/html/odt), where
+  lone numeric lines can be legitimate content.
+- `book-to-markdown`: description now starts with the `Use when` trigger
+  convention used by the skill index.
+- `book-to-markdown`: repair playbook gained a measured residual case — a real
+  section heading that coincides with its own running head (e.g. `Preface`
+  spanning pages in a Springer PDF) can be deleted by the edge-recurrence rule;
+  the playbook now says to restore it from the removal sidecar.
+- `book-to-markdown`: documented the measured DjVu finding — probe a djvu's
+  text layer with `djvutxt book.djvu | wc -w`, never `ddjvu -format=pdf`
+  (which silently drops the text layer: a Tufte djvu with 43,943 words of
+  clean publisher text produced a 0-word ddjvu PDF). Text-bearing djvu becomes
+  the clean prose source merged with PDF-derived structure; textless djvu
+  files are recorded as `source_djvu:` corroborators. `djvulibre-bin` added to
+  the optional Dependencies (apt only, no pip equivalent).
+- `book-to-markdown`: `archive_processed_sources.py` default archive directory
+  renamed `done_processed` → `COMPLETED_SOURCE`, matching the four-folder
+  delivery layout (`COMPLETED_SOURCE`, `SORTED_SUBJECTS_MD`,
+  `SKIPPED_DUPLICATE_SOURCE`, `STILL_TODO_SOURCE`); test updated, 2 archive
+  tests pass.
+
+## 2026-08-14
+
+### Fixes and Maintenance
+
+- `book-to-markdown`: `pdf_to_markdown.py` now fails with an actionable install
+  hint when `pymupdf4llm` is missing, and wraps PyMuPDF's raw "Tesseract is not
+  installed" OCR failure with apt/rootless install guidance (both surfaced as
+  silent misconfigurations in the 2026-08-14 batch conversion run).
+- `book-to-markdown`: `--measure` output no longer claims a written
+  `Markdown:` path for a file it never creates; the report prints
+  "(measure only - no output file written)" instead.
+- `book-to-markdown`: `validate_markdown_delivery.py` no longer flags
+  `<sub>`/`<sup>` as active HTML, matching the cleaner's documented contract of
+  preserving recognized non-image HTML semantics (chemical subscripts,
+  footnote markers). Layout tags such as `<div>` still fail validation.
+  Pinned with two new tests in `tests/test_book_markdown_tools.py`.
+- `book-to-markdown`: documented the skill's runtime dependencies
+  (`pandoc`, `pymupdf`, `pymupdf4llm`, `lxml`, `pyyaml`, rootless or system
+  Tesseract) in SKILL.md so future runs provision correctly before starting.
+
 ## 2026-08-13
 
 ### Behavior or Interface Changes

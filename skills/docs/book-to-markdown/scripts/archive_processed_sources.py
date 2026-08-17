@@ -241,7 +241,7 @@ def parse_args() -> argparse.Namespace:
 	parser.add_argument("input", help="Book processing root containing sources and Markdown")
 	parser.add_argument(
 		"-a", "--archive", dest="archive",
-		help="Archive directory; defaults to INPUT/done_processed",
+		help="Archive directory; defaults to INPUT/COMPLETED_SOURCE",
 	)
 	mode_group = parser.add_mutually_exclusive_group()
 	mode_group.add_argument(
@@ -263,7 +263,7 @@ def main() -> int:
 	"""Audit or apply one processed-source archive operation."""
 	args = parse_args()
 	root = pathlib.Path(args.input)
-	archive = pathlib.Path(args.archive) if args.archive else root / "done_processed"
+	archive = pathlib.Path(args.archive) if args.archive else root / "COMPLETED_SOURCE"
 	report = archive_processed_sources(root, archive, args.move)
 	print_report(report)
 	if args.json_report:

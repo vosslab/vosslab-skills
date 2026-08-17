@@ -1,6 +1,6 @@
 ---
 name: book-to-markdown
-description: "Convert technical/scientific books from PDF, EPUB, HTML, DOCX, ODT, Markdown, or text into one page-free Markdown file per title. Compare multiple formats as corroborating sources; use for extraction, cleanup, calibration, or repair."
+description: "Use when converting technical/scientific books from PDF, EPUB, HTML, DOCX, ODT, Markdown, or text into one page-free Markdown file per title. Compare multiple formats as corroborating sources; use for extraction, cleanup, calibration, or repair."
 ---
 
 # Book to Markdown
@@ -16,6 +16,26 @@ Use the scripts as instruments. The default workflow is:
 ```text
 measure -> hypothesize -> sample -> compare -> whole book -> verify
 ```
+
+## Dependencies
+
+Before running any script, verify the interpreter has the required packages:
+
+- `pandoc` on PATH (EPUB/HTML/DOCX/ODT conversion).
+- `python3` with `pymupdf` (fitz), `pymupdf4llm`, `lxml`, and `pyyaml`.
+  `pdf_to_markdown.py` fails fast with an install hint if `pymupdf4llm` is missing.
+- Tesseract with English traineddata for the OCR ladder on image-heavy PDFs
+  (`tesseract-ocr` + `tesseract-ocr-eng`). Without it, the automatic OCR
+  comparison aborts with an actionable message. Rootless install: download the
+  .debs, extract with `dpkg -x` into a prefix, and export
+  `PATH`/`LD_LIBRARY_PATH`/`TESSDATA_PREFIX` to that prefix before running
+  `pdf_to_markdown.py`.
+- `djvulibre-bin` (optional; apt package, no pip equivalent) for corroborating
+  DjVu sources: `sudo apt install djvulibre-bin` or the rootless `dpkg -x`
+  pattern above.
+
+Run scripts from the scripts directory (or add it to `PYTHONPATH`), because they
+import the sibling module `markdown_quality`.
 
 The target project need not be the skill directory. Before invoking a script,
 set `book_skill_dir` to the absolute directory containing this loaded
@@ -40,6 +60,18 @@ then pass its Markdown through `clean_markdown.py`:
 - For PDF, start with `pdf_to_markdown.py`. Its page-aware pass can classify
   running heads and page numbers, repair page seams, and measure when OCR is
   justified.
+- For a DjVu copy of a title (usually a corroborating source for a PDF twin),
+  probe its text layer with `djvutxt book.djvu | wc -w` BEFORE any conversion —
+  `ddjvu -format=pdf` silently drops the djvu text layer and yields an
+  image-only PDF, so it cannot be used to judge the source (measured Aug 2026:
+  a Tufte djvu with 43,943 words of clean publisher text produced a
+  0-word ddjvu PDF). When `djvutxt` yields real words, that text is clean
+  non-OCR prose: build the canonical body from it (run it through
+  `clean_markdown.py`), merge in structure and captions from the PDF-derived
+  candidate, and record both as `source_pdf:` / `source_djvu:` in the
+  frontmatter. When `djvutxt` yields ~0 words the djvu is a pure image scan
+  (the other Tufte djvu measured), OCR would gain nothing over the PDF twin —
+  record it as `source_djvu:` and treat the PDF as primary.
 - For EPUB, start with Pandoc plus the bundled semantic filter. Supply the title
   and publication date from EPUB metadata. `shift-headings=true` moves chapter
   H1s below the canonical title H1 inserted by the filter.
@@ -96,6 +128,25 @@ then pass its Markdown through `clean_markdown.py`:
 - For DOCX or ODT, use Pandoc first, then the cleaner; add the filter when presentation-heavy.
 - Use OCR only for a PDF sample whose measured evidence shows that normal text
   extraction failed. Do not OCR EPUB or other structured text sources.
+- Exception — image-scan EPUBs: when an EPUB's text layer is genuinely empty
+  (diagnosis: >500 `<img>` tags, <10 `<p>` tags, ~200 total text characters),
+  the EPUB is a scanned book packaged as EPUB, not structured text. With the
+  user's explicit approval, recover it with `scripts/epub_ocr.py`, which
+  extracts the embedded page images in document order and OCRs each with
+  Tesseract:
+
+  ```bash
+  export PATH=/home/vosslab/opt/tess/root/usr/bin:$PATH
+  export LD_LIBRARY_PATH=/home/vosslab/opt/tess/root/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+  export TESSDATA_PREFIX=/home/vosslab/opt/tess/root/usr/share/tesseract-ocr/5/tessdata
+  python3 "$book_skill_dir/scripts/epub_ocr.py" book.epub /tmp/book.ocr.raw.md /tmp/book_ocr_work
+  python3 "$book_skill_dir/scripts/clean_markdown.py" -i /tmp/book.ocr.raw.md -o /tmp/book.ocr.clean.md
+  ```
+
+  Then fix the OCR artifact classes the cleaner cannot infer: demote stray H1s
+  (OCR'd section labels) to H2, strip bare page-number lines between blanks,
+  fence malformed pipe blocks, and escape literal HTML fragments (code examples
+  containing `<img>`/`<a>` strings). ~500 pages OCR in roughly 6-10 minutes.
 
 If the preferred tool fails or visibly damages headings, code, equations, or tables,
 compare a small representative sample with another installed converter such as
@@ -310,7 +361,8 @@ The validator checks the metadata filename shape and 90-character limit, one H1,
 canonical file per title and edition, ASCII content, page-only lines, image or active HTML
 markup, balanced fences, and malformed active pipe blocks. A nonzero exit status blocks
 delivery. It checks structural invariants; source-page spot checks still establish semantic
-completeness.
+completeness. The bare-page-number check is skipped when frontmatter declares a structured
+source (docx/epub/htm/html/odt), where lone numeric lines can be legitimate content.
 
 After validation, audit processed-source archiving before moving anything:
 
@@ -322,7 +374,7 @@ python3 "$book_skill_dir/scripts/archive_processed_sources.py" \
 
 The dry run is the default. The tool moves only unique source basenames declared
 by valid Markdown `source` or `source_*` frontmatter, preserves their relative
-folders under `done_processed/`, recognizes already archived sources, and leaves
+folders under `COMPLETED_SOURCE/`, recognizes already archived sources, and leaves
 unmapped active inputs in place. Missing sources, duplicate basenames, invalid
 Markdown, or archive collisions block the move.
 

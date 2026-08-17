@@ -82,7 +82,7 @@ def write_archive_case(
 	source_path.write_bytes(b"source")
 	unmapped_path = root / "not_processed.html"
 	unmapped_path.write_text("<p>Not processed</p>\n", encoding="ascii")
-	archive = root / "done_processed"
+	archive = root / "COMPLETED_SOURCE"
 	return root, archive, source_path, unmapped_path
 
 
@@ -210,6 +210,21 @@ def test_delivery_validator_accepts_math_comparison_near_tag_name() -> None:
 	path = pathlib.Path("Example_Book-2026.md")
 	issues = VALIDATE.validate_text(path, "# Example Book\n\nFor beta<a, the bound holds.\n")
 	assert not issues
+
+
+def test_delivery_validator_accepts_sub_and_sup_preserved_semantics() -> None:
+	"""Sub/superscript footnote and chemical markers preserved by the cleaner stay valid."""
+	path = pathlib.Path("Example_Book-2026.md")
+	text = "# Example Book\n\nWater is H<sub>2</sub>O.\n\nSee note[<sup>1</sup>](#n1).\n"
+	issues = VALIDATE.validate_text(path, text)
+	assert not issues
+
+
+def test_delivery_validator_still_rejects_layout_html() -> None:
+	"""Layout HTML that the cleaner removes remains an active-HTML failure."""
+	path = pathlib.Path("Example_Book-2026.md")
+	issues = VALIDATE.validate_text(path, "# Example Book\n\n<div class=\"x\">block</div>\n")
+	assert {item.code for item in issues} == {"active-html"}
 
 
 def test_pdf_frontmatter_establishes_canonical_h1(tmp_path: pathlib.Path) -> None:
