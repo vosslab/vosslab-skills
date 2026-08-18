@@ -4,6 +4,9 @@
 # the entries below cover noisy generated dirs that should still be skipped
 # if prettier is ever invoked with a broader glob from a contributor shell.
 
+# Reference checkouts.
+/OTHER_REPOS/
+
 # Dependencies and installed package state.
 node_modules/
 package-lock.json
@@ -15,6 +18,7 @@ dist-single/
 _site/
 generated/
 coverage/
+target/
 
 # Agent scratch files and directories.
 _temp*
