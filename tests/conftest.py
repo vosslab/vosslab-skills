@@ -12,7 +12,6 @@ REPO_ROOT = pathlib.Path(file_utils.get_repo_root())
 TEST_IMPORT_PATHS = (
 	REPO_ROOT,
 	REPO_ROOT / "tools",
-	REPO_ROOT / "skills" / "docs" / "book-to-markdown" / "scripts",
 )
 for import_path in reversed(TEST_IMPORT_PATHS):
 	path_text = str(import_path)

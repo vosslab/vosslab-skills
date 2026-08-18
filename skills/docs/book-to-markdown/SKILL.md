@@ -35,15 +35,16 @@ Before running any script, verify the interpreter has the required packages:
   DjVu sources: `sudo apt install djvulibre-bin` or the rootless `dpkg -x`
   pattern above.
 
-Run scripts from the scripts directory (or add it to `PYTHONPATH`), because they
-import the sibling module `markdown_quality`.
+The scripts live in the standalone `book-to-markdown` repository, not in this
+skill directory. Run them from the repo's `tools/` directory (or add it to
+`PYTHONPATH`), because they import the sibling module `markdown_quality` and
+the `pdf_extract` package.
 
-The target project need not be the skill directory. Before invoking a script,
-set `book_skill_dir` to the absolute directory containing this loaded
-`SKILL.md`, then invoke scripts through that variable:
+Before invoking a script, set `book_repo` to the absolute path of the
+`book-to-markdown` repository, then invoke scripts through that variable:
 
 ```bash
-book_skill_dir="/absolute/path/to/book-to-markdown"
+book_repo="/absolute/path/to/book-to-markdown"
 ```
 
 The defaults are confident starting points for technical and scientific books
@@ -84,10 +85,10 @@ then pass its Markdown through `clean_markdown.py`:
 
   ```bash
   pandoc book.epub --from epub --to gfm --wrap=none --standalone \
-    --lua-filter="$book_skill_dir/scripts/semantic_markdown.lua" \
+    --lua-filter="$book_repo/tools/semantic_markdown.lua" \
     --metadata title="Recorded title" --metadata date="YYYY-MM-DD" \
     --metadata source="book.epub" --metadata shift-headings=true -o /tmp/book.raw.md
-  python3 "$book_skill_dir/scripts/clean_markdown.py" \
+  python3 "$book_repo/tools/clean_markdown.py" \
     -i /tmp/book.raw.md -o /tmp/book.clean.md
   ```
 
@@ -95,7 +96,7 @@ then pass its Markdown through `clean_markdown.py`:
   or no headings, measure the EPUB before editing Markdown:
 
   ```bash
-  python3 "$book_skill_dir/scripts/epub_structure.py" book.epub \
+  python3 "$book_repo/tools/epub_structure.py" book.epub \
     --json-report /tmp/book.epub-structure.json
   ```
 
@@ -107,7 +108,7 @@ then pass its Markdown through `clean_markdown.py`:
   same paragraph also matches a text rule.
 
   ```bash
-  python3 "$book_skill_dir/scripts/epub_structure.py" book.epub \
+  python3 "$book_repo/tools/epub_structure.py" book.epub \
     --heading-class chapter=2 --heading-class topic=3 \
     --heading-text Conclusion=2 -o /tmp/book.semantic.epub \
     --json-report /tmp/book.epub-repair.json
@@ -125,7 +126,7 @@ then pass its Markdown through `clean_markdown.py`:
 
   ```bash
   pandoc article.html --from html --to gfm --wrap=none --standalone \
-    --lua-filter="$book_skill_dir/scripts/semantic_markdown.lua" \
+    --lua-filter="$book_repo/tools/semantic_markdown.lua" \
     --metadata title="Recorded title" --metadata date="YYYY-MM-DD" \
     --metadata source="article.html" -o /tmp/article.raw.md
   ```
@@ -137,7 +138,7 @@ then pass its Markdown through `clean_markdown.py`:
 - Exception - image-scan EPUBs: when an EPUB's text layer is genuinely empty
   (diagnosis: >500 `<img>` tags, <10 `<p>` tags, ~200 total text characters),
   the EPUB is a scanned book packaged as EPUB, not structured text. With the
-  user's explicit approval, recover it with `scripts/epub_ocr.py`, which
+  user's explicit approval, recover it with `tools/epub_ocr.py`, which
   extracts the embedded page images in document order and OCRs each with
   Tesseract:
 
@@ -145,8 +146,8 @@ then pass its Markdown through `clean_markdown.py`:
   export PATH=/home/vosslab/opt/tess/root/usr/bin:$PATH
   export LD_LIBRARY_PATH=/home/vosslab/opt/tess/root/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
   export TESSDATA_PREFIX=/home/vosslab/opt/tess/root/usr/share/tesseract-ocr/5/tessdata
-  python3 "$book_skill_dir/scripts/epub_ocr.py" book.epub /tmp/book.ocr.raw.md /tmp/book_ocr_work
-  python3 "$book_skill_dir/scripts/clean_markdown.py" -i /tmp/book.ocr.raw.md -o /tmp/book.ocr.clean.md
+  python3 "$book_repo/tools/epub_ocr.py" book.epub /tmp/book.ocr.raw.md /tmp/book_ocr_work
+  python3 "$book_repo/tools/clean_markdown.py" -i /tmp/book.ocr.raw.md -o /tmp/book.ocr.clean.md
   ```
 
   Then fix the OCR artifact classes the cleaner cannot infer: demote stray H1s
@@ -177,7 +178,7 @@ one canonical result:
    large or differently wrapped:
 
    ```bash
-   python3 "$book_skill_dir/scripts/compare_markdown_candidates.py" \
+   python3 "$book_repo/tools/compare_markdown_candidates.py" \
      /tmp/book.primary.md /tmp/book.secondary.md \
      --json-report /tmp/book.candidate-comparison.json
    ```
@@ -218,7 +219,7 @@ confidence and recovery even when no secondary passage needs insertion.
    and end matter when present. Use zero-based PDF page numbers.
 
    ```bash
-   python3 "$book_skill_dir/scripts/pdf_raw_text_extraction_to_markdown.py" book.pdf --pages 0,1,25-30,150-155 \
+   python3 "$book_repo/tools/pdf_raw_text_extraction_to_markdown.py" book.pdf --pages 0,1,25-30,150-155 \
      --measure --json-report /tmp/book.extract.measure.json
    ```
 
@@ -231,7 +232,7 @@ confidence and recovery even when no secondary passage needs insertion.
    word retention, table rows, and readable paragraph boundaries.
 
    ```bash
-   python3 "$book_skill_dir/scripts/pdf_ocr_text_extraction_to_markdown.py" book.pdf --pages 0,1,25-30,150-155 \
+   python3 "$book_repo/tools/pdf_ocr_text_extraction_to_markdown.py" book.pdf --pages 0,1,25-30,150-155 \
      --measure --json-report /tmp/book.ocr.measure.json
    ```
 
@@ -252,9 +253,9 @@ extractor takes the PDF as its positional input; the standalone cleaner requires
 `-i` or `--input`.
 
 ```bash
-python3 "$book_skill_dir/scripts/pdf_raw_text_extraction_to_markdown.py" book.pdf -o /tmp/book.raw.md \
+python3 "$book_repo/tools/pdf_raw_text_extraction_to_markdown.py" book.pdf -o /tmp/book.raw.md \
   --json-report /tmp/book.extract.json
-python3 "$book_skill_dir/scripts/clean_markdown.py" -i /tmp/book.raw.md -o /tmp/book.clean.md
+python3 "$book_repo/tools/clean_markdown.py" -i /tmp/book.raw.md -o /tmp/book.clean.md
 ```
 
 Each PDF extractor writes a small YAML metadata block, removes
@@ -290,9 +291,9 @@ only caption-backed figure-label floods. Without `-o`, it writes
 The cleanup pass accepts a one-based inclusive line sample:
 
 ```bash
-python3 "$book_skill_dir/scripts/clean_markdown.py" -i /tmp/book.raw.md --lines 1200:1800 \
+python3 "$book_repo/tools/clean_markdown.py" -i /tmp/book.raw.md --lines 1200:1800 \
   --measure --json-report /tmp/book.clean.measure.json
-python3 "$book_skill_dir/scripts/clean_markdown.py" -i /tmp/book.raw.md --lines 1200:1800 \
+python3 "$book_repo/tools/clean_markdown.py" -i /tmp/book.raw.md --lines 1200:1800 \
   --skip figure-debris -o /tmp/book.no_debris.md
 ```
 
@@ -340,7 +341,7 @@ When extracted mathematical vertical bars form an inconsistent active pipe block
 a valid table delimiter, create a separate protected candidate for review:
 
 ```bash
-python3 "$book_skill_dir/scripts/wrap_malformed_tables.py" \
+python3 "$book_repo/tools/wrap_malformed_tables.py" \
   --input /tmp/book.clean.md --output /tmp/book.tables-protected.md \
   --json-report /tmp/book.tables-protected.json
 ```
@@ -357,7 +358,7 @@ acceptance checks.
 
 ## Convert MathML to LaTeX
 
-`scripts/mathml_to_latex.py` converts MathML to LaTeX - standalone, or targeted at a
+`tools/mathml_to_latex.py` converts MathML to LaTeX - standalone, or targeted at a
 specific Markdown text block. Backends are tried in order (an embedded
 `<annotation encoding="application/x-tex">` is extracted verbatim, then `pandoc`, then
 the `mathml-to-latex` PyPI package, then `sympy`); a block none of them can convert is
@@ -365,14 +366,14 @@ left unchanged and reported, never silently dropped.
 
 ```bash
 # convert a single MathML string (or pipe it on stdin)
-python3 "$book_skill_dir/scripts/mathml_to_latex.py" --mathml '<math>...</math>'
+python3 "$book_repo/tools/mathml_to_latex.py" --mathml '<math>...</math>'
 
 # dry-run: show the LaTeX each <math> block in a line range would become
-python3 "$book_skill_dir/scripts/mathml_to_latex.py" \
+python3 "$book_repo/tools/mathml_to_latex.py" \
   --markdown book.md --lines 120:180
 
 # fix in place (a .mathml-bak backup is kept) or write a separate file
-python3 "$book_skill_dir/scripts/mathml_to_latex.py" \
+python3 "$book_repo/tools/mathml_to_latex.py" \
   --markdown book.md --lines 120:180 --in-place --json-report /tmp/mathml.json
 ```
 
@@ -388,7 +389,7 @@ corpus.
 Verify the whole book only after the sample supports the chosen settings:
 
 ```bash
-python3 "$book_skill_dir/scripts/validate_markdown_v2.py" \
+python3 "$book_repo/tools/validate_markdown_v2.py" \
   /path/to/delivery-directory --json-report /tmp/book.delivery.json
 ```
 
@@ -411,8 +412,8 @@ lines can be legitimate content.
 After validation, audit processed-source archiving before moving anything:
 
 ```bash
-python3 "$book_skill_dir/scripts/archive_processed_sources.py" /path/to/book-root
-python3 "$book_skill_dir/scripts/archive_processed_sources.py" \
+python3 "$book_repo/tools/archive_processed_sources.py" /path/to/book-root
+python3 "$book_repo/tools/archive_processed_sources.py" \
   /path/to/book-root --move --json-report /tmp/book.archive.json
 ```
 
@@ -443,9 +444,9 @@ auditors before touching any file. They complement the validator: the validator 
 structural invariants, these scan for content-level damage.
 
 ```bash
-python3 "$book_skill_dir/scripts/audit_markdown_duplication.py" /path/to/delivery-dir \
+python3 "$book_repo/tools/audit_markdown_duplication.py" /path/to/delivery-dir \
   --json-report /tmp/audit.duplication.json
-python3 "$book_skill_dir/scripts/audit_markdown_residue.py" /path/to/delivery-dir \
+python3 "$book_repo/tools/audit_markdown_residue.py" /path/to/delivery-dir \
   --json-report /tmp/audit.residue.json
 ```
 
@@ -471,7 +472,7 @@ text layer, so re-extraction reproduces it. Dedup the file instead (the tool
 writes a review copy and never overwrites the input):
 
 ```bash
-python3 "$book_skill_dir/scripts/audit_markdown_duplication.py" \
+python3 "$book_repo/tools/audit_markdown_duplication.py" \
   /path/to/delivery-dir/Book-2024.md --dedup
 ```
 

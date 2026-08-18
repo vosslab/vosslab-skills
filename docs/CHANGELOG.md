@@ -39,6 +39,16 @@
   book-corpus data and overrides for pre-existing large files.
 - `epub_ocr.py`: added missing type annotations (`page_sort_key`, `main`).
 
+### Removals and Deprecations
+
+- `book-to-markdown`: moved the conversion, validation, and auditing scripts out of
+  `skills/docs/book-to-markdown/scripts/` into the standalone `book-to-markdown`
+  repository (`tools/`). Removed the coupled behavior tests
+  (`test_book_markdown_tools.py`, `test_clean_markdown.py`, `test_markdown_audit.py`)
+  and the `book-to-markdown/scripts` import path from `tests/conftest.py`. Repointed
+  `SKILL.md` to invoke the scripts from the repo's `tools/` directory via a new
+  `book_repo` variable.
+
 ## 2026-08-17
 
 ### Fixes and Maintenance

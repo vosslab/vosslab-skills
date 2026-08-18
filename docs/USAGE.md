@@ -54,15 +54,17 @@ source source_me.sh && python3 tools/build_plugin_manifest.py --check
 ```
 
 Convert a technical or scientific book to agent-ready Markdown with the
-`book-to-markdown` skill. It selects a source-aware conversion tool and supports
-a measured PDF sample before a whole-book conversion:
+`book-to-markdown` skill. Its conversion, validation, and auditing scripts live
+in the standalone `book-to-markdown` repository (set `book_repo` to that repo's
+path); the skill selects a source-aware conversion tool and supports a measured
+PDF sample before a whole-book conversion:
 
 ```bash
-source source_me.sh && python3 skills/docs/book-to-markdown/scripts/pdf_raw_text_extraction_to_markdown.py \
+source source_me.sh && python3 "$book_repo/tools/pdf_raw_text_extraction_to_markdown.py \
   paper.pdf --pages 0,1,25-30 --measure --json-report /tmp/paper.measure.json
-source source_me.sh && python3 skills/docs/book-to-markdown/scripts/pdf_raw_text_extraction_to_markdown.py \
+source source_me.sh && python3 "$book_repo/tools/pdf_raw_text_extraction_to_markdown.py \
   paper.pdf -o /tmp/paper.raw.md
-source source_me.sh && python3 skills/docs/book-to-markdown/scripts/clean_markdown.py \
+source source_me.sh && python3 "$book_repo/tools/clean_markdown.py \
   -i /tmp/paper.raw.md -o /tmp/paper.clean.md
 ```
 
@@ -71,7 +73,7 @@ go directly to the cleaner:
 
 ```bash
 pandoc book.epub --from epub --to gfm --wrap=none -o /tmp/book.raw.md
-source source_me.sh && python3 skills/docs/book-to-markdown/scripts/clean_markdown.py \
+source source_me.sh && python3 "$book_repo/tools/clean_markdown.py \
   -i /tmp/book.raw.md -o /tmp/book.clean.md
 ```
 
