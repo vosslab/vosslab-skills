@@ -2,6 +2,11 @@
 
 ### Fixes and Maintenance
 
+- `book-to-markdown`: restored `SKILL.md` to a focused workflow shell and moved detailed
+  procedure content into tracked `references/` files (`source_selection.md`,
+  `conversion_and_cleanup.md`, `verification_and_delivery.md`) after merge recovery.
+  Added a conflict-safe rework so the skill remains readable and within the
+  skill-body advisory size guidance.
 - `book-to-markdown`: added two read-only corpus auditors for already-converted
   books. `audit_markdown_duplication.py` detects adjacent repeated word n-grams
   (the OCR/text-layer doubling defect) and can write an in-place deduped copy

@@ -84,6 +84,74 @@ safeguards remain enabled in every experiment: do not select a pass by word coun
 alone, do not remove arbitrary angle-bracket text, protect code/tables/lists, and
 retain a sidecar for every destructive pass.
 
+## Source selection and acquisition
+
+Use this section before choosing the first conversion pass.
+
+- Verify tool choice with evidence, not defaults. For PDF runs: sample first, then
+  prefer raw text when it is usable.
+- Keep `book_repo` pointing at the standalone `book-to-markdown` checkout and run
+  scripts from that context.
+- For DjVu corroboration, use `djvutxt` as the text-presence probe before any
+  conversion.
+- For EPUB and HTML, start with Pandoc + `semantic_markdown.lua`; add `shift-headings=true`
+  only when chapter H1s must be moved under a canonical title.
+- For image-only EPUB or image-first rescue, use `epub_ocr.py` only with explicit
+  user approval.
+
+## Conversion and cleanup details
+
+Preferred standard path:
+
+```bash
+python3 "$book_repo/tools/pdf_raw_text_extraction_to_markdown.py" book.pdf -o /tmp/book.raw.md \
+  --json-report /tmp/book.extract.json
+python3 "$book_repo/tools/clean_markdown.py" -i /tmp/book.raw.md -o /tmp/book.clean.md
+```
+
+Use bounded checks when calibrating:
+
+- `clean_markdown.py --lines 1200:1800`
+- `--skip figure-debris` to isolate image-caption effects
+- `--skip-running-heads` / `--skip-seams` / `--skip-page-numbers` / `--skip-heading-synthesis`
+- `--running-head-*` overrides only for short measured experiments
+
+For malformed active table-like blocks:
+
+```bash
+python3 "$book_repo/tools/wrap_malformed_tables.py" \
+  --input /tmp/book.clean.md --output /tmp/book.tables-protected.md \
+  --json-report /tmp/book.tables-protected.json
+```
+
+For MathML residue:
+
+```bash
+python3 "$book_repo/tools/mathml_to_latex.py" --markdown book.md --lines 120:180 --json-report /tmp/mathml.json
+```
+
+## Verification and delivery
+
+Current delivery validation is `validate_markdown_v2.py`.
+
+```bash
+python3 "$book_repo/tools/validate_markdown_v2.py" /path/to/delivery-directory --json-report /tmp/book.delivery.json
+```
+
+Before touching converted outputs, run:
+
+```bash
+python3 "$book_repo/tools/audit_markdown_duplication.py" /path/to/delivery-dir --json-report /tmp/duplication.json
+python3 "$book_repo/tools/audit_markdown_residue.py" /path/to/delivery-dir --json-report /tmp/residue.json
+```
+
+After validation passes, archive processed inputs with a dry run, then `--move` as needed.
+
+```bash
+python3 "$book_repo/tools/archive_processed_sources.py" /path/to/book-root
+python3 "$book_repo/tools/archive_processed_sources.py" /path/to/book-root --move --json-report /tmp/book.archive.json
+```
+
 ## Read the audit trail
 
 For the PDF extractors, inspect `<output>.removed.md` and `<output>.report.json`.

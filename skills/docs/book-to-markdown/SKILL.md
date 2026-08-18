@@ -7,261 +7,47 @@ description: "Use when converting technical/scientific books from PDF, EPUB, HTM
 
 Produce clean, greppable reference text for agents, not a visually faithful facsimile.
 Prioritize stable headings, semantic chunks, plain-text math, tables, captions, and
-bibliography entries. Work one book title at a time and deliver exactly one canonical
-Markdown file for that title. Treat PDF, EPUB, or other copies of the same book as
-corroborating sources for one deliverable, not as requests for separate final files.
+bibliography entries.
 
-Use the scripts as instruments. The default workflow is:
+## Default workflow
 
 ```text
 measure -> hypothesize -> sample -> compare -> whole book -> verify
 ```
 
-## Dependencies
+## Before you start
 
-Before running any script, verify the interpreter has the required packages:
-
-- `pandoc` on PATH (EPUB/HTML/DOCX/ODT conversion).
-- `python3` with `pymupdf` (fitz), `lxml`, and `pyyaml`.
-  `pdf_raw_text_extraction_to_markdown.py` reads the PDF text layer directly;
-  `pdf_ocr_text_extraction_to_markdown.py` uses PyMuPDF's Tesseract bridge.
-- Tesseract with English traineddata for image-only PDF scans
-  (`tesseract-ocr` + `tesseract-ocr-eng`). Without it, OCR extraction aborts
-  with an actionable message. Rootless install: download the .debs, extract
-  with `dpkg -x` into a prefix, and export
-  `PATH`/`LD_LIBRARY_PATH`/`TESSDATA_PREFIX` to that prefix before running
-  `pdf_ocr_text_extraction_to_markdown.py`.
-- `djvulibre-bin` (optional; apt package, no pip equivalent) for corroborating
-  DjVu sources: `sudo apt install djvulibre-bin` or the rootless `dpkg -x`
-  pattern above.
-
-The scripts live in the standalone `book-to-markdown` repository at
-`/home/vosslab/nsh/book-to-markdown/` (all tools moved there 2026-08-18; not in
-this skill directory). Repo layout: `extract/` = extraction
-(`pdf_ocr_text_extraction_to_markdown.py`, `pdf_raw_text_extraction_to_markdown.py`,
-`epub_structure.py`, `epub_ocr.py`, `semantic_markdown.lua`); `cleanup/` =
-post-processing (`clean_markdown.py`, `mathml_to_latex.py`,
-`wrap_malformed_tables.py`, `compare_markdown_candidates.py`); `audit/` =
-validation + corpus audits (`validate_markdown_v2.py`,
-`validate_markdown_delivery.py`, `audit_markdown_duplication.py`,
-`audit_markdown_residue.py`, `archive_processed_sources.py`); `markdown_quality.py`
-and the `pdf_extract/` package live at the repo root. Run scripts from the repo
-root (or add it to `PYTHONPATH`), because they import the sibling module
-`markdown_quality` and the `pdf_extract` package. Example commands below use
-`$book_repo/tools/` — map `tools/` to the subdir above per script (e.g. validate
-→ `audit/`, clean → `cleanup/`, pdf_*/epub_* → `extract/`).
-
-Before invoking a script, set `book_repo` to the absolute path of the
-`book-to-markdown` repository, then invoke scripts through that variable:
+Before calling any script, set:
 
 ```bash
-book_repo="/home/vosslab/nsh/book-to-markdown"
+book_repo="/absolute/path/to/book-to-markdown"
+export PYTHONPATH="$book_repo:$PYTHONPATH"
 ```
 
-The defaults are confident starting points for technical and scientific books
-(textbooks, monographs, handbooks, and reference works with equations, algorithms,
-code, figures, tables, or bibliographies). They were measured on eight math/CS
-books and support material from technical UI and vision books on 2026-08-08. They
-are not a promise for narrative prose, poetry, non-English, image-only, or
-code-first manuals: measure a representative sample before trusting them.
+Run from the `book-to-markdown` checkout with the repository tools and their dependencies.
 
-## Choose the source tool
+## Workflow split
 
-Use the simplest installed tool that preserves the source's existing structure,
-then pass its Markdown through `clean_markdown.py`:
+- Run a bounded sample first; do not pick extraction tools from word count alone.
+- Choose source and pass by evidence.
+- Merge corroborating sources only when they add confirmed omissions.
+- Run conversion/cleanup with the smallest validated switch set.
+- Validate, archive, and report before delivery.
 
-- For PDF, probe the text layer first (`pdftotext book.pdf | wc -w` or a fitz
-  word count): a real text layer uses `pdf_raw_text_extraction_to_markdown.py`;
-  an image-only scan uses `pdf_ocr_text_extraction_to_markdown.py`. Both share
-  the same page-aware cleanup (running heads, page numbers, seams, and
-  dotted-number heading synthesis) through the `pdf_extract` package.
-- For a DjVu copy of a title (usually a corroborating source for a PDF twin),
-  probe its text layer with `djvutxt book.djvu | wc -w` BEFORE any conversion -
-  `ddjvu -format=pdf` silently drops the djvu text layer and yields an
-  image-only PDF, so it cannot be used to judge the source (measured Aug 2026:
-  a Tufte djvu with 43,943 words of clean publisher text produced a
-  0-word ddjvu PDF). When `djvutxt` yields real words, that text is clean
-  non-OCR prose: build the canonical body from it (run it through
-  `clean_markdown.py`), merge in structure and captions from the PDF-derived
-  candidate, and record both as `source_pdf:` / `source_djvu:` in the
-  frontmatter. When `djvutxt` yields ~0 words the djvu is a pure image scan
-  (the other Tufte djvu measured), OCR would gain nothing over the PDF twin -
-  record it as `source_djvu:` and treat the PDF as primary.
-  `ddjvu -quality` takes an integer 25-150 for lossy TIFF only - never
-  `-quality=decode`; omit the flag entirely for `-format=pdf` (Aug 2026: a worker
-  used `-quality=decode` and ddjvu exited 10 with no output).
-- For EPUB, start with Pandoc plus the bundled semantic filter. Supply the title
-  and publication date from EPUB metadata. `shift-headings=true` moves chapter
-  H1s below the canonical title H1 inserted by the filter.
+Use the referenced modules for detailed behavior:
 
-  ```bash
-  pandoc book.epub --from epub --to gfm --wrap=none --standalone \
-    --lua-filter="$book_repo/tools/semantic_markdown.lua" \
-    --metadata title="Recorded title" --metadata date="YYYY-MM-DD" \
-    --metadata source="book.epub" --metadata shift-headings=true -o /tmp/book.raw.md
-  python3 "$book_repo/tools/clean_markdown.py" \
-    -i /tmp/book.raw.md -o /tmp/book.clean.md
-  ```
+- [Source selection and acquisition](references/source_selection.md)
+- [Conversion and cleanup details](references/conversion_and_cleanup.md)
+- [Repair playbook](references/repair_playbook.md)
+- [Verification and delivery](references/verification_and_delivery.md)
 
-  If the source visibly has chapters or topic labels but the candidate has few
-  or no headings, measure the EPUB before editing Markdown:
+## Fast start (typical)
 
-  ```bash
-  python3 "$book_repo/tools/epub_structure.py" book.epub \
-    --json-report /tmp/book.epub-structure.json
-  ```
+```bash
+python3 "$book_repo/tools/pdf_raw_text_extraction_to_markdown.py" book.pdf --measure
+```
 
-  The report identifies the body-matter boundary and samples prominent
-  paragraph classes whose font size or child emphasis may encode hierarchy.
-  Select publisher-specific mappings from those samples, then write a separate
-  semantic EPUB candidate. Exact-text rules apply only in body matter, so a
-  printed table of contents remains prose; a selected class level wins when the
-  same paragraph also matches a text rule.
-
-  ```bash
-  python3 "$book_repo/tools/epub_structure.py" book.epub \
-    --heading-class chapter=2 --heading-class topic=3 \
-    --heading-text Conclusion=2 -o /tmp/book.semantic.epub \
-    --json-report /tmp/book.epub-repair.json
-  ```
-
-  Use `--body-start FILE` when the EPUB has no `bodymatter` landmark. Convert
-  the repaired candidate through Pandoc and the cleaner, then compare it with
-  the original candidate. Treat class names and levels as source evidence, not
-  universal defaults.
-
-- For existing Markdown or plain text, run `clean_markdown.py` directly.
-- For a self-contained HTML article, use the filter without
-  `shift-headings=true`; use it for an HTML book whose chapters start at H1.
-  Inspect `datePublished` or equivalent metadata instead of a download timestamp.
-
-  ```bash
-  pandoc article.html --from html --to gfm --wrap=none --standalone \
-    --lua-filter="$book_repo/tools/semantic_markdown.lua" \
-    --metadata title="Recorded title" --metadata date="YYYY-MM-DD" \
-    --metadata source="article.html" -o /tmp/article.raw.md
-  ```
-
-- The semantic filter compacts sparse source headings without changing their relative nesting.
-- For DOCX or ODT, use Pandoc first, then the cleaner; add the filter when presentation-heavy.
-- Use OCR only for a PDF sample whose measured evidence shows that normal text
-  extraction failed. Do not OCR EPUB or other structured text sources.
-- Exception - image-scan EPUBs: when an EPUB's text layer is genuinely empty
-  (diagnosis: >500 `<img>` tags, <10 `<p>` tags, ~200 total text characters),
-  the EPUB is a scanned book packaged as EPUB, not structured text. With the
-  user's explicit approval, recover it with `tools/epub_ocr.py`, which
-  extracts the embedded page images in document order and OCRs each with
-  Tesseract:
-
-  ```bash
-  export PATH=/home/vosslab/opt/tess/root/usr/bin:$PATH
-  export LD_LIBRARY_PATH=/home/vosslab/opt/tess/root/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
-  export TESSDATA_PREFIX=/home/vosslab/opt/tess/root/usr/share/tesseract-ocr/5/tessdata
-  python3 "$book_repo/tools/epub_ocr.py" book.epub /tmp/book.ocr.raw.md /tmp/book_ocr_work
-  python3 "$book_repo/tools/clean_markdown.py" -i /tmp/book.ocr.raw.md -o /tmp/book.ocr.clean.md
-  ```
-
-  Then fix the OCR artifact classes the cleaner cannot infer: demote stray H1s
-  (OCR'd section labels) to H2, strip bare page-number lines between blanks,
-  fence malformed pipe blocks, and escape literal HTML fragments (code examples
-  containing `<img>`/`<a>` strings). ~500 pages OCR in roughly 6-10 minutes.
-
-If the preferred tool fails or visibly damages headings, code, equations, or tables,
-compare a small representative sample with another installed converter such as
-`ebook-convert`. Choose from semantic preservation and readable structure, not word
-count or a universal tool preference.
-
-## Combine same-title sources
-
-When the user supplies the same book in multiple formats, use every format to improve
-one canonical result:
-
-1. Confirm that the inputs represent the same title and edition. Treat a materially
-   different edition as a separate source only when the requested output should mix it.
-2. Convert representative samples from each format and select the structurally strongest
-   candidate as the primary document. EPUB often preserves native headings and code while
-   PDF can corroborate page order, tables, equations, captions, and text missing from the
-   structured source; choose from the actual evidence.
-3. Compare the secondary candidates with the primary for meaningful omissions. Insert
-   missing code, operands, table rows, captions, bibliography entries, or prose at the
-   correct location in the primary document. Prefer the cleaner primary wording when both
-   candidates preserve the same meaning. Use the read-only comparator when candidates are
-   large or differently wrapped:
-
-   ```bash
-   python3 "$book_repo/tools/compare_markdown_candidates.py" \
-     /tmp/book.primary.md /tmp/book.secondary.md \
-     --json-report /tmp/book.candidate-comparison.json
-   ```
-
-   Review the reported unmatched runs against both sources. They are omission leads, not
-   automatic merge instructions: extraction wording, equations, indexes, and block order
-   can create legitimate differences. Fold confirmed secondary-only content into the
-   primary at its semantic location.
-4. Name the final file from the actual title and publication year recorded in the
-   book metadata or title/copyright pages. Include a bibliographic subtitle when it
-   materially distinguishes the book's scope, such as Rust from Rust and
-   WebAssembly. Convert title words to Camel_Case joined by underscores, preserve
-   meaningful internal hyphens, normalize the basename to ASCII, and append
-   `-YYYY.md`. For example, use
-   `User_Experience_Methods_and_Tools_in_Human-Computer_Interaction-2025.md`.
-   Limit the complete filename, including `-YYYY.md`, to 90 characters. Reserve
-   eight characters for that suffix and shorten an overlong title slug at a word
-   boundary. Remove trailing underscores or hyphens, and retain the title words
-   that best distinguish the book's subject; do not blindly discard a scope term
-   such as `WebAssembly` merely because it appears late in a subtitle. Resolve a
-   truncation collision with the shortest metadata-derived distinguishing phrase
-   that keeps the filename within the same limit.
-   Use the edition's publication year, not the conversion, download, or access year;
-   inspect the source instead of guessing when the year is unclear. Do not add source
-   suffixes such as `_from_pdf` or `_from_epub`. Keep raw candidates, reports, and
-   removal sidecars in a temporary or review location outside the delivery directory.
-5. Deliver one title-and-year `.md` file for the title. Do not concatenate whole
-   candidates, duplicate chapters, or leave source-specific Markdown files beside the
-   canonical result.
-
-If comparison finds no meaningful omission, the evidence-backed primary candidate is the
-merged result; record both sources in its metadata or work record. Multiple inputs improve
-confidence and recovery even when no secondary passage needs insertion.
-
-## Start with evidence
-
-1. Pick a 6-30 page spread containing front matter, normal body, a table or figure,
-   and end matter when present. Use zero-based PDF page numbers.
-
-   ```bash
-   python3 "$book_repo/tools/pdf_raw_text_extraction_to_markdown.py" book.pdf --pages 0,1,25-30,150-155 \
-     --measure --json-report /tmp/book.extract.measure.json
-   ```
-
-2. State a testable hypothesis from the compact report. For example, a `REVIEW`
-   status, sparse text, or a picture-text warning warrants an OCR comparison;
-   repeated edge templates warrant inspection before accepting header removal.
-
-3. Run a bounded experiment only when the evidence calls for it. When the raw-text
-   sample is a gross `REVIEW`, compare OCR on the same sample and judge headings,
-   word retention, table rows, and readable paragraph boundaries.
-
-   ```bash
-   python3 "$book_repo/tools/pdf_ocr_text_extraction_to_markdown.py" book.pdf --pages 0,1,25-30,150-155 \
-     --measure --json-report /tmp/book.ocr.measure.json
-   ```
-
-4. Prefer the raw-text pass unless the comparison gives concrete semantic evidence
-   that OCR is better. There is no automatic ladder: choose the extraction tool
-   explicitly from the text-layer probe.
-
-Do not select a pass from word count alone. Raw text-layer extraction retains more
-word tokens and headings than OCR on text-layer books; OCR sometimes improves an
-individual bad page, so inspect that page rather than replacing a good book-level
-pass.
-
-## Convert and clean
-
-Run the normal conversion after probing the text layer. The visible output is
-page-free; PDF page state is discarded after page-aware cleanup. Each PDF
-extractor takes the PDF as its positional input; the standalone cleaner requires
-`-i` or `--input`.
+Then:
 
 ```bash
 python3 "$book_repo/tools/pdf_raw_text_extraction_to_markdown.py" book.pdf -o /tmp/book.raw.md \
@@ -269,250 +55,11 @@ python3 "$book_repo/tools/pdf_raw_text_extraction_to_markdown.py" book.pdf -o /t
 python3 "$book_repo/tools/clean_markdown.py" -i /tmp/book.raw.md -o /tmp/book.clean.md
 ```
 
-Each PDF extractor writes a small YAML metadata block, removes
-edge page numbers and classified running heads, synthesizes only safe dotted-number
-headings, and joins conservative page seams. A recurring off-edge full-line template
-inherits a heading level only when the same template is already marked consistently
-elsewhere; recurrence or capitalization alone never promotes it. Fenced code and
-code-shaped fragments are excluded from running-head classification and rewriting. A
-consistently marked majority of repeated real section headings outranks edge position.
-One-word all-caps section labels and command-flag fragments are retained as technical
-content rather than inferred to be page furniture. It writes
-`<output>.removed.md` and,
-for a normal conversion, `<output>.report.json`. Its compact terminal report and JSON
-show the extraction method, quality, headings, table rows, seams, and bounded samples of
-running-head decisions and removals.
-
-`clean_markdown.py` repairs flat Markdown or text, so it is also useful for a
-pre-existing conversion. Its image pass deliberately drops image syntax, HTML image
-forms (including entity-escaped EPUB image tags), placeholders, and picture-text blocks
-while preserving nearby figure and table captions as prose. It restores recognized
-entity-escaped EPUB container markup before narrow HTML cleanup, keeps escaped URL and
-code-like angle forms literal, and repairs single-line pseudo-fences before
-protected-span analysis,
-normalizes EPUB non-breaking-space indentation before code-sensitive reflow,
-keeps HTML line breaks inside pipe cells on one table row, preserves recognized
-non-image HTML semantics, guards
-de-hyphenation and reflow; maps technical symbols to ASCII or entities; and removes
-only caption-backed figure-label floods. Without `-o`, it writes
-`<input>.clean.md`, `<input>.clean.md.report.json`, and
-`<input>.clean.md.removed.md`. `--measure` prints only the bounded report unless
-`--json-report` requests a comparable JSON file.
-
-The cleanup pass accepts a one-based inclusive line sample:
+If required by the evidence, validate and archive:
 
 ```bash
-python3 "$book_repo/tools/clean_markdown.py" -i /tmp/book.raw.md --lines 1200:1800 \
-  --measure --json-report /tmp/book.clean.measure.json
-python3 "$book_repo/tools/clean_markdown.py" -i /tmp/book.raw.md --lines 1200:1800 \
-  --skip figure-debris -o /tmp/book.no_debris.md
-```
-
-Use `--skip` once or repeatedly to isolate `images`, `html`, `dehyphenate`,
-`figure-debris`, `reflow`, or `ascii`. Only `--debris-min-lines` (default 5) and
-`--debris-caption-window` (default 15 raw lines) are threshold knobs. They are
-corpus-derived; the recognized-tag allowlist, code/table protection, and audit
-sidecars are structural safeguards, not tuning controls.
-
-For page-aware A/B tests, use `--skip-running-heads`, `--skip-page-numbers`,
-`--skip-seams`, or `--skip-heading-synthesis`. The four
-`--running-head-*` overrides change only recurrence, edge distance, edge fraction,
-or maximum length for one measured experiment; keep the reported defaults unless the
-sample gives a specific reason to change one.
-
-## Treat reports as review data
-
-Read aggregates first, then the sidecar and source-page samples. Sidecars preserve
-removed or replaced source text with a page/line location, so recover a mistake by
-editing the output or revising the tested pass rather than blindly rerunning a whole
-book. Terminal reports deliberately show counts and bounded examples; JSON supports
-comparison, and the sidecar retains the complete removal record.
-
-Re-measure before a whole-book run when you see a poor scan, unusual page furniture,
-a multi-author handbook with repeated section names, a code-heavy appendix, many
-uncaptioned label runs, non-English text, or a genre outside the target domain.
-Compare the changed JSON and sidecars, then record why the override improved the
-sample. Do not introduce a configuration framework or batch driver.
-
-## Preserve technical meaning
-
-Treat these as preservation gates, not cosmetic checks:
-
-- Keep operators and variables readable: `<=`, `>=`, `!=`, and `->` use ASCII;
-  Greek and symbols without an exact ASCII form use named entities such as `&pi;`,
-  `&alpha;`, and `&sum;`; unknown symbols remain visible numeric entities.
-- Keep code-like angle forms as literal text, not discarded tags. Recognized markup
-  is converted narrowly; malformed or unfamiliar forms retain readable content.
-- Keep captions, table cells, bibliography data, and equation operands. A clean but
-  semantically empty conversion fails.
-- Keep a visible paragraph break when a seam is uncertain. False joins corrupt agent
-  chunks more severely than missed joins.
-
-When extracted mathematical vertical bars form an inconsistent active pipe block without
-a valid table delimiter, create a separate protected candidate for review:
-
-```bash
-python3 "$book_repo/tools/wrap_malformed_tables.py" \
-  --input /tmp/book.clean.md --output /tmp/book.tables-protected.md \
-  --json-report /tmp/book.tables-protected.json
-```
-
-The wrapper preserves the original block inside a `text` fence. It leaves recognizable
-tables with delimiter rows for source-guided repair, never overwrites its input, and does
-not claim to reconstruct table semantics. Prefer a source-verified Markdown table or
-labeled prose repair when the original rows can be recovered.
-
-Use [references/repair_playbook.md](references/repair_playbook.md) after the scripts
-for table, reference, contents, hierarchy, and source-page judgment. It also records
-the calibration provenance, default boundaries, recovery procedure, and compact
-acceptance checks.
-
-## Spread-scan OCR (two book pages per PDF page)
-
-For landscape scans where one PDF page holds two book pages side by side,
-full-page OCR interleaves the two book pages line by line. Split each PDF
-page into left/right halves and OCR each half in book-page order instead:
-
-```bash
-export PATH=/home/vosslab/opt/tess/root/usr/bin:$PATH
-export LD_LIBRARY_PATH=/home/vosslab/opt/tess/root/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
-export TESSDATA_PREFIX=/home/vosslab/opt/tess/root/usr/share/tesseract-ocr/5/tessdata
-python3 "$book_repo/extract/pdf_ocr_spread_halves.py" book.pdf /tmp/book.halves.txt \
-  --pages 0-9        # measure a sample first; OMP_THREAD_LIMIT=1 is built in
-python3 "$book_repo/cleanup/assemble_ocr_halves.py" -i /tmp/book.halves.txt \
-  -o /tmp/book.clean.md -c /tmp/book.config.json
-```
-
-`assemble_ocr_halves.py` is config-driven: the JSON config carries the book's
-chapters (normalized detection keys), running heads, title fragments,
-front-matter page mapping, and intro markers; see its docstring for the
-schema. For a single-page OCR scan with `|` prefixes on prose lines
-(page-edge/column-rule noise), run `cleanup/fix_pipe_artifacts.py` before
-cleaning - it strips the prefixes while preserving real tables (delimiter-row
-pipe blocks).
-
-## Convert MathML to LaTeX
-
-`tools/mathml_to_latex.py` converts MathML to LaTeX - standalone, or targeted at a
-specific Markdown text block. Backends are tried in order (an embedded
-`<annotation encoding="application/x-tex">` is extracted verbatim, then `pandoc`, then
-the `mathml-to-latex` PyPI package, then `sympy`); a block none of them can convert is
-left unchanged and reported, never silently dropped.
-
-```bash
-# convert a single MathML string (or pipe it on stdin)
-python3 "$book_repo/tools/mathml_to_latex.py" --mathml '<math>...</math>'
-
-# dry-run: show the LaTeX each <math> block in a line range would become
-python3 "$book_repo/tools/mathml_to_latex.py" \
-  --markdown book.md --lines 120:180
-
-# fix in place (a .mathml-bak backup is kept) or write a separate file
-python3 "$book_repo/tools/mathml_to_latex.py" \
-  --markdown book.md --lines 120:180 --in-place --json-report /tmp/mathml.json
-```
-
-It handles single-line and multi-line `<math>` blocks, blocks inside HTML comments
-(`<!-- <math>...</math> -->` are replaced by active LaTeX), HTML-escaped
-(`&lt;math&gt;`) blocks, and numeric entities. `--delimiter` selects `$...$`/`$$...$$`
-(default), `\(...\)`/`\[...\]`, or bare LaTeX. Prefer this over hand-editing MathML
-residue; the default `dollar` delimiter matches the markdown math style used across the
-corpus.
-
-## Final verification
-
-Verify the whole book only after the sample supports the chosen settings:
-
-```bash
-python3 "$book_repo/tools/validate_markdown_v2.py" \
-  /path/to/delivery-directory --json-report /tmp/book.delivery.json
-```
-
-v2 is the markdown-it-py block-aware validator (same CLI as v1): it classifies
-every line by its CommonMark token (fence/code_block = real code, html_block =
-raw HTML residue with the `indented-html-table` code for table-structure
-blocks, heading tokens = exact H1 count) instead of skipping any
-4-space-indented line like v1 did - v1 let EPUB tables left as indented raw
-HTML pass silently. `validate_markdown_delivery.py` (v1) still exists for
-backward compatibility but new deliveries should use v2.
-
-The validator checks the metadata filename shape and 90-character limit, one H1, one
-canonical file per title and edition, ASCII content, page-only lines, image or active HTML
-markup (including indented raw HTML tables), balanced fences, and malformed active pipe
-blocks. A nonzero exit status blocks delivery. It checks structural invariants; source-page
-spot checks still establish semantic completeness. The bare-page-number check is skipped
-when frontmatter declares a structured source (docx/epub/htm/html/odt), where lone numeric
-lines can be legitimate content.
-
-After validation, audit processed-source archiving before moving anything:
-
-```bash
+python3 "$book_repo/tools/validate_markdown_v2.py" /path/to/delivery-directory
 python3 "$book_repo/tools/archive_processed_sources.py" /path/to/book-root
-python3 "$book_repo/tools/archive_processed_sources.py" \
-  /path/to/book-root --move --json-report /tmp/book.archive.json
 ```
 
-The dry run is the default. The tool moves only unique source basenames declared
-by valid Markdown `source` or `source_*` frontmatter, preserves their relative
-folders under `COMPLETED_SOURCE/`, recognizes already archived sources, and leaves
-unmapped active inputs in place. Missing sources, duplicate basenames, invalid
-Markdown, or archive collisions block the move.
-
-Use focused searches when diagnosing a reported failure:
-
-```bash
-rg -n '^[0-9]+$|^![[]|</?[A-Za-z][A-Za-z0-9-]*[^<>]*>' /tmp/book.clean.md
-rg -n '[^\x00-\x7F]' /tmp/book.clean.md
-rg -n '^#{1,6} ' /tmp/book.clean.md
-```
-
-The first two commands should have no output for bare page-number/image/active-tag
-and raw non-ASCII checks; inspect entities rather than treating `&...;` as tags.
-Then spot-check source-page windows covering a page seam, heading, equation, caption,
-table, and reference run. Repair the documented exceptions in the playbook. Do not
-batch-convert or reconvert existing reference corpora as part of this task.
-
-## Audit an existing corpus
-
-When the user reports defects in an already-converted corpus, run the two read-only
-auditors before touching any file. They complement the validator: the validator checks
-structural invariants, these scan for content-level damage.
-
-```bash
-python3 "$book_repo/tools/audit_markdown_duplication.py" /path/to/delivery-dir \
-  --json-report /tmp/audit.duplication.json
-python3 "$book_repo/tools/audit_markdown_residue.py" /path/to/delivery-dir \
-  --json-report /tmp/audit.residue.json
-```
-
-`audit_markdown_duplication.py` detects adjacent repeated word n-grams (the OCR
-doubling defect: "threat modeling threat modeling", "very difficult very difficult").
-It blanks Markdown syntax in place, splits at connector words (copulas such as
-"is", "are", "was" are kept as content tokens so genuine stutter like "they
-probably are" is not missed), and drops imprints, lorem-ipsum text, short tokens,
-and glossary definition labels so that idioms ("line by line", "research group to
-research group"), math speech ("big R big R"), and dictionary entries
-("**Term:** Term is...") do not false-positive. Report `examples` are the triage
-key: a file with dense multi-gram hits is a genuine repair candidate; a handful of
-low-count hits is usually a sentence-boundary restatement ("...the course plan.
-Course plan has been selected") and can be ignored.
-
-`audit_markdown_residue.py` counts U+FFFD replacement chars, control chars,
-mojibake, raw HTML/MathML blocks, setext underline garbage, and TOC dot-leader runs.
-HTML entities are reported but not treated as defects on their own - math-heavy
-books legitimately use `&alpha;` and `&rarr;`.
-
-If duplication is confirmed, do NOT re-convert: the doubling lives in the source
-text layer, so re-extraction reproduces it. Dedup the file instead (the tool
-writes a review copy and never overwrites the input):
-
-```bash
-python3 "$book_repo/tools/audit_markdown_duplication.py" \
-  /path/to/delivery-dir/Book-2024.md --dedup
-```
-
-`--dedup` writes `Book-2024.md.deduped.md` next to the input and never overwrites
-it; the removed spans preserve surrounding punctuation and links. Review the
-collapsed phrase list in the terminal output, then accept the deduped copy
-(`mv Book-2024.md.deduped.md Book-2024.md`) once it reads correctly.
-
+Do not create multiple canonical outputs for one title.
