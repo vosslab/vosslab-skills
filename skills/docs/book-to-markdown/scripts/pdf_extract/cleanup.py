@@ -1,10 +1,8 @@
-#!/usr/bin/env python3
-"""Extract technical PDF books into page-free, structure-preserving Markdown."""
+"""Shared page-aware cleanup, scoring, and reporting for the PDF extraction tools."""
 
 import argparse
 import collections
 import dataclasses
-import json
 import pathlib
 import re
 
@@ -86,10 +84,7 @@ class ConversionResult:
 	"""Hold Markdown, quality evidence, and auditable page-cleanup results."""
 	pages: list[PageResult]
 	markdown_text: str
-	structured_pass_used: bool
-	adapted_to_full_ocr_check: bool
-	pass_scores: dict[str, dict[str, int | float | bool | str]]
-	selection_reason: str
+	extraction_method: str
 	warnings: list[str]
 	estimated_words: int
 	extracted_words: int
@@ -104,41 +99,6 @@ class ConversionResult:
 	removals: list[Removal]
 	effective_running_head_defaults: dict[str, int | float]
 	initial_page_evidence: dict[str, int | float | list[str] | dict[str, int]]
-
-
-#============================================
-def parse_args() -> argparse.Namespace:
-	"""Parse command-line arguments."""
-	parser = argparse.ArgumentParser(description="Extract a technical PDF book to page-free Markdown")
-	parser.add_argument("pdf", help="Input PDF file")
-	parser.add_argument("-o", "--output", dest="output_file", help="Output Markdown path")
-	parser.add_argument("-p", "--pages", dest="pages", help="Zero-based pages, such as 0,1,24-30")
-	parser.add_argument("-m", "--measure", dest="measure_only", action="store_true",
-		help="Measure extraction evidence without writing Markdown or a sidecar")
-	parser.add_argument("-j", "--json-report", dest="json_report", help="Write comparable JSON evidence")
-	parser.add_argument("--ocr", dest="ocr_mode", action="store_const", const="always", default="auto",
-		help="Use the flat OCR-assisted pass instead of structured extraction")
-	parser.add_argument("--no-ocr", dest="ocr_mode", action="store_const", const="never",
-		help="Keep structured output even when gross REVIEW evidence appears")
-	parser.add_argument("--skip-running-heads", dest="running_heads", action="store_false",
-		help="Keep recurring edge text for an A/B cleanup experiment")
-	parser.add_argument("--skip-page-numbers", dest="page_numbers", action="store_false",
-		help="Keep edge page numbers for an A/B cleanup experiment")
-	parser.add_argument("--skip-seams", dest="seams", action="store_false",
-		help="Keep page boundaries as paragraph breaks for an A/B experiment")
-	parser.add_argument("--skip-heading-synthesis", dest="heading_synthesis", action="store_false",
-		help="Keep dotted numbered lines unchanged for an A/B experiment")
-	parser.add_argument("--running-head-min-recurrence", type=int,
-		help="Override the measured recurrence boundary for one experiment")
-	parser.add_argument("--running-head-edge-distance", type=int,
-		help="Override the measured edge-line distance for one experiment")
-	parser.add_argument("--running-head-edge-fraction", type=float,
-		help="Override the measured edge-position fraction for one experiment")
-	parser.add_argument("--running-head-max-length", type=int,
-		help="Override the measured candidate-length boundary for one experiment")
-	parser.set_defaults(running_heads=True, page_numbers=True, seams=True, heading_synthesis=True)
-	args = parser.parse_args()
-	return args
 
 
 #============================================
@@ -185,81 +145,6 @@ def count_words(text: str) -> int:
 	"""Count human-readable word tokens in extracted text."""
 	word_count = len(re.findall(r"\w+", text))
 	return word_count
-
-
-#============================================
-def extract_ocr_text(page: fitz.Page) -> str:
-	"""Extract one OCR text page with PyMuPDF's Tesseract bridge."""
-	try:
-		textpage = page.get_textpage_ocr(full=True)
-	except RuntimeError as error:
-		message = str(error)
-		if "Tesseract" in message or "tessdata" in message:
-			raise RuntimeError(
-				"OCR requires Tesseract with English traineddata. "
-				"Install system-wide with: sudo apt install tesseract-ocr tesseract-ocr-eng  "
-				"or rootless: download the .debs, extract with dpkg -x, and export "
-				"PATH/LD_LIBRARY_PATH/TESSDATA_PREFIX to the extracted prefix."
-			) from error
-		raise
-	text = page.get_text("text", textpage=textpage)
-	clean_text = normalize_text(text)
-	return clean_text
-
-
-#============================================
-def extract_flat_ocr(input_path: pathlib.Path, pages: list[int] | None) -> list[PageResult]:
-	"""Extract selected pages with the bounded legacy OCR-assisted fallback."""
-	document = fitz.open(input_path)
-	page_numbers = get_page_numbers(document, pages)
-	results: list[PageResult] = []
-	for page_number in page_numbers:
-		page = document[page_number]
-		embedded_text = normalize_text(page.get_text("text"))
-		embedded_words = len(page.get_text("words"))
-		ocr_text = extract_ocr_text(page)
-		ocr_words = count_words(ocr_text)
-		text = ocr_text if ocr_words > embedded_words else embedded_text
-		source = "ocr" if ocr_words > embedded_words else "embedded"
-		results.append(PageResult(page_number, text, source, embedded_words, ocr_words))
-	document.close()
-	return results
-
-
-#============================================
-def extract_structured(input_path: pathlib.Path, pages: list[int] | None) -> list[PageResult]:
-	"""Extract structured per-page Markdown without emitting image files."""
-	try:
-		import pymupdf4llm
-	except ModuleNotFoundError as error:
-		if error.name != "pymupdf4llm":
-			raise
-		message = (
-			"Structured PDF extraction requires pymupdf4llm. "
-			"Install it with: pip install pymupdf4llm  "
-			"(see pip_requirements.txt in the repository root; "
-			"system Pythons may need --user or a virtualenv)."
-		)
-		raise RuntimeError(message) from error
-	document = fitz.open(input_path)
-	page_numbers = get_page_numbers(document, pages)
-	embedded_words = {page_number: len(document[page_number].get_text("words")) for page_number in page_numbers}
-	document.close()
-	chunks = pymupdf4llm.to_markdown(
-		str(input_path),
-		pages=page_numbers,
-		page_chunks=True,
-		write_images=False,
-		ignore_images=True,
-	)
-	results: list[PageResult] = []
-	# Page-chunk metadata differs between pymupdf4llm's legacy and layout engines.
-	# The documented output order follows the requested page list, which is the
-	# stable contract needed for page-aware cleanup.
-	for page_number, chunk in zip(page_numbers, chunks, strict=True):
-		text = normalize_text(str(chunk["text"]))
-		results.append(PageResult(page_number, text, "structured", embedded_words[page_number], 0))
-	return results
 
 
 #============================================
@@ -330,42 +215,6 @@ def score_pages(results: list[PageResult]) -> dict[str, int | float | bool | str
 		"quality_status": quality_status,
 	}
 	return score
-
-
-#============================================
-def fallback_is_better(structured_score: dict[str, int | float | bool | str], fallback_score: dict[str, int | float | bool | str]) -> bool:
-	"""Choose OCR only when it improves semantic evidence, never word count alone."""
-	structured_headings = int(structured_score["heading_count"])
-	fallback_headings = int(fallback_score["heading_count"])
-	structured_tables = int(structured_score["table_row_count"])
-	fallback_tables = int(fallback_score["table_row_count"])
-	if fallback_headings < structured_headings or fallback_tables < structured_tables:
-		return False
-	if str(fallback_score["quality_status"]) != "OK":
-		return False
-	if str(structured_score["quality_status"]) == "OK":
-		return False
-	# Paragraph boundaries are a semantic signal: page-sized OCR blocks are not
-	# an improvement merely because OCR recognized more isolated words.
-	more_structure = fallback_headings > structured_headings or fallback_tables > structured_tables
-	better_boundaries = float(fallback_score["mean_paragraph_words"]) < float(structured_score["mean_paragraph_words"])
-	less_repetition = int(fallback_score["repeated_line_count"]) < int(structured_score["repeated_line_count"])
-	return more_structure or (better_boundaries and less_repetition)
-
-
-#============================================
-def selection_reason(structured_score: dict[str, int | float | bool | str], fallback_score: dict[str, int | float | bool | str] | None,
-	ocr_mode: str, use_structured: bool) -> str:
-	"""Explain the extraction choice in manager-review language."""
-	if fallback_score is None:
-		if ocr_mode == "never":
-			return "Structured pass retained because OCR comparison was disabled."
-		return "Structured pass retained: gross-review gate did not require an OCR comparison."
-	if ocr_mode == "always":
-		return "OCR-assisted pass selected because --ocr explicitly forced it."
-	if not use_structured:
-		return "OCR-assisted pass selected after REVIEW because it improved semantic evidence without losing headings or table rows."
-	return "Structured pass retained after OCR comparison because OCR did not improve semantic evidence without losing structure."
 
 
 #============================================
@@ -859,112 +708,6 @@ def build_warnings(results: list[PageResult], score: dict[str, int | float | boo
 
 
 #============================================
-def convert_pdf(input_path: pathlib.Path, pages: list[int] | None, ocr_mode: str, running_heads: bool,
-	page_numbers: bool, seams: bool, heading_synthesis: bool, running_head_defaults: dict[str, int | float]) -> ConversionResult:
-	"""Run the measured structured-first ladder and page-aware flattening passes."""
-	structured_pages = extract_structured(input_path, pages)
-	structured_score = score_pages(structured_pages)
-	pass_scores = {"structured": structured_score}
-	selected_pages = structured_pages
-	structured_pass_used = True
-	adapted_to_full_ocr_check = False
-	fallback_score: dict[str, int | float | bool | str] | None = None
-	if ocr_mode == "always" or (ocr_mode == "auto" and str(structured_score["quality_status"]) == "REVIEW"):
-		fallback_pages = extract_flat_ocr(input_path, pages)
-		fallback_score = score_pages(fallback_pages)
-		pass_scores["ocr_assisted_flat"] = fallback_score
-		adapted_to_full_ocr_check = True
-		if ocr_mode == "always" or fallback_is_better(structured_score, fallback_score):
-			selected_pages = fallback_pages
-			structured_pass_used = False
-	initial_evidence = page_evidence(selected_pages)
-	removals: list[Removal] = []
-	running_head_report: list[RunningHeadDecision] = []
-	if running_heads:
-		running_head_report = remove_running_heads(selected_pages, removals, running_head_defaults)
-	remove_picture_blocks(selected_pages, removals)
-	if page_numbers:
-		remove_edge_page_numbers(selected_pages, removals)
-	synthesized_headings = synthesize_numbered_headings(selected_pages) if heading_synthesis else []
-	markdown_text, seams_seen, seams_joined = flatten_pages(selected_pages, seams)
-	markdown_text = demote_source_h1s(markdown_text)
-	markdown_text = build_frontmatter(input_path) + markdown_text
-	final_score = score_pages(selected_pages)
-	warnings = build_warnings(selected_pages, final_score)
-	conversion_result = ConversionResult(
-		pages=selected_pages,
-		markdown_text=markdown_text,
-		structured_pass_used=structured_pass_used,
-		adapted_to_full_ocr_check=adapted_to_full_ocr_check,
-		pass_scores=pass_scores,
-		selection_reason=selection_reason(structured_score, fallback_score, ocr_mode, structured_pass_used),
-		warnings=warnings,
-		estimated_words=int(final_score["estimated_words"]),
-		extracted_words=int(final_score["extracted_words"]),
-		word_ratio=float(final_score["word_ratio"]),
-		quality_status=str(final_score["quality_status"]),
-		heading_count=count_headings(markdown_text),
-		table_row_count=int(final_score["table_row_count"]),
-		seams_seen=seams_seen,
-		seams_joined=seams_joined,
-		running_heads=running_head_report,
-		synthesized_headings=synthesized_headings,
-		removals=removals,
-		effective_running_head_defaults=running_head_defaults,
-		initial_page_evidence=initial_evidence,
-	)
-	return conversion_result
-
-
-#============================================
-def measure_pdf(input_path: pathlib.Path, pages: list[int] | None, ocr_mode: str,
-	running_head_defaults: dict[str, int | float]) -> ConversionResult:
-	"""Measure the extractor ladder without applying any page-cleanup transformation."""
-	structured_pages = extract_structured(input_path, pages)
-	structured_score = score_pages(structured_pages)
-	pass_scores = {"structured": structured_score}
-	selected_pages = structured_pages
-	structured_pass_used = True
-	adapted_to_full_ocr_check = False
-	fallback_score: dict[str, int | float | bool | str] | None = None
-	if ocr_mode == "always" or (ocr_mode == "auto" and str(structured_score["quality_status"]) == "REVIEW"):
-		fallback_pages = extract_flat_ocr(input_path, pages)
-		fallback_score = score_pages(fallback_pages)
-		pass_scores["ocr_assisted_flat"] = fallback_score
-		adapted_to_full_ocr_check = True
-		if ocr_mode == "always" or fallback_is_better(structured_score, fallback_score):
-			selected_pages = fallback_pages
-			structured_pass_used = False
-	initial_evidence = page_evidence(selected_pages)
-	final_score = score_pages(selected_pages)
-	warnings = build_warnings(selected_pages, final_score)
-	markdown_text = "\n\n".join(result.text for result in selected_pages)
-	measurement = ConversionResult(
-		pages=selected_pages,
-		markdown_text=markdown_text,
-		structured_pass_used=structured_pass_used,
-		adapted_to_full_ocr_check=adapted_to_full_ocr_check,
-		pass_scores=pass_scores,
-		selection_reason=selection_reason(structured_score, fallback_score, ocr_mode, structured_pass_used),
-		warnings=warnings,
-		estimated_words=int(final_score["estimated_words"]),
-		extracted_words=int(final_score["extracted_words"]),
-		word_ratio=float(final_score["word_ratio"]),
-		quality_status=str(final_score["quality_status"]),
-		heading_count=int(final_score["heading_count"]),
-		table_row_count=int(final_score["table_row_count"]),
-		seams_seen=0,
-		seams_joined=0,
-		running_heads=[],
-		synthesized_headings=[],
-		removals=[],
-		effective_running_head_defaults=running_head_defaults,
-		initial_page_evidence=initial_evidence,
-	)
-	return measurement
-
-
-#============================================
 def format_page_list(page_numbers: list[int]) -> str:
 	"""Format a page-number list for a compact human report."""
 	if not page_numbers:
@@ -996,10 +739,7 @@ def result_report(input_path: pathlib.Path, output_path: pathlib.Path, result: C
 		"pdf": str(input_path),
 		"markdown": str(output_path),
 		"pages_converted": len(result.pages),
-		"structured_pass_used": result.structured_pass_used,
-		"ocr_comparison_run": result.adapted_to_full_ocr_check,
-		"pass_scores": result.pass_scores,
-		"selection_reason": result.selection_reason,
+		"extraction_method": result.extraction_method,
 		"quality_status": result.quality_status,
 		"estimated_words": result.estimated_words,
 		"extracted_words": result.extracted_words,
@@ -1028,9 +768,7 @@ def print_report(report: dict, measure_only: bool = False) -> None:
 	else:
 		print(f"Markdown: {report['markdown']}")
 	print(f"Pages converted: {report['pages_converted']}")
-	print(f"Pass chosen: {'structured' if report['structured_pass_used'] else 'OCR-assisted flat'}")
-	print(f"OCR comparison run: {'yes' if report['ocr_comparison_run'] else 'no'}")
-	print(f"Selection reason: {report['selection_reason']}")
+	print(f"Extraction method: {report['extraction_method']}")
 	print(f"Quality status: {report['quality_status']}")
 	print(f"Extracted/estimated words: {float(report['word_ratio']):.1%}")
 	print(f"Headings: {report['headings']}; pipe table rows: {report['table_rows']}")
@@ -1087,33 +825,82 @@ def write_removal_sidecar(output_path: pathlib.Path, removals: list[Removal]) ->
 	sidecar_path.write_text(sidecar_text, encoding="utf-8")
 	return sidecar_path
 
+#============================================
+def convert_pages(
+	input_path: pathlib.Path,
+	pages: list[PageResult],
+	extraction_method: str,
+	running_heads: bool,
+	page_numbers: bool,
+	seams: bool,
+	heading_synthesis: bool,
+	running_head_defaults: dict[str, int | float],
+) -> ConversionResult:
+	"""Run page-aware flattening passes on already-extracted pages."""
+	initial_evidence = page_evidence(pages)
+	removals: list[Removal] = []
+	running_head_report: list[RunningHeadDecision] = []
+	if running_heads:
+		running_head_report = remove_running_heads(pages, removals, running_head_defaults)
+	remove_picture_blocks(pages, removals)
+	if page_numbers:
+		remove_edge_page_numbers(pages, removals)
+	synthesized_headings = synthesize_numbered_headings(pages) if heading_synthesis else []
+	markdown_text, seams_seen, seams_joined = flatten_pages(pages, seams)
+	markdown_text = demote_source_h1s(markdown_text)
+	markdown_text = build_frontmatter(input_path) + markdown_text
+	final_score = score_pages(pages)
+	warnings = build_warnings(pages, final_score)
+	conversion_result = ConversionResult(
+		pages=pages,
+		markdown_text=markdown_text,
+		extraction_method=extraction_method,
+		warnings=warnings,
+		estimated_words=int(final_score["estimated_words"]),
+		extracted_words=int(final_score["extracted_words"]),
+		word_ratio=float(final_score["word_ratio"]),
+		quality_status=str(final_score["quality_status"]),
+		heading_count=count_headings(markdown_text),
+		table_row_count=int(final_score["table_row_count"]),
+		seams_seen=seams_seen,
+		seams_joined=seams_joined,
+		running_heads=running_head_report,
+		synthesized_headings=synthesized_headings,
+		removals=removals,
+		effective_running_head_defaults=running_head_defaults,
+		initial_page_evidence=initial_evidence,
+	)
+	return conversion_result
+
 
 #============================================
-def main() -> None:
-	"""Convert one PDF, or measure it without writing conversion artifacts."""
-	args = parse_args()
-	input_path = pathlib.Path(args.pdf)
-	output_path = pathlib.Path(args.output_file) if args.output_file else input_path.with_suffix(".md")
-	pages = parse_pages(args.pages)
-	running_head_defaults = effective_running_head_defaults(args)
-	if args.measure_only:
-		result = measure_pdf(input_path, pages, args.ocr_mode, running_head_defaults)
-	else:
-		result = convert_pdf(input_path, pages, args.ocr_mode, args.running_heads, args.page_numbers,
-			args.seams, args.heading_synthesis, running_head_defaults)
-	report = result_report(input_path, output_path, result)
-	print_report(report, measure_only=args.measure_only)
-	if args.json_report or not args.measure_only:
-		json_path = pathlib.Path(args.json_report) if args.json_report else pathlib.Path(str(output_path) + ".report.json")
-		json_path.write_text(json.dumps(report, indent="\t", ensure_ascii=True) + "\n", encoding="utf-8")
-		print(f"JSON report: {json_path}")
-	if args.measure_only:
-		return
-	output_path.write_text(result.markdown_text, encoding="utf-8")
-	sidecar_path = write_removal_sidecar(output_path, result.removals)
-	print(f"Removal sidecar: {sidecar_path}")
-
-
-#============================================
-if __name__ == "__main__":
-	main()
+def measure_pages(
+	pages: list[PageResult],
+	extraction_method: str,
+	running_head_defaults: dict[str, int | float],
+) -> ConversionResult:
+	"""Measure already-extracted pages without applying page-cleanup transforms."""
+	initial_evidence = page_evidence(pages)
+	final_score = score_pages(pages)
+	warnings = build_warnings(pages, final_score)
+	markdown_text = "\n\n".join(result.text for result in pages)
+	measurement = ConversionResult(
+		pages=pages,
+		markdown_text=markdown_text,
+		extraction_method=extraction_method,
+		warnings=warnings,
+		estimated_words=int(final_score["estimated_words"]),
+		extracted_words=int(final_score["extracted_words"]),
+		word_ratio=float(final_score["word_ratio"]),
+		quality_status=str(final_score["quality_status"]),
+		heading_count=int(final_score["heading_count"]),
+		table_row_count=int(final_score["table_row_count"]),
+		seams_seen=0,
+		seams_joined=0,
+		running_heads=[],
+		synthesized_headings=[],
+		removals=[],
+		effective_running_head_defaults=running_head_defaults,
+		initial_page_evidence=initial_evidence,
+	)
+	return measurement

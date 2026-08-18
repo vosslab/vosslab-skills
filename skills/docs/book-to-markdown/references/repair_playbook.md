@@ -14,9 +14,10 @@ authorization to batch-convert or rewrite them.
 ## Evidence loop
 
 For a new technical/scientific book, first measure a representative 6-30 page
-spread with `pdf_to_markdown.py --measure --pages ... --json-report ...`, then make
-a hypothesis and test the smallest relevant variation. Use `--ocr` for an
-OCR-assisted extraction comparison and `clean_markdown.py -i INPUT --lines ...
+spread with `pdf_raw_text_extraction_to_markdown.py --measure --pages ...
+--json-report ...`, then make
+a hypothesis and test the smallest relevant variation. Use
+`pdf_ocr_text_extraction_to_markdown.py` for an OCR comparison and `clean_markdown.py -i INPUT --lines ...
 --skip ...` for cleanup A/B tests. Compare JSON reports, removal sidecars, and
 source pages.
 
@@ -85,7 +86,7 @@ retain a sidecar for every destructive pass.
 
 ## Read the audit trail
 
-For `pdf_to_markdown.py`, inspect `<output>.removed.md` and `<output>.report.json`.
+For the PDF extractors, inspect `<output>.removed.md` and `<output>.report.json`.
 For `clean_markdown.py`, inspect `<output>.removed.md` and `<output>.report.json`.
 Normal conversions write their default JSON report beside the output. In
 `--measure` mode, either script writes JSON only when `--json-report` is supplied.
@@ -193,7 +194,7 @@ resolved. The validator complements rather than replaces the source-page checks.
 - A real section heading that coincides with its own running head can be
   deleted when the heading is marked once but the furniture repeats at the
   page edge (measured Aug 2026: `Preface` / `Editors and Contributors` in a
-  Springer PDF — the classifier's edge-recurrence rule outranks the single
+  Springer PDF - the classifier's edge-recurrence rule outranks the single
   heading marker). Restore the heading from the removal sidecar when the
   output loses a section that the source clearly starts there.
 - OCR-inserted punctuation can leave a missed page seam; keep the visible break or

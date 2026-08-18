@@ -1,6 +1,7 @@
 """Shared structural checks for final technical-book Markdown."""
 
 import dataclasses
+import pathlib
 import re
 
 
@@ -212,3 +213,17 @@ def find_malformed_pipe_blocks(text: str) -> list[TableIssue]:
 		if issue is not None:
 			issues.append(issue)
 	return issues
+
+
+#============================================
+def iter_markdown_paths(paths: list[str]) -> list[pathlib.Path]:
+	"""Expand file and directory arguments into a sorted list of Markdown files."""
+	found: list[pathlib.Path] = []
+	for raw in paths:
+		path = pathlib.Path(raw)
+		if path.is_dir():
+			found.extend(sorted(path.rglob("*.md")))
+		elif path.is_file():
+			found.append(path)
+	found.sort(key=lambda item: str(item))
+	return found

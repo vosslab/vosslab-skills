@@ -2,6 +2,24 @@
 
 ### Fixes and Maintenance
 
+- `book-to-markdown`: added two read-only corpus auditors for already-converted
+  books. `audit_markdown_duplication.py` detects adjacent repeated word n-grams
+  (the OCR/text-layer doubling defect) and can write an in-place deduped copy
+  (`--dedup`, never overwrites input); it blanks Markdown syntax length-preservingly,
+  splits at connector words, and drops imprints, lorem-ipsum text, short tokens, and
+  glossary definition labels so idioms, math speech, and dictionary entries do not
+  false-positive. `audit_markdown_residue.py` counts U+FFFD replacement chars,
+  control chars, mojibake, raw HTML/MathML blocks, setext underline garbage, and TOC
+  dot-leader runs. Both support `--json-report`. Documented in SKILL.md under
+  "Audit an existing corpus"; behavior tests in `tests/test_markdown_audit.py`.
+
+- `book-to-markdown`: added `scripts/mathml_to_latex.py`, a CLI that converts MathML to
+  LaTeX standalone (string/file/stdin) or in-place within a Markdown line range
+  (`--markdown FILE --lines L1:L2 [--in-place|-o]`). Backend chain: embedded
+  `application/x-tex` annotation -> pandoc -> `mathml-to-latex` PyPI package -> sympy,
+  with unconverted blocks reported rather than dropped. Handles commented, HTML-escaped,
+  multi-line, and display MathML; `--delimiter` selects `$...$`/`$$...$$`,
+  `\(...\)`/`\[...\]`, or bare. Tests in `tests/test_mathml_to_latex.py`.
 - `book-to-markdown`: split the 1,151-line `pdf_to_markdown.py` into two independent
   extractors backed by a shared `pdf_extract` package.
   `pdf_raw_text_extraction_to_markdown.py` reads the PDF text layer via

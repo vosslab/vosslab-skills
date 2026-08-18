@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """OCR image-scan EPUBs: extract page images in order, OCR each with Tesseract,
 assemble one markdown file with page separators. Used for EPUBs whose text layer
-is empty (all pages are scans) — the calibrated-ladder exception for EPUBs.
+is empty (all pages are scans) - the calibrated-ladder exception for EPUBs.
 Requires Tesseract on PATH (rootless install: export PATH/LD_LIBRARY_PATH/
 TESSDATA_PREFIX pointing at the tesseract root first).
 Usage: python3 epub_ocr.py <input.epub> <output.md> <workdir>
@@ -11,13 +11,13 @@ import sys, os, re, zipfile, subprocess
 PAGE_IMAGE_PATTERN = re.compile(r"(\d+)\.(?:jpe?g|png|gif|webp)$", re.I)
 
 
-def page_sort_key(name):
-    # files like cover00519.jpeg or 00519.png — take the trailing digits
+def page_sort_key(name: str) -> int:
+    # files like cover00519.jpeg or 00519.png - take the trailing digits
     m = PAGE_IMAGE_PATTERN.search(name)
     return int(m.group(1)) if m else 10**9
 
 
-def main():
+def main() -> None:
     epub, out_md, workdir = sys.argv[1], sys.argv[2], sys.argv[3]
     os.makedirs(workdir, exist_ok=True)
     try:
