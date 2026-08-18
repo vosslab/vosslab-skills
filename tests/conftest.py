@@ -54,6 +54,8 @@ collect_ignore = ["e2e", "playwright"]
 REPO_HYGIENE_FILTERS = {
 	# These skills use intentional Unicode typography and terminal-art source data.
 	"ascii_compliance": ["skills/plan/ideonomy-*/**"],
+	# Converted book corpus data, not authored source code.
+	"source_file_line_limit": ["skills/**/references/local-only/**"],
 }
 
 # === OPTIONAL_HELPERS_MENU ===

@@ -12,7 +12,7 @@ MARKDOWN_QUALITY = importlib.import_module("markdown_quality")
 COMPARE = importlib.import_module("compare_markdown_candidates")
 VALIDATE = importlib.import_module("validate_markdown_delivery")
 WRAP = importlib.import_module("wrap_malformed_tables")
-PDF_TO_MARKDOWN = importlib.import_module("pdf_to_markdown")
+PDF_CLEANUP = importlib.import_module("pdf_extract.cleanup")
 EPUB_STRUCTURE = importlib.import_module("epub_structure")
 ARCHIVE_SOURCES = importlib.import_module("archive_processed_sources")
 
@@ -230,12 +230,12 @@ def test_delivery_validator_still_rejects_layout_html() -> None:
 def test_pdf_frontmatter_establishes_canonical_h1(tmp_path: pathlib.Path) -> None:
 	"""A PDF conversion starts with metadata followed by one title heading."""
 	pdf_path = tmp_path / "example.pdf"
-	document = PDF_TO_MARKDOWN.fitz.open()
+	document = PDF_CLEANUP.fitz.open()
 	document.new_page()
 	document.set_metadata({"title": "Example Reference", "author": "A. Teacher"})
 	document.save(pdf_path)
 	document.close()
-	header = PDF_TO_MARKDOWN.build_frontmatter(pdf_path)
+	header = PDF_CLEANUP.build_frontmatter(pdf_path)
 	assert 'title: "Example Reference"' in header
 	assert header.endswith("# Example Reference\n\n")
 
@@ -243,7 +243,7 @@ def test_pdf_frontmatter_establishes_canonical_h1(tmp_path: pathlib.Path) -> Non
 def test_pdf_source_h1_is_demoted_outside_code() -> None:
 	"""PDF section H1s become H2 while hash-prefixed code stays unchanged."""
 	text = "# Part One\n\n```sh\n# a comment\n```\n"
-	demoted = PDF_TO_MARKDOWN.demote_source_h1s(text)
+	demoted = PDF_CLEANUP.demote_source_h1s(text)
 	assert demoted.startswith("## Part One")
 	assert "\n# a comment\n" in demoted
 

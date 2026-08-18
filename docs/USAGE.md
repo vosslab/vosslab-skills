@@ -58,9 +58,9 @@ Convert a technical or scientific book to agent-ready Markdown with the
 a measured PDF sample before a whole-book conversion:
 
 ```bash
-source source_me.sh && python3 skills/docs/book-to-markdown/scripts/pdf_to_markdown.py \
+source source_me.sh && python3 skills/docs/book-to-markdown/scripts/pdf_raw_text_extraction_to_markdown.py \
   paper.pdf --pages 0,1,25-30 --measure --json-report /tmp/paper.measure.json
-source source_me.sh && python3 skills/docs/book-to-markdown/scripts/pdf_to_markdown.py \
+source source_me.sh && python3 skills/docs/book-to-markdown/scripts/pdf_raw_text_extraction_to_markdown.py \
   paper.pdf -o /tmp/paper.raw.md
 source source_me.sh && python3 skills/docs/book-to-markdown/scripts/clean_markdown.py \
   -i /tmp/paper.raw.md -o /tmp/paper.clean.md

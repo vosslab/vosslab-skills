@@ -1,0 +1,4 @@
+# Pre-existing development utility above the script line limit; refactor separately.
+devel/bump_version.py
+# Historical changelog archive (append-only log, not maintainable source).
+docs/CHANGELOG-2026-06a.md

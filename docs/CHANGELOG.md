@@ -1,3 +1,40 @@
+## 2026-08-18
+
+### Fixes and Maintenance
+
+- `book-to-markdown`: split the 1,151-line `pdf_to_markdown.py` into two independent
+  extractors backed by a shared `pdf_extract` package.
+  `pdf_raw_text_extraction_to_markdown.py` reads the PDF text layer via
+  `fitz.get_text()`; `pdf_ocr_text_extraction_to_markdown.py` OCRs image-only scans
+  via `get_textpage_ocr()`. Shared page-aware cleanup (running heads, page numbers,
+  seams, dotted-number heading synthesis), scoring, and reporting live in
+  `pdf_extract/cleanup.py`; extraction lives in `pdf_extract/raw_text.py` and
+  `pdf_extract/ocr_text.py`.
+- Fixed a duplication bug: the old structured pass called `pymupdf4llm.to_markdown()`
+  with its default `use_ocr=True`, OCRing pages that already had a clean text layer and
+  merging both streams so words doubled. Raw `fitz.get_text()` is clean and complete
+  (measured: 1,231 words and 0 duplicate pairs vs 2,351 words and 378 duplicate pairs on
+  the same page). Removed the `pymupdf4llm` and `onnxruntime` dependencies, which also
+  retires the 2026-08-17 thread-cap workaround.
+- Added `tests/test_source_file_line_limit.py` (1,000-line source gate from the starter
+  repo template) with `source_file_line_limit` hygiene exclusions for converted
+  book-corpus data and overrides for pre-existing large files.
+- `epub_ocr.py`: added missing type annotations (`page_sort_key`, `main`).
+
+## 2026-08-17
+
+### Fixes and Maintenance
+
+- `book-to-markdown`: `pdf_to_markdown.py` now caps the ONNX Runtime thread count
+  for PyMuPDF's document-layout engine. The layout engine built onnxruntime
+  sessions with the automatic thread count, spawning roughly twenty native
+  threads per process and oversubscribing shared hosts when several books
+  converted at once. `cap_onnx_threads()` (called before importing pymupdf4llm,
+  since that import activates the layout engine) patches
+  `onnxruntime.SessionOptions.__init__` to set `use_per_session_threads=True` and
+  one inter-op / intra-op thread, dropping per-process threads from 21 to 6.
+  Declared `onnxruntime` in `pip_requirements.txt`.
+
 ## 2026-08-16
 
 ### Fixes and Maintenance
@@ -22,11 +59,11 @@
   lone numeric lines can be legitimate content.
 - `book-to-markdown`: description now starts with the `Use when` trigger
   convention used by the skill index.
-- `book-to-markdown`: repair playbook gained a measured residual case — a real
+- `book-to-markdown`: repair playbook gained a measured residual case - a real
   section heading that coincides with its own running head (e.g. `Preface`
   spanning pages in a Springer PDF) can be deleted by the edge-recurrence rule;
   the playbook now says to restore it from the removal sidecar.
-- `book-to-markdown`: documented the measured DjVu finding — probe a djvu's
+- `book-to-markdown`: documented the measured DjVu finding - probe a djvu's
   text layer with `djvutxt book.djvu | wc -w`, never `ddjvu -format=pdf`
   (which silently drops the text layer: a Tufte djvu with 43,943 words of
   clean publisher text produced a 0-word ddjvu PDF). Text-bearing djvu becomes
@@ -34,7 +71,7 @@
   files are recorded as `source_djvu:` corroborators. `djvulibre-bin` added to
   the optional Dependencies (apt only, no pip equivalent).
 - `book-to-markdown`: `archive_processed_sources.py` default archive directory
-  renamed `done_processed` → `COMPLETED_SOURCE`, matching the four-folder
+  renamed `done_processed` -> `COMPLETED_SOURCE`, matching the four-folder
   delivery layout (`COMPLETED_SOURCE`, `SORTED_SUBJECTS_MD`,
   `SKIPPED_DUPLICATE_SOURCE`, `STILL_TODO_SOURCE`); test updated, 2 archive
   tests pass.
