@@ -35,16 +35,27 @@ Before running any script, verify the interpreter has the required packages:
   DjVu sources: `sudo apt install djvulibre-bin` or the rootless `dpkg -x`
   pattern above.
 
-The scripts live in the standalone `book-to-markdown` repository, not in this
-skill directory. Run them from the repo's `tools/` directory (or add it to
-`PYTHONPATH`), because they import the sibling module `markdown_quality` and
-the `pdf_extract` package.
+The scripts live in the standalone `book-to-markdown` repository at
+`/home/vosslab/nsh/book-to-markdown/` (all tools moved there 2026-08-18; not in
+this skill directory). Repo layout: `extract/` = extraction
+(`pdf_ocr_text_extraction_to_markdown.py`, `pdf_raw_text_extraction_to_markdown.py`,
+`epub_structure.py`, `epub_ocr.py`, `semantic_markdown.lua`); `cleanup/` =
+post-processing (`clean_markdown.py`, `mathml_to_latex.py`,
+`wrap_malformed_tables.py`, `compare_markdown_candidates.py`); `audit/` =
+validation + corpus audits (`validate_markdown_v2.py`,
+`validate_markdown_delivery.py`, `audit_markdown_duplication.py`,
+`audit_markdown_residue.py`, `archive_processed_sources.py`); `markdown_quality.py`
+and the `pdf_extract/` package live at the repo root. Run scripts from the repo
+root (or add it to `PYTHONPATH`), because they import the sibling module
+`markdown_quality` and the `pdf_extract` package. Example commands below use
+`$book_repo/tools/` — map `tools/` to the subdir above per script (e.g. validate
+→ `audit/`, clean → `cleanup/`, pdf_*/epub_* → `extract/`).
 
 Before invoking a script, set `book_repo` to the absolute path of the
 `book-to-markdown` repository, then invoke scripts through that variable:
 
 ```bash
-book_repo="/absolute/path/to/book-to-markdown"
+book_repo="/home/vosslab/nsh/book-to-markdown"
 ```
 
 The defaults are confident starting points for technical and scientific books
@@ -355,6 +366,30 @@ Use [references/repair_playbook.md](references/repair_playbook.md) after the scr
 for table, reference, contents, hierarchy, and source-page judgment. It also records
 the calibration provenance, default boundaries, recovery procedure, and compact
 acceptance checks.
+
+## Spread-scan OCR (two book pages per PDF page)
+
+For landscape scans where one PDF page holds two book pages side by side,
+full-page OCR interleaves the two book pages line by line. Split each PDF
+page into left/right halves and OCR each half in book-page order instead:
+
+```bash
+export PATH=/home/vosslab/opt/tess/root/usr/bin:$PATH
+export LD_LIBRARY_PATH=/home/vosslab/opt/tess/root/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+export TESSDATA_PREFIX=/home/vosslab/opt/tess/root/usr/share/tesseract-ocr/5/tessdata
+python3 "$book_repo/extract/pdf_ocr_spread_halves.py" book.pdf /tmp/book.halves.txt \
+  --pages 0-9        # measure a sample first; OMP_THREAD_LIMIT=1 is built in
+python3 "$book_repo/cleanup/assemble_ocr_halves.py" -i /tmp/book.halves.txt \
+  -o /tmp/book.clean.md -c /tmp/book.config.json
+```
+
+`assemble_ocr_halves.py` is config-driven: the JSON config carries the book's
+chapters (normalized detection keys), running heads, title fragments,
+front-matter page mapping, and intro markers; see its docstring for the
+schema. For a single-page OCR scan with `|` prefixes on prose lines
+(page-edge/column-rule noise), run `cleanup/fix_pipe_artifacts.py` before
+cleaning - it strips the prefixes while preserving real tables (delimiter-row
+pipe blocks).
 
 ## Convert MathML to LaTeX
 
