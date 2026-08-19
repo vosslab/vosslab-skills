@@ -1,0 +1,4 @@
+interface:
+  display_name: "Xquik Source Research Expert"
+  short_description: "Plan reproducible X research with source evidence"
+  default_prompt: "Use $xquik-source-research-expert to design a bounded, source-grounded X research workflow."

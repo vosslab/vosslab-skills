@@ -46,6 +46,7 @@
     "./skills/experts/vision-expert",
     "./skills/experts/wasm-rust-expert",
     "./skills/experts/webwork-writer-expert",
+    "./skills/experts/xquik-source-research-expert",
     "./skills/manage/delegate-manager-to-subagents",
     "./skills/manage/gas-town-workflow",
     "./skills/manage/hang-check",
