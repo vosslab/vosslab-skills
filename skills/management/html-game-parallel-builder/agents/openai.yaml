@@ -1,0 +1,4 @@
+interface:
+  display_name: "HTML Game Parallel Builder"
+  short_description: "Build modular browser games with coordinated workstreams"
+  default_prompt: "Use $html-game-parallel-builder to build and verify this browser game."

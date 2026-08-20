@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ideonomy Rich"
+  short_description: "Expand ideas using expressive monospace creative structures"
+  default_prompt: "Use $ideonomy-rich to explore this idea with rich monospace structures."

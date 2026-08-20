@@ -1,0 +1,4 @@
+interface:
+  display_name: "Related Projects Docs"
+  short_description: "Map related projects and integrations with evidence"
+  default_prompt: "Use $see-also-docs to map this project's related work and integrations."

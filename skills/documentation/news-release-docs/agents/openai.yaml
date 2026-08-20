@@ -1,0 +1,4 @@
+interface:
+  display_name: "Release News Docs"
+  short_description: "Refresh release history and news from the changelog"
+  default_prompt: "Use $news-release-docs to prepare this repository's release documentation."

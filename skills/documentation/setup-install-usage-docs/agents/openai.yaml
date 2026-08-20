@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup and Usage Docs"
+  short_description: "Refresh installation and usage documentation from evidence"
+  default_prompt: "Use $setup-install-usage-docs to document setup and usage for this project."

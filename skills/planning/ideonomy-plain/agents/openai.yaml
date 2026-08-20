@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ideonomy Plain"
+  short_description: "Expand ideas with portable randomized creative methods"
+  default_prompt: "Use $ideonomy-plain to generate fresh plain-text directions for this idea."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Stay Busy"
+  short_description: "Keep an agent manager productive with safe follow-on work"
+  default_prompt: "Use $stay-busy to find safe, evidence-producing follow-on work."

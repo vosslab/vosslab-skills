@@ -1,0 +1,4 @@
+interface:
+  display_name: "Unit Test Starter"
+  short_description: "Generate focused Python pytest coverage across a repository"
+  default_prompt: "Use $unit-test-starter to add focused pytest coverage for this repository."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "AGENTS.md Fixer"
+  short_description: "Trim AGENTS.md into concise documentation pointers"
+  default_prompt: "Use $agents-md-fixer to simplify this repository's AGENTS.md."

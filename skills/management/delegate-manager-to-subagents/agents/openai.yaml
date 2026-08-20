@@ -1,0 +1,4 @@
+interface:
+  display_name: "Delegate Manager"
+  short_description: "Coordinate an approved plan through focused subagents"
+  default_prompt: "Use $delegate-manager-to-subagents to execute this approved plan."

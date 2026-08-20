@@ -1,0 +1,4 @@
+interface:
+  display_name: "Architecture Docs"
+  short_description: "Refresh architecture and file structure documentation"
+  default_prompt: "Use $arch-docs to document this repository's architecture and layout."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Documentation Set Updater"
+  short_description: "Refresh a repository's complete documentation set"
+  default_prompt: "Use $docset-updater to update this repository's documentation set."
