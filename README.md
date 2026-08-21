@@ -6,8 +6,9 @@ installations, with maintained Cursor and OpenCode compatibility outputs.
 
 ## Quick start
 
-Clone the repository, then run the guided installer from the repository root. The interview asks
-for the target home and platforms; Claude and Codex are the default selection.
+Clone the repository, then run the guided installer from the repository root. It installs beneath
+the current operating-system home and asks only which platforms to install; Claude and Codex are
+the default selection.
 
 ```bash
 ./install_skills.py

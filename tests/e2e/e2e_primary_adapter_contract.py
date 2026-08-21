@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 # Standard Library
-import pathlib
-import subprocess
+import os
 import sys
+import pathlib
 import tempfile
+import subprocess
 
 
 #============================================
@@ -43,11 +44,14 @@ def run_interview(
 	platform_answer: str,
 ) -> str:
 	"""Drive one complete installer interview and return its transcript."""
-	answers = [str(home_root), platform_answer, "y"]
+	answers = [platform_answer, "y"]
+	environment = os.environ.copy()
+	environment["HOME"] = str(home_root)
 	completed = subprocess.run(
 		[sys.executable, str(CLI_PATH)],
 		cwd=REPO_ROOT,
 		input="\n".join(answers) + "\n",
+		env=environment,
 		check=False,
 		capture_output=True,
 		text=True,

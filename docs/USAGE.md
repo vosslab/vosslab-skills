@@ -11,10 +11,11 @@ Run the guided installer from the repository root:
 ./install_skills.py
 ```
 
-The interview defaults to Claude and Codex, shows each destination, and writes only after final
-approval. Enter Cursor or OpenCode by name when their compatibility adapters are needed. Skill
-sources and authored Claude agents are linked rather than copied; re-run the same interview after
-changing target declarations, authored agents, or `agents/CATALOG.yaml`.
+The installer uses the current operating-system home automatically. The interview defaults to
+Claude and Codex, shows each destination, and writes only after final approval. Enter Cursor or
+OpenCode by name when their compatibility adapters are needed. Skill sources and authored Claude
+agents are linked rather than copied; re-run the same interview after changing target declarations,
+authored agents, or `agents/CATALOG.yaml`.
 
 Codex links repository categories at `~/.codex/skills/<category>`. Claude keeps individual skill
 links flat at `~/.claude/skills/<skill>`. Cursor uses `~/.cursor/skills`, and OpenCode uses
@@ -66,7 +67,7 @@ generated native agent files.
 The installer creates no state directory or hidden configuration. It writes only the selected
 platforms' installed skills and agents. The Git repository is authoritative: existing matching
 entries are left alone and mismatches are replaced after final confirmation. There are no plan,
-apply, update, or status modes.
+apply, update, or status modes, and no command-line flags for alternate installation roots.
 
 ## Verification
 

@@ -13,3 +13,6 @@
 - Install Codex categories as live links under `.codex/skills/<category>`. Keep Claude skill links
   flat under `.claude/skills/<skill>`. Use `.cursor/skills` for Cursor and
   `.config/opencode/skills` for OpenCode instead of the shared `.agents/skills` compatibility root.
+- Use the current operating-system home as the installer root. Do not expose an alternate-home
+  interview question or command-line flag solely for testing; isolate E2E runs with standard
+  `HOME` instead.

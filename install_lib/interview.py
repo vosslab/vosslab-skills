@@ -33,6 +33,7 @@ def prompt_yes_no(label: str) -> bool:
 #============================================
 def parse_platform_selection(answer: str, targets: dict) -> list[str]:
 	"""Return unique comma-separated platform identifiers in user order."""
+	# ASVS 2.2.1: allow only identifiers from the loaded target declarations.
 	platforms = []
 	for value in answer.split(","):
 		platform = value.strip().lower()
@@ -75,7 +76,7 @@ def interview_platforms(
 def print_plan_summary(plan: dict) -> None:
 	"""Print selected destinations and item counts before installation."""
 	print("\nInstallation summary")
-	print(f"  Home: {plan['home_root']}")
+	print(f"  Installation root: {plan['home_root']}")
 	for target_plan in plan["plans"]:
 		target = target_plan["target"]
 		skill_count = sum(item.kind == "skills" for item in target_plan["items"])
@@ -107,9 +108,8 @@ def run(repo_root: pathlib.Path) -> int:
 	"""Conduct the installation interview and apply the confirmed plan."""
 	print("Vosslab Skills installer")
 	print("This interview installs or updates skills and generated agents.")
-	print("\nChoose the home below which platform skill and agent folders are installed.")
-	home_text = prompt_default("Target home directory", str(pathlib.Path.home()))
-	home_root = pathlib.Path(home_text).expanduser()
+	# ASVS 5.3.2: use the trusted OS home instead of accepting a filesystem path.
+	home_root = pathlib.Path.home()
 	targets = install_lib.install_target_data.load_targets(repo_root / "install_targets")
 	platforms = interview_platforms(targets)
 	plan = install_lib.installer.build_plan(repo_root, home_root, platforms)

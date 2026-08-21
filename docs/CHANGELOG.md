@@ -17,6 +17,9 @@
   mode-based command. Shared runtime modules now live in the root [install_lib/](../install_lib/)
   package with no installer import dependency on `tools/`; the interview shows destinations and
   applies only after final approval.
+- Removed the alternate-home interview question because normal installations always target the
+  current operating-system home. No replacement command-line flag was added; the E2E supplies a
+  standard temporary `HOME` value instead.
 - Changed source-backed installation from copied trees to symlinks. Skills and authored Claude
   agents stay live from the authoritative repository clone; only native agent projections without
   an authored target-format source are generated as regular files.

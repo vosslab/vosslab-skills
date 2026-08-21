@@ -8,7 +8,7 @@ targets with structural validation.
 
 - Python 3.12 for repository tools and tests.
 - Python packages from `pip_requirements-dev.txt` for development and validation.
-- A writable home directory or isolated test root for the selected platform destinations.
+- A writable operating-system home directory for the selected platform destinations.
 
 ## Platform support
 
@@ -39,10 +39,13 @@ Run the main script from a local clone:
 
 The interview asks for:
 
-1. Target home directory. The displayed default is the current user's home.
-2. Platforms as comma-separated names. The default is `claude,codex`; enter `cursor`, `opencode`,
+1. Platforms as comma-separated names. The default is `claude,codex`; enter `cursor`, `opencode`,
    or another explicit combination when needed.
-3. Final approval after the installer displays destinations and item counts.
+2. Final approval after the installer displays the operating-system home, destinations, and item
+   counts.
+
+The installer always uses the current operating-system home. It does not ask for an alternate
+home and has no command-line option for one.
 
 Press Enter at the final `[y/N]` prompt to stop without writing. The installer never treats an
 empty answer as approval.
@@ -56,8 +59,8 @@ clone breaks the source links; run the installer from the clone that should rema
 ## Update an installation
 
 Source edits appear through the links immediately. New Codex skills inside an already linked
-category also appear immediately. Run the same interview again with the same home and platform
-selection after adding a flat-platform skill, changing target declarations, authored agents, or
+category also appear immediately. Run the same interview again with the same platform selection
+after adding a flat-platform skill, changing target declarations, authored agents, or
 `agents/CATALOG.yaml`. The Git repository is authoritative: matching entries remain untouched and
 mismatched entries are replaced.
 
