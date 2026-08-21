@@ -1,0 +1,103 @@
+schema_version: 1
+agents:
+  - id: architect
+    category: architecture
+    gas_town_role: Architect
+    access: workspace_write
+    authority_boundary: Approves or rejects cross-cutting design changes, resolves disputes, maintains invariants, and makes binding technical decisions
+    escalation_routes:
+      - Unresolvable design conflict -> human
+  - id: coder
+    category: implementation
+    gas_town_role: Crew
+    access: workspace_write
+    authority_boundary: Implements approved plans, writes production code and minimal doc updates, avoids architectural redesign, and requires review
+    escalation_routes:
+      - Hard, ambiguous, or design-sensitive task -> expert_coder (manager re-dispatch)
+      - Design conflict -> architect
+      - Ambiguous or incomplete task -> planner
+      - Blocked execution dependency -> orchestrator
+  - id: expert_coder
+    category: implementation
+    gas_town_role: Crew Chief
+    access: workspace_write
+    authority_boundary: Implements complex approved plans, writes production code and minimal doc updates, avoids architectural redesign, and requires review
+    escalation_routes:
+      - Design conflict -> architect
+      - Ambiguous or incomplete task -> planner
+      - Blocked execution dependency -> orchestrator
+  - id: image_evaluator
+    category: evaluation
+    gas_town_role: Scout
+    access: read_only
+    authority_boundary: Evaluates supplied images and reports findings; changes source images, code, tests, or configuration only when explicitly assigned
+    escalation_routes: []
+  - id: integrator
+    category: integration
+    gas_town_role: Refinery
+    access: workspace_write
+    authority_boundary: Merges and rebases completed work, resolves conflicts, maintains branch stability, and makes no architectural decisions
+    escalation_routes:
+      - Design issue -> architect
+      - Failed merge after retry -> human
+  - id: maintainer
+    category: maintenance
+    gas_town_role: Dogs
+    access: workspace_write
+    authority_boundary: Performs cleanup, lint maintenance, and index regeneration only; does not update dependencies, make architectural decisions, or implement features
+    escalation_routes: []
+  - id: monitor
+    category: monitoring
+    gas_town_role: Witness
+    access: read_only
+    authority_boundary: Observes progress, detects stalls and deadlocks, reports problems, and remains read-only without implementing fixes
+    escalation_routes:
+      - Repeated stall -> orchestrator, then human
+  - id: orchestrator
+    category: orchestration
+    gas_town_role: Convoy Master
+    access: workspace_write
+    authority_boundary: Coordinates parallel tasks, dispatches independent workstreams, and synthesizes outputs into a plan before making changes
+    escalation_routes:
+      - Systemic failure -> human
+  - id: parallelizer
+    category: orchestration
+    gas_town_role: Convoy Lead
+    access: workspace_write
+    authority_boundary: Coordinates parallel teams with messaging and task dispatch while keeping diffs small and checkpoints frequent
+    escalation_routes: []
+  - id: planner
+    category: planning
+    gas_town_role: Cartographer
+    access: workspace_write
+    authority_boundary: Creates plans and documentation only; never changes production code, tests, or runtime configuration
+    escalation_routes:
+      - Cross-cutting design change -> architect (approval or rejection)
+      - Architecture decision -> architect (approval required)
+  - id: playwright_operator
+    category: browser_automation
+    gas_town_role: Pathfinder
+    access: workspace_write
+    authority_boundary: Performs browser automation and reports page state; changes code, tests, configuration, or dependencies only when explicitly assigned
+    escalation_routes: []
+  - id: reviewer
+    category: review
+    gas_town_role: Auditor
+    access: read_only
+    authority_boundary: Performs read-only code review and plan auditing; does not edit source, tests, or configuration and verifies plan and test coverage
+    escalation_routes:
+      - Plan drift -> planner
+  - id: scheduler
+    category: scheduling
+    gas_town_role: Deacon
+    access: read_only
+    authority_boundary: Triggers recurring workflows and retries blocked tasks; does not diagnose problems and hands diagnosis to monitor
+    escalation_routes:
+      - Diagnosis -> monitor
+  - id: tester
+    category: testing
+    gas_town_role: Inspector
+    access: workspace_write
+    authority_boundary: Writes and runs tests, extends coverage, and validates behavior; only edits files under tests
+    escalation_routes:
+      - Production bug found -> coder

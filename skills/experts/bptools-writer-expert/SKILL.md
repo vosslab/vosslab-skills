@@ -16,7 +16,7 @@ Follow the repo's shared generator patterns and verify output with small local r
 Before editing any generator script or writing new `write_question()` logic,
 you MUST use the Read tool on:
 
-1. `skills/experts/bptools-writer-expert/references/docs/QUESTION_AUTHORING_GUIDE.md`
+1. `references/docs/QUESTION_AUTHORING_GUIDE.md`
    - Primary authoring workflow, TEMPLATE.py conventions, required structure.
 2. `bptools.py` at the target repo root (this skill is only invoked inside
    `biology-problems`, so the file is reachable at the repo-root path returned

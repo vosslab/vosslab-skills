@@ -1,6 +1,9 @@
 report_*.txt
 .DS_Store
-skills/.system/
+skills/.*/
+.codex/agents/
+.cursor/agents/
+.opencode/agents/
 skills/codex-primary-runtime/
 docs/superpowers/
 hermes-skills
@@ -45,5 +48,3 @@ stats.html
 **/target/
 **/*.rs.bk
 .rust_analyzer/
-
-

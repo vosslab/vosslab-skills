@@ -1,100 +1,87 @@
 # Install
 
-This repository is a Claude Code plugin that provides reusable workflow skills. "Installed" means Claude Code can discover and invoke the skills in this repo. There are three installation methods depending on your setup.
+This repository links skill trees and installs generated agent projections through a guided local
+interview. Claude and Codex are primary targets. Cursor and OpenCode are maintained compatibility
+targets with structural validation.
 
 ## Requirements
 
-- [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed and working
-- Git (for clone-based methods)
-- Python 3.12 to run the local tools under `tools/` and the test suite (see
-  [USAGE.md](USAGE.md))
-- Developer Python packages from `pip_requirements-dev.txt` for running tools and
-  tests (for example `pytest`, `rich`, `tabulate`)
-- Runtime Python packages for skill scripts from root `pip_requirements.txt`
-  (install via `pip3 install -r pip_requirements.txt`)
+- Python 3.12 for repository tools and tests.
+- Python packages from `pip_requirements-dev.txt` for development and validation.
+- A writable home directory or isolated test root for the selected platform destinations.
 
-## Method 1: install from the marketplace
+## Platform support
 
-Add the marketplace, then install the plugin:
+| Platform | Tier | Skills destination | Agents destination | Reference |
+| --- | --- | --- | --- | --- |
+| Claude | primary | `.claude/skills` | `.claude/agents` | [Claude skills](https://docs.anthropic.com/en/docs/claude-code/skills) |
+| Codex | primary | `.codex/skills` | `.codex/agents` | [Codex skills](https://developers.openai.com/codex/skills) |
+| Cursor | compatibility | `.cursor/skills` | `.cursor/agents` | [Cursor skills](https://cursor.com/docs/context/skills) |
+| OpenCode | compatibility | `.config/opencode/skills` | `.config/opencode/agents` | [OpenCode skills](https://opencode.ai/docs/skills) |
 
-```bash
-claude plugin marketplace add vosslab/vosslab-skills
-claude plugin install vosslab-skills@vosslab-skills
-```
+Codex receives one live category link at `.codex/skills/<category>`. Claude remains flat with one
+link at `.claude/skills/<skill>`; Cursor and OpenCode also keep their declared platform-specific
+skill roots. Claude agents are linked, while Codex, Cursor, and OpenCode agents are generated in
+their native formats. Compatibility adapters receive focused structural checks, while Claude and
+Codex provide the release-gated primary integration.
 
-Or, inside an interactive Claude Code session:
+The shared `.agents/skills` convention is a compatibility source recognized by multiple clients;
+it is not assigned to Cursor or OpenCode. This explicit-platform installer instead uses
+`.codex/skills`, `.cursor/skills`, and `.config/opencode/skills` for those selected platforms.
 
-```
-/plugin marketplace add vosslab/vosslab-skills
-/plugin install vosslab-skills@vosslab-skills
-```
+## Run the interview
 
-Confirm the marketplace is registered:
-
-```bash
-claude plugin marketplace list
-```
-
-Validate the plugin manifest locally from the repo root (for development):
+Run the main script from a local clone:
 
 ```bash
-claude plugin validate .
+./install_skills.py
 ```
 
-After installing, skills are available as `/vosslab-skills:<skill-name>` in any Claude Code session.
+The interview asks for:
 
-## Method 2: clone and use as a local plugin directory
+1. Target home directory. The displayed default is the current user's home.
+2. Platforms as comma-separated names. The default is `claude,codex`; enter `cursor`, `opencode`,
+   or another explicit combination when needed.
+3. Final approval after the installer displays destinations and item counts.
+
+Press Enter at the final `[y/N]` prompt to stop without writing. The installer never treats an
+empty answer as approval.
+
+Codex category destinations are absolute symlinks to canonical category directories in this clone.
+Claude, Cursor, and OpenCode skill destinations link canonical skill directories. Claude agent
+files link to the authored files under `agents/`. Codex, Cursor, and OpenCode need different native
+agent schemas, so those small projections are generated as regular files. Moving or deleting the
+clone breaks the source links; run the installer from the clone that should remain authoritative.
+
+## Update an installation
+
+Source edits appear through the links immediately. New Codex skills inside an already linked
+category also appear immediately. Run the same interview again with the same home and platform
+selection after adding a flat-platform skill, changing target declarations, authored agents, or
+`agents/CATALOG.yaml`. The Git repository is authoritative: matching entries remain untouched and
+mismatched entries are replaced.
+
+The installer writes no receipt, manifest, cache, dotfile, or hidden configuration. Its persistent
+writes stay inside the selected platforms' declared `skills/` and `agents/` destinations. Without
+hidden ownership state, it does not prune stale entries; remove an obsolete skill or agent link
+manually when its source is removed from the repository.
+
+## Verify installation
+
+Check generated artifacts and run the temporary-home interview lifecycle:
 
 ```bash
-git clone https://github.com/vosslab/vosslab-skills.git
-claude --plugin-dir /path/to/vosslab-skills
+source source_me.sh && python3 tools/build_skills_index.py --check
+source source_me.sh && python3 tools/build_plugin_manifest.py --check
+source source_me.sh && python3 tools/openai_sidecars.py --check
+source source_me.sh && python3 tools/build_agents_index.py --check
+source source_me.sh && python3 tests/e2e/e2e_primary_adapter_contract.py
 ```
 
-This loads the plugin from a local directory for a single session. To make it persistent, add the path to your Claude Code settings.
-
-## Method 3: import individual skills
-
-If you only want specific skills rather than the full set, copy the skill folder into your own project's `skills/` directory.
-
-```bash
-git clone https://github.com/vosslab/vosslab-skills.git /tmp/vosslab-skills
-cp -r /tmp/vosslab-skills/skills/quality/audit-code-reviewer ./skills/
-cp -r /tmp/vosslab-skills/skills/docs/readme-docs ./skills/
-```
-
-Each skill is self-contained in its `skills/<category>/<name>/` source folder.
-Copying that folder into another skill root keeps the skill portable. The
-`SKILL.md` file is the entry point; some skills also include `references/` and
-`agents/` subdirectories.
-
-## Verify install
-
-After installing, confirm that skills are discoverable.
-
-**Plugin install** -- run Claude Code and invoke a skill:
-
-```bash
-claude
-# then type: /vosslab-skills:readme-docs
-```
-
-**Local clone** -- check the generated skills index:
-
-```bash
-source source_me.sh && python3 tools/build_skills_index.py
-cat docs/SKILLS_INDEX.md
-```
-
-If the skills index lists the expected repository skills, the repo is set up correctly.
-
-## Updating
-
-For plugin installs, Claude Code handles updates automatically. For local clones:
-
-```bash
-git pull --ff-only
-```
+Every skill's `agents/openai.yaml` supplies a non-empty display name, a 25-64 character short
+description, and a default prompt containing that skill's `$name`. The sidecar check also confirms
+the category-specific required paths declared in `CATEGORY.md`.
 
 ## Known gaps
 
-- [ ] Verify whether `--plugin-dir` persists across sessions or requires a settings entry.
+- [ ] Run optional live-client smoke checks when a platform release changes its published contract.

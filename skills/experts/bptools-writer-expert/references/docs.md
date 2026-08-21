@@ -2,7 +2,7 @@
 
 Bundled snapshots of the `biology-problems` authoring docs plus pointers to
 live code and external references. Paths are relative to
-`skills/experts/bptools-writer-expert/` unless noted otherwise.
+this skill's root directory unless noted otherwise.
 
 Snapshot note: the docs under `references/docs/` were copied from the
 `biology-problems` repo. They can drift. For questions where live code

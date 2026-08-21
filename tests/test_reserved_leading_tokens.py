@@ -14,7 +14,7 @@ import file_utils
 REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 
-import skill_discovery
+import install_lib.skill_discovery
 
 # Harness built-in slash commands. Update when the harness changes.
 HARNESS_RESERVED = {
@@ -41,7 +41,7 @@ PLUGIN_LEADING_TOKENS = {
 	"frontend",  # frontend-design plugin
 	"receiving",
 	"requesting",
-	"skill",  # skill-creator plugin (also matches our skill-writing-guide)
+	"skill",  # skill-creator plugin
 	"subagent",
 	"systematic",
 	"test",  # test-driven-development from superpowers
@@ -62,7 +62,7 @@ def leading_token(skill_name: str) -> str:
 #============================================
 def active_skill_names() -> list[str]:
 	"""Return names for every publishable skill across category folders."""
-	discovery = skill_discovery.collect_skill_files(pathlib.Path(REPO_ROOT), SKILLS_DIR)
+	discovery = install_lib.skill_discovery.collect_skill_files(pathlib.Path(REPO_ROOT), SKILLS_DIR)
 	return sorted(skill_file.parent.name for skill_file in discovery.skill_files)
 
 
@@ -85,19 +85,10 @@ def test_no_skill_uses_plugin_reserved_leading_token() -> None:
 	Active skill names must not lead with a token already used by a loaded
 	plugin skill (per the frozen PLUGIN_LEADING_TOKENS list above).
 
-	Note: `skill-writing-guide` legitimately leads with `skill` because the
-	plugin `skill-creator` only collides on first 6 characters; this is
-	tracked as accepted-known in `docs/SKILL_NAMING.md`. If you need
-	another such allowance, add it to `KNOWN_ALLOWED` below with a reason.
+	Each published skill must have a leading token distinct from this set.
 	"""
-	# Each entry is (skill_name, reason-for-allowance).
-	known_allowed = {
-		"skill-writing-guide": "User-confirmed acceptable; collides on 'skill' lead with plugin skill-creator",
-	}
 	violations = []
 	for name in active_skill_names():
-		if name in known_allowed:
-			continue
 		if leading_token(name) in PLUGIN_LEADING_TOKENS:
 			violations.append(name)
 	assert not violations, (

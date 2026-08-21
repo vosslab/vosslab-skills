@@ -1,7 +1,7 @@
 # WebWork Authoring Docs
 
 All authoring, tooling, and reference docs bundled with this skill. Paths are
-relative to `skills/experts/webwork-writer-expert/`.
+relative to this skill's root directory.
 
 ## Required reading (load before any PGML edit)
 

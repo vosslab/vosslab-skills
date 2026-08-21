@@ -15,9 +15,9 @@ Use this skill to author or adjust PG/PGML problems with the local WebWork rende
 Before editing any `.pg` or `.pgml` file, before proposing fixes, and before
 running the renderer, you MUST use the Read tool on each of these files:
 
-1. `skills/experts/webwork-writer-expert/references/docs/HOW_TO_LINT.md`
-2. `skills/experts/webwork-writer-expert/references/docs/PG_COMMON_PITFALLS.md`
-3. `skills/experts/webwork-writer-expert/references/docs/WEBWORK_PROBLEM_AUTHOR_GUIDE.md`
+1. `references/docs/HOW_TO_LINT.md`
+2. `references/docs/PG_COMMON_PITFALLS.md`
+3. `references/docs/WEBWORK_PROBLEM_AUTHOR_GUIDE.md`
 
 Do not summarize from memory. Do not skip because "you already know PGML."
 Agents that skip these docs ship problems with well-known pitfalls that fail

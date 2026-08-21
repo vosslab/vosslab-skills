@@ -1,6 +1,6 @@
 {
-	"name": "__REPO_NAME__",
-	"version": "__REPO_VERSION__",
+	"name": "vosslab-skills",
+	"version": "26.8.0",
 	"type": "module",
 	"private": true,
 	"scripts": {
@@ -9,7 +9,7 @@
 		"build": "./build_github_pages.sh",
 		"serve": "./run_web_server.sh",
 		"check": "./check_codebase.sh",
-		"clean": "./dist_clean.sh",
+		"clean": "./devel/clean_build.sh",
 		"format:write": "npx prettier --write '**/*.{ts,tsx,mts,cts,js,mjs,cjs}'",
 		"test:playwright": "./run_playwright_tests.sh"
 	},

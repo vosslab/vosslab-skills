@@ -8,7 +8,8 @@ import json
 from pathlib import Path
 
 # local repo modules
-import skill_discovery
+import install_lib.frontmatter
+import install_lib.skill_discovery
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SKILLS_ROOT = REPO_ROOT / "skills"
@@ -118,9 +119,9 @@ def extract_name(text: str) -> str:
 
 
 #============================================
-def collect_skill_files() -> skill_discovery.SkillDiscovery:
+def collect_skill_files() -> install_lib.skill_discovery.SkillDiscovery:
 	"""Collect publishable SKILL.md files through shared discovery."""
-	discovery = skill_discovery.collect_skill_files(
+	discovery = install_lib.skill_discovery.collect_skill_files(
 		REPO_ROOT,
 		SKILLS_ROOT,
 	)
@@ -138,9 +139,9 @@ def collect_skill_paths(skill_files: list[Path]) -> list[str]:
 
 
 #============================================
-def print_run_summary(discovery: skill_discovery.SkillDiscovery) -> None:
+def print_run_summary(discovery: install_lib.skill_discovery.SkillDiscovery) -> None:
 	"""Print discovery and manifest inclusion with shared generator wording."""
-	for line in skill_discovery.render_discovery_summary(discovery, REPO_ROOT):
+	for line in install_lib.skill_discovery.render_discovery_summary(discovery, REPO_ROOT):
 		print(line)
 	print("Generated skill set:")
 	print(f"  Included in manifests: {len(discovery.skill_files)}")
@@ -414,7 +415,8 @@ def main() -> int:
 	discovery = collect_skill_files()
 	skill_files = discovery.skill_files
 	skill_paths = collect_skill_paths(skill_files)
-	version = read_version()
+	repository_version = read_version()
+	version = install_lib.frontmatter.to_manifest_semver(repository_version)
 
 	# build content for all six output files
 	plugin_data = build_plugin_json(version, skill_paths)

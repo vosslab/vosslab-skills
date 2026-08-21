@@ -2,7 +2,7 @@
 
 This is the routing front door for WeBWorK problem authoring. Start here, match
 the user symptom or request to a row, then open the named guide. Paths shown are
-relative to `skills/experts/webwork-writer-expert/`. Derived from
+relative to this skill's root directory. Derived from
 [docs.md](docs.md).
 
 ## Problem routing table

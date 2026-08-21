@@ -12,7 +12,7 @@ import pathlib
 
 import file_utils
 
-import skill_discovery
+import install_lib.skill_discovery
 
 REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
@@ -28,7 +28,7 @@ def test_skills_index_lists_every_skill() -> None:
 	Every folder returned by shared skill discovery must appear in
 	docs/SKILLS_INDEX.md, and every listed name must be publishable.
 	"""
-	discovery = skill_discovery.collect_skill_files(
+	discovery = install_lib.skill_discovery.collect_skill_files(
 		pathlib.Path(REPO_ROOT),
 		SKILLS_DIR,
 	)

@@ -7,10 +7,10 @@ them in `docs/screenshots/` following the conventions in
 ## Prerequisites
 
 Install Playwright and the Chromium browser binary before running any web
-capture. From the target repository root, run the bundled installer:
+capture. From the `screenshot-docs` skill directory, run the bundled installer:
 
 ```bash
-bash /path/to/vosslab-skills/skills/documentation/screenshot-docs/scripts/install_playwright_capture.sh
+bash scripts/install_playwright_capture.sh
 ```
 
 The installer adds `playwright` to the target repository's untracked
@@ -64,8 +64,8 @@ Pass the target URL and the output PNG path as command-line arguments.
 The template saves the PNG to the path you specify.
 
 ```bash
-# Capture a plain page - writes to /tmp first
-node skills/documentation/screenshot-docs/scripts/screenshot_web.mjs \
+# From the screenshot-docs skill directory, capture a plain page to /tmp.
+node scripts/screenshot_web.mjs \
     http://localhost:8080/ \
     /tmp/concept_map_main.png
 ```
@@ -111,13 +111,13 @@ server-side component, making it a clean smoke fixture for web capture.
 ```bash
 # 1. Start the local server from the project directory
 cd /path/to/concept-map-maker
-bash /path/to/vosslab-skills/skills/documentation/screenshot-docs/scripts/install_playwright_capture.sh
+bash scripts/install_playwright_capture.sh
 python3 -m http.server 8080 &
 server_pid=$!
 
 # 2. Capture with the template
-cd /path/to/vosslab-skills
-node skills/documentation/screenshot-docs/scripts/screenshot_web.mjs \
+cd /path/to/screenshot-docs
+node scripts/screenshot_web.mjs \
     http://localhost:8080/ \
     /tmp/concept_map_main.png
 

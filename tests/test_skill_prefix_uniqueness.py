@@ -17,7 +17,7 @@ import file_utils
 REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 
-import skill_discovery
+import install_lib.skill_discovery
 import list_loaded_skills
 
 PREFIX_LEN = 3
@@ -26,7 +26,7 @@ PREFIX_LEN = 3
 #============================================
 def active_skill_names() -> list[str]:
 	"""Return names for every publishable skill across category folders."""
-	discovery = skill_discovery.collect_skill_files(pathlib.Path(REPO_ROOT), SKILLS_DIR)
+	discovery = install_lib.skill_discovery.collect_skill_files(pathlib.Path(REPO_ROOT), SKILLS_DIR)
 	return sorted(skill_file.parent.name for skill_file in discovery.skill_files)
 
 

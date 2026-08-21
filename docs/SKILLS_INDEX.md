@@ -4,33 +4,32 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 39
+Total skills: 38
 
-## Orient
+## Orientation
 
 Rules and authoring guidance loaded when an agent starts unfamiliar work.
 
-- [orient/repo-rules-reader/SKILL.md](../skills/orient/repo-rules-reader/SKILL.md): Load required repo rules before coding, reviewing, or delegating.
-- [orient/skill-writing-guide/SKILL.md](../skills/orient/skill-writing-guide/SKILL.md): Author and improve Agent Skills following the open standard.
+- [orientation/repo-rules-reader/SKILL.md](../skills/orientation/repo-rules-reader/SKILL.md): Load required repo rules before coding, reviewing, or delegating.
 
-## Plan
+## Planning
 
 Idea exploration and forward-looking plans used before implementation.
 
-- [plan/blueprint-plan-drafter/SKILL.md](../skills/plan/blueprint-plan-drafter/SKILL.md): Create forward-looking implementation plans without writing code.
-- [plan/ideonomy-plain/SKILL.md](../skills/plan/ideonomy-plain/SKILL.md): Expand, vary, invert, or recombine an idea with randomized ideonomy methods.
-- [plan/ideonomy-rich/SKILL.md](../skills/plan/ideonomy-rich/SKILL.md): Expand an idea with randomized ideonomy methods and expressive monospace art.
+- [planning/blueprint-plan-drafter/SKILL.md](../skills/planning/blueprint-plan-drafter/SKILL.md): Create forward-looking implementation plans without writing code.
+- [planning/ideonomy-plain/SKILL.md](../skills/planning/ideonomy-plain/SKILL.md): Expand, vary, invert, or recombine an idea with randomized ideonomy methods.
+- [planning/ideonomy-rich/SKILL.md](../skills/planning/ideonomy-rich/SKILL.md): Expand an idea with randomized ideonomy methods and expressive monospace art.
 
-## Manage
+## Management
 
 Delegation, parallel execution, monitoring, and multi-agent workflows.
 
-- [manage/delegate-manager-to-subagents/SKILL.md](../skills/manage/delegate-manager-to-subagents/SKILL.md): Manage execution of an approved plan through subagents.
-- [manage/gas-town-workflow/SKILL.md](../skills/manage/gas-town-workflow/SKILL.md): Coordinate agents with Gas Town role mapping and convoy-based task decomposition.
-- [manage/hang-check/SKILL.md](../skills/manage/hang-check/SKILL.md): Watch running background agents for evidence of a genuine stall without killing healthy work.
-- [manage/html-game-parallel-builder/SKILL.md](../skills/manage/html-game-parallel-builder/SKILL.md): Build modular TypeScript browser games with parallel agents.
-- [manage/parallel-plan/SKILL.md](../skills/manage/parallel-plan/SKILL.md): In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that).
-- [manage/stay-busy/SKILL.md](../skills/manage/stay-busy/SKILL.md): Keep an agent manager productive through safe, evidence-producing follow-on work.
+- [management/delegate-manager-to-subagents/SKILL.md](../skills/management/delegate-manager-to-subagents/SKILL.md): Manage execution of an approved plan through subagents.
+- [management/gas-town-workflow/SKILL.md](../skills/management/gas-town-workflow/SKILL.md): Coordinate agents with Gas Town role mapping and convoy-based task decomposition.
+- [management/hang-check/SKILL.md](../skills/management/hang-check/SKILL.md): Watch running background agents for evidence of a genuine stall without killing healthy work.
+- [management/html-game-parallel-builder/SKILL.md](../skills/management/html-game-parallel-builder/SKILL.md): Build modular TypeScript browser games with parallel agents.
+- [management/parallel-plan/SKILL.md](../skills/management/parallel-plan/SKILL.md): In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that).
+- [management/stay-busy/SKILL.md](../skills/management/stay-busy/SKILL.md): Keep an agent manager productive through safe, evidence-producing follow-on work.
 
 ## Experts
 
@@ -53,20 +52,20 @@ Domain-specialist implementation workflows governed by expert-skill guidance.
 - [experts/wasm-rust-expert/SKILL.md](../skills/experts/wasm-rust-expert/SKILL.md): WebAssembly, wasm-bindgen, wasm-pack, web-sys, wasm32 targets, WASI, browser Canvas, and Wasm performance engineering.
 - [experts/webwork-writer-expert/SKILL.md](../skills/experts/webwork-writer-expert/SKILL.md): Create, edit, and lint WeBWorK PG/PGML questions.
 
-## Docs
+## Documentation
 
 Documentation creation, conversion, release notes, and visual capture.
 
-- [docs/agents-md-fixer/SKILL.md](../skills/docs/agents-md-fixer/SKILL.md): Trim bloated `AGENTS.md` files into concise pointers to canonical `docs/*.md` rules.
-- [docs/arch-docs/SKILL.md](../skills/docs/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from repository evidence.
-- [docs/book-to-markdown/SKILL.md](../skills/docs/book-to-markdown/SKILL.md): Convert technical/scientific books from PDF, EPUB, HTML, DOCX, ODT, Markdown, or text into one page-free Markdown file per title.
-- [docs/docset-updater/SKILL.md](../skills/docs/docset-updater/SKILL.md): Refresh a repository's complete documentation set through the specialized documentation skills in dependency order, then audit unowned docs.
-- [docs/news-release-docs/SKILL.md](../skills/docs/news-release-docs/SKILL.md): Create or refresh `docs/RELEASE_HISTORY.md` and `docs/NEWS.md` from the changelog, plus release-note input for `devel/make_release.py`.
-- [docs/pdf-guide/SKILL.md](../skills/docs/pdf-guide/SKILL.md): Use when tasks involve reading, creating, or reviewing PDF files where rendering and layout matter; prefer visual checks by rendering pages (Poppler) and use Python tools such as `reportlab`, `pdfplumber`, and `pypdf` for generation and extraction.
-- [docs/readme-docs/SKILL.md](../skills/docs/readme-docs/SKILL.md): Create or refresh a distinctive, evidence-backed `README.md` landing page for newcomers.
-- [docs/screenshot-docs/SKILL.md](../skills/docs/screenshot-docs/SKILL.md): Capture static screenshots or short GIF demonstrations of a GUI, CLI, or web app and embed them in README or docs.
-- [docs/see-also-docs/SKILL.md](../skills/docs/see-also-docs/SKILL.md): Create or refresh `docs/RELATED_PROJECTS.md` using repository evidence and bounded web research.
-- [docs/setup-install-usage-docs/SKILL.md](../skills/docs/setup-install-usage-docs/SKILL.md): Create or refresh `docs/INSTALL.md` and `docs/USAGE.md` from repository evidence.
+- [documentation/agents-md-fixer/SKILL.md](../skills/documentation/agents-md-fixer/SKILL.md): Trim bloated `AGENTS.md` files into concise pointers to canonical `docs/*.md` rules.
+- [documentation/arch-docs/SKILL.md](../skills/documentation/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from repository evidence.
+- [documentation/book-to-markdown/SKILL.md](../skills/documentation/book-to-markdown/SKILL.md): Use when converting technical/scientific books from PDF, EPUB, HTML, DOCX, ODT, Markdown, or text into one page-free Markdown file per title.
+- [documentation/docset-updater/SKILL.md](../skills/documentation/docset-updater/SKILL.md): Refresh a repository's complete documentation set through the specialized documentation skills in dependency order, then audit unowned docs.
+- [documentation/news-release-docs/SKILL.md](../skills/documentation/news-release-docs/SKILL.md): Create or refresh `docs/RELEASE_HISTORY.md` and `docs/NEWS.md` from the changelog, plus release-note input for `devel/make_release.py`.
+- [documentation/pdf-guide/SKILL.md](../skills/documentation/pdf-guide/SKILL.md): Use when tasks involve reading, creating, or reviewing PDF files where rendering and layout matter; prefer visual checks by rendering pages (Poppler) and use Python tools such as `reportlab`, `pdfplumber`, and `pypdf` for generation and extraction.
+- [documentation/readme-docs/SKILL.md](../skills/documentation/readme-docs/SKILL.md): Create or refresh a distinctive, evidence-backed `README.md` landing page for newcomers.
+- [documentation/screenshot-docs/SKILL.md](../skills/documentation/screenshot-docs/SKILL.md): Capture static screenshots or short GIF demonstrations of a GUI, CLI, or web app and embed them in README or docs.
+- [documentation/see-also-docs/SKILL.md](../skills/documentation/see-also-docs/SKILL.md): Create or refresh `docs/RELATED_PROJECTS.md` using repository evidence and bounded web research.
+- [documentation/setup-install-usage-docs/SKILL.md](../skills/documentation/setup-install-usage-docs/SKILL.md): Create or refresh `docs/INSTALL.md` and `docs/USAGE.md` from repository evidence.
 
 ## Quality
 

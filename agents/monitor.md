@@ -1,7 +1,7 @@
 ---
 name: monitor
 model: haiku
-description: "Monitoring agent that observes task progress, detects stalls, and reports problems. (Gas Town: Witness)"
+description: "Monitoring agent that observes task progress, detects stalls, and reports problems."
 tools: Bash, Glob, Grep, Read, TaskGet, TaskUpdate, TaskList, SendMessage
 ---
 

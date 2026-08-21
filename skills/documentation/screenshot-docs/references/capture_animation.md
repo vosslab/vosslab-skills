@@ -107,7 +107,7 @@ Use [../scripts/make_gif.sh](../scripts/make_gif.sh). It uses FFmpeg's palette p
 removes audio, limits the animation to 5 seconds, and plays it once:
 
 ```bash
-skills/documentation/screenshot-docs/scripts/make_gif.sh \
+scripts/make_gif.sh \
   /tmp/project_demo.mov \
   /tmp/project_demo.gif
 ```
@@ -115,7 +115,7 @@ skills/documentation/screenshot-docs/scripts/make_gif.sh \
 Optional positional arguments set width, frame rate, and duration:
 
 ```bash
-skills/documentation/screenshot-docs/scripts/make_gif.sh \
+scripts/make_gif.sh \
   /tmp/project_demo.mov \
   /tmp/project_demo.gif \
   960 12 4

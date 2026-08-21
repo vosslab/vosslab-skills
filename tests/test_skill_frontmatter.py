@@ -16,7 +16,7 @@ import file_utils
 REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 
-import skill_discovery
+import install_lib.skill_discovery
 
 REQUIRED_KEYS = ("name", "description")
 MAX_DESCRIPTION_CHARS = 1024
@@ -62,7 +62,7 @@ def parse_frontmatter(text: str) -> dict:
 #============================================
 def list_skill_dirs() -> list[pathlib.Path]:
 	"""Return every publishable skill directory at a supported category path."""
-	discovery = skill_discovery.collect_skill_files(pathlib.Path(REPO_ROOT), SKILLS_DIR)
+	discovery = install_lib.skill_discovery.collect_skill_files(pathlib.Path(REPO_ROOT), SKILLS_DIR)
 	return [skill_file.parent for skill_file in discovery.skill_files]
 
 

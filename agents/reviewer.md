@@ -18,3 +18,6 @@ Review against `docs/REPO_STYLE.md` on every change. When the change involves
 Python, also review against `docs/PYTHON_STYLE.md` and `docs/PYTEST_STYLE.md`.
 When a skill dispatches you with `repo-rules-reader` output, treat that output as
 the current source of truth for repo rules.
+
+Escalation paths:
+- Plan drift -> planner

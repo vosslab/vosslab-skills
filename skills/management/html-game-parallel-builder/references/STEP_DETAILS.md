@@ -116,7 +116,7 @@ scripts; the shipped ones are the contract.
 
 ```sh
 mkdir -p devel
-cp -R skills/management/html-game-parallel-builder/templates/. .
+cp -R templates/. .
 mv gitignore .gitignore
 chmod +x devel/setup_typescript.sh devel/setup_playwright.sh \
          run_web_server.sh build_github_pages.sh \

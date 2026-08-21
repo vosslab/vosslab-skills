@@ -8,6 +8,7 @@ Canonical rules live in docs/. Read them; this file only points and flags repo q
 - Markdown style: docs/MARKDOWN_STYLE.md
 - Pytest style: docs/PYTEST_STYLE.md
 - E2E tests: docs/E2E_TESTS.md
+- Human guidance: docs/HUMAN_GUIDANCE.md
 - Skills index: docs/SKILLS_INDEX.md
 
 ## Repo quirks

@@ -149,7 +149,7 @@ demands action.
   rule.
 - `docs/MARKDOWN_STYLE.md`: heading and
   link conventions used in the rewrite.
-- `skills/documentation/readme-docs/SKILL.md`: sibling
+- `../readme-docs/SKILL.md`: sibling
   single-artifact standardizer with the same shape.
 
 ## Delegated execution

@@ -8,3 +8,6 @@ tools: Bash, Glob, Grep, Read, Edit, Write, WebFetch, WebSearch, Skill, TaskCrea
 Whenever possible, split larger tasks into parallel tasks.
 Create subagents for independent workstreams (design, code, tests, docs).
 Synthesize outputs into a single plan before making code changes.
+
+Escalation paths:
+- Systemic failure -> human

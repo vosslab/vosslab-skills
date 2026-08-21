@@ -8,11 +8,10 @@ in this repo and any sibling vosslab repos that ship skills.
 Category folders organize the catalog but do not change skill names or
 invocation syntax. Public skills live at
 `skills/<category>/<skill-name>/SKILL.md`; the final folder still matches the
-frontmatter `name` exactly. Categories follow workflow role rather than subject:
-`orient`, `plan`, `manage`, `experts`, `docs`, and `quality`. All `-expert` and
-`-engineer` skills belong in `experts`, where the shared parity rules apply.
-Use the primary role for hybrids; for example, a skill that coordinates a
-parallel build belongs in `manage` even when its deliverable is software.
+frontmatter `name` exactly. Each direct category is discovered from its
+`CATEGORY.md`; choose the category whose metadata best describes the skill's
+primary workflow role. Specialist skills use the `-expert` or `-engineer`
+suffix, and the shared parity gate discovers those suffixes across categories.
 
 ## Rules
 
@@ -73,7 +72,7 @@ parallel build belongs in `manage` even when its deliverable is software.
 | `-engineer` | Implements or refactors code in a domain | `typescript-engineer`, `pyside6-engineer`, `ui-ux-engineer` |
 | `-expert` | Designs and reviews work in a specialized field | `vision-expert`, `bptools-writer-expert`, `webwork-writer-expert` |
 | `-fixer` | Trims and standardizes a single named artifact in place | `agents-md-fixer` |
-| `-guide` | Reads or explains rules and reference material | `skill-writing-guide`, `pdf-guide` |
+| `-guide` | Reads or explains rules and reference material | `pdf-guide` |
 | `-manager-to-X` / `-manager` | Coordinates plans, milestones, or delegated execution. Verb-first variants encode WHAT the manager does (`delegate-`, `draft-`, `review-`); only one skill may lead with a bare `manager-` token. | `delegate-manager-to-subagents` |
 | `-reader` | Reads or summarizes content | `repo-rules-reader` |
 | `-reviewer` | Reviews code or output for quality | `audit-code-reviewer` |
@@ -151,7 +150,6 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `readme-docs` | compliant | readme-fix | Joins `-docs` family. |
 | `repo-rules-reader` | compliant | read-repo-rules | `-reader` suffix; user-confirmed acceptable. |
 | `rust-code-expert` | compliant | (new) | Domain-noun-first specialist; `rus` is unique and `code` keeps core Rust engineering distinct from WebAssembly delivery. |
-| `skill-writing-guide` | compliant | (unchanged) | Clear `-guide` suffix, unique leading token. |
 | `typescript-engineer` | compliant | (unchanged) | Language token plus `-engineer` suffix. |
 | `ui-ux-engineer` | compliant | (unchanged) | Domain token plus `-engineer` suffix. |
 | `unit-test-starter` | compliant | (unchanged) | Unique leading token, `-starter` suffix. |

@@ -1,90 +1,78 @@
 # vosslab-skills
 
-Reusable workflow skills that guide Claude and Codex through code review, plan drafting, doc maintenance, and education content production. Aimed at maintainers curating skill definitions and users who reuse them across coding environments.
-
-## Documentation
-
-Getting started:
-
-- [docs/INSTALL.md](docs/INSTALL.md): Plugin install, local clone setup, and individual skill import.
-- [docs/USAGE.md](docs/USAGE.md): Invoking skills, browsing the index, and maintaining the plugin manifest.
-- [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md): Common issues and quick checks.
-- [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md): Generated skill-by-skill index with one-line descriptions.
-
-Repository internals:
-
-- [docs/CODE_ARCHITECTURE.md](docs/CODE_ARCHITECTURE.md): System layout, major components, and extension points.
-- [docs/FILE_STRUCTURE.md](docs/FILE_STRUCTURE.md): Directory map and where to add new work.
-- [docs/EXPERT_SKILL-BEST_PRACTICES.md](docs/EXPERT_SKILL-BEST_PRACTICES.md): Conventions for authoring domain-expert skills.
-
-Book-backed expert skills:
-
-- [skills/experts/css-creative-expert/SKILL.md](skills/experts/css-creative-expert/SKILL.md): CSS visual craft, layout, responsive design, theming, effects, and motion.
-- [skills/experts/rust-code-expert/SKILL.md](skills/experts/rust-code-expert/SKILL.md): Core Rust language, native targets, tooling, FFI, and idiomatic refactoring.
-- [skills/experts/wasm-rust-expert/SKILL.md](skills/experts/wasm-rust-expert/SKILL.md): Rust/WebAssembly browser and runtime delivery with measurable parity and performance.
-- [skills/experts/human-interact-expert/SKILL.md](skills/experts/human-interact-expert/SKILL.md): HCI research, task modeling, cognitive guidance, and evaluation methods.
-- [skills/experts/podman-expert/SKILL.md](skills/experts/podman-expert/SKILL.md): Rootless Podman builds, runtime, storage, networking, compose, and service deployment.
-- [skills/experts/postgresql-expert/SKILL.md](skills/experts/postgresql-expert/SKILL.md): PostgreSQL schema, query, migration, performance, and operational engineering.
-
-Conventions and standards:
-
-- [docs/REPO_STYLE.md](docs/REPO_STYLE.md): Repository organization and documentation conventions.
-- [docs/PYTHON_STYLE.md](docs/PYTHON_STYLE.md): Python coding standards used by this repository.
-- [docs/MARKDOWN_STYLE.md](docs/MARKDOWN_STYLE.md): Markdown formatting and writing rules.
+Reusable skills and agent roles for coding, documentation, code review, and
+education-content production. Canonical repository data produces first-class Claude and Codex
+installations, with maintained Cursor and OpenCode compatibility outputs.
 
 ## Quick start
 
-Add the Voss Lab skills marketplace:
+Clone the repository, then run the guided installer from the repository root. The interview asks
+for the target home and platforms; Claude and Codex are the default selection.
 
 ```bash
-claude plugin marketplace add vosslab/vosslab-skills
+./install_skills.py
 ```
 
-Install the plugin:
+The interview shows the destinations before asking for confirmation. Choose Cursor or OpenCode
+when their compatibility adapters are useful. See
+[docs/INSTALL.md](docs/INSTALL.md) for destinations and update behavior.
+
+Skills are linked directly from each platform destination back to this clone, so the installer does
+not duplicate skill trees and source edits are immediately visible. Codex preserves the repository
+categories at `~/.codex/skills/<category>`; Claude remains flat at
+`~/.claude/skills/<skill>`. Authored Claude agents use the same link model. Native Codex, Cursor,
+and OpenCode agent projections are the only generated files.
+
+## Canonical model
+
+- `skills/<category>/<name>/SKILL.md` contains each skill's authored instructions.
+  `CATEGORY.md` provides the category title, description, order, visibility, and required paths.
+  Every skill also carries `agents/openai.yaml` with display metadata and a default prompt.
+- `agents/<name>.md` contains the authored Claude-compatible agent instruction body.
+  [agents/CATALOG.yaml](agents/CATALOG.yaml) supplies each agent's identity, responsibility,
+  Gas Town role, access level, authority, and escalation metadata.
+- `install_targets/<platform>/TARGET.md` declares an adapter, support tier, and destinations.
+  Claude and Codex are `primary`; Cursor and OpenCode are `compatibility`.
+- [install_skills.py](install_skills.py) and [install_lib/](install_lib/) create
+  reproducible local installations without installer state or hidden configuration.
+
+## Maintainer checks
+
+Generate or check published artifacts from their canonical sources:
 
 ```bash
-claude plugin install vosslab-skills@vosslab-skills
+source source_me.sh && python3 tools/build_skills_index.py --check
+source source_me.sh && python3 tools/build_plugin_manifest.py --check
+source source_me.sh && python3 tools/openai_sidecars.py --check
+source source_me.sh && python3 tools/build_agents_index.py --check
 ```
 
-Or, inside an interactive Claude Code session:
+The index and manifests come from skills and category metadata. The searchable agent index comes
+from the agent catalog plus authored Markdown, while installation renders agent adapters directly
+from those canonical sources. See
+[docs/USAGE.md](docs/USAGE.md) for maintenance commands and
+[docs/CODE_ARCHITECTURE.md](docs/CODE_ARCHITECTURE.md) for extension points.
 
-```
-/plugin marketplace add vosslab/vosslab-skills
-/plugin install vosslab-skills@vosslab-skills
-```
+## Documentation
 
-Then invoke any skill by name in a Claude Code session:
-
-```
-/vosslab-skills:readme-docs
-/vosslab-skills:blueprint-plan-drafter
-/vosslab-skills:audit-code-reviewer
-```
-
-See [docs/INSTALL.md](docs/INSTALL.md) for local clone and individual skill import options.
+- [docs/INSTALL.md](docs/INSTALL.md): Platform tiers, destinations, and installer lifecycle.
+- [docs/USAGE.md](docs/USAGE.md): Canonical sources, generated outputs, and verification.
+- [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md): Generated skill catalog.
+- [docs/AGENTS_INDEX.md](docs/AGENTS_INDEX.md): Generated agent roles and authority index.
+- [docs/CODE_ARCHITECTURE.md](docs/CODE_ARCHITECTURE.md): Components, data flow, and extension
+  points.
+- [docs/FILE_STRUCTURE.md](docs/FILE_STRUCTURE.md): Directory map and generated-output owners.
+- [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md): Common checks and recovery guidance.
 
 ## Skills included
 
-A few representative skills from the collection:
+Representative workflow skills include `audit-code-reviewer`, `blueprint-plan-drafter`,
+`delegate-manager-to-subagents`, `docset-updater`, `readme-docs`, and `repo-rules-reader`.
+Domain-expert skills cover computational geometry, Apple Liquid Glass, computer vision, CSS,
+Podman, PySide6, SolidJS, TypeScript, PDF work, and education-content generators. Browse the
+complete generated catalog in [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md).
 
-- `audit-code-reviewer`: Parallel multi-reviewer audit before merge or release.
-- `blueprint-plan-drafter`: Create forward-looking implementation plans without writing code.
-- `delegate-manager-to-subagents`: Manage execution of an approved plan through subagents.
-- `docset-updater`: Audit and refresh the full repo doc set against REPO_STYLE.md.
-- `readme-docs`: Standardize README.md to match repo conventions.
-- `see-also-docs`: Build a sourced, confidence-tiered docs/RELATED_PROJECTS.md.
-- `news-release-docs`: Author docs/RELEASE_HISTORY.md and docs/NEWS.md from the changelog.
-- `skill-writing-guide`: Guide for authoring Agent Skills (SKILL.md) in open standard format.
+## Related standards
 
-Domain-expert skills cover computational geometry, Apple Liquid Glass, computer vision,
-CSS craft, rootless Podman containers, PySide6, SolidJS, TypeScript, PDF work, and
-education-content generators (bptools and WeBWorK).
-
-Full index with one-line descriptions: [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md).
-
-## Related repositories and standards
-
-If you are building, organizing, or distributing agent skills, start with these references:
-
-- [Agent Skills standard (agentskills.io)](https://agentskills.io/home): Overview of the open `SKILL.md` format and why skills improve agent reliability.
-- [Anthropic Skills](https://github.com/anthropics/skills): Official Claude skills repo with examples of repeatable task instructions and resources.
+- [Agent Skills standard](https://agentskills.io/home): Overview of the open `SKILL.md` format.
+- [Anthropic Skills](https://github.com/anthropics/skills): Claude skill examples and resources.

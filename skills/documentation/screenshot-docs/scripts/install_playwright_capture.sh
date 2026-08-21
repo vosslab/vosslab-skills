@@ -31,4 +31,4 @@ echo "Installing Playwright Chromium..."
 ./node_modules/.bin/playwright install chromium
 
 echo "Playwright setup complete."
-echo "  node skills/documentation/screenshot-docs/scripts/screenshot_web.mjs <url> /tmp/capture.png"
+echo "  node scripts/screenshot_web.mjs <url> /tmp/capture.png"

@@ -16,5 +16,6 @@ one document. Each plan addresses exactly one abstraction level.
 If stabilization experiments show the algorithm itself is wrong (not just the code),
 recommend scrapping the approach and designing a new algorithm before resuming.
 
-Planner proposes plans; architect approves or rejects cross-cutting design changes.
-Do not finalize architecture decisions alone; architecture requires architect approval.
+Escalation paths:
+- Cross-cutting design change -> architect (approval or rejection)
+- Architecture decision -> architect (approval required)

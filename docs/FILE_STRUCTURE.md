@@ -1,188 +1,166 @@
 # File structure
 
-Map of the [vosslab-skills](../README.md) repo: where files live, what they
-do, and where to add new work.
+This map describes the tracked repository layout, canonical data, generated outputs, and installer
+destinations.
 
 ## Top-level layout
 
 ```text
 vosslab-skills/
-+- .claude-plugin/             Claude Code plugin and marketplace manifests
-+- .codex-plugin/              Codex plugin manifest
-+- .cursor-plugin/             Cursor plugin manifest
-+- .opencode/                  OpenCode plugin manifest and install doc
-+- agents/                     sub-agent role definitions (one .md per role)
-+- assets/                     shared static assets (logo, etc.)
-+- devel/                      developer-only helpers (changelog, version, clean)
-+- docs/                       style guides, install/usage, changelog, index
-+- skills/                     categorized user-invocable skill folders
-+- tests/                      pytest gates and shared test helpers
-+- tools/                      generators kept in sync with skills/ content
-+- AGENTS.md                   agent instructions, links into docs/
-+- CLAUDE.md                   Claude Code project entry point
-+- LICENSE                     license text
-+- README.md                   project overview and quick start
-+- REPO_TYPE                   repo-type marker for style propagation
-+- VERSION                     repo version (mirrored in plugin manifests)
-+- pip_requirements.txt        standard Python dependencies
-+- pip_requirements-dev.txt    developer Python dependencies
-+- pip_extras.txt              extra Python dependencies
-`- source_me.sh                shell entry: exports PYTHONUNBUFFERED, etc.
++- .claude-plugin/             Tracked generated Claude manifests
++- .codex-plugin/              Tracked generated Codex manifest
++- .cursor-plugin/             Tracked generated Cursor manifest
++- .opencode/                  Tracked OpenCode plugin output; local agents are ignored
++- agents/                     Authored agent Markdown and CATALOG.yaml
++- assets/                     Shared static assets
++- devel/                      Maintainer-only setup, repair, and release tools
++- docs/                       User, architecture, style, generated, and archived docs
++- install_lib/                Shared discovery, adapter, interview, and installer package
++- install_targets/            Per-platform installation declarations
++- skills/                     Category metadata and canonical skill trees
++- tests/                      Fast pytest, non-browser E2E, and browser test homes
++- tools/                      Repository generators and validators
++- AGENTS.md                   Repository instructions and rule pointers
++- install_skills.py           Main guided installer
++- README.md                   Project overview and quick start
++- source_me.sh                Repository Python environment bootstrap
++- VERSION                     Version source for generated manifests
++- pip_requirements*.txt       Python runtime and development dependencies
+`- package.json                Supporting TypeScript and Playwright tool manifest
 ```
 
 ## Key subtrees
 
-### [skills/](../skills/)
+### Skills
 
-Public skills use exactly two directory levels:
-`skills/<category>/<skill-name>/SKILL.md`. The folder name matches the skill
-name. New skill folders should follow [docs/SKILL_NAMING.md](SKILL_NAMING.md).
-The generated [docs/SKILLS_INDEX.md](SKILLS_INDEX.md) groups the complete
-catalog by these categories:
+[skills/](../skills/) uses one metadata-backed directory per category:
 
-| Category | Scope |
-| --- | --- |
-| `orient` | Rules and authoring guidance loaded at task entry |
-| `plan` | Idea exploration and forward-looking plans before implementation |
-| `manage` | Delegation, monitoring, and multi-agent execution |
-| `experts` | Specialist implementation under the shared expert-skill standard |
-| `docs` | Documentation creation, conversion, releases, and visual capture |
-| `quality` | Code review, auditing, and test generation |
+```text
+skills/
++- documentation/
++- experts/
++- management/
++- orientation/
++- planning/
+`- quality/
+```
 
-Categories describe how and when a skill is employed, not its subject matter.
-Choose the skill's primary workflow role. In particular, every domain skill
-whose name ends in `-expert` or `-engineer` belongs in `experts`, where the
-shared expert-skill parity gate applies. A coordinating builder such as
-`html-game-parallel-builder` belongs in `manage` because its primary job is
-agent orchestration rather than domain guidance.
+Each category contains `CATEGORY.md`. Each active skill normally contains:
 
-The hidden `skills/.system/` tree is reserved for environment-provided skills
-and is excluded from published manifests. The deprecated `old-*` naming rule
-still applies inside categories.
+```text
+skills/<category>/<skill-name>/
++- SKILL.md
++- agents/
+|  `- openai.yaml
++- references/                 Optional detailed guidance
++- scripts/                    Optional executable helpers
++- assets/                     Optional reusable assets
+`- templates/                 Optional reusable templates
+```
 
-### [agents/](../agents/)
+[install_lib/skill_discovery.py](../install_lib/skill_discovery.py) validates this structure.
+[tools/build_skills_index.py](../tools/build_skills_index.py) renders
+[SKILLS_INDEX.md](SKILLS_INDEX.md), and
+[tools/openai_sidecars.py](../tools/openai_sidecars.py) validates the OpenAI sidecars and
+category-required paths.
 
-Per-role markdown files used by orchestration skills. Current roles:
-`architect.md`, `coder.md`, `expert_coder.md`, `image_evaluator.md`,
-`integrator.md`, `maintainer.md`, `monitor.md`, `orchestrator.md`,
-`parallelizer.md`, `planner.md`, `playwright_operator.md`,
-`reviewer.md`, `scheduler.md`, `tester.md`.
+### Agents and installation
 
-### [tools/](../tools/) vs [devel/](../devel/)
+[agents/](../agents/) contains authored Claude-compatible Markdown.
+[agents/CATALOG.yaml](../agents/CATALOG.yaml) owns role, access, authority, and escalation data.
+[AGENTS_INDEX.md](AGENTS_INDEX.md) is its generated searchable index.
 
-- [tools/](../tools/) holds repo content generators that any contributor may
-  rerun: [tools/build_skills_index.py](../tools/build_skills_index.py),
-  [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py),
-  [tools/list_loaded_skills.py](../tools/list_loaded_skills.py),
-  [tools/sync_typescript_package_pins.py](../tools/sync_typescript_package_pins.py),
-  [tools/plan_headings.sh](../tools/plan_headings.sh).
-- [devel/](../devel/) holds developer-only helpers:
-  [devel/commit_changelog.py](../devel/commit_changelog.py),
-  [devel/query_changelog.py](../devel/query_changelog.py),
-  [devel/rotate_changelog.py](../devel/rotate_changelog.py),
-  [devel/changelog_lib.py](../devel/changelog_lib.py),
-  [devel/bump_version.py](../devel/bump_version.py),
-  [devel/flatten_broken_md_links.py](../devel/flatten_broken_md_links.py),
-  [devel/dist_clean.sh](../devel/dist_clean.sh),
-  [devel/setup_playwright.sh](../devel/setup_playwright.sh), and
-  [devel/DEVEL_README.md](../devel/DEVEL_README.md).
+[install_targets/](../install_targets/) contains one `TARGET.md` for each declared platform:
 
-### [tests/](../tests/)
+| Target | Tier | Skill destination | Agent destination |
+| --- | --- | --- | --- |
+| Claude | primary | `.claude/skills` | `.claude/agents` |
+| Codex | primary | `.codex/skills` | `.codex/agents` |
+| Cursor | compatibility | `.cursor/skills` | `.cursor/agents` |
+| OpenCode | compatibility | `.config/opencode/skills` | `.config/opencode/agents` |
 
-Repo-wide pytest gates plus helpers. Run with `pytest tests/`. The
-[tests/playwright/](../tests/playwright/) subtree is excluded from pytest
-collection by [tests/conftest.py](../tests/conftest.py); see
-[docs/PLAYWRIGHT_USAGE.md](PLAYWRIGHT_USAGE.md).
-Helper modules: [tests/file_utils.py](../tests/file_utils.py),
-[tests/check_ascii_compliance.py](../tests/check_ascii_compliance.py),
-[tests/fix_ascii_compliance.py](../tests/fix_ascii_compliance.py),
-[tests/fix_whitespace.py](../tests/fix_whitespace.py). Gates also cover
-skill frontmatter, internal links, plugin-manifest drift, and Markdown links;
-[tests/TESTS_README.md](../tests/TESTS_README.md) documents the suite.
+[install_lib/](../install_lib/) contains frontmatter parsing, discovery, adapter rendering, target
+validation, the interview, and state-free installation behavior.
 
-### [docs/](.)
+### Tests
 
-Two flavors live here:
+[tests/](../tests/) is divided by execution model:
 
-- Centrally maintained style docs (do not edit locally):
-  [docs/REPO_STYLE.md](REPO_STYLE.md),
-  [docs/PYTHON_STYLE.md](PYTHON_STYLE.md),
-  [docs/MARKDOWN_STYLE.md](MARKDOWN_STYLE.md),
-  [docs/PYTEST_STYLE.md](PYTEST_STYLE.md),
-  [docs/TYPESCRIPT_STYLE.md](TYPESCRIPT_STYLE.md),
-  [docs/CLAUDE_HOOK_USAGE_GUIDE.md](CLAUDE_HOOK_USAGE_GUIDE.md),
-  [docs/AUTHORS.md](AUTHORS.md).
-- Repo-specific docs:
-  [docs/INSTALL.md](INSTALL.md), [docs/USAGE.md](USAGE.md),
-  [docs/TROUBLESHOOTING.md](TROUBLESHOOTING.md),
-  [docs/CHANGELOG.md](CHANGELOG.md) with archive
-  [docs/CHANGELOG-2026-06a.md](CHANGELOG-2026-06a.md),
-  [docs/E2E_TESTS.md](E2E_TESTS.md),
-  [docs/PLAYWRIGHT_USAGE.md](PLAYWRIGHT_USAGE.md),
-  [docs/SKILLS_INDEX.md](SKILLS_INDEX.md),
-  [docs/SKILL_NAMING.md](SKILL_NAMING.md),
-  [docs/archive/SKILL_PHILOSOPHY_REVIEW.md](archive/SKILL_PHILOSOPHY_REVIEW.md),
-  [docs/CODE_ARCHITECTURE.md](CODE_ARCHITECTURE.md),
-  [docs/FILE_STRUCTURE.md](FILE_STRUCTURE.md),
-  [docs/EXPERT_SKILL-BEST_PRACTICES.md](EXPERT_SKILL-BEST_PRACTICES.md)
-  (conventions for authoring domain-expert skills and the local-only reference-survey pattern).
-- Archived skill folders live under [docs/archive/skills/](archive/skills/):
-  currently [docs/archive/skills/old-manager-review-existing-plan/](archive/skills/old-manager-review-existing-plan/)
-  and [docs/archive/skills/old-orchestrate-next-milestone/](archive/skills/old-orchestrate-next-milestone/).
-  Archived skills are no longer indexed in `skills/` and are excluded from
-  the plugin manifest; historical content is preserved for reference.
-  See [docs/archive/skills/README.md](archive/skills/README.md) for
-  retirement context and replacements.
+- `tests/test_*.py` provides the fast, deterministic pytest lane.
+- [tests/e2e/](../tests/e2e/) contains non-browser whole-CLI orchestration and is excluded from
+  pytest collection.
+- [tests/playwright/](../tests/playwright/) is reserved for browser-driven tests.
+- [tests/conftest.py](../tests/conftest.py) owns collection exclusions and repository hygiene
+  filters.
+- [tests/TESTS_README.md](../tests/TESTS_README.md) documents the tier boundaries.
 
-### Plugin manifests
+No tracked fixture directory was added for the installer work. Permanent test inputs remain inline
+or are written beneath `tmp_path`.
 
-Per-platform manifests, all regenerated by
-[tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py):
+### Tools and development
 
-- [.claude-plugin/plugin.json](../.claude-plugin/plugin.json) and
-  [.claude-plugin/marketplace.json](../.claude-plugin/marketplace.json)
-  for Claude Code.
-- [.codex-plugin/plugin.json](../.codex-plugin/plugin.json) for Codex.
-- [.cursor-plugin/plugin.json](../.cursor-plugin/plugin.json) for Cursor.
-- [.opencode/](../.opencode/) for OpenCode
-  ([.opencode/plugins/vosslab_skills.js](../.opencode/plugins/vosslab_skills.js)
-  and [.opencode/INSTALL.md](../.opencode/INSTALL.md)).
+[tools/](../tools/) contains repository-facing generators and validators. Shared runtime behavior
+used by the installer and tools belongs in [install_lib/](../install_lib/).
+
+[devel/](../devel/) contains maintainer-only setup, changelog, cleanup, versioning, and release
+commands. Reusable runtime modules and permanent tests do not belong there.
 
 ## Generated artifacts
 
-- [docs/SKILLS_INDEX.md](SKILLS_INDEX.md) is regenerated from
-  `skills/**/SKILL.md` by
-  [tools/build_skills_index.py](../tools/build_skills_index.py). Edit
-  source `SKILL.md` files, not the index.
-- The plugin manifests under [.claude-plugin/](../.claude-plugin/),
-  [.codex-plugin/](../.codex-plugin/), [.cursor-plugin/](../.cursor-plugin/),
-  and [.opencode/](../.opencode/) are regenerated by
-  [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py). Edit the
-  source skills, not the manifests.
-- `.pytest_cache/` is gitignored and produced by pytest runs.
+The repository intentionally tracks these small generated artifacts:
+
+| Generated path | Owner |
+| --- | --- |
+| [SKILLS_INDEX.md](SKILLS_INDEX.md) | [tools/build_skills_index.py](../tools/build_skills_index.py) |
+| [AGENTS_INDEX.md](AGENTS_INDEX.md) | [tools/build_agents_index.py](../tools/build_agents_index.py) |
+| [.claude-plugin/](../.claude-plugin/) | [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py) |
+| [.codex-plugin/](../.codex-plugin/) | [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py) |
+| [.cursor-plugin/](../.cursor-plugin/) | [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py) |
+| [.opencode/INSTALL.md](../.opencode/INSTALL.md) | [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py) |
+| [.opencode/plugins/vosslab_skills.js](../.opencode/plugins/vosslab_skills.js) | [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py) |
+
+Platform-native agent projections are generated during installation. They live in the selected
+home, not in the tracked repository. Codex links category directories beneath `.codex/skills`;
+Claude keeps individual skill links flat beneath `.claude/skills`. Cursor and OpenCode use their
+native global roots. Skill trees and authored Claude agents are linked directly to the clone rather
+than regenerated or copied. The installer creates no separate receipt, version record, cache, or
+hidden configuration.
+
+## Local and ignored material
+
+[.gitignore](../.gitignore) excludes:
+
+- Hidden runtime skill trees under `skills/.*/`.
+- Local reference corpora under `local-only/` and local book inputs under `books_to_process/`.
+- Repository-local generated agent folders for Codex, Cursor, and OpenCode.
+- Temporary output, dependency installs, build output, coverage, and browser test reports.
+
+These paths are local state, not canonical repository structure.
 
 ## Documentation map
 
-- Project overview and quick start: [README.md](../README.md).
-- Install (plugin and local clone): [docs/INSTALL.md](INSTALL.md).
-- Skill invocation and tooling commands: [docs/USAGE.md](USAGE.md).
-- Common issues: [docs/TROUBLESHOOTING.md](TROUBLESHOOTING.md).
-- Skill index: [docs/SKILLS_INDEX.md](SKILLS_INDEX.md).
-- Architecture: [docs/CODE_ARCHITECTURE.md](CODE_ARCHITECTURE.md).
-- Dated change log: [docs/CHANGELOG.md](CHANGELOG.md).
+- [README.md](../README.md): Project purpose and quick start.
+- [INSTALL.md](INSTALL.md): Requirements, targets, interview, links, and updates.
+- [USAGE.md](USAGE.md): Maintainer commands and installer lifecycle.
+- [CODE_ARCHITECTURE.md](CODE_ARCHITECTURE.md): Components, data flow, verification, and extension
+  points.
+- [SKILLS_INDEX.md](SKILLS_INDEX.md): Generated public skill catalog.
+- [AGENTS_INDEX.md](AGENTS_INDEX.md): Generated agent catalog.
+- [REPO_STYLE.md](REPO_STYLE.md): Repository placement and workflow rules.
+- [PYTEST_STYLE.md](PYTEST_STYLE.md): Permanent-test and fixture policy.
+- [E2E_TESTS.md](E2E_TESTS.md): Whole-system test placement.
+- [archive/](archive/): Completed reports, decisions, and retired source material.
+
+Root [AGENTS.md](../AGENTS.md) points agents to the canonical style documents. Root
+[README.md](../README.md) remains the user-facing landing page.
 
 ## Where to add new work
 
-- New skill: `skills/<category>/<skill-name>/SKILL.md` (folder name matches
-  skill name; see [docs/SKILL_NAMING.md](SKILL_NAMING.md)). Regenerate
-  [docs/SKILLS_INDEX.md](SKILLS_INDEX.md).
-- New sub-agent role: `agents/<role>.md`. Reference it from the
-  dispatching skill.
-- New generator: [tools/](../tools/), with `#!/usr/bin/env python3`
-  shebang and an entry in [docs/USAGE.md](USAGE.md).
-- New developer helper: [devel/](../devel/).
-- New test gate: `tests/test_*.py` (see
-  [docs/PYTEST_STYLE.md](PYTEST_STYLE.md)).
-- New documentation: `docs/SCREAMING_SNAKE_CASE.md` per
-  [docs/REPO_STYLE.md](REPO_STYLE.md#naming); link from
-  [README.md](../README.md) when appropriate.
+- Skills and skill-owned resources: [skills/](../skills/).
+- Authored agents and catalog data: [agents/](../agents/).
+- Shared installer or generator logic: [install_lib/](../install_lib/).
+- Repository generators and validators: [tools/](../tools/).
+- Maintainer-only setup and release scripts: [devel/](../devel/).
+- Fast tests: [tests/](../tests/); whole-CLI checks: [tests/e2e/](../tests/e2e/).
+- Durable documentation: [docs/](.); completed work records:
+  [docs/archive/](archive/).

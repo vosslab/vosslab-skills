@@ -1,7 +1,7 @@
 ---
 name: maintainer
 model: sonnet
-description: "Housekeeping agent for cleanup, lint maintenance, and index regeneration. (Gas Town: Dogs)"
+description: "Housekeeping agent for cleanup, lint maintenance, and index regeneration."
 tools: Bash, Glob, Grep, Read, Edit, Write, Skill, TaskGet, TaskUpdate, TaskList
 ---
 

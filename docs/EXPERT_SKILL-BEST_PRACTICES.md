@@ -113,7 +113,8 @@ references folder, and an OpenAI agent manifest.
 - `skills/<category>/<name>/references/local-only/`: gitignored source corpora (large book
   conversions). Present locally, absent on a clean clone.
 - `skills/<category>/<name>/agents/openai.yaml`: the OpenAI agent manifest. Mirror
-  `skills/experts/geometry-expert/agents/openai.yaml`.
+  the sidecar of the `geometry-expert` reference skill, located through
+  [SKILLS_INDEX.md](SKILLS_INDEX.md).
 - `agents/openai.yaml` is required by this repo's parity standard, and every
   expert skill ships it. The earlier missing-manifest gap was closed when the
   `webwork-writer-expert` rename added its manifest; new expert skills must
@@ -134,7 +135,7 @@ it short and push detail into the reference guides.
 - Frontmatter carries exactly two keys that matter: `name` (equals the directory
   name) and `description` (a keyword-packed trigger no longer than this repo's
   250-character ceiling).
-- Body section order, mirrored from `skills/experts/geometry-expert/SKILL.md`: Overview,
+- Body section order, mirrored from the `geometry-expert` reference skill: Overview,
   Workflow, Implementation defaults, Quality bar, Output expectations.
 - Keep the entrypoint thin, roughly 70-100 lines. Each Workflow step routes to a
   `references/*.md` guide with a Markdown link rather than inlining the detail.
@@ -148,8 +149,8 @@ the skill fires. Treat it as a trigger surface, not a summary.
 
 - Pack concrete domain keywords plus their synonyms: name the algorithms,
   libraries, file types, and error symptoms a user would type.
-- State both what the skill does and when to use it. The geometry description in
-  `skills/experts/geometry-expert/SKILL.md` lists primitives, library names, and failure
+- State both what the skill does and when to use it. The `geometry-expert` description lists
+  primitives, library names, and failure
   modes, then a "Use when" clause.
 - Actionable rule: read the description cold and ask whether a user describing
   the problem in their own words would hit at least one keyword. Add synonyms
@@ -160,8 +161,8 @@ the skill fires. Treat it as a trigger surface, not a summary.
 Reference guides hold the detail the thin entrypoint defers. Each guide owns one
 concern so the agent loads only what a step needs.
 
-- One concern per guide, roughly 25-60 lines. Examples in
-  `skills/experts/geometry-expert/references/`: `task_selection.md`,
+- One concern per guide, roughly 25-60 lines. The `geometry-expert` reference skill includes
+  `task_selection.md`,
   `algorithm_design.md`, `robustness_and_numerics.md`, `testing_and_oracles.md`.
 - Provide a `task_selection`-style guide for routing underspecified requests, one
   or more domain workflow guides, and a source-map guide
@@ -177,7 +178,7 @@ design, because the books are large source material, not skill content to upload
 to GitHub.
 
 - The skill ships the small committed survey; the user supplies the large books
-  locally. Example corpus: `skills/experts/vision-expert/references/local-only/` holds
+  locally. The `vision-expert` example corpus holds
   six computer-vision books.
 - Put a corpus only inside its live skill's `references/local-only/` directory.
   A corpus directory is not a skill and must not be placed in a sibling
@@ -202,11 +203,9 @@ reputation into checked evidence by building a `reference_survey.md`.
 - Verify every grep term actually hits its `local-only/*.txt` file before
   recording it. Name thin topics explicitly and route them to official library
   docs or an oracle instead of pretending a book covers them.
-- See a real worked survey at the file path
-  `skills/experts/pyside6-engineer/references/reference_survey.md`, which maps three
-  shared UX books through a Qt-engineering lens. Use the reference
-  implementation at `skills/experts/geometry-expert/references/reference_survey.md` as
-  the structural model.
+- The `pyside6-engineer` reference survey maps three shared UX books through a
+  Qt-engineering lens. Use the `geometry-expert` survey as the structural model;
+  locate either through [SKILLS_INDEX.md](SKILLS_INDEX.md).
 - Actionable rule: a survey row earns its place only when its grep term hits the
   book; an unverified term is a guess, not evidence.
 
@@ -224,9 +223,9 @@ The skill must still work when the corpus is missing or thin.
   maybe-absent corpus.
 - A committed, linkable, heading-anchored reference set needs a routing index
   instead: a table that maps each topic to a guide link. That is the
-  committed-set analog of the survey. Examples:
-  `skills/experts/solid-js-expert/references/api-cheatsheet.md` and
-  `skills/experts/typescript-engineer/references/checklist.md`.
+  committed-set analog of the survey. The `solid-js-expert` and
+  `typescript-engineer` skills provide examples; locate them through
+  [SKILLS_INDEX.md](SKILLS_INDEX.md).
 - Actionable rule: pick the survey when the corpus is gitignored and opaque; pick
   a routing index when the guides are committed and heading-anchored. Section 15
   classifies every expert on this axis.
@@ -239,7 +238,8 @@ behavior. The first Workflow steps detect the project shape and build evidence.
 - Detect greenfield versus existing project and branch the workflow. Existing:
   inventory the code and capture characterization fixtures before edits.
   Greenfield: write the design source of truth first, then seed fixtures.
-  See `skills/experts/geometry-expert/references/project_workflow.md`.
+  See the `geometry-expert` project-workflow guide through
+  [SKILLS_INDEX.md](SKILLS_INDEX.md).
 - Build a test corpus or fixture set before feature code, and validate every
   result against a trusted oracle (a known-good library or brute force).
 - The domain contract artifact is optional per domain. Geometry writes a

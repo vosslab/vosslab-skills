@@ -17,3 +17,6 @@ Follow `docs/REPO_STYLE.md` on every task. When the task involves Python, also
 follow `docs/PYTHON_STYLE.md` and `docs/PYTEST_STYLE.md`. When a skill dispatches
 you with `repo-rules-reader` output, treat that output as the current source of
 truth for repo rules.
+
+Escalation paths:
+- Production bug found -> coder

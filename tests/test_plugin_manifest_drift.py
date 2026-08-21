@@ -2,7 +2,7 @@
 Plugin manifest must list every published skill directory.
 
 The manifest at `.claude-plugin/plugin.json` carries a `skills` array of
-folder paths (e.g. `./skills/quality/audit-code-reviewer`) that should match the
+folder paths (e.g. `./skills/<category>/<skill-name>`) that should match the
 publishable skill folders returned by shared discovery. The `keywords`
 array is a thematic tag list (`skills`, `claude-code`, ...), not a skill
 roster, and is intentionally not checked here.
@@ -16,7 +16,7 @@ import pathlib
 
 import file_utils
 
-import skill_discovery
+import install_lib.skill_discovery
 
 REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
@@ -30,7 +30,7 @@ def test_plugin_manifest_skills_match_skill_dirs() -> None:
 	The `skills` array in `.claude-plugin/plugin.json` must list every
 	publishable skill directory returned by shared discovery, and only those.
 	"""
-	discovery = skill_discovery.collect_skill_files(
+	discovery = install_lib.skill_discovery.collect_skill_files(
 		pathlib.Path(REPO_ROOT),
 		SKILLS_DIR,
 	)

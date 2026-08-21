@@ -7,7 +7,28 @@ import pytest
 import build_plugin_manifest
 import build_skills_index
 import list_loaded_skills
-import skill_discovery
+import install_lib.skill_discovery
+
+
+#============================================
+def write_category(
+	skills_root: pathlib.Path,
+	name: str,
+	order: int = 1,
+	visibility: str = "published",
+) -> None:
+	"""Write minimal valid category metadata for a synthetic category."""
+	category_path = skills_root / name / "CATEGORY.md"
+	category_path.parent.mkdir(parents=True, exist_ok=True)
+	category_path.write_text(
+		"---\n"
+		+ f"title: {name.title()}\n"
+		+ "description: Temporary category used by this behavioral test.\n"
+		+ f"order: {order}\n"
+		+ f"visibility: {visibility}\n"
+		+ "---\n",
+		encoding="utf-8",
+	)
 
 
 #============================================
@@ -20,52 +41,40 @@ def write_skill(skills_root: pathlib.Path, relative_dir: str) -> pathlib.Path:
 
 
 #============================================
-def test_discovery_applies_publishable_skill_policy(
+def test_inventory_discovers_categories_from_metadata(
 	tmp_path: pathlib.Path,
-	monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-	"""Discovery includes ordinary skills and reports every policy exclusion."""
+	"""An explicit source set derives categories from CATEGORY.md data."""
 	skills_root = tmp_path / "skills"
-	write_skill(skills_root, ".system/internal")
-	write_skill(skills_root, "docs/git-hidden")
-	write_skill(skills_root, "quality/old-retired")
-	write_skill(skills_root, "manage/untracked-skill")
-	write_skill(skills_root, "experts/nested-skill")
-
-	def fake_is_git_ignored(repo_root: pathlib.Path, path: pathlib.Path) -> bool:
-		"""Treat one temporary directory as ignored without invoking git."""
-		return path.parent.name == "git-hidden"
-
-	monkeypatch.setattr(skill_discovery, "is_git_ignored", fake_is_git_ignored)
-	discovery = skill_discovery.collect_skill_files(tmp_path, skills_root)
-	included = [path.parent.relative_to(skills_root).as_posix() for path in discovery.skill_files]
-	skipped = [
-		(skipped_skill.path.parent.relative_to(skills_root).as_posix(), skipped_skill.reason)
-		for skipped_skill in discovery.skipped_skills
+	write_category(skills_root, "guides")
+	write_category(skills_root, "specialists", order=2)
+	skill_file = write_skill(skills_root, "specialists/nested-skill")
+	source_paths = [
+		skills_root / "guides" / "CATEGORY.md",
+		skills_root / "specialists" / "CATEGORY.md",
+		skill_file,
 	]
 
-	assert included == ["experts/nested-skill", "manage/untracked-skill"]
-	assert skipped == [
-		(".system/internal", "system skill"),
-		("docs/git-hidden", "git-ignored"),
-		("quality/old-retired", "deprecated old-* skill"),
-	]
+	inventory = install_lib.skill_discovery.build_skill_inventory(skills_root, source_paths)
+
+	assert inventory.categories["specialists"].title == "Specialists"
+	assert inventory.skill_files == [skill_file]
 
 
 #============================================
 def test_discovery_summary_uses_shared_wording(tmp_path: pathlib.Path) -> None:
 	"""The shared renderer names included skills and each ordered skip reason."""
-	discovery = skill_discovery.SkillDiscovery(
+	discovery = install_lib.skill_discovery.SkillDiscovery(
 		skill_files=[tmp_path / "skills" / "active" / "SKILL.md"],
 		skipped_skills=[
-			skill_discovery.SkippedSkill(
+			install_lib.skill_discovery.SkippedSkill(
 				tmp_path / "skills" / "old-retired" / "SKILL.md",
 				"deprecated old-* skill",
 			),
 		],
 	)
 
-	lines = skill_discovery.render_discovery_summary(discovery, tmp_path)
+	lines = install_lib.skill_discovery.render_discovery_summary(discovery, tmp_path)
 
 	assert lines == [
 		"Skill discovery:",
@@ -76,46 +85,44 @@ def test_discovery_summary_uses_shared_wording(tmp_path: pathlib.Path) -> None:
 
 
 #============================================
-def test_manifest_paths_preserve_nested_skill_directories() -> None:
+def test_manifest_paths_preserve_nested_skill_directories(
+	tmp_path: pathlib.Path,
+	monkeypatch: pytest.MonkeyPatch,
+) -> None:
 	"""Manifest skill paths retain the full path below skills/."""
-	skill_file = (
-		build_plugin_manifest.SKILLS_ROOT
-		/ "experts"
-		/ "nested-skill"
-		/ "SKILL.md"
-	)
+	skills_root = tmp_path / "skills"
+	skill_file = skills_root / "specialists" / "nested-skill" / "SKILL.md"
+	monkeypatch.setattr(build_plugin_manifest, "SKILLS_ROOT", skills_root)
 
 	paths = build_plugin_manifest.collect_skill_paths([skill_file])
 
-	assert paths == ["./skills/experts/nested-skill"]
+	assert paths == ["./skills/specialists/nested-skill"]
 
 
 #============================================
 def test_discovery_rejects_flat_skill_directories(
 	tmp_path: pathlib.Path,
-	monkeypatch: pytest.MonkeyPatch,
 ) -> None:
 	"""Publishable skills must live below a recognized category folder."""
 	skills_root = tmp_path / "skills"
-	write_skill(skills_root, "flat-skill")
-	monkeypatch.setattr(skill_discovery, "is_git_ignored", lambda repo_root, path: False)
+	write_category(skills_root, "guides")
+	flat_skill = write_skill(skills_root, "flat-skill")
 
 	with pytest.raises(ValueError, match="skills/<category>/<skill-name>"):
-		skill_discovery.collect_skill_files(tmp_path, skills_root)
+		install_lib.skill_discovery.build_skill_inventory(
+			skills_root,
+			[skills_root / "guides" / "CATEGORY.md", flat_skill],
+		)
 
 
 #============================================
-def test_discovery_rejects_unknown_skill_categories(
-	tmp_path: pathlib.Path,
-	monkeypatch: pytest.MonkeyPatch,
-) -> None:
-	"""Category names come from the canonical skill taxonomy."""
+def test_inventory_rejects_skill_without_category_metadata(tmp_path: pathlib.Path) -> None:
+	"""A skill source needs metadata for its enclosing category."""
 	skills_root = tmp_path / "skills"
-	write_skill(skills_root, "misc/unknown-skill")
-	monkeypatch.setattr(skill_discovery, "is_git_ignored", lambda repo_root, path: False)
+	skill_file = write_skill(skills_root, "misc/unknown-skill")
 
 	with pytest.raises(ValueError, match="Unknown skill category"):
-		skill_discovery.collect_skill_files(tmp_path, skills_root)
+		install_lib.skill_discovery.build_skill_inventory(skills_root, [skill_file])
 
 
 #============================================
@@ -125,24 +132,25 @@ def test_skills_index_groups_nested_skills_by_category(
 ) -> None:
 	"""The generated index keeps category headings and nested skill paths."""
 	skills_root = tmp_path / "skills"
-	skill_file = write_skill(skills_root, "experts/nested-skill")
+	write_category(skills_root, "specialists")
+	skill_file = write_skill(skills_root, "specialists/nested-skill")
 	monkeypatch.setattr(build_skills_index, "REPO_ROOT", tmp_path)
 	monkeypatch.setattr(build_skills_index, "SKILLS_ROOT", skills_root)
 
 	rendered = build_skills_index.render_index([skill_file])
 
-	assert "## Experts" in rendered
-	assert "[experts/nested-skill/SKILL.md]" in rendered
+	assert "## Specialists" in rendered
+	assert "[specialists/nested-skill/SKILL.md]" in rendered
 
 
 #============================================
 def test_loaded_skill_listing_finds_nested_skill_files(tmp_path: pathlib.Path) -> None:
 	"""The loaded-skill helper discovers category-organized skills recursively."""
 	skills_root = tmp_path / "skills"
-	write_skill(skills_root, "experts/nested-skill")
-	write_skill(skills_root, ".system/internal")
+	write_skill(skills_root, "specialists/nested-skill")
+	write_skill(skills_root, ".private/internal")
 
 	paths = list_loaded_skills.find_skill_files(skills_root)
 	relative_paths = [path.relative_to(skills_root).as_posix() for path in paths]
 
-	assert relative_paths == ["experts/nested-skill/SKILL.md"]
+	assert relative_paths == ["specialists/nested-skill/SKILL.md"]
