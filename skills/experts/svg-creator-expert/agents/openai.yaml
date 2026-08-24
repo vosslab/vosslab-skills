@@ -1,0 +1,4 @@
+interface:
+  display_name: "SVG Creator Expert"
+  short_description: "Draw polished, source-guided SVG illustrations"
+  default_prompt: "Use $svg-creator-expert to draw and render a finished SVG of the requested object."

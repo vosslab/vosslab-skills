@@ -1,71 +1,84 @@
-# Local CSS books
+# Local CSS source map
 
-Use this source map with [reference_survey.md](reference_survey.md). The 21
-files are local, gitignored conversions; use the bare paths to search a named
-term and read its surrounding passage. When the corpus is absent, use the
-committed guides, MDN, the CSS specifications, and rendered evidence.
+Use this map with [reference_survey.md](reference_survey.md). The local,
+gitignored corpus contains broad books, focused web guides, and one secondary
+example collection. Its folders describe the job a source serves: visual
+outcomes in `css-creative/`, language mechanics in `css-technical/`.
 
-## Comprehensive foundations
+## Source classes
 
-1. `references/local-only/CSS_The_Definitive_Guide-2023.md` is the broad
-   language reference for cascade, selectors, backgrounds, layout, and motion.
-2. `references/local-only/CSS_in_Depth_Second_Edition-2024.md` is the modern
-   design and architecture companion for responsive layout, components, and
-   newer CSS features.
+- Broad book: search a chapter or topic, then read enough surrounding material
+  to understand the design model.
+- Focused guide: search the exact property, function, or technique and read the
+  nearby examples and limitations.
+- Secondary examples: mine patterns and prompts for ideas, then establish the
+  implementation from primary documentation and rendered evidence.
 
-## Modern technique collections
+## Visual craft sources
 
-3. `references/local-only/Modern_CSS-2020.md` supplies modern layout and
-   effect patterns; corroborate version-sensitive claims.
-4. `references/local-only/Unleashing_the_Power_of_CSS-2023.md` is a broad
-   practical collection for modern CSS patterns.
-5. `references/local-only/CSS_MagiC_51_Tricks_to_Take_Your_CSS_Skills_to_the_Next_Level-2023.md`
-   supplies focused visual and interaction techniques.
-6. `references/local-only/Responsive_Web_Design_with_HTML5_and_CSS-2022.md`
-   is the responsive and container-query companion.
-7. `references/local-only/Background_Magic_CSS_The_Complete_Guide_to_Creating_Stunning_Backgrounds-2023.md`
-   is the visual-surface source for backgrounds, blending, and effects.
+- `references/local-only/css-creative/Background_Magic_CSS_The_Complete_Guide_to_Creating_Stunning_Backgrounds-2023.md`:
+  focused guide for layered, image, pattern, gradient, and video backgrounds.
+- `references/local-only/css-creative/CSS_MagiC_51_Tricks_to_Take_Your_CSS_Skills_to_the_Next_Level-2023.md`:
+  broad recipe book for shadows, masks, clipping, blend modes, filters, and
+  small interaction effects.
+- `references/local-only/css-creative/SVG_Animations-2017.md`: broad book for
+  SVG structure, CSS animation, motion choreography, and animated interfaces;
+  verify current APIs and library advice.
+- `references/local-only/css-creative/Working_With_Colors_Guide-2016.md`:
+  focused guide for color models, atmosphere, shadows, blend modes, and color
+  accessibility concepts; verify current color syntax and gamut behavior.
 
-## Layout and cascade lookups
+## Technical mechanism sources
 
-8. `references/local-only/A_Complete_Guide_to_CSS_Grid_Layout-2021.md` is the
-   grid lookup for tracks, areas, placement, and alignment.
-9. `references/local-only/A_Complete_Guide_to_CSS_Flexbox-2026.md` is the
-   flexbox lookup for alignment, wrapping, ordering, and sizing.
-10. `references/local-only/CSS_Anchor_Positioning_Guide-2024.md` is the
-    anchored-overlay lookup; verify current browser support.
-11. `references/local-only/CSS_Selectors-2024.md` is the selector lookup;
-    confirm support for newer pseudo-classes in current documentation.
-12. `references/local-only/Cascade_Layers_Guide-2022.md` is the layer-order
-    lookup for making precedence explicit.
-13. `references/local-only/CSS_Custom_Properties_Guide-2021.md` is the token,
-    inheritance, and fallback lookup.
-14. `references/local-only/Centering_in_CSS_Guide-2014.md` is a dated teaching
-    lookup for centering patterns; prefer current layout primitives and MDN.
+- `references/local-only/css-technical/A_Complete_Guide_to_CSS_Flexbox-2026.md`:
+  focused guide for axes, alignment, wrapping, order, and flex sizing.
+- `references/local-only/css-technical/A_Complete_Guide_to_CSS_Grid_Layout-2021.md`:
+  focused guide for tracks, areas, placement, auto-flow, subgrid, and alignment.
+- `references/local-only/css-technical/CSS3_and_SVG_with_GPT-4-2024.md`:
+  secondary CSS3 and SVG examples; use its CSS3 and SVG chapters, then verify
+  every selected pattern independently.
+- `references/local-only/css-technical/CSS_Anchor_Positioning_Guide-2024.md`:
+  focused guide for anchors, target placement, fallback positions, and edges.
+- `references/local-only/css-technical/CSS_Color_Functions-2025.md`: focused
+  guide for color spaces, Oklab/Oklch, `color()`, `color-mix()`, and relative
+  color syntax.
+- `references/local-only/css-technical/CSS_Custom_Properties_Guide-2021.md`:
+  focused guide for token naming, inheritance, fallbacks, `@property`, state,
+  and JavaScript integration.
+- `references/local-only/css-technical/CSS_Functions_Guide-2020.md`: focused
+  index for sizing, comparison, transform, filter, gradient, and shape
+  functions; verify additions and support in current specifications.
+- `references/local-only/css-technical/CSS_Gradients_Guide-2020.md`: focused
+  guide for linear, radial, conic, repeating, and patterned gradients.
+- `references/local-only/css-technical/CSS_Selectors-2024.md`: focused selector
+  and combinator lookup, including attributes, pseudo-selectors, and nesting.
+- `references/local-only/css-technical/CSS_in_Depth_Second_Edition-2024.md`:
+  broad book for cascade, units, layout, stacking, responsive design, layers,
+  modular CSS, scope, typography, and motion.
+- `references/local-only/css-technical/Cascade_Layers_Guide-2022.md`: focused
+  guide for layer order, origins, `!important`, use cases, and debugging.
+- `references/local-only/css-technical/Centering_in_CSS_Guide-2014.md`: dated
+  focused guide for centering decision cases; prefer current grid and flexbox.
+- `references/local-only/css-technical/Dark_Mode_in_CSS_Guide-2020.md`: focused
+  guide for preference detection, user toggles, persistence, user-agent styles,
+  and dark-theme design considerations.
+- `references/local-only/css-technical/Responsive_Web_Design_with_HTML5_and_CSS-2022.md`:
+  broad book for media and container queries, fluid layout, images, SVG,
+  effects, animation, custom properties, functions, and forms.
+- `references/local-only/css-technical/SVG_Fallbacks_Guide-2015.md`: dated
+  focused guide for `<img>`, `<object>`, background-image, inline SVG, and icon
+  fallbacks; verify which fallbacks remain necessary.
+- `references/local-only/css-technical/Unleashing_the_Power_of_CSS-2023.md`:
+  broad technical book for `:has()`, container queries, intrinsic responsive
+  layout, and modern CSS organization.
 
-## Color and visual-media lookups
+## Lookup method
 
-15. `references/local-only/CSS_Color_Functions-2025.md` is the current color
-    function and interpolation lookup; use measured repairs from
-    `color-accessibility-expert` when contrast is in scope.
-16. `references/local-only/CSS_Gradients_Guide-2020.md` is the gradient syntax
-    and composition lookup.
-17. `references/local-only/CSS_Functions_Guide-2020.md` is a general function
-    lookup; verify recently added functions in specifications.
-18. `references/local-only/Dark_Mode_in_CSS_Guide-2020.md` is a dark-scheme
-    introduction; design semantic roles and verify current behavior.
-19. `references/local-only/SVG_Properties_in_CSS_Guide-2019.md` is the SVG-CSS
-    property lookup.
-20. `references/local-only/SVG_Fallbacks_Guide-2015.md` is a dated fallback
-    lookup; use current browser and asset guidance before shipping.
-21. `references/local-only/Working_With_Colors_Guide-2016.md` is a dated color
-    teaching lookup; use current color specifications for syntax and gamut.
-
-## Source boundary
-
-- Start with one focused lookup or one comprehensive source, then add a second
-  source only when corroboration improves the decision.
-- Treat local prose as conceptual guidance; use MDN and CSS specifications for
-  current syntax, browser support, and evolving features.
-- Keep the local corpus optional so every target project works from committed
-  guides and current primary documentation.
+1. Start with [topic_index.md](topic_index.md) and choose one source.
+2. Use the verified term and rating in
+   [reference_survey.md](reference_survey.md).
+3. Run `rg -n -C 8 -F` with that term and bare path, then read the full
+   surrounding section rather than copying an isolated match.
+4. Add a second source only when it clarifies a competing design choice.
+5. Use MDN, CSS specifications, and rendered target evidence when the corpus is
+   absent, thin, dated, or version-sensitive.

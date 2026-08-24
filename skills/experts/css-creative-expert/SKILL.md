@@ -37,13 +37,16 @@ judgment to `ui-ux-engineer`.
   restyle. Select the relevant source and verification move from
   [references/topic_index.md](references/topic_index.md).
 
-4. Consult current evidence before version-sensitive CSS.
-- Use [references/local_books.md](references/local_books.md) and the verified
-  passages in [references/reference_survey.md](references/reference_survey.md)
-  when the local corpus exists. Read the surrounding text together with each
-  grep match.
-- For thin coverage, newer syntax, browser support, or implementation details,
-  confirm current behavior in MDN and the relevant CSS specification.
+4. Route local evidence by outcome and source type.
+- When the local corpus exists, use
+  [references/local_books.md](references/local_books.md) to select
+  `css-creative/` for visual craft or `css-technical/` for mechanics.
+- Search one verified term from
+  [references/reference_survey.md](references/reference_survey.md). Use a
+  focused guide for an exact feature, a broad book for its surrounding model,
+  or secondary examples as idea sources.
+- Read the full surrounding section, then confirm evolving syntax, browser
+  support, and implementation details in MDN and the relevant CSS specification.
 
 5. Implement one coherent CSS slice.
 - Use grid or flexbox for page geometry, intrinsic sizing and logical properties

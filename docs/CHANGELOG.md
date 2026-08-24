@@ -1,3 +1,100 @@
+## 2026-08-24
+
+### Additions and New Features
+
+- Added `svg-creator-expert`, a book-backed expert skill that turns plain-language
+  requests into finished, editable, rendered SVG illustrations. Its source-assisted
+  object route combines primitive construction, perspective, line hierarchy,
+  restrained vector shading, SVG structure, scientific clarity, and rendered
+  verification. The committed source map routes 16 optional local books through
+  six use-case families and separately routes a machine-local Servier SVG inventory.
+
+### Behavior or Interface Changes
+
+- Rephrased `svg-creator-expert` around positive, outcome-directed instructions.
+  The workflow now names the finished artifact, original reference synthesis,
+  coherent projection, structured SVG construction, and rendered proof directly,
+  while omitting irrelevant alternative tools and behaviors.
+- Added a targeted SVG editing side route for bounded requests such as changing one
+  object from blue to red. It maps the rendered target to its owning SVG nodes,
+  preserves coordinated highlight/base/shadow roles, scopes shared paint definitions,
+  and verifies matched before/after renders through the real consumer.
+- Made direct object creation the default `svg-creator-expert` behavior: a request
+  such as "make an SVG of a garbage dumpster" now means create and inspect the
+  actual SVG rather than return a tutorial or plan. The new
+  [object_illustration.md](../skills/experts/svg-creator-expert/references/object_illustration.md)
+  requires focused use of the available local construction and SVG/vector sources,
+  and supplies a repeatable three-quarter-view workflow. Scott Robertson's newly
+  supplied *How to Draw* conversion is now the key object-construction route, with
+  verified navigation anchors from the repaired and audited conversion.
+  Render verification uses
+  `rsvg-convert` first as the
+  local SVG-to-PNG bridge for `view_image` or an image-inspection agent, including
+  full-size, thumbnail, transparent, and target-background proofs. Playwright is the
+  documented second path for unavailable librsvg, renderer disagreements, or SVGs
+  whose CSS, fonts, scripts, animation, or real HTML embed mode affect the result.
+  Renderer mechanics live in a side reference so the primary skill context stays on
+  drawing. The fallback invokes `$screenshot-docs` by skill name for Playwright setup,
+  served-page capture, transient output, and durable harness conventions; it does not
+  link to another skill package as though skills had stable filesystem paths.
+- Updated `css-creative-expert` to route its current local CSS corpus by visible outcome,
+  technical mechanism, and source class. [local_books.md](../skills/experts/css-creative-expert/references/local_books.md)
+  now distinguishes broad books, focused guides, and secondary examples, while
+  [topic_index.md](../skills/experts/css-creative-expert/references/topic_index.md) exposes
+  direct routes for visual effects, SVG animation, modern layout, cascade, theming, and
+  responsive SVG work.
+
+### Fixes and Maintenance
+
+- Rebuilt the `css-creative-expert` source survey around the actual 20-source local corpus.
+  [reference_survey.md](../skills/experts/css-creative-expert/references/reference_survey.md)
+  now uses the nested `css-creative/` and `css-technical/` paths, removes three absent
+  titles, adds the previously unrouted SVG animation and CSS/SVG example sources, and
+  records a verified search term and evidence strength for every selected source.
+- Reclassified `Unleashing_the_Power_of_CSS-2023.md` as technical because its core material
+  covers `:has()`, container queries, intrinsic responsive layout, and CSS organization.
+  The ignored local file was moved with the user's authorized regular filesystem move;
+  Git remains outside the local-corpus reorganization.
+
+### Decisions and Failures
+
+- Kept the book conversions under the gitignored `references/local-only/`
+  boundary. The committed workflow and testing guides remain usable when that
+  corpus is absent, while local installations can load a focused source family
+  and verified passage for deeper work.
+- Git operations were explicitly out of scope for this work. The skills index
+  and plugin manifests use a Git-tracked source inventory, so they were not
+  regenerated around the currently untracked skill. Run the normal generators
+  after a human adds the new source files to that inventory.
+- The installed Inkscape binary aborted with `Abort trap: 6` for both its version
+  command and the disposable dumpster render. `rsvg-convert` successfully produced
+  the required 640 px and 160 px PNG proofs, so it is the primary documented local
+  renderer and Inkscape is not part of this skill's verification contract.
+- Replaced the earlier OCR-damaged Robertson conversion in the local-only
+  `object_construction/` family with the repaired and audited conversion. The skill
+  now treats it as the key construction reference for ordinary manufactured objects.
+
+### Developer Tests and Notes
+
+- The Skill Creator validator reported `Skill is valid!`. The initial ten-file
+  expert-skill gate passed all 1,083 collected tests. A local-corpus audit also
+  confirmed that the source map and survey name the same 20 files and that every
+  recorded search term matches its routed source.
+- The skill-creator `quick_validate.py` check passed. A filesystem-only audit
+  also passed the authored expert files, YAML/interface metadata, ASCII content,
+  internal links, the complete 16-book map, six source-family layout, and verified
+  local-corpus search routes. The repaired Robertson conversion contains each routed
+  construction heading at a verified location.
+- The repository's filesystem inventory discovered 40 skills; direct sidecar,
+  skills-index renderer, and plugin-manifest path checks all included and
+  accepted `svg-creator-expert` without writing generated output.
+- Forward-tested the source-assisted workflow with a disposable three-quarter-view
+  dumpster built from SVG primitives, semantic groups, reused wheel and lifting
+  hardware, three contour levels, and restrained face values. `rsvg-convert`
+  produced 640-by-480 and 160-by-120 PNGs that remained recognizable under image
+  inspection. The Playwright fallback example passed `node --check`; no Playwright
+  runtime proof was claimed because this checkout has no installed Node modules.
+
 ## 2026-08-20
 
 ### Behavior or Interface Changes
