@@ -228,7 +228,8 @@ Preferred structure:
 - `docs/FILE_STRUCTURE.md`: directory map with what belongs where, including generated assets.
 - `docs/INSTALL.md`: setup steps, dependencies, and environment requirements.
 - `docs/NEWS.md`: curated release highlights and announcements, not a full changelog.
-- `docs/RELATED_PROJECTS.md`: sibling repos, shared libraries, and integration touchpoints.
+- `docs/RELATED_PROJECTS.md`: visitor guide to comparable or adjacent projects, alternatives,
+  prior art, and directly relevant resources.
 - `docs/RELEASE_HISTORY.md`: organized log of released versions and their release dates. Summarizes notable shipped qualities, including notes, major fixes, and compatibility notes.
 - `docs/ROADMAP.md`: planned work, priorities, and what is intentionally not started.
 - `docs/TODO.md`: backlog scratchpad for small tasks without timelines.

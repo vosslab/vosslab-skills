@@ -1,10 +1,6 @@
 ---
 name: svg-creator-expert
-description: >-
-  Create finished, editable SVG illustrations from plain-language requests. Use
-  when the user asks to draw an object, icon, scene, diagram, scientific figure,
-  or technical illustration as SVG, or to edit, debug, animate, or optimize an
-  existing SVG.
+description: "Create finished, editable SVG illustrations from plain-language requests. Use when the user asks to draw an object, icon, scene, diagram, scientific figure, or technical illustration as SVG, or to edit, debug, animate, or optimize an existing SVG."
 ---
 
 # SVG creator expert

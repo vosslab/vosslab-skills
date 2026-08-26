@@ -1,115 +1,166 @@
 ---
 name: see-also-docs
-description: "Create or refresh `docs/RELATED_PROJECTS.md` using repository evidence and bounded web research. Use to map upstreams, dependencies, integrations, sibling projects, prior art, or alternatives with sources and confidence levels."
+description: "Create or refresh `docs/RELATED_PROJECTS.md` as a visitor guide to comparable projects and resources, alternatives, prior art, lineage, and closely related companion work."
 ---
 
 # See also docs
 
 ## Overview
 
-Create or refresh `docs/RELATED_PROJECTS.md`: a sourced map of projects related to
-this repo (upstreams and forks, dependencies, integration targets, companion repos,
-same-author siblings, same-domain alternatives, and prior art).
+Create or refresh `docs/RELATED_PROJECTS.md` as a sourced discovery guide for GitHub
+visitors. Answer this question:
 
-Mental model: this is the repo's "See also" section, in the sense a Wikipedia
-article uses it. It points a reader to the surrounding landscape -- upstreams,
-alternatives, competitors, prior art, and related tools -- without implying the
-entries are only code repositories.
+> If a visitor likes or needs this repository, what other project or resource would
+> they reasonably explore next?
 
-This skill is evidence-first, not search-result-first. Web discovery finds candidates;
-repo evidence and reciprocal links decide whether a candidate belongs and at what
-confidence. Write the file only when real evidence supports at least one entry.
+Use GitHub visitor-discovery scope. Treat `see-also-docs` as the routing name chosen
+because the skill catalog has many `re...` prefixes.
+
+Require a shared audience, problem, or workflow. For a QTI package converter, useful
+candidates include other QTI converters, editors, validators, and directly relevant
+QTI resources. Python.org has reader relevance when the repository itself concerns
+Python language or tooling; implementation in Python alone supplies context rather
+than a related-project relationship.
+
+This skill is evidence-first. Web discovery finds candidates; specific overlap in
+audience, purpose, or workflow decides whether a candidate belongs and at what
+confidence. Write the file after at least one entry passes the visitor relevance gate
+and manager checklist.
+
+## Visitor relevance gate
+
+Before classifying a candidate, complete this sentence with specific facts:
+
+> A visitor interested in this repository may also want **candidate** because both
+> help **audience** accomplish **shared or adjacent goal**.
+
+A candidate passes when the sentence identifies a concrete audience and goal supported
+by the candidate's own documentation or another authoritative source.
+
+Use implementation manifests and dependency declarations to understand the repository's
+subject and vocabulary. Select entries after separate evidence establishes visitor value.
+
+## Manager inclusion checklist
+
+Use this checklist before approving each entry. An entry is ready when every core check
+and at least one relationship check is marked `[x]`.
+
+### Core checks
+
+- [ ] The repository and candidate serve a substantially overlapping audience.
+- [ ] The candidate helps that audience accomplish the same goal or an adjacent step in
+      the same workflow.
+- [ ] The visitor-value sentence names a concrete outcome a visitor can accomplish.
+- [ ] The candidate's official documentation supports its purpose.
+- [ ] An authoritative source supports the claimed relationship.
+- [ ] The recommendation remains useful if this repository changes its implementation
+      language or framework.
+
+### Relationship checks
+
+- [ ] It offers another way to accomplish the same task.
+- [ ] It supports a closely adjacent step in the same user workflow.
+- [ ] It is an upstream, fork, successor, prior-art source, or inspiration.
+- [ ] It is a companion project, extension, or interoperability tool for the primary
+      use case.
+- [ ] It is a sibling project with a substantially overlapping user goal.
+- [ ] It is a standard, guide, dataset, or resource directly useful for the primary
+      task.
+
+Approve candidates that satisfy all core checks and at least one relationship check.
+Keep partially researched candidates as leads in the run report.
 
 ## Relationship taxonomy
 
 Classify each project as one of:
 
-- Upstream source or fork
-- Direct dependency
-- Optional integration target
-- Companion CLI, library, or demo repo
-- Same-author or same-org sibling repo
-- Same problem domain, independent implementation
+- Direct alternative or competitor
+- Same-workflow project or independent implementation
 - Prior art or inspiration
-- Replacement, competitor, or alternative
+- Upstream source, fork, or successor
+- Companion project, extension, or interoperability tool
+- Closely related sibling project with an overlapping user goal
+- Domain standard, guide, dataset, or other visitor resource
 
 ## Confidence tiers
 
-- Confirmed: explicit link, dependency, package metadata, import, or citation.
-- Likely: same author or org plus overlapping name or purpose.
-- Possible: similar domain, no direct evidence.
-- Rejected: tempting match, but unrelated. Record these so they are not re-confused.
+- Confirmed: explicit comparison, lineage statement, inspiration citation, reader-facing
+  link, or reciprocal project link establishes the relationship.
+- Likely: authoritative descriptions establish the same audience, problem, and a
+  substantially overlapping workflow.
+- Possible: authoritative descriptions establish a useful adjacent workflow or partial
+  overlap, with a clear visitor-value sentence.
 
 The written file groups Confirmed entries under "Confirmed related projects" and
 Likely plus Possible entries under "Possible related projects".
 
 ## Web discovery (tool-neutral, bounded)
 
-Discovery is a bounded step, not an open-ended crawl.
+Complete two focused search rounds.
 
-- Use the available web search and fetch tools. Do not assume one specific tool by
-  name; use whichever search and fetch capabilities the environment provides.
-- Query package and repository metadata where available (GitHub repo and topics,
-  PyPI, npm, crates.io, Homebrew, Docker Hub) by exact name, normalized name, import
-  or package name, and CLI command name.
-- Treat as higher-confidence evidence: GitHub repo links and reciprocal links,
-  dependency-graph or dependents data, package metadata (`project.urls`, optional
-  extras, entry points, classifiers), explicit fork/upstream statements, and official
-  project links. Treat generic web hits (keyword or title similarity, stars alone) as
-  lower-confidence.
-- Cap discovery at 2 search rounds: one seed round from repo evidence, one widening
-  round to chase concrete leads. Stop after the second round even if more candidates
-  could exist; record untraced leads as run-report follow-ups, not doc entries.
-- Add `time.sleep(random.random())` between API or web calls to avoid overloading
-  servers, per `docs/REPO_STYLE.md`.
-- Cite every entry with a link and a short evidence line. The evidence line is a
-  one-line summary of the basis, not a raw search log.
+- Use whichever available web search and fetch capabilities fit the environment.
+- Search by the repository's user task, input and output formats, domain standards,
+  intended audience, and distinguishing workflow. For example, use searches such as
+  "QTI converter", "QTI package builder", and "QTI assessment tool" for a QTI maker.
+- Query repository and package metadata where it helps verify each candidate's purpose,
+  official home, authorship, or maintenance status.
+- Prefer candidate documentation, explicit comparison or lineage statements, reciprocal
+  project links, citations, and official project descriptions. Use generic keyword or
+  title similarity as a lead for deeper verification.
+- Run one seed round from repo evidence and one widening round to chase concrete
+  leads. Put additional untraced leads in the run report.
+- Add `time.sleep(random.random())` between API or web calls to pace server load, per
+  `docs/REPO_STYLE.md`.
+- Cite every entry with a link and a one-line summary of the relationship evidence.
 
 ## Workflow
 
 1. Seed from repo evidence
-   - Read `README.md`, `AGENTS.md`, and `docs/` for "inspired by", "forked from",
-     "compatible with", "plugin", "adapter", badges, and outbound links.
-   - Read manifests when present: `pyproject.toml` (`project.name`, import package,
-     `console_scripts`, optional dependencies, classifiers, keywords, `project.urls`),
-     `package.json`, `Cargo.toml`, `pip_requirements.txt`.
-   - Read any existing `docs/RELATED_PROJECTS.md` to update rather than rewrite.
-   - List the concrete names, packages, commands, authors, and orgs to search for.
+   - Read `README.md`, `AGENTS.md`, and relevant `docs/` to identify the primary
+     audience, user goal, inputs, outputs, standards, comparisons, lineage, inspiration,
+     companion work, and outbound project links.
+   - Read manifests when present to confirm project identity, official URLs, keywords,
+     commands, formats, and other vocabulary that describes the user-facing purpose.
+   - Read any existing `docs/RELATED_PROJECTS.md`; preserve accurate entries and
+     refresh the affected sections.
+   - Write a one-sentence description of what visitors use this repository to accomplish.
 2. Discover candidates with bounded web discovery
    - Run the seed round, then one widening round, per the rules above.
-   - For each candidate, capture the link and the strongest evidence found.
-3. Classify by confidence tier
-   - Assign a relationship from the taxonomy and a tier (Confirmed, Likely, Possible,
-     Rejected) using the evidence, not the candidate's popularity.
-   - Keep maintenance signals (last release, last commit, license, language) as
-     context, not as ranking.
-4. Write the owned file only when evidence supports it
+   - For each candidate, capture its official link, visitor-value sentence, and strongest
+     evidence.
+3. Apply the visitor relevance gate
+   - Complete the manager inclusion checklist for existing entries and newly discovered
+     candidates.
+   - Build the final candidate set from entries that satisfy the checklist.
+4. Classify by confidence tier
+   - Assign a relationship from the taxonomy and a tier (Confirmed, Likely, or
+     Possible) using the evidence and visitor value.
+   - Record maintenance signals (last release, last commit, license, language) as
+     context after determining relevance.
+5. Write the owned file when evidence supports it
    - Apply the content-or-no-file threshold below.
    - When the threshold is met, write `docs/RELATED_PROJECTS.md` in the output shape
      below, following the writing-shape template in
      [references/related_projects_template.md](references/related_projects_template.md).
-5. Report follow-ups (report-only)
-   - In the run report, list untraced leads and suggestions ("consider documenting
-     compatibility with X", "consider linking Y as prior art").
-   - Do NOT edit `docs/ROADMAP.md`, `docs/TODO.md`, or any other doc with these
-     follow-ups; report them only.
+6. Report follow-ups
+   - In the run report, list untraced leads and suggestions ("consider evaluating X
+     as an alternative", "consider linking Y as prior art").
+   - Keep these follow-ups in the run report.
 
 ## Content-or-no-file threshold
 
-Write `docs/RELATED_PROJECTS.md` only when at least one Confirmed or evidenced entry
-exists beyond the title and intro. A single Likely or Possible entry with a real link
-and evidence line qualifies; a vague guess with no link does not.
+Write `docs/RELATED_PROJECTS.md` when at least one candidate passes the visitor relevance
+gate and manager checklist. Give every entry a real link, a specific visitor-value line,
+and an evidence line. A single Likely or Possible entry qualifies when it meets all three
+requirements.
 
-When no candidate clears that bar, write NO file. Report the gap in the run report
-instead: state that no evidenced related projects were found and list what was
-searched. Never write a hollow or stub file with empty tier sections, and never add a
-"Known gaps" section to the doc to justify a near-empty file. Known gaps belong in the
-run report only.
+For a search with zero passing candidates, preserve the documentation tree and report
+the user-task searches performed. Put known gaps and untraced leads in the run report so
+the published file contains useful destinations.
 
 ## Output shape
 
-`docs/RELATED_PROJECTS.md` uses these sections (omit a tier section when it has no
-entries):
+`docs/RELATED_PROJECTS.md` uses each of these tier sections when it has entries:
 
 ```
 # Related projects
@@ -117,27 +168,25 @@ entries):
 ## Confirmed related projects
 
 ### project-name
-- Relationship: optional dependency
+- Relationship: same-workflow alternative
 - Link: https://example.com/project
-- Evidence: listed in pyproject optional dependencies and referenced in README usage.
-- Notes: used for exporting diagrams.
+- Why visitors may care: offers another way to convert assessments into QTI packages.
+- Evidence: official documentation describes QTI conversion for LMS import workflows.
 
 ## Possible related projects
 
 ### project-name
-- Relationship: same-domain alternative
+- Relationship: same-workflow project
 - Link: https://example.com/other
-- Evidence: shares a GitHub topic and solves the same workflow; no direct repo link.
+- Why visitors may care: supports an adjacent authoring workflow for the same audience.
+- Evidence: official documentation describes the overlapping workflow.
 - Confidence: low
 
 ## Evidence notes
 
-Short prose summary of the source basis (manifests, reciprocal links, package
-metadata, GitHub topics). Not a raw search log.
+Short prose summary of the source basis (project documentation, explicit comparisons,
+lineage statements, official descriptions, or reciprocal links).
 ```
-
-When useful, add focused subsections such as "Commonly confused unrelated projects"
-for Rejected matches worth recording.
 
 ## Style
 
@@ -149,23 +198,21 @@ for Rejected matches worth recording.
 
 ## Wrap up
 
-- Save `docs/RELATED_PROJECTS.md` only when the threshold is met; otherwise report the
-  gap and write no file.
-- Leave `README.md` to `readme-docs` and architecture docs to `arch-docs`.
+- Apply the threshold: save `docs/RELATED_PROJECTS.md` for passing entries and report
+  zero-result searches in the run report.
+- Limit authored documentation to `docs/RELATED_PROJECTS.md` and the changelog entry.
 - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone task; under
   `delegate-manager-to-subagents`, dispatch a docs subagent to add the entry.
-- Note that docs-only changes do not require tests unless otherwise requested.
 
 ## Example requests
 
 - "Document the projects related to this repo."
-- "Refresh docs/RELATED_PROJECTS.md with current upstreams and alternatives."
+- "Refresh docs/RELATED_PROJECTS.md with current alternatives and prior art."
 - "Find sibling repos and prior art for this tool and write them up with sources."
+- "Show visitors other QTI converters and QTI authoring resources like this project."
 
 ## Delegated execution
 
 Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagent
 with one bounded task, the relevant repo rules, and one verification step.
-Do not continue the same subagent across unrelated follow-up work; dispatch a
-new subagent for each atomic task. See
-`docs/REPO_STYLE.md`.
+Dispatch a new subagent for each atomic follow-up task. See `docs/REPO_STYLE.md`.

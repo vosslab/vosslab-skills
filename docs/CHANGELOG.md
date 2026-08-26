@@ -1,3 +1,35 @@
+## 2026-08-26
+
+### Behavior or Interface Changes
+
+- Reframed `see-also-docs` as a GitHub visitor-discovery guide. Candidates now qualify
+  through a shared audience, problem, or workflow and answer why an interested visitor
+  would explore them next.
+- Replaced dependency-oriented taxonomy, confidence cues, searches, and examples with
+  alternatives, same-workflow tools, prior art, project lineage, companion work, and
+  directly useful domain resources. The QTI example now directs discovery toward other
+  QTI converters, editors, validators, and QTI resources.
+- Added a manager inclusion checklist that requires every audience, workflow, visitor
+  outcome, and evidence check plus at least one recognized relationship. Its
+  language-or-framework replacement check filters implementation links while preserving
+  projects and resources that remain useful to visitors.
+
+### Fixes and Maintenance
+
+- Synchronized the related-projects writing template, OpenAI sidecar prompt, repository
+  style summary, and durable human guidance with the visitor-facing scope. Implementation
+  technologies now supply repository context rather than qualifying as related projects.
+- Normalized the tracked `svg-creator-expert` frontmatter description to a single YAML
+  line so the skills-index generator renders its real summary while bringing the managed
+  skill index and Claude manifest up to date.
+
+### Developer Tests and Notes
+
+- The Skill Creator validator passed for `see-also-docs` and the normalized
+  `svg-creator-expert` metadata. Focused frontmatter, Codex YAML, OpenAI sidecar,
+  internal-link, generated-index, plugin-manifest, Markdown-link, and ASCII gates
+  passed all 1,077 collected tests.
+
 ## 2026-08-24
 
 ### Additions and New Features

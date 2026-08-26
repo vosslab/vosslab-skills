@@ -16,3 +16,6 @@
 - Use the current operating-system home as the installer root. Do not expose an alternate-home
   interview question or command-line flag solely for testing; isolate E2E runs with standard
   `HOME` instead.
+- Build `docs/RELATED_PROJECTS.md` for visitors seeking comparable or adjacent projects and
+  resources. Choose entries that share the repository's audience, user problem, or workflow;
+  treat implementation technologies as context.

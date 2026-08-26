@@ -1,10 +1,10 @@
 # Related projects writing-shape template
 
-This is a writing-shape reference for `docs/RELATED_PROJECTS.md`, not a file to copy
-verbatim. Fill each section only with projects that have a real link and a short
-evidence line. Omit a tier section when it has no entries. Never write a hollow file
-to satisfy the shape; if no entry clears the evidence bar, write no file and report the
-gap (see the content-or-no-file threshold in the parent SKILL.md).
+Use this writing shape to create `docs/RELATED_PROJECTS.md`. Fill each section with
+projects or resources that pass the visitor relevance gate in the parent skill. Each
+entry gives a real link, a visitor-value line, and a short evidence line. Include each
+tier section that has entries. For a search with zero passing entries, preserve the
+documentation tree and report the gap.
 
 Conventions:
 
@@ -23,6 +23,7 @@ Conventions:
 ### project-name
 - Relationship: <one taxonomy label>
 - Link: https://example.com/project
+- Why visitors may care: <shared or adjacent goal for the same audience>
 - Evidence: <one line; what makes this a strong-evidence match>
 - Notes: <optional one line of context>
 
@@ -31,24 +32,24 @@ Conventions:
 ### project-name
 - Relationship: <one taxonomy label>
 - Link: https://example.com/other
-- Evidence: <one line; weaker basis, no direct repo link>
+- Why visitors may care: <specific adjacent value for an interested visitor>
+- Evidence: <one line; authoritative but weaker relationship evidence>
 - Confidence: low
 
 ## Evidence notes
 
-Short prose summary of the source basis behind the entries above (manifests,
-reciprocal links, package metadata, GitHub topics). This is a summary, not a raw
-search log.
+Short prose summary of the source basis behind the entries above (project documentation,
+explicit comparisons, lineage statements, official descriptions, or reciprocal links).
 ```
 
 ## Section meanings
 
-- Confirmed related projects: strong-evidence sources only (explicit link or reciprocal
-  link, dependency, package metadata, import, citation, fork/upstream statement).
-- Possible related projects: weaker matches (same domain, shared topics, overlapping
-  name) that still carry a real link and an evidence line.
+- Confirmed related projects: strong relationship evidence such as an explicit comparison,
+  reader-facing link, reciprocal link, citation, or fork/upstream statement.
+- Possible related projects: authoritative descriptions establish a shared or adjacent
+  visitor workflow, with a real link and a specific reason visitors may care.
 - Evidence notes: a short summary of where the evidence came from, so a later reader can
   judge the basis without re-running every search.
 
-Known gaps and untraced leads go to the run report, never into the doc as a section
-that would license a near-empty file.
+Keep known gaps and untraced leads in the run report. The published file contains useful,
+evidenced destinations for visitors.

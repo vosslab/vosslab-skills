@@ -4,7 +4,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 38
+Total skills: 39
 
 ## Orientation
 
@@ -46,6 +46,7 @@ Domain-specialist implementation workflows governed by expert-skill guidance.
 - [experts/pyside6-engineer/SKILL.md](../skills/experts/pyside6-engineer/SKILL.md): Design, implement, refactor, and review PySide6 desktop applications.
 - [experts/rust-code-expert/SKILL.md](../skills/experts/rust-code-expert/SKILL.md): Engineer idiomatic Rust with ownership, borrow checker, lifetimes, traits, cargo, clippy, async/Tokio, unsafe, FFI/PyO3, Result error handling, CLI tools, and performance.
 - [experts/solid-js-expert/SKILL.md](../skills/experts/solid-js-expert/SKILL.md): Design, build, debug, and review SolidJS and SolidStart applications.
+- [experts/svg-creator-expert/SKILL.md](../skills/experts/svg-creator-expert/SKILL.md): Create finished, editable SVG illustrations from plain-language requests.
 - [experts/typescript-engineer/SKILL.md](../skills/experts/typescript-engineer/SKILL.md): Resolve TypeScript errors, remove `any`, and design strict, modular types.
 - [experts/ui-ux-engineer/SKILL.md](../skills/experts/ui-ux-engineer/SKILL.md): Review, improve, and engineer UI/UX quality in any framework.
 - [experts/vision-expert/SKILL.md](../skills/experts/vision-expert/SKILL.md): Design, implement, debug, and review Python computer-vision systems.
@@ -64,7 +65,7 @@ Documentation creation, conversion, release notes, and visual capture.
 - [documentation/pdf-guide/SKILL.md](../skills/documentation/pdf-guide/SKILL.md): Use when tasks involve reading, creating, or reviewing PDF files where rendering and layout matter; prefer visual checks by rendering pages (Poppler) and use Python tools such as `reportlab`, `pdfplumber`, and `pypdf` for generation and extraction.
 - [documentation/readme-docs/SKILL.md](../skills/documentation/readme-docs/SKILL.md): Create or refresh a distinctive, evidence-backed `README.md` landing page for newcomers.
 - [documentation/screenshot-docs/SKILL.md](../skills/documentation/screenshot-docs/SKILL.md): Capture static screenshots or short GIF demonstrations of a GUI, CLI, or web app and embed them in README or docs.
-- [documentation/see-also-docs/SKILL.md](../skills/documentation/see-also-docs/SKILL.md): Create or refresh `docs/RELATED_PROJECTS.md` using repository evidence and bounded web research.
+- [documentation/see-also-docs/SKILL.md](../skills/documentation/see-also-docs/SKILL.md): Create or refresh `docs/RELATED_PROJECTS.md` as a visitor guide to comparable projects and resources, alternatives, prior art, lineage, and closely related companion work.
 - [documentation/setup-install-usage-docs/SKILL.md](../skills/documentation/setup-install-usage-docs/SKILL.md): Create or refresh `docs/INSTALL.md` and `docs/USAGE.md` from repository evidence.
 
 ## Quality
