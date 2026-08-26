@@ -1,7 +1,9 @@
+# === LOCAL REPOSITORY RULES === [ADD CUSTOM IGNORES HERE]
+# Propagation preserves this section.
+
 report_*.txt
 .DS_Store
 skills/.*/
-.codex/agents/
 .cursor/agents/
 .opencode/agents/
 skills/codex-primary-runtime/
@@ -15,13 +17,19 @@ local-only/
 hatch-pet/
 remote_headings.txt
 books_to_process/
-# === UNIVERSAL ===
-output*/
+# === UNIVERSAL === [PROPAGATED - LOCAL EDITS OVERWRITTEN]
+/node_modules/
+/.env
+/report_*.txt
+/output*/
+/generated/
+/graphify-out/
 _temp*.?*
+/temp/
 /OTHER_REPOS/
 /LOCAL_ONLY/
 
-# === PYTHON ===
+# === PYTHON === [PROPAGATED - LOCAL EDITS OVERWRITTEN]
 build/
 dist/
 sdist/
@@ -29,8 +37,7 @@ sdist/
 *.egg-info/
 site/
 
-# === TYPESCRIPT ===
-node_modules/
+# === TYPESCRIPT === [PROPAGATED - LOCAL EDITS OVERWRITTEN]
 dist_*/
 _site/
 *.tsbuildinfo
@@ -43,7 +50,7 @@ coverage/
 meta.json
 stats.html
 
-# === RUST ===
+# === RUST === [PROPAGATED - LOCAL EDITS OVERWRITTEN]
 /target/
 **/target/
 **/*.rs.bk

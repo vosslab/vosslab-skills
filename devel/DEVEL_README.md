@@ -37,8 +37,8 @@ Some developer tools arrive by propagation and appear in `devel/` when this repo
 
 `devel/make_release.py` ships to the `scripted`, `compiled`, and `other` families, including
 their descendants (`python`, `pypi`, `rust`, and `swift`). It prepares a GitHub source release:
-CalVer freshness check, free-tag check, committed-LICENSE verification,
-zip and tgz archive build with byte-level LICENSE spot-check, LLM-prompt generation for
+CalVer freshness check, free-tag check, committed `LICENSE.<SPDX>` verification,
+zip and tgz archive build with byte-level checks of every license, LLM-prompt generation for
 the release description, optional `docs/RELEASE_HISTORY.md` and `docs/NEWS.md` updates,
 and printed `git tag` + `gh release create` commands. Use `--dry-run` to preview or
 `--write` to update doc files. See [docs/REPO_STYLE.md](../docs/REPO_STYLE.md) versioning

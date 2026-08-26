@@ -45,6 +45,9 @@ delete_find_matches() {
 # Generic build outputs (any language).
 delete_path dist
 delete_path dist-single
+delete_path dist_browser_test
+delete_path dist_wasm
+delete_path generated
 delete_path _site
 delete_path build
 delete_path out

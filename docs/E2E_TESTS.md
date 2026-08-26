@@ -1,5 +1,7 @@
 # E2E_TESTS.md
 
+> This file is vendored. Local changes can and will be overwritten by propagation.
+
 End-to-end (E2E) testing conventions for this repo.
 
 ## Two E2E homes

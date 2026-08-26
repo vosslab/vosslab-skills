@@ -221,3 +221,4 @@ def test_webwork_perl_configuration_marker_is_not_a_shebang(
 	path = tmp_path / "course.conf"
 	path.write_bytes(b"#!perl\n")
 	assert read_shebang(str(path)) == ""
+# Vendored pytest file. Local changes can and will be overwritten.
