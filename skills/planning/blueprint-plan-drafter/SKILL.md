@@ -131,6 +131,8 @@ Refine plan text until its tasks, outcomes, and decision paths are clear.
 
 ## Plan handoff
 After the plan is published, execution uses adjacent skills:
+- `distill-plan-goal` to turn the plan into a concise outcome-only goal for Codex `/goal` or
+  any long-running agent.
 - `parallel-plan` for milestones whose coordination benefits from explicit parallel dispatch.
 - `delegate-manager-to-subagents` for fresh-subagent dispatch of independent work packages.
 - `stay-busy` during plan implementation when the active plan has no obvious next task for the

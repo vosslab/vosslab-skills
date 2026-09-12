@@ -1,5 +1,7 @@
 # Playwright test style
 
+> This file is vendored. Local changes can and will be overwritten by propagation.
+
 House rules for writing Playwright browser tests. This doc sets the authoring
 standard for new and revised browser tests in any repo that serves HTML: a
 TypeScript game, a MkDocs-Material site, or any page-driven app. The tests are
@@ -11,8 +13,19 @@ Read this before writing a browser test. For install and run mechanics
 folder layout, see the `PYTEST_STYLE.md` and `E2E_TESTS.md` docs, which land
 beside this one in a consumer repo's docs/ folder.
 
-Existing tests are evidence of what works, not a compliance checklist. Apply
-this guide to new and revised tests; leave working tests in place.
+Prefer fewer, stronger permanent browser tests. Protect intentionally stable user behavior rather
+than incidental page structure, and use `tests/_temp/` for one-time browser checks. Before plan
+completion, promote the checks that deserve permanent protection and remove the rest. When in
+doubt, remove the test.
+
+## Permanent browser checklist
+
+- [ ] The user behavior is intentionally stable and worth preserving.
+- [ ] A browser is necessary to test the contract.
+- [ ] Selectors and assertions express user intent or meaningful app state.
+- [ ] Existing coverage does not already protect the behavior clearly.
+- [ ] The test is deterministic and has useful failure diagnostics.
+- [ ] A new blocking gate includes an actionable failure plan.
 
 ## Two execution models
 
@@ -36,9 +49,8 @@ model.
 - Name the first, broadest test `smoke` (`smoke.spec.ts` or `*_smoke.mjs`).
 - Use `.spec.ts` for runner tests and `.mjs` for library scripts.
 - Prefix non-test helper files with `helper_` (`helper_server.mjs`) so they
-  read as support, not tests. Reserve a bare leading underscore for deletable
-  scratch: `_name` files match the hook's rm-allowed patterns and are treated
-  as temporary.
+  read as support, not tests.
+- Put temporary browser tests and one-time checks under `tests/_temp/` and run them explicitly.
 - Import the propagated `tests/playwright/repo_root.mjs` anchor to resolve paths
   from the git root.
 - Group multi-step user journeys in an optional `tests/playwright/e2e/`
@@ -58,7 +70,7 @@ user actually receives.
 - In the runner model, let the `playwright.config.ts` `webServer` block own the
   server so every worker shares one managed instance.
 - Set `testIgnore: ["**/_temp*", "**/dist_*/**"]` in `playwright.config.ts` so
-  scratch specs and private lane-build directories are never collected as durable tests.
+  private scratch names and lane-build directories are not collected as permanent tests.
 - In the library model, start a small repo-local static server (keep the setup
   in one helper) or target an already-running dev server.
 - Pin a random free port into an environment variable so parallel workers agree

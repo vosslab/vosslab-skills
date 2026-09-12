@@ -1,5 +1,7 @@
 # Playwright usage
 
+> This file is vendored. Local changes can and will be overwritten by propagation.
+
 General guidance for using Playwright across repositories. This document covers browser automation,
 screenshots, PDF generation, and browser testing. Repository-specific conventions should complement,
 not replace, the guidance here.
@@ -176,7 +178,7 @@ This section applies only when Playwright is used as a browser testing framework
 
 ### Test location
 
-A common convention is:
+Permanent browser tests use:
 
 ```
 tests/playwright/
@@ -188,7 +190,10 @@ Some repositories further organize complete browser walkthroughs under:
 tests/playwright/e2e/
 ```
 
-Repositories may use different layouts if they better fit the project.
+Temporary browser tests and one-time checks use the ignored `tests/_temp/` subtree and run
+explicitly. Before completing the plan, promote checks that protect behavior worth preserving and
+remove the rest. When in doubt, remove the test. See `PLAYWRIGHT_TEST_STYLE.md` for the permanent
+browser test checklist.
 
 ### Headless execution
 

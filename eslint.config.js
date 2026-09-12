@@ -1,3 +1,5 @@
+// This file is vendored. Local changes can and will be overwritten by propagation.
+
 // @ts-check
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";

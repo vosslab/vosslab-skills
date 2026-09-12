@@ -1,4 +1,6 @@
 #!/bin/sh
+# This file is vendored. Local changes can and will be overwritten by propagation.
+
 # setup_playwright.sh - one-time Playwright browser install.
 # Run after npm install if this repo uses Playwright smoke tests.
 

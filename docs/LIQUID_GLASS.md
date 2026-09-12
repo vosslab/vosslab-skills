@@ -1,5 +1,7 @@
 # Liquid Glass Guidance for macOS 26+ SwiftUI Apps
 
+> This file is vendored. Local changes can and will be overwritten by propagation.
+
 Liquid Glass should be treated as the default macOS 26 visual language, not as an optional decorative layer. The best way to get strong Liquid Glass adoption is to use standard SwiftUI components first, then add custom glass only where the interface needs a deliberate control, navigation, or transient surface. SwiftUI is the implementation layer for all new UI in this repo family; treat AppKit as deprecated, reached only through narrow legacy bridges (see section 9).
 
 This doc exists to help a manager get Liquid Glass right: sections 1-10 guide design decisions

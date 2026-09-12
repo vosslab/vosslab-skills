@@ -1,3 +1,5 @@
+# This file is vendored. Local changes can and will be overwritten by propagation.
+
 # Prettier scope in this repo is .js .mjs .cjs .ts .tsx .mts .cts only.
 # JSON, YAML, Markdown, Python files are explicitly NOT prettier-managed.
 # Script invocations in package.json and check_codebase.sh pin a narrow glob;

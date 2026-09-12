@@ -1,3 +1,5 @@
+// This file is vendored. Local changes can and will be overwritten by propagation.
+
 // tools/html_to_pdf.mjs - CLI tool to render HTML to PDF via Chromium.
 // Usage: node tools/html_to_pdf.mjs --input <file-or-url> --output <path.pdf> [--landscape]
 

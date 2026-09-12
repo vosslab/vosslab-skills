@@ -1,8 +1,15 @@
-# Development dependencies
+# === UNIVERSAL DEVELOPMENT DEPENDENCIES === [PROPAGATED - LOCAL EDITS OVERWRITTEN]
 bandit  # security linting for Python code
+graphifyy[ollama,sql,terraform]  # mapping with Ollama support plus SQL and Terraform parsing
 packaging  # version parsing/comparison helpers used by tooling/tests
 pyflakes  # static analysis lint checks
 pytest  # automated test runner
-pyyaml
 rich  # formatted terminal output in developer tools
+tree-sitter  # Rust parsing for the Graphify cfg(test) prune step
+tree-sitter-rust  # Rust grammar for the Graphify cfg(test) prune step
+
+# === LOCAL DEVELOPMENT DEPENDENCIES === [ADD REPOSITORY-SPECIFIC DEPENDENCIES HERE]
+
+# Development dependencies
+pyyaml
 tabulate  # plain-text table rendering for developer tools (tools/list_loaded_skills.py)

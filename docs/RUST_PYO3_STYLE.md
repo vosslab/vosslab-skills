@@ -1,5 +1,7 @@
 # Rust PyO3 style guide
 
+> This file is vendored. Local changes can and will be overwritten by propagation.
+
 Use this guide for Rust applications that expose a native Python module or embed
 Python. Core Rust code follows [RUST_STYLE.md](RUST_STYLE.md); this document owns the
 Python boundary, build shape, exceptions, interpreter-bound values, and integration

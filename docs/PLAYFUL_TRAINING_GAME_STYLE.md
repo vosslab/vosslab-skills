@@ -1,5 +1,7 @@
 # Playful training game style
 
+> This file is vendored. Local changes can and will be overwritten by propagation.
+
 Design guide for arcade-style onboarding trainers aimed at older learners
 (lab students, new hires, technical apprentices). Sibling document to
 [docs/FUN_VIBES_DESIGN_STYLE.md](FUN_VIBES_DESIGN_STYLE.md), which targets

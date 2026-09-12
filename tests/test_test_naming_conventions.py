@@ -1,3 +1,5 @@
+# This file is vendored. Local changes can and will be overwritten by propagation.
+
 import os
 import fnmatch
 
@@ -418,4 +420,3 @@ def test_playwright_imports_in_playwright_folder() -> None:
 		f" See {_report_rel()}."
 	)
 	assert "test_playwright_imports_in_playwright_folder" not in VIOLATIONS, message
-# Vendored pytest file. Local changes can and will be overwritten.

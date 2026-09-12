@@ -1,3 +1,14 @@
+# This file is vendored. Local changes can and will be overwritten by propagation.
+
+"""Keep the checkout disk budget visible in pytest's base lane.
+
+Run this deliberate base-lane check with ``source source_me.sh && pytest tests/``.
+Its local ``du`` subprocess is the single accepted exception to the fast-lane
+no-subprocess rule: only ``du`` can measure the physical disk use of the actual
+developer checkout that this test protects. This file is vendored. Deleting it
+locally only removes it until the next propagation returns it.
+"""
+
 # Standard Library
 import subprocess
 
@@ -30,4 +41,3 @@ def test_checkout_disk_usage_stays_under_20_gib() -> None:
 		f"{actual_kib / (1024 * 1024):.1f} GiB; the budget is 20.0 GiB. "
 		"Remove stale generated build outputs before continuing."
 	)
-# Vendored pytest file. Local changes can and will be overwritten.

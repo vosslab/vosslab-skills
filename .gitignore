@@ -1,23 +1,5 @@
-# === LOCAL REPOSITORY RULES === [ADD CUSTOM IGNORES HERE]
-# Propagation preserves this section.
-
-report_*.txt
-.DS_Store
-skills/.*/
-.cursor/agents/
-.opencode/agents/
-skills/codex-primary-runtime/
-docs/superpowers/
-hermes-skills
-# Optional large reference corpora live at
-# skills/<category>/<skill>/references/local-only/. They are intentionally machine-local,
-# absent from published plugins, and indexed by committed local_books.md and
-# reference_survey.md files. Do not create a sibling skill directory for them.
-local-only/
-hatch-pet/
-remote_headings.txt
-books_to_process/
 # === UNIVERSAL === [PROPAGATED - LOCAL EDITS OVERWRITTEN]
+.DS_Store
 /node_modules/
 /.env
 /report_*.txt
@@ -26,6 +8,7 @@ books_to_process/
 /graphify-out/
 _temp*.?*
 /temp/
+/tests/_temp/
 /OTHER_REPOS/
 /LOCAL_ONLY/
 
@@ -55,3 +38,24 @@ stats.html
 **/target/
 **/*.rs.bk
 .rust_analyzer/
+
+# -------------------- LOCAL REPOSITORY RULES --------------------
+# ADD YOUR CUSTOM IGNORES BELOW
+# Propagation preserves this section.
+# ------------------ END LOCAL REPOSITORY RULES ------------------
+
+skills/.*/
+.cursor/agents/
+.opencode/agents/
+skills/codex-primary-runtime/
+/docs/superpowers/
+hermes-skills
+# Optional large reference corpora live at
+# skills/<category>/<skill>/references/local-only/. They are intentionally machine-local,
+# absent from published plugins, and indexed by committed local_books.md and
+# reference_survey.md files. Do not create a sibling skill directory for them.
+local-only/
+hatch-pet/
+remote_headings.txt
+books_to_process/
+sync-local.sh

@@ -1,5 +1,7 @@
 # Rust style
 
+> This file is vendored. Local changes can and will be overwritten by propagation.
+
 Language model and human guide to Rust in this repo. It applies to every `.rs` file
 and every crate here.
 
@@ -587,6 +589,11 @@ current, and remove or replace stale ones. Rust just gives you a test runner for
 
 ## 14. Rust test layout
 
+Permanent tests follow the native conventions of the language and framework. In Rust, use inline
+`#[cfg(test)]` modules for durable unit tests close to the code they protect. Use crate-level
+`tests/` directories for durable integration tests. Use the repository-root `tests/_temp/`
+workspace for temporary verification.
+
 The Rust community splits tests into two categories. Unit tests are small and focused,
 test one module in isolation, and can reach private interfaces. Integration tests are
 entirely external to the library, use only the public API, and exercise several
@@ -615,14 +622,12 @@ compiles each file there as its own crate, and they need no `#[cfg(test)]` becau
 they are already outside the build. Shared helpers go in
 `tests/common/mod.rs` so Cargo does not treat them as a test crate.
 
-Note the deliberate parallel with `docs/E2E_TESTS.md`: `tests/` at the repo root is
-the slow outer tier there too. In a Rust repo, `cargo test` runs unit tests,
-integration tests, and doc tests in one pass, so keep individual tests fast enough
-that the whole pass stays worth running.
+In a Rust repo, `cargo test` runs unit tests, integration tests, and doc tests in one pass, so keep
+individual tests fast enough that the whole pass stays worth running.
 
-Testing guidance that carries over from `docs/PYTEST_STYLE.md`: assert on behavior.
-Assert on a collection size, default, or function name only when that exact fact is
-the user-visible contract under test.
+Testing guidance that carries over from `docs/PYTEST_STYLE.md`: prefer fewer, stronger permanent
+tests and assert on behavior worth preserving. Promote temporary checks only when they deserve
+lasting protection. When in doubt, remove the test.
 
 Match the executable proof to the boundary:
 

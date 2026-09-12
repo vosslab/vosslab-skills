@@ -1,0 +1,4 @@
+interface:
+  display_name: "Distill Plan Goal"
+  short_description: "Outcome-only goal statements distilled from a plan"
+  default_prompt: "Use $distill-plan-goal to turn this plan file into a concise goal that states the finished result and names the plan as its primary source."

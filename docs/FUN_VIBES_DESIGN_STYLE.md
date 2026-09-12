@@ -1,5 +1,7 @@
 # Fun vibes design style
 
+> This file is vendored. Local changes can and will be overwritten by propagation.
+
 Design guide for kid-arcade learning games. Captures the principles that
 make `stem-lesson-quiz-game` feel like an arcade, not school software. Use
 this doc as a checklist when porting the vibe to a new game.

@@ -1,5 +1,7 @@
 # Rust WebAssembly style
 
+> This file is vendored. Local changes can and will be overwritten by propagation.
+
 Use this guide for Rust that ships as WebAssembly to a browser or a WASI runtime.
 [RUST_STYLE.md](RUST_STYLE.md) owns Rust language and shared Cargo practice; this
 document owns the runtime contract, host adapter, and delivered artifact.

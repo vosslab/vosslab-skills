@@ -1,3 +1,5 @@
+// This file is vendored. Local changes can and will be overwritten by propagation.
+
 // Resolve repo root via git, not via brittle relative-path math.
 // Imported by tests/playwright/*.mjs and tests/playwright/e2e/*.mjs
 

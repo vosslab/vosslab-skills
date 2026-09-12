@@ -1,3 +1,53 @@
+## 2026-09-12
+
+### Additions and New Features
+
+- Added `distill-plan-goal` under `skills/planning/`. It reads an existing plan file and
+  writes a concise, outcome-only goal for Codex `/goal` or any agent: one present-tense
+  paragraph opening with `Implement <plan path> so ...`, positive phrasing with omission
+  instead of prohibitions, and the plan named as primary source. The goal is printed in chat
+  and written to `<plan_stem>_goal.md` beside the plan.
+- Added `references/distillation_lens.md`, eight one-line principles that shape what the goal
+  emphasizes or omits while staying out of the output unless naming one prevents drift.
+
+### Fixes and Maintenance
+
+- Synchronized shared style guides, tests, and repository support files from the starter template.
+
+### Decisions and Failures
+
+- Rejected the common six-field completion contract (outcome, verification surface,
+  constraints, boundaries, iteration policy, blocked-stop) as the skill's model. In practice
+  steps, boundaries, and negative constraints pull agents onto the route instead of the
+  destination. Thesis: an agent given steps optimizes the steps; an agent given the
+  destination optimizes the destination.
+- Dropped proposed line counts, character caps, and principle-reference quotas from the skill
+  design as arbitrary gates; the skill keeps only limits the repository already enforces.
+
+### Developer Tests and Notes
+
+- Regenerated plugin manifests and `docs/SKILLS_INDEX.md`; added the naming-table row in
+  `docs/SKILL_NAMING.md`. Existing skill validation gates (frontmatter, Codex YAML, sidecar,
+  prefix uniqueness, discovery, links, index and manifest sync, ASCII, whitespace) passed
+  1,769 tests. Smoke-tested the skill on the session's own plan file.
+- Six-pass `audit-code-reviewer` run found no blockers. Applied its low-risk fixes: example
+  goal now names `docs/REPO_STYLE.md` instead of vague "repository guidance", H1 moved to
+  sentence case, and `blueprint-plan-drafter` gained a reciprocal handoff pointer to
+  `distill-plan-goal`.
+- Reviewed 117 historical `/goal` prompts. Strongest ones named authority documents and
+  described the finished product in one paragraph; weakest appended steps or work-package
+  lists to correct drift. Added two lines to the skill: name authority documents beside the
+  plan as a drift anchor, and re-distill the whole goal after observed drift, replacing
+  weaker wording rather than appending corrective instructions. Lens gained a rule that
+  environment context belongs in the goal when it materially prevents drift and is omitted
+  when it only repeats standing operational detail. Noted that bounded goals are valid when
+  the destination is clear.
+- Added `references/goal_examples.md`: six strong past goals, each retaining a different
+  kind of context (pure distillation, drift-control principle, authority documents,
+  pre-production, testing philosophy, short bounded goal), annotated with why each clause
+  earned its place. Weak examples were left out so the model is not primed toward the
+  failure modes the skill prevents.
+
 ## 2026-08-26
 
 ### Behavior or Interface Changes

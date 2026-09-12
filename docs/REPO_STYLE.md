@@ -13,6 +13,11 @@ Core principles guide work in this repo. Cite them by name when making judgment 
 - **Fix the design, not the symptom.** When something behaves wrong, fix the design that allowed the problem. Do not add fallbacks, special cases, or broad try/except blocks just to hide the symptom.
 - **Long-term over short-term.** Accept a small cost now to avoid larger costs later. Prefer the durable fix over the quick patch, even when the durable fix takes more effort today.
 - **Design for adaptability.** Favor systems that can evolve as requirements and understanding change. Keep responsibilities clear and components replaceable so the software remains useful without repeated rewrites.
+- **Ground requirements in actual needs.** Base requirements, thresholds, and gates on product
+  behavior, correctness, security, repository policy, measured constraints, or demonstrated
+  failures. Add precision when the underlying need requires it.
+- **Plan for gate failures.** Before adding a new blocking CI, build, release, or repository-wide
+  behavior gate, define what failure means and the decision, correction, or recovery that follows.
 - **Dream big.** Build on the ambition already present. Pursue the strongest, most durable, and most complete version of the work, then turn that ambition into practical next steps.
 - **Perfect is the enemy of good.** Prefer a good solution delivered promptly when further refinement would not materially improve the outcome. Spend additional effort where it changes correctness, durability, or user value.
 - **Atomic task decomposition.** Break hard problems into the smallest independently completable tasks. Each task should have one owner, one clear outcome, and one verification step.
@@ -28,6 +33,10 @@ Core principles guide work in this repo. Cite them by name when making judgment 
 - Prefer small, single-purpose scripts at the repo root.
 - Create topic folders only when a collection needs grouping.
 - Avoid deep nesting; keep paths short.
+- Place one native application, library, or helper package in its own named folder at the
+  repository root.
+- Use `packages/` as a grouping layer when the repository contains multiple native products or
+  packages.
 - Keep `README.md` and `AGENTS.md` at the repo root.
 - Determine REPO_ROOT with `git rev-parse --show-toplevel`, not by deriving paths from the current working directory.
 
@@ -41,21 +50,34 @@ link to that file from `AGENTS.md`.
 Concise `AGENTS.md` files help coding agents perform better because the
 instructions are easier to scan, prioritize, and follow.
 
-### Human guidance
+### Human guidance and design decisions
 
-- `docs/HUMAN_GUIDANCE.md`: durable human preferences, project-specific guidance, review expectations, and stable decisions that agents should preserve across planning and implementation work.
-- Use this file for long-term guidance that prevents drift across manager and subagent runs.
-- Keep entries focused on stable preferences and recurring project decisions, not transient task notes.
-- Link to `docs/HUMAN_GUIDANCE.md` from `AGENTS.md` when agents need the guidance during routine work.
-- Update this file when the human gives a stable correction, workflow preference, review rule, or project priority that should apply to future tasks.
+Agents write both files. The entry's authority decides which one. This section is authoritative; the
+vendored header in each file restates it, and `AGENTS.md` points here.
+
+- `docs/HUMAN_GUIDANCE.md`: guidance the human states, or approves for preservation there. First
+  person or close paraphrase, one to three lines per bullet. Corrections, workflow preferences,
+  review rules, project priorities.
+- `docs/DESIGN_DECISIONS.md`: settled decisions about how the code and repository are shaped. One
+  level-three heading each, with `Decision`, `Why`, `Consequence`, and `Owner` fields; `Owner` names
+  the authoritative code or contract document.
+- Material the human supplies as a source keeps its own authorship: forwarded reviewer output,
+  consultant notes, issue reports, and quoted documentation may inform `docs/DESIGN_DECISIONS.md`
+  once settled. The sentences he writes himself belong in `docs/HUMAN_GUIDANCE.md`.
+- Rearrange aggressively, and let `docs/DESIGN_DECISIONS.md` win the tie: when an entry's origin is
+  uncertain, move it there. A design decision filed as human guidance misrepresents who decided it;
+  the reverse only files it one document away.
+- Three states, three homes: open discussion in `docs/active_plans/decisions/`, settled direction in
+  `docs/DESIGN_DECISIONS.md`, set-aside or failed approaches in `docs/CHANGELOG.md` under
+  `### Decisions and Failures`.
 - Prefer positive phrasing. State the behavior agents should follow.
-- Keep detailed history in `docs/CHANGELOG.md`; keep current human guidance in `docs/HUMAN_GUIDANCE.md`.
+- Propagation seeds both files and refreshes their vendored header, so entries below it persist.
 
 ## README.md and GitHub About descriptions
 
 - The first paragraph of `README.md` is the source text for the GitHub About description.
 - The first paragraph must remain readable as raw Markdown source text.
-- Repository About descriptions must stay under 250 characters.
+- Repository About descriptions must stay at or below 350 characters.
 - Agents edit only the first paragraph of `README.md`; the user copies that text into the GitHub About field.
 - Write a clear, searchable hook that helps readers quickly understand the repository.
 - Lead with the repository purpose and the main user benefit.
@@ -96,8 +118,12 @@ Preferred structure:
 ## Source file size
 - Tracked authored source files stay under 1000 physical lines: 999 passes; 1000 fails.
   `tests/test_source_file_line_limit.py` defines the scope.
+- Markdown beneath any `docs/active_plans/` or `docs/archive/` tree is planning or historical
+  material and stays outside this source-code line budget. Other source types in those trees remain
+  covered.
 - Managers may exempt tracked external sources in `tests/source_file_line_limit_overrides.txt`,
-  one exact repo-relative path per line.
+  using one exact repo-relative path per line. Encode universal folder-category exclusions in the
+  gate and reserve the repo-owned override list for individually approved files.
 
 ## Changelog rotation
 - Rotate `docs/CHANGELOG.md` once it exceeds 800 physical lines (`wc -l docs/CHANGELOG.md`).
@@ -159,10 +185,21 @@ Preferred structure:
 ## Scripts and executables
 - Keep scripts self-contained and single-purpose.
 - Add a shebang for executable scripts and keep them runnable directly.
+- Use `tools/` for optional standalone user utilities. Domain input produces a useful domain result.
+  A utility may be one script or a self-contained directory with its own helpers, standard-library
+  modules, and installed dependencies declared in the repository's manifests. It remains
+  independent of repository-local packages.
+- Use `devel/` for maintainer and repository-engineering commands. Source, builds, environments,
+  diagnostics, releases, generated artifacts, and local engineering helpers belong here. Vendored
+  engineering helpers stay here too.
+- Use the application CLI or package for primary workflows and reusable application behavior.
+- Use an optional local `launchers/` directory for thin compatibility or convenience delegates
+  into the application. Create it only when a repository needs it; propagation does not require it.
+- Keep `tests/` for tests and test-only support.
 - For repo-local Python commands, use:
   - `source source_me.sh && python ...`
 - For pytest commands, use:
-  - `pytest tests/`
+  - `source source_me.sh && pytest tests/`
 - Avoid hard-coded interpreter paths in routine command examples.
 - Document shared helpers and modules in `docs/USAGE.md` when used across scripts.
 - Use `tests/test_pyflakes_code_lint.py` and `tests/test_ascii_compliance.py` for repo-wide lint checks, with `tests/check_ascii_compliance.py` for single-file ASCII/ISO-8859-1 checks and `tests/fix_ascii_compliance.py` for single-file fixes. `tests/test_markdown_links.py` is the repo-wide check that every local Markdown link is GitHub-browsable and well formed.
@@ -172,6 +209,16 @@ Preferred structure:
   REPO_ROOT = file_utils.get_repo_root()
   ```
   This module uses `git rev-parse --show-toplevel` and is propagated across repos automatically.
+
+### Root script budget
+
+Keep the repository root navigable by limiting tracked root scripts. Every tracked root `.py` and
+`.sh` file counts, including `source_me.sh`, whether or not it has an executable bit. A tracked
+root file with any other extension counts only when it has an executable bit and begins with a
+shebang; this catches standalone launchers without treating executable data or compiled artifacts
+as scripts. Seven or more counted files fails `tests/test_root_script_budget.py`. Five or six
+counted files pass but write a report naming the files; four or fewer pass silently and leave no
+report.
 
 ### source_me.sh contract
 
@@ -189,9 +236,9 @@ Preferred structure:
   each repo adds the line for itself.
 - When a repo needs its repo-root modules importable while commands run from a
   subdirectory without installing the repo -- most commonly a repo-root package
-  imported package-qualified (for example `import mypackage.module`), or scripts
-  under `tools/` or `tests/` that import repo-root modules -- uncomment the
-  canonical extension block in that repo's `source_me.sh`. Use exactly this
+  imported package-qualified (for example `import mypackage.module`) from an
+  application-facing launcher, or tests that import repo-root modules -- uncomment
+  the canonical extension block in that repo's `source_me.sh`. Use exactly this
   idiom (it assumes the repo is inside a Git work tree):
   ```bash
   # Must come after sourcing ~/.bashrc, which clears PYTHONPATH.
@@ -246,7 +293,9 @@ Preferred structure:
 - `docs/CHANGELOG.md`: chronological, user facing record of changes, grouped by date. Timeline of what changed and when.
 - `docs/CHANGELOG.md` entries should also note important failures and key implementation choices so the log remains a useful learning record for later debugging and decision review.
 - `docs/CODE_ARCHITECTURE.md`: high-level system design, major components, and data flow.
+- `docs/DESIGN_DECISIONS.md`: settled decisions about how the code and repository are shaped, with the reasoning behind each one.
 - `docs/FILE_STRUCTURE.md`: directory map with what belongs where, including generated assets.
+- `docs/HUMAN_GUIDANCE.md`: guidance the human states or approves, kept in his own words.
 - `docs/INSTALL.md`: setup steps, dependencies, and environment requirements.
 - `docs/NEWS.md`: curated release highlights and announcements, not a full changelog.
 - `docs/RELATED_PROJECTS.md`: sibling repos, shared libraries, and integration touchpoints.
@@ -261,7 +310,9 @@ Preferred structure:
 - `docs/CLAUDE_HOOK_USAGE_GUIDE.md`: generated hook behavior reference, not a repo style source of truth. If repo style differs from hook examples, update repo style docs and recommend a hook rule update upstream.
 - `docs/MARKDOWN_STYLE.md`: Markdown writing rules and formatting conventions for this repo.
 - `docs/PLAYWRIGHT_TEST_STYLE.md`: browser test authoring style for repos that serve HTML.
-- `docs/PYTEST_STYLE.md`: pytest test-writing rules, commands, fixture policy, and failure triage.
+- `docs/PYTEST_STYLE.md`: policy for deciding whether a permanent test should exist.
+- `docs/PYTEST_AUTHORING_GUIDE.md`: construction conventions for permanent pytest tests.
+- `docs/E2E_TESTS.md`: permanent whole-system test placement and execution.
 - `docs/PYTHON_STYLE.md`: Python formatting, linting, and project-specific conventions.
 - `docs/REPO_STYLE.md`: repo-level organization, conventions, and file placement rules.
 

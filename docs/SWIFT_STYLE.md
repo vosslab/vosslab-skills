@@ -1,5 +1,7 @@
 # Modern Swift/SwiftUI Best Practices for macOS 26 and Newer
 
+> This file is vendored. Local changes can and will be overwritten by propagation.
+
 Modern Swift/SwiftUI best practice means building Mac apps with SwiftUI as the default app architecture, Swift 6 concurrency as a correctness model, AppKit as a deliberate platform boundary, and Apple's current design, accessibility, testing, and performance tools as part of normal development.
 
 A concise definition:
@@ -160,6 +162,10 @@ Avoid guessing from code shape alone. Measure the user-visible behavior.
 ## 11. Use Swift Testing for new tests where practical
 
 For new Swift code, prefer Swift Testing where it fits. Keep XCTest where the project, framework, or existing tests still need it.
+
+Prefer fewer, stronger permanent tests that protect behavior worth preserving. Use `tests/_temp/`
+for one-time checks, then promote or remove them before plan completion. When in doubt, remove the
+test. Apply the permanent-test checklist in `PYTEST_STYLE.md` before adding coverage.
 
 Apple describes Swift Testing as a framework for Swift packages and Xcode projects that integrates with Swift Package Manager, supports flexible test organization, customizable metadata, and scalable execution.[^swift-testing] Apple also states that Swift Testing works with XCTest, so newer Swift Testing tests can run side by side with existing XCTest tests.[^swift-testing-xcode]
 

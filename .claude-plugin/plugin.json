@@ -57,6 +57,7 @@
     "./skills/planning/blueprint-plan-drafter",
     "./skills/planning/ideonomy-plain",
     "./skills/planning/ideonomy-rich",
+    "./skills/planning/make-goal",
     "./skills/quality/audit-code-reviewer",
     "./skills/quality/unit-test-starter"
   ]

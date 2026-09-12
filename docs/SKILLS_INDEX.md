@@ -4,7 +4,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 39
+Total skills: 40
 
 ## Orientation
 
@@ -19,6 +19,7 @@ Idea exploration and forward-looking plans used before implementation.
 - [planning/blueprint-plan-drafter/SKILL.md](../skills/planning/blueprint-plan-drafter/SKILL.md): Create forward-looking implementation plans without writing code.
 - [planning/ideonomy-plain/SKILL.md](../skills/planning/ideonomy-plain/SKILL.md): Expand, vary, invert, or recombine an idea with randomized ideonomy methods.
 - [planning/ideonomy-rich/SKILL.md](../skills/planning/ideonomy-rich/SKILL.md): Expand an idea with randomized ideonomy methods and expressive monospace art.
+- [planning/make-goal/SKILL.md](../skills/planning/make-goal/SKILL.md): Distill an existing plan file into a concise outcome-only goal for Codex `/goal` or any agent.
 
 ## Management
 

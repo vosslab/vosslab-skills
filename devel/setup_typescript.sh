@@ -1,4 +1,6 @@
 #!/bin/sh
+# This file is vendored. Local changes can and will be overwritten by propagation.
+
 # setup_typescript.sh - one-time TypeScript setup.
 # Run after cloning, or whenever node_modules is missing.
 #

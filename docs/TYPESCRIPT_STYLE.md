@@ -1,5 +1,7 @@
 # TYPESCRIPT_STYLE.md
 
+> This file is vendored. Local changes can and will be overwritten by propagation.
+
 Language Model guide to Neil TypeScript programming
 
 ## Dependency versions and pins
@@ -18,7 +20,7 @@ never goes stale against a sync run.
   never as a default. Live example: typescript-eslint caps the TypeScript it supports
   (currently `<6.1.0`); if TypeScript outruns typescript-eslint, a temporary `<` cap waits
   for the matching typescript-eslint release rather than breaking lint.
-- Refresh tool: `tools/sync_typescript_package_pins.py` rewrites every pin to `>={latest}`
+- Refresh command: `devel/sync_typescript_package_pins.py` rewrites every pin to `>={latest}`
   from the npm registry. It is a refresh HELPER, not a dependency solver: it writes `>=`
   uniformly and never emits `<` caps, compound ranges, non-`latest` dist-tags, or
   `workspace:*`, and it leaves private/E404 and consumer-extra packages untouched.
@@ -219,8 +221,11 @@ import { writeReport } from "./write_report";
 
 ## TESTING
 
-* I like to test the code.
-* For small utility functions, a short simple test is good.
+* Prefer fewer, stronger permanent tests that protect behavior worth preserving.
+* Apply the permanent-test checklist in `PYTEST_STYLE.md` before adding coverage.
+* Put temporary tests and one-time checks in `tests/_temp/`, then promote or remove them before
+  plan completion. When in doubt, remove the test.
+* For a small utility with stable behavior, use a short simple test.
 * For real projects, use a normal test framework and keep tests in a `tests/` folder.
 * Keep tests small and deterministic.
 * Avoid network calls, random behavior, and time-based logic unless mocked.
@@ -234,7 +239,7 @@ import { writeReport } from "./write_report";
 
 ### Node test fixture policy
 
-Use inline setup first. For fixture cases, see the Fixture policy in PYTEST_STYLE.md.
+Use inline setup first. For fixture cases, see `PYTEST_AUTHORING_GUIDE.md`.
 
 ## FORMATTERS AND LINTERS
 

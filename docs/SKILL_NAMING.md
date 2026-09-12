@@ -134,6 +134,7 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `css-creative-expert` | compliant | (new) | Domain-noun-first CSS specialist; `css` is unique, `creative` identifies visual craft, and `-expert` matches design and review work. |
 | `vision-expert` | accepted-rename | computer-vision-expert | Domain-noun-first; `vis` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `delegate-manager-to-subagents` | accepted-rename | execution-manager / manager-driven-execution | Verb-first; first-2 "delegate manager"; "subagents" keyword in token 4 for searchability. |
+| `distill-plan-goal` | compliant | (new) | Verb-first; first-2 "distill plan" names the input; `dis` 3-char prefix unique; `goal` is the artifact produced. |
 | `docset-updater` | compliant | docset-refresh | Agent-form suffix matches update-if-drifted behavior. |
 | `gas-town-workflow` | borderline-no-change | (unchanged) | Repo-specific brand name; leading token unique. |
 | `geometry-expert` | compliant | (new) | Domain-noun-first; `geo` 3-char prefix unique; `-expert` suffix matches specialist role. |
