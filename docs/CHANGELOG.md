@@ -2,6 +2,10 @@
 
 ### Additions and New Features
 
+- Added `docs/active_plans/audits/skill_corpus_astra_audit.md`, an evidence-backed audit of the 40
+  live skills plus the deprecated legacy entrypoint. It includes a glossary, empirical trigger
+  cases, per-skill context measurements, H1-H6 verdicts, grounded safeguards, and a ranked follow-up
+  change set.
 - Added `distill-plan-goal` under `skills/planning/`. It reads an existing plan file and
   writes a concise, outcome-only goal for Codex `/goal` or any agent: one present-tense
   paragraph opening with `Implement <plan path> so ...`, positive phrasing with omission
@@ -16,6 +20,16 @@
 
 ### Decisions and Failures
 
+- Prioritized trigger precision over mechanical shortening: 16 descriptions over-trigger in the
+  fixed matrix, while named large references are actively routed and should not be removed without
+  usefulness evidence. Recommended a universal 150-line/8,000-character hard ceiling for live
+  `SKILL.md` entrypoints, implemented by tightening the existing advisory body-size test only after
+  the 17 current violations are corrected. References remain governed by routing, not size.
+- Recorded that `skills/planning/make-goal/` should use the public identity `make-goal`; its current
+  `distill-plan-goal` frontmatter is the cause of the focused frontmatter-test failure.
+- Identified the complete ideonomy-tree ASCII exclusion as a false-green gate. Recommended that every
+  file named `SKILL.md` be ASCII-only and always collected; UTF-8 is permitted only in exact
+  reference files where literal characters teach required behavior, never by directory wildcard.
 - Rejected the common six-field completion contract (outcome, verification surface,
   constraints, boundaries, iteration policy, blocked-stop) as the skill's model. In practice
   steps, boundaries, and negative constraints pull agents onto the route instead of the
@@ -26,6 +40,11 @@
 
 ### Developer Tests and Notes
 
+- Audit validation: all 521 Markdown-link checks pass; the audit's focused ASCII check passes. The
+  newly exposed full ASCII gate reports 10 ideonomy failures and 690 passes, which the audit records
+  as correction evidence rather than suppressing. The existing body-size advisory test passes and
+  the focused frontmatter test fails on the documented `distill-plan-goal`/`make-goal` mismatch.
+  Fresh independent re-review reports zero unsupported top-12 findings after corrections.
 - Regenerated plugin manifests and `docs/SKILLS_INDEX.md`; added the naming-table row in
   `docs/SKILL_NAMING.md`. Existing skill validation gates (frontmatter, Codex YAML, sidecar,
   prefix uniqueness, discovery, links, index and manifest sync, ASCII, whitespace) passed
