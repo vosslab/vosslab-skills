@@ -1,29 +1,23 @@
-# Standard Library
 import sys
-import pathlib
 
-# local repo modules
 import file_utils
 
-
-# Pytest owns the repository import environment. Tests can import shared tools
-# and book-conversion modules without depending on shell-specific PYTHONPATH.
-REPO_ROOT = pathlib.Path(file_utils.get_repo_root())
-TEST_IMPORT_PATHS = (
-	REPO_ROOT,
-	REPO_ROOT / "tools",
-)
-for import_path in reversed(TEST_IMPORT_PATHS):
-	path_text = str(import_path)
-	if path_text not in sys.path:
-		sys.path.insert(0, path_text)
+# Insert the repo root onto sys.path so top-level modules import from any test
+# file without installing the package first. file_utils.get_repo_root() uses
+# git rev-parse --show-toplevel under the hood.
+_repo_root = file_utils.get_repo_root()
+if _repo_root not in sys.path:
+	sys.path.insert(0, _repo_root)
 
 
 # Exclude both end-to-end tiers from pytest collection. tests/playwright/
 # holds browser-driven tests (Playwright), and tests/e2e/ holds heavier
 # shell/Python whole-system runners. Both run outside pytest -- see
 # docs/PLAYWRIGHT_USAGE.md and docs/E2E_TESTS.md.
+# tests/_temp/ stays collectable so pytest-suitable temporary test_*.py files
+# run in the normal fast lane. Heavier temporary checks run explicitly.
 collect_ignore = ["e2e", "playwright"]
+
 
 # REPO_HYGIENE_FILTERS is the repo-local hygiene-exclusion registry (Layer 2).
 # file_utils.discover_files reads it from this conftest, which is the right
@@ -44,18 +38,19 @@ collect_ignore = ["e2e", "playwright"]
 #   - Recursive directory exclusions need an explicit /** because fnmatch's *
 #     does not cross "/". Use "temp_scripts/**" to exclude a whole subtree.
 #
-# Example entries:
+# This template has no repo-specific exclusions, so the registry is empty.
+# Cross-overlay doc references (a template doc naming a doc that ships from a
+# different overlay or the universal docs/ tree) use a backticked name, not a
+# markdown link: no single relative link is valid both in the split template
+# tree and in the flattened consumer repo.
+# Example entries (commented out; this repo needs none):
 #   REPO_HYGIENE_FILTERS = {
 #       "all": ["temp_scripts/**", "TEMPLATE.py"],
 #       "ascii_compliance": ["human_readable-*.html"],
 #       "pyflakes_code_lint": ["devel/scratch_*.py"],
 #   }
-REPO_HYGIENE_FILTERS = {
-	# These skills use intentional Unicode typography and terminal-art source data.
-	"ascii_compliance": ["skills/**/ideonomy-*/**"],
-	# Converted book corpus data, not authored source code.
-	"source_file_line_limit": ["skills/**/references/local-only/**"],
-}
+REPO_HYGIENE_FILTERS = {}
+
 
 # === OPTIONAL_HELPERS_MENU ===
 # See meta/docs/PROPAGATION_RULES.md for the managed-block propagation contract.
@@ -65,8 +60,8 @@ REPO_HYGIENE_FILTERS = {
 # untouched consumer behaves exactly as it did before propagation added this
 # block.
 #
-# Import paths are configured unconditionally at the top of this file, so they
-# are no longer a per-test or shell-setup responsibility.
+# Note: inserting the repo root onto sys.path is now done unconditionally at the
+# top of this file via file_utils.get_repo_root(), so it is no longer a recipe.
 #
 # --- Recipe 1: redirect matplotlib config dir to a per-repo tmp location ---
 # Prevents matplotlib from writing to the home-directory config cache during
