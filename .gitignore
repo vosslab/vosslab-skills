@@ -59,3 +59,5 @@ hatch-pet/
 remote_headings.txt
 books_to_process/
 sync-local.sh
+/plan-*.md
+/MARKDOWN_BOOKS
