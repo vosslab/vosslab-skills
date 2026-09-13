@@ -29,3 +29,36 @@ origin belongs there too. Rules: [REPO_STYLE.md](REPO_STYLE.md).
 - Build `docs/RELATED_PROJECTS.md` for visitors seeking comparable or adjacent projects and
   resources. Choose entries that share the repository's audience, user problem, or workflow;
   treat implementation technologies as context.
+
+## Testing and gates
+
+- Keep plan gates and requirements grounded in reality. Avoid arbitrary thresholds such as
+  "must load in under 400ms" and avoid byte-equivalence, pixel-equivalence, or exhaustive
+  matrices unless the product actually depends on them; plans making improvements should not
+  expect byte-identical output.
+- I want robust software: it continues to function despite imperfect inputs, data, state, or
+  behavior. Handle imperfections according to their context and impact, with graceful recovery
+  that preserves useful operation whenever possible.
+- Apply KISS aggressively. Prefer the smallest coherent design that satisfies actual
+  requirements and known failure modes. Complexity must earn its place.
+- Prefer adaptability over speculative edge-case handling. Design clear boundaries, stable
+  domain concepts, and replaceable components so unexpected cases can be handled later.
+- Treat tests as liabilities as well as assets. A permanent test must protect behavior that is
+  intentionally stable, important to preserve, and plausibly subject to regression. Test
+  contracts over implementation details. When in doubt, remove the test.
+- Use temporary tests and one-time checks freely to prove implementation work. Keep them in
+  `tests/_temp/`, outside the permanent suite and Git tracking; promote one only when the
+  behavior itself deserves permanent protection.
+- New behavior gates require a failure plan. If a gate's failure would not change the
+  implementation or identify a real correctness problem, the gate is noise.
+- Review testing plans against `docs/REPO_STYLE.md`, `docs/PYTEST_STYLE.md`, and other repo
+  guidance. If a test requires a hack I did not ask for, question the test first.
+- Audits and reviews should ask for fewer tests, not more.
+
+## Prompting
+
+- Prioritize positive prompting. Small LMs mishandle negative instructions and may flip them
+  into positive actions. Phrase instructions as "Do X" or "Use Y".
+- "Leave git to the manager" is a negative prompt in disguise; omit git entirely and encourage
+  the wanted behavior instead. Name unwanted tools only when truly needed. Positive prompting
+  plus omission beats a negative boundary.

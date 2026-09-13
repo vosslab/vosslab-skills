@@ -36,6 +36,15 @@ individual scope and the common prompt template. That reference owns the
 detailed style and test checks so the audit stays aligned with the repository's
 authoritative rules rather than copied checklists.
 
+## Test and gate posture
+
+Tests are liabilities as well as assets, and the audit asks for fewer of them.
+Accept a reviewer's new-test finding when it cites the permanent-test checklist
+in `docs/PYTEST_STYLE.md`; route every other test suggestion to `tests/_temp/`
+as a one-time check. Report plan gates that lack a grounding need, such as
+arbitrary thresholds or byte or pixel equivalence, as findings with the
+recovery the plan should adopt instead.
+
 ## Integration and fixes
 
 Prepare only the finding-severity order, changed-file list, test evidence, and
@@ -45,7 +54,8 @@ residual risks, and a concise test/documentation summary.
 
 After reporting findings, apply only obvious low-risk fixes within the authorized
 change boundary, such as typos, stale documentation, dead imports, missing
-comments, or removal of fragile tests identified by the Test pass. Leave
+comments, or removal of fragile tests identified by the Test pass. Report
+any proposed permanent test as a finding for the human to approve. Leave
 contested, architecture-level, or cross-file design changes as findings unless
 the task separately authorizes their implementation.
 

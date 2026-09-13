@@ -1,7 +1,19 @@
 ## 2026-09-13
 
+### Additions and New Features
+
+- Added `docs/HUMAN_GUIDANCE.md` sections on testing and gates (tests as liabilities, grounded
+  gates with failure plans, KISS, robustness, `tests/_temp/` for one-time checks) and on positive
+  prompting for small LMs.
+
 ### Behavior or Interface Changes
 
+- Reworked `audit-code-reviewer` so the audit asks for fewer tests. The Test pass classifies every
+  test as permanent, `tests/_temp/` one-time, or deletion and proposes at most one new permanent
+  test that passes the `docs/PYTEST_STYLE.md` checklist; the Plan pass reports ungrounded gates
+  (arbitrary thresholds, byte or pixel equivalence, gates without a failure plan) as findings; the
+  coordinator routes weaker test suggestions to `tests/_temp/`. Briefs rephrased with positive
+  prompting.
 - Added `index_lib/build_all.py` as the normal front door for sidecar validation, skill and agent
   index generation, and all plugin projections. Its `--check` mode validates the complete set
   without writing.
