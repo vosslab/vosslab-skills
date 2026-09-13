@@ -73,6 +73,39 @@ cp /tmp/main_window.png docs/screenshots/main_window.png
   window by title. To render command output to a PNG without a terminal window,
   use [scripts/capture_cli.sh](../scripts/capture_cli.sh) instead.
 
+## Document and spreadsheet artifacts
+
+Use [scripts/render_artifact_libreoffice.sh](../scripts/render_artifact_libreoffice.sh) to render
+page one of a spreadsheet, document, or PDF through LibreOffice and ImageMagick. The script keeps
+intermediate output under `/tmp`, limits the final image to a 1920 px edge, and copies the PNG to
+the requested path:
+
+```bash
+scripts/render_artifact_libreoffice.sh OUTPUT.png INPUT_ARTIFACT
+```
+
+For spreadsheets, set landscape and fit-to-page behavior before invoking the renderer so wide
+columns remain visible:
+
+```python
+import openpyxl.worksheet.page
+import openpyxl.worksheet.properties
+
+ws.page_setup.orientation = "landscape"
+ws.page_setup.fitToWidth = 1
+ws.page_setup.fitToHeight = 0
+ws.sheet_properties.pageSetUpPr = (
+	openpyxl.worksheet.properties.PageSetupProperties(fitToPage=True)
+)
+ws.print_area = f"A1:{ws.cell(ws.max_row, ws.max_column).coordinate}"
+ws.page_margins = openpyxl.worksheet.page.PageMargins(
+	left=0.25, right=0.25, top=0.25, bottom=0.25,
+)
+```
+
+The renderer resolves `soffice` from `PATH`, then checks `/opt/homebrew/bin/soffice` on macOS. A
+missing renderer is an explicit dependency failure; install LibreOffice and rerun.
+
 ## Worked example - bkchem-oasa smoke fixture
 
 `bkchem-oasa` is a Qt GUI app, a clean local-capture smoke fixture.

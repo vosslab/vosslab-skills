@@ -7,30 +7,14 @@ description: "Trim bloated `AGENTS.md` files into concise pointers to canonical 
 
 ## Goal
 
-Make `AGENTS.md` a tiny pointer file. It should mostly be bare path pointers
-into `docs/*.md`, not prose. The longer `AGENTS.md` grows, the worse AI coding
-agents perform: they skim, prioritize poorly, and miss the load-bearing
-rules. This skill audits `AGENTS.md` and returns an aggressively tightened
-version, with the manager (the invoking agent) exercising judgment about
-what is important for *this* repo versus frivolous.
+Make `AGENTS.md` a tiny pointer file. It should mostly be bare paths into
+`docs/*.md`, not prose. This skill audits and tightly rewrites it using the
+repository's load-bearing rules.
 
-`AGENTS.md` is written for AI agents, not humans. Do NOT use Markdown links
-(`[text](path)`); reference docs by bare path (`docs/PYTHON_STYLE.md`) so the
-file stays plain for the agents that read it. Clickability on GitHub is a
-human concern and is not a goal here.
+`AGENTS.md` is agent-facing. Reference docs by bare path
+(`docs/PYTHON_STYLE.md`), not Markdown links.
 
-Size guidance (line count is a rough proxy, not a contract; "line" means a
-non-blank text line in the rendered Markdown):
-
-- Prefer about 15 lines or fewer.
-- Hard cap at about 50 lines. If the file is longer, something belongs in
-  `docs/*.md` instead.
-- The shorter the better. A 10-line `AGENTS.md` that links to the right
-  docs is better than a 40-line one that restates them.
-
-If a rule has a canonical home in `docs/*.md`, point to it by path, do not
-restate. The `docs/REPO_STYLE.md` "AGENTS.md files" section describes the
-philosophy.
+Use the `docs/REPO_STYLE.md` `AGENTS.md files` policy for size and structure.
 
 ## Required content (keep)
 
@@ -83,20 +67,16 @@ demands action.
 ## Workflow
 
 1. Read the current `AGENTS.md` and the `docs/` index.
-2. Get a rough size: `wc -l AGENTS.md`. Treat this as a smell test, not a
-   contract. If the file is already a tight pointer file (roughly under 15
-   non-blank lines) and every section already passes the rubric, report
-   "no action needed" and stop. Do not invent churn.
+2. Check `wc -l AGENTS.md` against the repository policy. If it is already a
+   tight pointer file and passes the rubric, report no action needed and stop.
 3. For each section, apply the rubric. Categorize each as one of:
    `keep`, `link-only`, `move-to-docs`, or `delete`.
 4. For `move-to-docs` items, identify the right `docs/*.md` target using
    the recommended common docs list in `docs/REPO_STYLE.md`. If the target
    doc does not exist yet, do not create it here. Note it as a follow-up
    for `docset-updater`, `setup-install-usage-docs`, or `arch-docs`.
-5. Rewrite `AGENTS.md` minimally: short headings, sentence case, bullet
-   lists with `-`, and bare doc paths (no Markdown links). `AGENTS.md` is
-   agent-facing; `docs/MARKDOWN_STYLE.md` link rules apply to human-facing
-   docs, not here.
+5. Rewrite `AGENTS.md` minimally with short sentence-case headings and `-`
+   bullets.
 6. Preserve any user instruction explicitly marked as overriding defaults.
 
 ## Markdown house rules
@@ -104,11 +84,7 @@ demands action.
 - ASCII only; escape symbols like `&alpha;` if needed.
 - Sentence case headings, short headings (3-6 words).
 - Bullets use `-`, one idea per bullet.
-- Reference docs by bare path, NOT Markdown links. Good:
-  `docs/REPO_STYLE.md`. Bad: `[docs/REPO_STYLE.md](docs/REPO_STYLE.md)`.
-  `AGENTS.md` is read by AI agents, not browsed by humans, so clickability
-  is not a goal; a plain path keeps the file lean and unambiguous.
-- A bare path may be wrapped in backticks for readability; do not wrap it in
+- Reference docs by bare path, optionally in backticks; do not use Markdown
   link syntax.
 
 ## Quality bar
@@ -117,23 +93,22 @@ demands action.
   about 50. Smaller is always better. If you cannot get under 50, more
   content belongs in `docs/*.md`.
 - Most of the file is bare path pointers into `docs/*.md`, not prose.
-- No Markdown links; docs are referenced by bare path.
 - No duplication of canonical `docs/*.md` content.
 - Every external concept is referenced by path, not restated.
 - No deletion of genuinely repo-specific operational rules.
 - No new sections with content that has no enforcement or no concrete
   action.
 
-## Inputs to request
+## Inputs to inspect
 
 - Current `AGENTS.md` content.
 - The list of files under `docs/` (so the skill can choose link targets
   that actually exist).
-- Any standing user override that must be preserved verbatim.
+- Any standing override already marked for verbatim preservation.
 
 ## Output
 
-- A proposed `AGENTS.md` patch with minimal edits, ready for review.
+- The applied `AGENTS.md` patch with minimal edits.
 - A change log with three short lists:
   - `moved`: each chunk moved into `docs/*.md`, with the destination file.
   - `linked`: each chunk replaced by a bare path pointer, with the target.
@@ -152,14 +127,5 @@ demands action.
 - `../readme-docs/SKILL.md`: sibling
   single-artifact standardizer with the same shape.
 
-## Delegated execution
-
-Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagent with
-one bounded task, the relevant repo rules, and one verification step. Dispatch a new
-subagent for each atomic task.
-
-This skill rewrites `AGENTS.md` to bare-path pointers. It needs the `docs/*.md`
-filenames to exist, not their prose, so in a docset refresh it runs after the doc
-producers have created their files (the wave with `screenshot-docs`). It owns only
-`AGENTS.md`, so it runs in parallel with `screenshot-docs`. See
-`docs/REPO_STYLE.md`.
+In a docset refresh, run after the linked `docs/*.md` files exist and alongside
+`screenshot-docs`; this skill owns only `AGENTS.md`.

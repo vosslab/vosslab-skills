@@ -12,11 +12,11 @@ A maximalist exhaustion-style recipe. Enumerate as many properties of the idea a
    - Substitute it (swap for other values along its dimension).
    - Abstract it (what does this property look like in another domain?).
    - Tree it (what's the parent property? siblings?).
-4. **Record the cross-product.** 3 properties × ~4 operators = ~12 expansion paths per recipe-application. Mark the productive ones.
+4. **Record the cross-product.** 3 properties x ~4 operators = ~12 expansion paths per recipe-application. Mark the productive ones.
 
 ## Why it works
 
-Most ideation either picks one operator and applies it broadly, or picks one property and explores it deeply. Property-explosion is the wide-and-deep version: many properties × many operators = a saturated local exploration.
+Most ideation either picks one operator and applies it broadly, or picks one property and explores it deeply. Property-explosion is the wide-and-deep version: many properties x many operators = a saturated local exploration.
 
 ## When to use
 

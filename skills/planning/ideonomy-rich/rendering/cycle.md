@@ -6,7 +6,7 @@ A cycle is a closed loop where the endpoints connect. The structure is *recurren
 
 Either a ring (corners with `╭─╮ ╰─╯`, arrows around the perimeter) or a horizontal arrow chain that loops back with `↻`.
 
-## Worked example — *meditation: the session cycle*
+## Worked example -- *meditation: the session cycle*
 
 Ring form (when the cycle has 4-6 distinct phases):
 
@@ -49,15 +49,15 @@ Horizontal-loop form (when the cycle has many small phases):
 
 ## Conventions
 
-- Each phase node in `╭─╮` rounded — soft, organic
+- Each phase node in `╭─╮` rounded -- soft, organic
 - Arrows always show direction of movement, even if the cycle is bidirectional (then add a counter-arrow)
 - `↻` or `↺` symbol marks the loop-back, prominent
-- `★` on the phase that's the *load-bearing* one — often the pivot of the cycle (the *return* in attention practice; the *act* in OODA)
+- `★` on the phase that's the *load-bearing* one -- often the pivot of the cycle (the *return* in attention practice; the *act* in OODA)
 - One canonical entry point marked, but the cycle can be entered anywhere
 
 ## Drama
 
-Cycles' drama is in the *load-bearing phase* — the one without which the cycle collapses. Mark it `★` and let the reader sit with it. For meditation, *return* is the practice; *attending* is the easy part.
+Cycles' drama is in the *load-bearing phase* -- the one without which the cycle collapses. Mark it `★` and let the reader sit with it. For meditation, *return* is the practice; *attending* is the easy part.
 
 If the cycle's interesting move is its *break point* (a state that exits the cycle), draw a `╳` or `→ ESCAPE` arrow leaving from that phase, off the edge of the diagram.
 

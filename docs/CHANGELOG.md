@@ -1,4 +1,58 @@
+## 2026-09-13
+
+### Behavior or Interface Changes
+
+- Added `index_lib/build_all.py` as the normal front door for sidecar validation, skill and agent
+  index generation, and all plugin projections. Its `--check` mode validates the complete set
+  without writing.
+
+### Fixes and Maintenance
+
+- Moved canonical frontmatter, skill discovery, agent catalog, indexing, projection, and loaded-skill
+  inventory behavior into the root `index_lib/` package. `install_lib/` now consumes that package
+  and owns only installation behavior; `tools/` again contains standalone utilities with no
+  repository-package dependency.
+- Reduced the LibreOffice artifact renderer from 101 to 74 lines by moving preparation, usage, and
+  dependency guidance into the directly routed screenshot reference while retaining the focused
+  shell orchestration.
+- Corrected migrated ownership, typing, discovery documentation, and repository-rule wording found
+  by the six-pass audit. Launcher orchestration was verified directly without adding a permanent
+  test coupled to its internal collaborators.
+
+### Decisions and Failures
+
+- Classified repository indexing as a first-class root domain rather than a `tools/` or `devel/`
+  subcategory. The five support-directory failures exposed an ownership mismatch: repository
+  generators were importing reusable metadata through the installer package.
+
+### Developer Tests and Notes
+
+- The full pytest suite passes 4,270 tests. The merged `index_lib/build_all.py --check` command
+  validates 41 sidecars, indexes 40 live skills, skips the deprecated skill explicitly, and
+  confirms every generated index and plugin projection is current. Bash syntax and the 74-line
+  renderer budget also pass.
+
 ## 2026-09-12
+
+### Behavior or Interface Changes
+
+- Narrowed all 16 audit-identified skill descriptions so they select specialized judgment rather
+  than routine adjacent work. `repo-rules-reader` now has an explicit reusable orientation-receipt
+  boundary, and `blueprint-plan-drafter` routes core, concern-dependent, and repository-evidence
+  inputs separately.
+- Consolidated shared delegation and catalog guidance at durable owners, while retaining local
+  domain proof and failure contracts. Renamed the public planning-goal identity to `make-goal`
+  without changing its directory.
+- Required ASCII in every `SKILL.md`; retained UTF-8 only in eight exact ideonomy-rich rendering
+  references where glyphs are functional notation or examples. Enforced hard inclusive limits of
+  150 physical lines and 8,000 characters for every live entrypoint.
+
+### Developer Tests and Notes
+
+- Regenerated all plugin projections and `docs/SKILLS_INDEX.md` from the final 40-skill source
+  set. The integrated corpus gate, including hard-size boundary fixtures and all-entrypoint ASCII,
+  passed 1,976 tests on Python 3.12.14. Recorded trigger, context, encoding, safeguard, and
+  independent-review evidence in `docs/active_plans/reports/skill_corpus_trigger_reform_validation.md`.
 
 ### Additions and New Features
 

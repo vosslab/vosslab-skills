@@ -42,10 +42,7 @@ and OpenCode agent projections are the only generated files.
 Generate or check published artifacts from their canonical sources:
 
 ```bash
-source source_me.sh && python3 tools/build_skills_index.py --check
-source source_me.sh && python3 tools/build_plugin_manifest.py --check
-source source_me.sh && python3 tools/openai_sidecars.py --check
-source source_me.sh && python3 tools/build_agents_index.py --check
+source source_me.sh && python3 index_lib/build_all.py --check
 ```
 
 The index and manifests come from skills and category metadata. The searchable agent index comes

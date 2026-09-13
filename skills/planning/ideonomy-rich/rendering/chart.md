@@ -6,7 +6,7 @@ A chart is a 2D grid: rows = values of one dimension, columns = values of anothe
 
 Double-line outer frame for the chart proper. Single-line internal divisions. The first column (row labels) divided from data with `║`; data columns separated with `│`.
 
-## Worked example — *meditation: cardinality × autonomy*
+## Worked example -- *meditation: cardinality × autonomy*
 
 ```
 ╔══════════════════╦═══════════════╤═══════════════╤════════════════╤═══════════════╗
@@ -35,7 +35,7 @@ Double-line outer frame for the chart proper. Single-line internal divisions. Th
 
 ## Drama
 
-Charts are made to be read. The empty `◇` cells aren't gaps — they're the point. After the chart, call out the most interesting `◇` or `★` in a small rounded box `╭─╮` with an arrow back to its grid position. This is where the reader lands.
+Charts are made to be read. The empty `◇` cells aren't gaps -- they're the point. After the chart, call out the most interesting `◇` or `★` in a small rounded box `╭─╮` with an arrow back to its grid position. This is where the reader lands.
 
 ## Anti-patterns
 

@@ -1,35 +1,8 @@
 #!/usr/bin/env bash
 #
-# render_artifact_libreoffice.sh - render a spreadsheet or document artifact
-# to a full-width landscape PNG via LibreOffice headless + ImageMagick.
-#
-# The repo permission hook scopes ImageMagick and write tools to /tmp, so all
-# intermediate work happens in /tmp; the finished PNG is then copied to the
-# requested output path.
-#
-# For a spreadsheet artifact, the caller should pre-set landscape + fit-to-one-
-# page-wide with openpyxl BEFORE calling this script, so no columns are clipped:
-#
-#   import openpyxl.worksheet.properties
-#   ws.page_setup.orientation = "landscape"
-#   ws.page_setup.fitToWidth = 1
-#   ws.page_setup.fitToHeight = 0
-#   ws.sheet_properties.pageSetUpPr = \
-#       openpyxl.worksheet.properties.PageSetupProperties(fitToPage=True)
-#   # optional: set full print area and narrow margins
-#   ws.print_area = f"A1:{ws.cell(ws.max_row, ws.max_column).coordinate}"
-#   ws.page_margins = openpyxl.worksheet.page.PageMargins(
-#       left=0.25, right=0.25, top=0.25, bottom=0.25)
-#
-# soffice is commonly at /opt/homebrew/bin/soffice on macOS. If the bare
-# `soffice` command is not found on PATH the script falls back to that path.
-#
-# Usage:
-#   render_artifact_libreoffice.sh OUTPUT.png INPUT_ARTIFACT
-#
-# Examples:
-#   render_artifact_libreoffice.sh /tmp/grid.png /tmp/schedule.xlsx
-#   render_artifact_libreoffice.sh docs/screenshots/report.png /tmp/report.pdf
+# Render a spreadsheet or document artifact to a landscape PNG.
+# Preparation, usage, and output contracts live in
+# ../references/capture_local.md#document-and-spreadsheet-artifacts.
 
 set -euo pipefail
 

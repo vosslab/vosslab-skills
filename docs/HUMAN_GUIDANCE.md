@@ -10,6 +10,8 @@ origin belongs there too. Rules: [REPO_STYLE.md](REPO_STYLE.md).
 
 ## Decision priority
 
+- Treat this repository as development infrastructure. Keep its indexing subsystem at the root in
+  `index_lib/`, and provide one launcher because I run all indexing scripts together.
 - Treat KISS (Keep It Simple, Stupid) as a top-level priority.
 - Prefer the smallest ownership-correct implementation that satisfies the current request.
 - Add abstractions, compatibility layers, configuration, and permanent tests only for a

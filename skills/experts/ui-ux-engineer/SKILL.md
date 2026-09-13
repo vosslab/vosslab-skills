@@ -1,6 +1,6 @@
 ---
 name: ui-ux-engineer
-description: Review, improve, and engineer UI/UX quality in any framework. Use for visual hierarchy, interactions, accessibility, validation, forms, navigation, error or empty states, responsive behavior, and interface design reviews.
+description: Use when a requested interface review or redesign requires product-level hierarchy, interaction, accessibility, forms, navigation, states, or responsive UX judgment.
 ---
 
 # UI/UX Engineer

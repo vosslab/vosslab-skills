@@ -2,17 +2,17 @@
 
 One file per organon, showing the preferred monospace form. Read the file matching the picked organon during the external pass.
 
-If the picked organon has no recipe here, fall back to the principles in `../SKILL.md` and improvise within them — composition teaches, motion shown, density is meaning, drama at the pivot.
+If the picked organon has no recipe here, fall back to the principles in `../SKILL.md` and improvise within them -- composition teaches, motion shown, density is meaning, drama at the pivot.
 
 ## Files
 
-- `chart.md` — 2D grid (rows × columns of dimensions, instances in cells)
-- `tree.md` — branching hierarchy with `╭── ├── ╰──` connectors
-- `list.md` — ranked / grouped enumeration with markers and weight
-- `atlas.md` — multi-panel "spread" layout (one organon per panel, same territory)
-- `scale.md` — single horizontal axis with marked positions
-- `cycle.md` — closed loop with arrows
-- `dictionary.md` — term + tagline + body + attributes, one heavy-frame panel per entry
+- `chart.md` -- 2D grid (rows × columns of dimensions, instances in cells)
+- `tree.md` -- branching hierarchy with `╭── ├── ╰──` connectors
+- `list.md` -- ranked / grouped enumeration with markers and weight
+- `atlas.md` -- multi-panel "spread" layout (one organon per panel, same territory)
+- `scale.md` -- single horizontal axis with marked positions
+- `cycle.md` -- closed loop with arrows
+- `dictionary.md` -- term + tagline + body + attributes, one heavy-frame panel per entry
 
 ## Conventions shared across recipes
 

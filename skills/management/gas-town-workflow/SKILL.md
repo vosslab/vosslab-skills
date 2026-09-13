@@ -5,209 +5,72 @@ description: "Coordinate agents with Gas Town role mapping and convoy-based task
 
 # Gas Town workflow
 
-Gas Town is a role-based multi-agent coordination system. It maps theatrical role names to Claude Code agent types and uses convoy patterns to decompose work into atomic, trackable units. This skill teaches agents how to coordinate using Gas Town conventions within Claude Code's task and messaging system.
+Use this only for an explicit Gas Town request. For ordinary approved-plan
+execution, use `delegate-manager-to-subagents`; do not silently replace its
+plain manager/coder/reviewer vocabulary with theatrical terms.
 
-## Core principles
+## Operating contract
 
-### GUPP (Gas Town Universal Propulsion Principle)
+- **GUPP:** an assigned, unblocked task starts immediately.
+- **MEOW:** decompose a goal into atomic, independently completable tasks with
+  objective done-when criteria.
+- **NDI:** preserve task state, detect failed or stalled work, retry or
+  escalate it, and never silently drop it.
+- A convoy is the grouped, dependency-ordered set of those tasks. Every task
+  has one owner, an explicit role, a convoy name, a status, and a completion
+  signal.
 
-If there is work on your hook, you must run it. Agents autonomously proceed with available work without waiting for external input. GUPP is the heartbeat of autonomous operation. In Claude Code terms: if a task is assigned to you, start it immediately.
+Read [references/glossary.md](references/glossary.md) when Gas Town terms or
+their tool equivalents matter. Read
+[references/convoy-templates.md](references/convoy-templates.md) before
+creating a convoy.
 
-### MEOW (Molecular Expression of Work)
+## Route work by role
 
-Break large goals into detailed, atomic instructions. Every piece of work should be decomposed into trackable units that agents can execute autonomously. In Claude Code terms: use TaskCreate to break work into single-responsibility tasks with clear done-when criteria.
-
-### NDI (Nondeterministic Idempotence)
-
-Orchestration of potentially unreliable processes toward useful outcomes. Persistent tasks and oversight agents (monitor, scheduler) guarantee eventual workflow completion even when individual operations fail. Retry and escalate, do not silently drop work.
-
-## Role mapping
-
-This repo maps Gas Town theatrical roles to Claude Code agent types. Each role has a defined authority boundary and escalation target.
-
-| Gas Town role | Agent | Primary responsibility |
+| Gas Town role | Agent | Boundary |
 | --- | --- | --- |
-| Crew | coder | Production code, small doc updates |
-| Refinery | integrator | Merge, rebase, conflict resolution |
-| Witness | monitor | Observe progress, detect stalls, report |
-| Deacon | scheduler | Trigger workflows, retry blocked/stalled tasks |
-| Dogs | maintainer | Cleanup, lint, index regeneration |
-| -- | reviewer | Read-only code review and plan auditing |
-| -- | tester | Tests, coverage, validation |
-| -- | architect | Cross-cutting design approval |
-| -- | planner | Plans and docs only, never production code |
-| -- | orchestrator | Parallel task coordination |
+| Crew | coder | Production code and small documentation updates |
+| Refinery | integrator | Merge and conflict resolution |
+| Witness | monitor | Observe progress and report stalls |
+| Deacon | scheduler | Trigger retries; do not diagnose |
+| Dogs | maintainer | Cleanup, lint, and index regeneration |
+| -- | reviewer | Read-only code or plan review |
+| -- | tester | Tests and validation |
+| -- | architect | Cross-cutting design decisions |
+| -- | planner | Plans and documentation only |
+| -- | orchestrator | Parallel coordination |
 
-For the full role authority table and escalation paths, use the repository's
-`docs/AGENTS_INDEX.md`.
+Use the repository role catalog for fuller authority and escalation detail.
+Route design conflicts to architect, plan ambiguity to planner, implementation
+failures revealed by tests to coder, and detected stalls to orchestrator.
 
-## Convoy patterns
+## Create and run a convoy
 
-A convoy groups related tasks into a logical unit of work. Convoys track batched work from start to finish.
+1. Create one parent task for the initiative and atomic child tasks with role
+   tags such as `[CODER]` or `[TESTER]`.
+2. Put `Role`, `Convoy`, and measurable `Done when` criteria in every task.
+3. Set the dependency graph before assignment; give each task to its matching
+   role and keep ownership exclusive.
+4. Each agent claims its highest-priority unblocked role-matching task, marks
+   it in progress, performs the work, records evidence, and explicitly
+   completes or escalates it.
+5. A monitor checks for genuine stalls; a scheduler retries work that has been
+   diagnosed as retryable. At convoy close, verify every done-when criterion
+   and shut down no-longer-needed teammates.
 
-### Creating a convoy
+Use direct messages for a specific escalation, coordination need, or completion
+signal. Do not broadcast routine status. Dispatch a fresh subagent for each
+atomic task; status messages do not convert a finished task into a new editing
+assignment.
 
-1. Create a parent task describing the convoy goal.
-2. Create child tasks for each step, tagged with the target role in the subject line.
-3. Set dependencies with `addBlockedBy` so tasks execute in order.
-4. Assign tasks to agents matching the tagged role.
+## Escalation and completion
 
-### Subject-line tagging
+An agent outside its authority creates or updates the blocker, notifies the
+appropriate role, and continues with independent unblocked work. A completed
+task includes relevant test or review evidence, an updated task state, and a
+completion message to the lead. If no suitable task remains, report that fact
+to the lead rather than claiming another role's work.
 
-Tag the target role in every task subject:
-
-```
-[CODER] Implement token refresh flow
-[TESTER] Write tests for token refresh
-[REVIEWER] Audit refresh flow changes
-[INTEGRATOR] Merge token refresh branch
-```
-
-### Task description format
-
-Every task description must include:
-
-```
-Role: coder | tester | reviewer | integrator | ...
-Convoy: <initiative-name>
-Done when:
-- <objective criterion 1>
-- <objective criterion 2>
-```
-
-For ready-made convoy templates, read [references/convoy-templates.md](references/convoy-templates.md).
-
-## Task routing
-
-### Claiming tasks
-
-1. Check TaskList for unblocked tasks matching your role.
-2. Claim the highest-priority unblocked task for your role.
-3. Use task ID order as a tie-breaker when priority is equal.
-4. Mark the task `in_progress` with TaskUpdate before starting work.
-5. Never work on tasks assigned to another agent.
-
-### Routing rules
-
-| Task type | Route to |
-| --- | --- |
-| Production code changes | coder |
-| Test creation or coverage | tester |
-| Code review or plan audit | reviewer |
-| Merge or conflict resolution | integrator |
-| Design decisions | architect |
-| Plan creation or doc-only changes | planner |
-| Lint, cleanup, index regen | maintainer |
-| Workflow triggers, retries | scheduler |
-| Progress monitoring, stall detection | monitor |
-| Parallel task coordination | orchestrator |
-
-## Escalation rules
-
-When an agent encounters work outside its authority boundary, it must escalate rather than attempt the work. Escalation uses SendMessage to notify the target agent or TaskCreate to file the issue.
-
-| Agent | Escalates to | When |
-| --- | --- | --- |
-| coder | architect | Design conflict or architectural question |
-| coder | planner | Ambiguous or incomplete task |
-| coder | orchestrator | Blocked execution dependency |
-| integrator | human | Failed merge after retry |
-| monitor | orchestrator | Stuck worker detected |
-| monitor | human | Systemic failure |
-| maintainer | -- | No arch decisions, no features |
-| scheduler | -- | Does not diagnose; monitor does that |
-| tester | coder | Test reveals production bug |
-| reviewer | planner | Plan drift or missing plan |
-| planner | architect | Architecture decision needed |
-
-## Communication patterns
-
-### When to use SendMessage
-
-- Escalation: notifying another agent of a blocker or problem.
-- Coordination: asking a peer for information needed to proceed.
-- Completion signals: telling the team lead a task is done.
-- Shutdown requests: asking a teammate to wrap up.
-
-### When to use TaskUpdate
-
-- Marking tasks `in_progress`, `completed`, or adding comments.
-- Setting dependencies between tasks.
-- Assigning or reassigning task ownership.
-
-### When to use TaskCreate
-
-- Filing discovered work that is outside your current task scope.
-- Breaking a large task into smaller subtasks.
-- Recording a blocker that needs another role's attention.
-
-Do not use broadcast messages for routine communication. Send direct messages to the specific agent who needs the information.
-
-## Completion discipline
-
-Agents must explicitly signal their state. Silent idleness with assigned work is the idle polecat heresy -- a critical failure mode.
-
-### Required signals
-
-| State | Action |
-| --- | --- |
-| Task finished | Mark task `completed` via TaskUpdate. Send completion message to team lead. |
-| Task blocked | Note the blocker in the task description via TaskUpdate. Create a blocker task via TaskCreate. Send message to the blocking agent. |
-| Task requires escalation | Send escalation message to the target agent. Note escalation in the task description. |
-| No more work available | Check TaskList. If nothing is available, notify team lead and wait for assignment. |
-
-### Completion checklist
-
-1. Verify your work meets the done-when criteria in the task description.
-2. Run relevant tests (coder, tester) or checks (reviewer, maintainer).
-3. Mark the task `completed` via TaskUpdate.
-4. Check TaskList for the next available task matching your role.
-5. If no tasks remain, notify the team lead.
-
-## Subagent dispatch
-
-Dispatch a fresh subagent for each atomic task. Reusing a subagent across tasks
-carries stale context, encourages drift, and weakens independent judgment.
-`SendMessage` is for status only; do not use it to chain follow-on editing
-work onto a teammate that has already finished its assigned task. See
-`docs/REPO_STYLE.md`.
-
-## Boundary with delegate-manager-to-subagents
-
-This skill and `delegate-manager-to-subagents` both coordinate multi-agent work,
-but with different vocabularies and intent. Use `delegate-manager-to-subagents`
-as the default for executing an approved plan: plain manager / coder /
-reviewer / tester / docs roles, controlled delegation, one fresh subagent
-per atomic task, and explicit review gates. Use this skill (`gas-town-workflow`)
-ONLY when the user explicitly asks for Gas Town conventions: convoy-style
-work decomposition, theatrical role names (Crew, Refinery, Witness, Dogs,
-Deacon), and the repo-specific role catalog. The two skills are not
-interchangeable; do not silently substitute Gas Town vocabulary into a
-delegate-manager-to-subagents run, and do not strip Gas Town vocabulary out of
-a Gas Town run.
-
-## Terminology
-
-Gas Town uses theatrical terminology mapped to Claude Code concepts:
-
-| Gas Town term | Claude Code equivalent |
-| --- | --- |
-| Bead | Claude Task |
-| Hook | Role-filtered task queue |
-| Slinging | Task creation and assignment (TaskCreate + TaskUpdate with owner) |
-| Convoy | Grouped set of related tasks |
-| Nudging | SendMessage between agents |
-| Patrol | Periodic health check cycle |
-
-For the full glossary with mappings, read [references/glossary.md](references/glossary.md).
-
-## Quick start
-
-1. If your environment supports teams, create one with TeamCreate (orchestrator or parallelizer only).
-2. Create convoy tasks with TaskCreate, using subject-line tags and the task description format.
-3. Set dependencies with TaskUpdate `addBlockedBy`.
-4. Spawn agents matching the tagged roles.
-5. Assign tasks to agents with TaskUpdate `owner`.
-6. Agents follow GUPP: claim work, execute, signal completion, claim next task.
-7. Monitor agent uses TaskList to detect stalls and escalate.
-8. When all convoy tasks are complete, shut down teammates.
+For full templates, role vocabulary, and tool mapping, use the routed
+references above; they are intentionally outside this entrypoint's control
+plane.

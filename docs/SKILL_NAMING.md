@@ -25,12 +25,12 @@ suffix, and the shared parity gate discovers those suffixes across categories.
    with `old-` are exempt (deprecation marker). A deliberate presentation
    variant pair may be exempt only when each description names the selection
    boundary and the pair is recorded in
-   `tools/list_loaded_skills.py INTENTIONAL_PREFIX_GROUPS`.
+   `index_lib/list_loaded_skills.py INTENTIONAL_PREFIX_GROUPS`.
 3. **Avoid plugin and harness leading tokens.** Do not use a leading token
    that overlaps with a currently-loaded plugin skill or a harness built-in
    (see the reserved list below). Use
-   `tools/list_loaded_skills.py --check <candidate>` and
-   `tools/list_loaded_skills.py --collisions` to verify.
+   `index_lib/list_loaded_skills.py --check <candidate>` and
+   `index_lib/list_loaded_skills.py --collisions` to verify.
 4. **No redundant tokens** such as `-skill`, `-tool`, or `-helper`.
 5. **Frontmatter `name:` must match the directory name** exactly.
 6. **Verb-first for process skills, domain-noun-first for specialists.**
@@ -105,14 +105,14 @@ these (e.g. `execute-`, `executing-`, `subagent-`, `dispatching-`,
 
 ## Enumerating loaded skills
 
-Use `tools/list_loaded_skills.py` to inspect which skills are currently
+Use `index_lib/list_loaded_skills.py` to inspect which skills are currently
 visible and to check a candidate name for collisions.
 
 ```bash
-source source_me.sh && python3 tools/list_loaded_skills.py
-source source_me.sh && python3 tools/list_loaded_skills.py --collisions
-source source_me.sh && python3 tools/list_loaded_skills.py --names-only
-source source_me.sh && python3 tools/list_loaded_skills.py --check my-new-skill
+source source_me.sh && python3 index_lib/list_loaded_skills.py
+source source_me.sh && python3 index_lib/list_loaded_skills.py --collisions
+source source_me.sh && python3 index_lib/list_loaded_skills.py --names-only
+source source_me.sh && python3 index_lib/list_loaded_skills.py --check my-new-skill
 ```
 
 The default output tabulates every loaded skill with a `Prefix collisions`
@@ -129,12 +129,12 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `arch-docs` | compliant | (unchanged) | Clean `-docs` suffix, unique leading token. |
 | `audit-code-reviewer` | compliant | review-code-changes | First-2 "audit code" reads as the activity; user-confirmed acceptable. |
 | `blueprint-plan-drafter` | accepted-rename | planning-manager / manager-make-new-plan | Verb-first; first-2 "blueprint plan" carries the artifact + domain; `manager-` lead retired. |
-| `book-to-markdown` | accepted-rename | book-pdf-to-markdown | The broader name matches its PDF, EPUB, HTML, DOCX, ODT, Markdown, and text inputs. `boo` remains unique, verified with `tools/list_loaded_skills.py --check`. |
+| `book-to-markdown` | accepted-rename | book-pdf-to-markdown | The broader name matches its PDF, EPUB, HTML, DOCX, ODT, Markdown, and text inputs. `boo` remains unique, verified with `index_lib/list_loaded_skills.py --check`. |
 | `bptools-writer-expert` | accepted-rename | bptools-writer | Standardized suffix to `-expert`; `bpt` 3-char prefix unique; `writer` kept mid-name for discoverability. |
 | `css-creative-expert` | compliant | (new) | Domain-noun-first CSS specialist; `css` is unique, `creative` identifies visual craft, and `-expert` matches design and review work. |
 | `vision-expert` | accepted-rename | computer-vision-expert | Domain-noun-first; `vis` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `delegate-manager-to-subagents` | accepted-rename | execution-manager / manager-driven-execution | Verb-first; first-2 "delegate manager"; "subagents" keyword in token 4 for searchability. |
-| `distill-plan-goal` | compliant | (new) | Verb-first; first-2 "distill plan" names the input; `dis` 3-char prefix unique; `goal` is the artifact produced. |
+| `make-goal` | compliant | `distill-plan-goal` | Verb-first; first-2 "make goal" names the artifact and action; `mak` 3-char prefix is unique. |
 | `docset-updater` | compliant | docset-refresh | Agent-form suffix matches update-if-drifted behavior. |
 | `gas-town-workflow` | borderline-no-change | (unchanged) | Repo-specific brand name; leading token unique. |
 | `geometry-expert` | compliant | (new) | Domain-noun-first; `geo` 3-char prefix unique; `-expert` suffix matches specialist role. |
@@ -159,7 +159,7 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 
 This table records the audited naming decisions across compliant,
 borderline-no-change, accepted-rename, and deprecated statuses. Use
-`tools/list_loaded_skills.py --names-only` for the complete live skill set,
+`index_lib/list_loaded_skills.py --names-only` for the complete live skill set,
 including skills added outside this audit table. Additional `old-*` skills
 (`old-manager-review-existing-plan`,
 `old-orchestrate-next-milestone`) were archived to

@@ -11,10 +11,10 @@ A 2D spatial layout where *position itself* carries information. Distinct from a
 
 ## What maps surface
 
-- **Regions you didn't know existed** — a cluster of related items the map's layout makes visible, but a list would scatter.
-- **Border zones** — the most interesting ideas often live where two regions meet, and only a map shows them.
-- **Empty territory** — the unmapped regions are candidates for exploration. Atlas pages, by contrast, describe the same territory; map empties are *unknown*.
+- **Regions you didn't know existed** - a cluster of related items the map's layout makes visible, but a list would scatter.
+- **Border zones** - the most interesting ideas often live where two regions meet, and only a map shows them.
+- **Empty territory** - the unmapped regions are candidates for exploration. Atlas pages, by contrast, describe the same territory; map empties are *unknown*.
 
 ## Pairing
 
-Maps pair with **atlas** (a map is one page of an atlas) and with **cross-domain re-instantiation** (map metaphors travel well — most domains have their own version of "border zone," "capital city," "frontier"). They're the right organon when spatial intuition adds something a list or chart can't — when adjacency and density are themselves informative.
+Maps pair with **atlas** (a map is one page of an atlas) and with **cross-domain re-instantiation** (map metaphors travel well - most domains have their own version of "border zone," "capital city," "frontier"). They're the right organon when spatial intuition adds something a list or chart can't - when adjacency and density are themselves informative.

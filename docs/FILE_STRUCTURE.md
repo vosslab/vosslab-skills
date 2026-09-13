@@ -15,11 +15,12 @@ vosslab-skills/
 +- assets/                     Shared static assets
 +- devel/                      Maintainer-only setup, repair, and release tools
 +- docs/                       User, architecture, style, generated, and archived docs
-+- install_lib/                Shared discovery, adapter, interview, and installer package
++- index_lib/                  Metadata, discovery, indexing, and projection package
++- install_lib/                Interview and installer package
 +- install_targets/            Per-platform installation declarations
 +- skills/                     Category metadata and canonical skill trees
 +- tests/                      Fast pytest, non-browser E2E, and browser test homes
-+- tools/                      Repository generators and validators
++- tools/                      Standalone domain utilities
 +- AGENTS.md                   Repository instructions and rule pointers
 +- install_skills.py           Main guided installer
 +- README.md                   Project overview and quick start
@@ -58,10 +59,10 @@ skills/<category>/<skill-name>/
 `- templates/                 Optional reusable templates
 ```
 
-[install_lib/skill_discovery.py](../install_lib/skill_discovery.py) validates this structure.
-[tools/build_skills_index.py](../tools/build_skills_index.py) renders
+[index_lib/skill_discovery.py](../index_lib/skill_discovery.py) validates this structure.
+[index_lib/build_skills_index.py](../index_lib/build_skills_index.py) renders
 [SKILLS_INDEX.md](SKILLS_INDEX.md), and
-[tools/openai_sidecars.py](../tools/openai_sidecars.py) validates the OpenAI sidecars and
+[index_lib/openai_sidecars.py](../index_lib/openai_sidecars.py) validates the OpenAI sidecars and
 category-required paths.
 
 ### Agents and installation
@@ -79,8 +80,10 @@ category-required paths.
 | Cursor | compatibility | `.cursor/skills` | `.cursor/agents` |
 | OpenCode | compatibility | `.config/opencode/skills` | `.config/opencode/agents` |
 
-[install_lib/](../install_lib/) contains frontmatter parsing, discovery, adapter rendering, target
-validation, the interview, and state-free installation behavior.
+[index_lib/](../index_lib/) contains frontmatter parsing, discovery, agent projection, sidecar
+validation, index generation, manifest generation, and the merged `build_all.py` command.
+[install_lib/](../install_lib/) contains target validation, the interview, and state-free
+installation behavior.
 
 ### Tests
 
@@ -97,10 +100,11 @@ validation, the interview, and state-free installation behavior.
 No tracked fixture directory was added for the installer work. Permanent test inputs remain inline
 or are written beneath `tmp_path`.
 
-### Tools and development
+### Indexing, tools, and development
 
-[tools/](../tools/) contains repository-facing generators and validators. Shared runtime behavior
-used by the installer and tools belongs in [install_lib/](../install_lib/).
+[index_lib/](../index_lib/) contains repository indexing and projection commands plus reusable
+metadata behavior shared with installation. [tools/](../tools/) contains standalone domain
+utilities that remain independent of repository-local packages.
 
 [devel/](../devel/) contains maintainer-only setup, changelog, cleanup, versioning, and release
 commands. Reusable runtime modules and permanent tests do not belong there.
@@ -111,13 +115,13 @@ The repository intentionally tracks these small generated artifacts:
 
 | Generated path | Owner |
 | --- | --- |
-| [SKILLS_INDEX.md](SKILLS_INDEX.md) | [tools/build_skills_index.py](../tools/build_skills_index.py) |
-| [AGENTS_INDEX.md](AGENTS_INDEX.md) | [tools/build_agents_index.py](../tools/build_agents_index.py) |
-| [.claude-plugin/](../.claude-plugin/) | [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py) |
-| [.codex-plugin/](../.codex-plugin/) | [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py) |
-| [.cursor-plugin/](../.cursor-plugin/) | [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py) |
-| [.opencode/INSTALL.md](../.opencode/INSTALL.md) | [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py) |
-| [.opencode/plugins/vosslab_skills.js](../.opencode/plugins/vosslab_skills.js) | [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py) |
+| [SKILLS_INDEX.md](SKILLS_INDEX.md) | [index_lib/build_skills_index.py](../index_lib/build_skills_index.py) |
+| [AGENTS_INDEX.md](AGENTS_INDEX.md) | [index_lib/build_agents_index.py](../index_lib/build_agents_index.py) |
+| [.claude-plugin/](../.claude-plugin/) | [index_lib/build_plugin_manifest.py](../index_lib/build_plugin_manifest.py) |
+| [.codex-plugin/](../.codex-plugin/) | [index_lib/build_plugin_manifest.py](../index_lib/build_plugin_manifest.py) |
+| [.cursor-plugin/](../.cursor-plugin/) | [index_lib/build_plugin_manifest.py](../index_lib/build_plugin_manifest.py) |
+| [.opencode/INSTALL.md](../.opencode/INSTALL.md) | [index_lib/build_plugin_manifest.py](../index_lib/build_plugin_manifest.py) |
+| [.opencode/plugins/vosslab_skills.js](../.opencode/plugins/vosslab_skills.js) | [index_lib/build_plugin_manifest.py](../index_lib/build_plugin_manifest.py) |
 
 Platform-native agent projections are generated during installation. They live in the selected
 home, not in the tracked repository. Codex links category directories beneath `.codex/skills`;
@@ -158,8 +162,9 @@ Root [AGENTS.md](../AGENTS.md) points agents to the canonical style documents. R
 
 - Skills and skill-owned resources: [skills/](../skills/).
 - Authored agents and catalog data: [agents/](../agents/).
-- Shared installer or generator logic: [install_lib/](../install_lib/).
-- Repository generators and validators: [tools/](../tools/).
+- Metadata, discovery, indexes, and generated projections: [index_lib/](../index_lib/).
+- Installer workflow and target application: [install_lib/](../install_lib/).
+- Standalone domain utilities: [tools/](../tools/).
 - Maintainer-only setup and release scripts: [devel/](../devel/).
 - Fast tests: [tests/](../tests/); whole-CLI checks: [tests/e2e/](../tests/e2e/).
 - Durable documentation: [docs/](.); completed work records:

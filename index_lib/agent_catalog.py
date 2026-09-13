@@ -7,7 +7,7 @@ import json
 import pathlib
 
 # local repo modules
-import install_lib.frontmatter
+import index_lib.frontmatter
 
 
 CATALOG_PATH = pathlib.Path("agents/CATALOG.yaml")
@@ -102,7 +102,7 @@ def authored_agent_ids(repo_root: pathlib.Path) -> set[str]:
 def authored_agent_source(source_path: pathlib.Path) -> tuple[dict, str]:
 	"""Return one authored agent's metadata and instruction body."""
 	markdown = source_path.read_text(encoding="utf-8")
-	metadata = install_lib.frontmatter.parse_markdown_frontmatter(markdown, source_path.as_posix())
+	metadata = index_lib.frontmatter.parse_markdown_frontmatter(markdown, source_path.as_posix())
 	lines = markdown.splitlines(keepends=True)
 	for index, line in enumerate(lines[1:], start=1):
 		if line.strip() == "---":
@@ -154,7 +154,7 @@ def authored_escalation_routes(source_path: pathlib.Path) -> list[str]:
 #============================================
 def load_agents(repo_root: pathlib.Path) -> list[dict]:
 	"""Load canonical agents after validating their authored instruction sources."""
-	catalog = install_lib.frontmatter.read_yaml_mapping(repo_root / CATALOG_PATH)
+	catalog = index_lib.frontmatter.read_yaml_mapping(repo_root / CATALOG_PATH)
 	agents = validate_catalog(catalog, authored_agent_ids(repo_root))
 	for entry in agents:
 		source_path = repo_root / "agents" / f"{entry['id']}.md"

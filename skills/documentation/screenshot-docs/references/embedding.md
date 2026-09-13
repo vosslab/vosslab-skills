@@ -4,7 +4,7 @@ Follow these conventions every time screenshot-docs captures and embeds images.
 
 ## Storage location
 
-Store all committed screenshots and animated demonstrations in `docs/screenshots/` at
+Store all managed screenshots and animated demonstrations in `docs/screenshots/` at
 the repo root.
 
 ```
@@ -57,7 +57,7 @@ cd /Users/vosslab/nsh/easy-screenshot && python3 -m screenshot.screencapture -A 
 
 List matching windows first with `--preview` to confirm the app name and title.
 
-Copy the captured image from `/tmp` into the committed folder:
+Copy the captured image from `/tmp` into the managed folder:
 
 ```bash
 cp /tmp/main_window.png docs/screenshots/main_window.png
@@ -70,67 +70,44 @@ Keep `docs/screenshots/` showing the current app and holding relevant visual evi
 Refresh on every run:
 - Reuse the same descriptive slug for each managed view, so a fresh capture
   overwrites the existing PNG in place and the embeds keep working.
-- Re-capture each managed view so the committed image matches the current UI.
+- Re-capture each managed view so the managed image matches the current UI.
 
 Prune stale images after embedding:
 - Build the set of `docs/screenshots/*.png` and `docs/screenshots/*.gif` paths still
   referenced by a live embed
   in `README.md` or any `docs/` file.
-- Remove every managed PNG or GIF outside that set through the target repository's
-  approved tracked-file removal workflow. For repositories whose rules select `git rm`,
-  run the required git-index preflight first, then use:
-
-```bash
-git rm docs/screenshots/old_login_screen.png
-```
+- Remove every managed PNG or GIF outside that set as a filesystem change after
+  confirming that it has no live embed and is not a `reference_` image. Record the
+  removed paths in the current-run verification receipt.
 
 Preserve intentional reference images:
 - Name any screenshot worth keeping for history with the `reference_` prefix
   (for example `reference_v1_dashboard.png`).
 - Keep `reference_` images during pruning even when no live embed points at them.
-- Note the reason a `reference_` image stays in the CHANGELOG entry so its purpose
-  stays clear.
+- Note the reason a `reference_` image stays in the current-run verification receipt
+  so its purpose stays clear.
 
-## Tracking age and version
+## Current-run freshness evidence
 
-Use git as the single source of truth for each screenshot's age and version. The
-commit that last touched a PNG carries both its date and its version hash, so no
-separate metadata file is needed.
+Use the capture run and the verification receipt as the source of truth for managed
+screenshots. Each receipt records the capture time, the managed paths that were
+written, the views verified, and any retained reference images or capture gaps.
 
-Read the last-update date (commit date, `YYYY-MM-DD`) of one visual:
-
-```bash
-git log -1 --format=%cs -- docs/screenshots/main_window.png
-```
-
-Read the version (short commit hash) that last changed it:
+List the managed assets currently present, oldest modification time first, when a
+filesystem freshness inventory is useful:
 
 ```bash
-git log -1 --format=%h -- docs/screenshots/main_window.png
-```
-
-Run [../scripts/screenshot_age.py](../scripts/screenshot_age.py) for a ready
-report on one file (date, version, and age in days):
-
-```bash
-screenshot_age.py -i docs/screenshots/main_window.png
-```
-
-List every committed screenshot with its date and version, oldest first, to spot
-stale images at a glance:
-
-```bash
-git ls-files docs/screenshots/'*.png' | while read -r f; do
-	printf '%s %s %s\n' "$(git log -1 --format='%cs %h' -- "$f")" "$f"
-done | sort
+find docs/screenshots -type f \( -name '*.png' -o -name '*.gif' \) -print0 | xargs -0 stat -f '%m %N' | sort -n
 ```
 
 Apply an age rule each run:
-- Treat any managed screenshot whose commit date predates the current app UI as stale.
-- Re-capture stale views; the resulting commit refreshes both the date and the
-  version hash automatically.
-- Read the brand-new captures (untracked, no commit yet) as version "uncommitted"
-  until the human commits them.
+- Treat any managed screenshot not captured and verified for the current UI run as
+  stale unless it is an intentional `reference_` image.
+- Re-capture stale views and record the newly written asset paths in the current-run
+  verification receipt.
+- Treat a newly captured asset as current once it is written to
+  `docs/screenshots/`, its embed is present in the managed block, and the relevant
+  documentation link resolves; no repository-history status is required.
 
 ## Embed syntax
 
@@ -168,17 +145,20 @@ Screenshots live inside a managed block bounded by two sentinel comment lines.
 The block is the single source of truth for where embeds go, and the sentinels
 survive every run so repeat runs stay idempotent.
 
-`readme-docs` inserts the empty block (the two sentinels with nothing between):
+`readme-docs` may insert the empty block (the two sentinels with nothing between):
 
 ```
 <!-- screenshots:begin (managed by screenshot-docs) -->
 <!-- screenshots:end -->
 ```
 
-When screenshot-docs runs independently and finds no block, establish the destination
-before capture. Route a landing-page refresh through `readme-docs`, or obtain approval
-for a caller-selected README/docs target and insert the exact empty block above. When
-neither route is in scope, report the missing target and preserve existing assets.
+When screenshot-docs runs independently and finds no block, choose a destination
+deterministically from the requested documentation scope: use the repository-root
+`README.md` when it is in scope; otherwise use the first explicitly requested
+existing Markdown file under `docs/`. Insert the exact empty block above in that
+target, then populate it. If neither suitable existing target is in the requested
+scope, make no asset or documentation change and return a zero-result/missing-target
+receipt that names the inspected scope and preserves all existing content.
 
 `screenshot-docs` replaces only the lines BETWEEN the sentinels with the embed
 block, and keeps both sentinel lines exactly as written:

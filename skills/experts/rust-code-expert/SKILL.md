@@ -1,6 +1,6 @@
 ---
 name: rust-code-expert
-description: "Engineer idiomatic Rust with ownership, borrow checker, lifetimes, traits, cargo, clippy, async/Tokio, unsafe, FFI/PyO3, Result error handling, CLI tools, and performance. Use for Rust code, native targets, or Rust API design."
+description: Use when Rust-specific ownership, lifetimes, traits, Result flow, async/Tokio, unsafe, FFI, Cargo, or native-target design determines the solution.
 ---
 
 # Rust code expert

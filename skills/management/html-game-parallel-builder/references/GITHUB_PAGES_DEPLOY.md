@@ -1,13 +1,22 @@
 # Deploying the dist/ build to GitHub Pages
 
-This guide explains how to publish the canonical production build from
-`dist/` to GitHub Pages.
+This guide explains how to prepare the canonical production build in `dist/`
+and, only when authorized, publish it to GitHub Pages.
 
-The expected workflow is:
+The default local workflow is:
 
 1. Build the game into `dist/`.
-2. Publish the `dist/` contents to GitHub Pages.
-3. Configure GitHub Pages to serve the build.
+2. Serve and test that artifact locally.
+3. Preserve the commands and any requested workflow configuration needed for
+   later delivery.
+
+Publication is an optional external-delivery branch. Enter it only when the
+request explicitly authorizes the named repository's GitHub/Pages mutation and
+the required credentials and current repository/Pages state are available.
+Otherwise, report a locally validated, deployment-ready artifact and the
+commands needed to publish it. Record that external publication was not
+performed; never claim a deployed URL, configured Pages source, or successful
+workflow run without direct evidence.
 
 ## What `dist/` is
 
@@ -29,7 +38,23 @@ dist/
 `dist/index.html` must exist. The skill's `build_github_pages.sh` asserts
 this before exiting.
 
-## Recommended deployment path
+## External-delivery authorization boundary
+
+Before any GitHub or Pages mutation, capture all of the following:
+
+- Explicit request authority for the named repository and delivery action.
+- A verified repository target and intended branch or Actions workflow.
+- Credentials authorized for the required mutation, including workflow-file
+  permission when the workflow is to be pushed.
+- Current Pages source/state when configuration may be changed.
+
+If any item is absent, do not attempt a remote action. The completed outcome is
+the validated `dist/` artifact plus the applicable local workflow/template and
+commands in this guide. This is non-blocking: continue build, preview, smoke,
+and artifact checks, and make the missing external state explicit in the
+delivery record.
+
+## Recommended authorized deployment path
 
 If you are new to GitHub Pages, use **GitHub Actions** (described below).
 GitHub Actions is usually easier because:
@@ -170,16 +195,16 @@ jobs:
         uses: actions/deploy-pages@v4
 ```
 
-Then configure GitHub Pages:
+With the authorization boundary satisfied, configure GitHub Pages:
 
 1. Open the repository on GitHub.
 2. Go to **Settings**.
 3. Open **Pages**.
 4. Under **Build and deployment**, set **Source** to **GitHub Actions**.
 
-After the next push to `main`, GitHub Actions will build and deploy the
-site. GitHub Pages may take a minute or two to show the new version
-after a successful deployment.
+After the authorized push to `main`, inspect the resulting Actions run and
+Pages state before reporting a deployment. GitHub Pages may take a minute or
+two to show the new version after a successful deployment.
 
 ### Workflow file push permissions
 
@@ -197,7 +222,7 @@ refusing to allow a Personal Access Token to create or update workflow
 This does not mean the workflow file is invalid. It means the current
 Git credentials are not allowed to modify workflow files.
 
-Use one of these fixes (in order of "least annoying"):
+Use one of these authorized remediation paths:
 
 1. **Add the workflow through the GitHub web UI.** Open
    `https://github.com/<owner>/<repo>/new/main/.github/workflows`,
@@ -323,13 +348,15 @@ Then configure GitHub Pages:
 4. Select the `gh-pages` branch and the root folder.
 5. Save.
 
-This skill's orchestrator should not pick this path automatically. Use
-GitHub Actions unless the user explicitly asks for branch-based
-deployment.
+This skill's orchestrator must not pick this path automatically. Use it only
+when the request explicitly authorizes branch-based deployment and the
+authorization boundary above is satisfied. The replacement commands are
+destructive to the target branch; verify the exact target branch and preserve
+its required content before running them.
 
-## Deployment checklist
+## Completion and publication checks
 
-Before publishing:
+Local deployment-ready evidence:
 
 - `./build_github_pages.sh` finishes successfully.
 - `dist/index.html` exists.
@@ -337,8 +364,15 @@ Before publishing:
 - Browser console has no missing-file errors.
 - Asset paths are relative, not root-relative.
 - `dist/.nojekyll` exists (the build script creates it).
-- GitHub Pages source is set to either **GitHub Actions** or the
+- The delivery record distinguishes the local `dist/` artifact from the live
+  preview and any explicitly requested `dist-single/` export.
+
+Additional evidence required before claiming publication:
+
+- The GitHub Pages source is verified as **GitHub Actions** or the intended
   `gh-pages` branch.
+- The authorized workflow run or branch publication succeeded.
+- The published URL is obtained from GitHub and loads successfully.
 
 ## Troubleshooting
 

@@ -6,14 +6,14 @@ A continuous axis with no canonical marked points. Distinct from a scale: a scal
 
 1. **Pick a continuous dimension.** Light wavelength, political orientation, formality, intimacy, certainty, generality.
 2. **State the extremes** (the 0% and 100% positions). These are the only fixed reference points.
-3. **Place the idea on the spectrum** — not as a pinpoint but as a range. Most ideas occupy a band, not a point.
+3. **Place the idea on the spectrum** - not as a pinpoint but as a range. Most ideas occupy a band, not a point.
 4. **Name the regions adjacent to the idea's band.** What's just to its left? Right? Coining names for adjacent regions is the generative move.
 
 ## What spectra surface
 
-- **False discreteness** — many ideas presented as binary (X or not-X) are actually band-occupants on a continuous spectrum. Spectrum-ifying breaks the false dichotomy.
-- **Unnamed middles** — between the two extremes there's usually a long unnamed region. Coining vocabulary for the middle is itself an idea-expansion.
-- **Bandwidth questions** — how wide is the idea's band? A narrow band is a precise idea; a wide band is a fuzzy one. The width is a property worth examining.
+- **False discreteness** - many ideas presented as binary (X or not-X) are actually band-occupants on a continuous spectrum. Spectrum-ifying breaks the false dichotomy.
+- **Unnamed middles** - between the two extremes there's usually a long unnamed region. Coining vocabulary for the middle is itself an idea-expansion.
+- **Bandwidth questions** - how wide is the idea's band? A narrow band is a precise idea; a wide band is a fuzzy one. The width is a property worth examining.
 
 ## Pairing
 

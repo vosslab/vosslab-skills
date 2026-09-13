@@ -104,11 +104,3 @@ Conventions:
 
 - Keep solution text plain when exporting to systems that do not render HTML.
 - For matching problems, use the PG 2.17-safe patterns documented in docs/webwork.
-
-## Delegated execution
-
-Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagent
-with one bounded task, the relevant repo rules, and one verification step.
-Do not continue the same subagent across unrelated follow-up work; dispatch a
-new subagent for each atomic task. See
-`docs/REPO_STYLE.md`.

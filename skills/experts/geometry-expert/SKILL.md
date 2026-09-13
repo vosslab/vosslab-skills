@@ -1,6 +1,6 @@
 ---
 name: geometry-expert
-description: Design, implement, debug, and review computational geometry. Use for CGAL, Shapely, scipy.spatial, robust predicates, intersections, polygons, hulls, Voronoi/Delaunay, meshes, motion planning, algebraic/conformal geometry, or realizability.
+description: Use when computational-geometry robustness, topology, predicates, intersections, tessellation, motion planning, or realizability determines correctness.
 ---
 
 # Geometry expert

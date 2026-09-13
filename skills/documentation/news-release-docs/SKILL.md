@@ -92,11 +92,3 @@ a hollow or stub doc.
 - A `/tmp` notes-file body path for `devel/make_release.py --notes-file`.
 - A short report: version resolved and its source, docs written or skipped, and
   any gaps (missing changelog content, version mismatch).
-
-## Delegated execution
-
-Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagent
-with one bounded task, the relevant repo rules, and one verification step.
-Do not continue the same subagent across unrelated follow-up work; dispatch a
-new subagent for each atomic task. See
-`docs/REPO_STYLE.md`.

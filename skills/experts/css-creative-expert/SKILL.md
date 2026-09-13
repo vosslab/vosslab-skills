@@ -1,6 +1,6 @@
 ---
 name: css-creative-expert
-description: Design, implement, debug, and review polished CSS. Use for gradients, backgrounds, custom properties, color functions, animation, dark mode, grid, flexbox, anchor positioning, cascade layers, selectors, container queries, and responsive design.
+description: Use when CSS-specific composition, cascade behavior, responsive layout, theming, or motion requires design or diagnostic judgment.
 ---
 
 # CSS creative expert

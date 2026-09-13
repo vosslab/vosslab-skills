@@ -6,7 +6,7 @@ import dataclasses
 import pathlib
 
 # local repo modules
-import install_lib.frontmatter
+import index_lib.frontmatter
 
 
 SUPPORTED_ADAPTERS = frozenset({
@@ -33,7 +33,7 @@ class InstallTarget:
 def read_markdown_metadata(path: pathlib.Path) -> dict:
 	"""Read required Markdown YAML frontmatter as a metadata mapping."""
 	markdown = path.read_text(encoding="utf-8")
-	metadata = install_lib.frontmatter.parse_markdown_frontmatter(markdown, path.as_posix())
+	metadata = index_lib.frontmatter.parse_markdown_frontmatter(markdown, path.as_posix())
 	return metadata
 
 

@@ -3,185 +3,82 @@ name: parallel-plan
 description: "In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that)."
 ---
 
-# Parallel Plan
+# Parallel plan
 
-## Overview
+## Purpose
 
-Use this skill as a lightweight implementation profile of `blueprint-plan-drafter` for current in-flight work.
-Its purpose is simple: do not try to do complex tasks alone; split into independent workstreams and use help.
-Keep the same core terminology (milestone/workstream/work package/patch), but reduce process weight so teams can start quickly.
-The ultimate goal is to reduce implementation wall time, not to maximize process, parallelism theater, or document volume.
+Turn current in-flight work into the smallest set of independent workstreams that lowers elapsed
+time to a correct, integrated result. Use the milestone, workstream, work package, and patch terms
+from `blueprint-plan-drafter` without creating a new full plan.
 
-## Terminology Contract
+## Select an execution mode
 
-- Milestone: short planning window for the current task.
-- Workstream: parallel lane with one clear owner.
-- Work package: assignment-sized chunk a single coder can finish.
-- Patch: reviewable change set used for progress reporting.
+- Use real parallel execution when independent streams can run concurrently with isolated file or
+  state ownership.
+- Use orchestration-only when the environment cannot provide concurrency; still write complete
+  stream briefs and dependency order.
+- Keep work serial when dispatch, coordination, and integration would cost more than the split saves.
+- Resolve shared types, schemas, fixtures, interfaces, and migration order before dispatch.
 
-## Core Nudge
+## Discover available roles
 
-- If a task has 2 or more separable tracks, split it.
-- If one person is becoming the bottleneck, split it.
-- If independence is unclear, do prerequisite work first, then split the rest.
-- Prefer asking for help early rather than debugging integration late.
-- Judge every split by one question: will this reduce elapsed time to a correct implementation?
+Inspect the live agent catalog exposed by the current environment and the target repository's
+owned agent metadata, if present. Read the matching role instructions before assignment. Use the
+most specialized available role whose permissions and responsibility fit the stream; use generic
+owner labels when no catalog exists. Treat the live catalog as authority rather than copying role
+names into this skill.
 
-## Relationship to Manager Planning
+## Define workstreams
 
-- `blueprint-plan-drafter` is the full manager-grade planning workflow.
-- `parallel-plan` is the lightweight operational version for active execution.
-- Use the same language and dependency discipline, but with less document overhead and faster dispatch.
+For each stream, state:
 
-## Choose Execution Mode
+- one objective and one owner;
+- the exact files, directories, or mutable state it owns;
+- dependencies and required inputs;
+- an assignment-sized set of work packages;
+- one focused verification step;
+- an orchestrator-selected, collision-safe report path when file-backed reports are needed.
 
-- Decide between `orchestration-only` and `real parallel execution`.
-- Choose the mode that minimizes elapsed time to a validated result.
-- Use `orchestration-only` when environment limits prevent true concurrency. Still split into independent streams and write complete stream briefs.
-- Use `real parallel execution` when streams can run at the same time in isolated sessions/worktrees or a single batched multi-task dispatch.
-- If briefing, coordination, and merge overhead exceed likely time savings, do not parallelize.
+Merge or serialize streams that would edit the same files or mutable state. Use the smallest number
+of streams that materially improves wall time.
 
-## Tooling and State
+## Dispatch and integration
 
-- Keep execution tooling non-prescriptive.
-- Treat `tmux` as an optional helper, not a requirement.
-- Accept any equivalent mechanism that provides true concurrent execution and isolation.
-- Default to lightweight text artifacts for task state (stream briefs, stream reports, unified plan).
-- Make the orchestrator choose report paths per run; do not hardcode a global fixed path.
-- Use collision-safe naming for report paths (for example: run id + stream id + timestamp/random suffix).
-- Prefer repo-local temp directories or other orchestrator-selected temp locations when practical.
-- Add a task database (`sqlite`/Berkeley DB) only when cross-session resume or external query requirements are explicit.
+1. Complete shared prerequisites in the manager context.
+2. Launch every ready stream concurrently through the environment's supported dispatch mechanism.
+3. Require compact handoffs; keep large logs and detailed findings in the assigned report files.
+4. Confirm every expected report exists and every stream-specific check passes.
+5. Integrate in dependency order and run the shared verification gate once.
+6. Repair failed streams or integration before declaring the milestone complete.
 
-## Repo Agent Awareness
+Use [`references/parallel_plan_templates.md`](references/parallel_plan_templates.md) for stream
+briefs, compact handoffs, report structure, synthesis, checkpoints, and fake-parallelism checks.
 
-- Before assigning owners, inspect the repo-root `agents/` directory if it exists.
-- Treat those `agents/*.md` files as the available role catalog for this repo, not as decorative docs.
-- Prefer assigning workstreams to actual available agent roles from that catalog.
-- Read the agent files themselves before dispatch so role assignment reflects real capabilities and constraints, not just filenames.
-- If the repo has no `agents/` directory, fall back to generic owner labels.
-- If the repo has both specialized and generic agents, prefer the most specialized agent that fits the stream.
+## Independence rules
 
-In this repo, the currently available root agents and their intended uses are:
-- `orchestrator`: split larger tasks into parallel subagents and synthesize outputs before code changes.
-- `parallelizer`: coordinate parallel teams with messaging; good for active multi-stream execution.
-- `planner`: write plans and docs only; never production code or tests.
-- `architect`: approve or reject cross-cutting design changes and resolve design disputes.
-- `coder`: implement production code from approved plans (sonnet, default tier); no self-approval and no architectural redesign.
-- `expert_coder`: implement hard, ambiguous, or design-sensitive production code (opus tier); same boundaries as `coder`, used when the default tier is not enough.
-- `integrator`: merge completed work, resolve conflicts, and maintain branch stability.
-- `reviewer`: read-only review and plan auditing; cannot modify production files.
-- `tester`: create and run tests; only modify files under `tests/`.
-- `monitor`: detect stalls, crashes, and deadlocks; read-only on code.
-- `scheduler`: trigger recurring workflows and retries; not for implementation or diagnosis.
-- `maintainer`: cleanup, lint maintenance, and index regeneration; not for feature work or architecture.
-- `image_evaluator`: evaluate images and screenshots against manager criteria and return structured assessment reports (opus tier); evaluation output only.
-- `playwright_operator`: drive webpages with Playwright, capture screenshots and page state for a manager; reports and artifacts only.
+- Parallel streams have no in-flight dependency on one another's output.
+- Each mutable resource has exactly one owner.
+- Dependency-establishing work finishes before dependent streams launch.
+- Research and review streams receive only the evidence needed for independent judgment.
+- Status messages report progress; follow-up editing work receives a fresh bounded assignment under
+  the active environment's delegation rules.
 
-## Workflow
+## Output contract
 
-1. Resolve shared prerequisites first.
-- Identify shared contracts (types, interfaces, schemas, migration order).
-- Execute shared prerequisites in the orchestrator main context.
-- Complete shared prerequisites before parallel dispatch.
+Produce:
 
-2. Define independent workstreams.
-- Assign each stream a clear goal, scope boundary, and owned files/directories.
-- Give each stream a named owner and, when available, an explicit agent role selected from the repo-root `agents/` directory.
-- Merge or re-scope any streams that would modify the same files.
-- Prefer `coder` (sonnet) for production implementation streams by default; prefer `expert_coder` (opus) for streams with complex, ambiguous, or design-sensitive implementation.
-- Prefer `tester` only for test work under `tests/`.
-- Prefer `reviewer` for read-only code review, audit, and plan-conformance checks.
-- Prefer `integrator` for merge sequencing, conflict resolution, and stabilization after streams complete.
-- Prefer `planner` for documentation-only planning outputs.
-- Prefer `architect` for streams that exist solely to settle a cross-cutting design decision.
-- Prefer `monitor` for observing progress, stalls, and deadlocks rather than fixing code.
-- Prefer `scheduler` only for recurring or retry-oriented coordination tasks.
-- Prefer `maintainer` for cleanup, lint maintenance, and derived-index regeneration.
-- Prefer the smallest number of streams that materially lowers wall time; more streams are not automatically better.
+1. The milestone objective.
+2. Workstreams with owners, scope boundaries, dependencies, and verification.
+3. Work packages within each workstream.
+4. An ordered patch and integration plan.
+5. Checkpoints with pass/fail criteria and correction paths.
 
-3. Dispatch correctly.
-- For real parallel execution, launch streams concurrently in one batch dispatch or separate isolated sessions.
-- Do not send stream tasks sequentially if true parallelism is required.
+Each stream handoff reports status, report path when assigned, three to six summary bullets,
+validation status, and blocking issues. Each detailed report records assumptions, decisions,
+concrete next steps, changed files, and validation performed.
 
-4. Enforce file-backed standardized stream outputs.
-- Assign each stream an orchestrator-selected unique report path in the stream brief.
-- Require each stream to write its full report only to the provided path.
-- Require each stream to return only a compact handoff message with status, report path, validation status, and a short bullet summary.
-- Require deep research streams to put full findings in report files and return only the compact handoff in chat.
-- Reject stream responses that paste full reports or large logs inline.
+## Completion
 
-5. Synthesize one ordered plan.
-- Synthesize only after all stream validations pass; if any validation fails, stop and fix before synthesis.
-- Read stream report files from orchestrator-assigned paths and merge them into one milestone execution sequence with checkpoints.
-- Add integration risks, dependency notes, and fallback handling.
-
-6. Gate before implementation.
-- Confirm no unresolved cross-stream dependencies remain.
-- Confirm each checkpoint has explicit verification commands.
-- Confirm all expected stream report files exist and are readable before synthesis.
-
-## Use only when applicable to the current task
-
-Use this minimum structure when speed matters:
-1. Milestone objective (one paragraph)
-2. Workstreams (owner, agent role if available, scope boundary, dependencies)
-3. Work packages per workstream (small, assignable)
-4. Patch plan (`Patch 1`, `Patch 2`, ...)
-5. Checkpoints with verification commands
-
-Do not skip dependency declarations. Milestone numbers are labels, not ordering.
-Ordering must be explicit through dependencies and gates.
-
-## Independence Rules
-
-- Parallelize only streams that do not depend on each other in-flight outputs.
-- Do not parallelize streams that edit the same files or the same mutable state.
-- If independence is uncertain, serialize that portion.
-- Prefer finishing dependency-establishing work first, then parallelizing the rest.
-- Do not split work purely to keep more agents busy; idle agents are cheaper than merge-heavy fake parallelism.
-
-## Orchestrator Memory Rules
-
-- Do not request full stream reports inline in orchestrator chat.
-- Use file-path handoff first; read files on demand during synthesis.
-- Default final handoffs to short bullet lists (`3-6` bullets).
-- Cap stream handoff size (for example, `<=1 KB` plus report path).
-- Keep verbose command output and diagnostics inside report files, not in handoff messages.
-
-## Required Output Contract
-
-Require this structure from each stream handoff message:
-1. Status
-2. Report file path
-3. Summary (`3-6` bullets)
-4. Validation status (`pass`/`fail`)
-5. Blocking issues (optional)
-
-Require this structure inside each stream report file:
-1. Assumptions
-2. Decisions
-3. Concrete next steps
-4. Changed files
-5. Validation performed
-
-Then synthesize:
-1. Ordered unified plan
-2. Checkpoints with pass/fail criteria
-3. Integration risks and mitigations
-
-## Subagent dispatch
-
-Dispatch a fresh subagent for each atomic task. Reusing a subagent across tasks
-carries stale context, encourages drift, and weakens independent judgment.
-`SendMessage` is for status only; do not use it to chain follow-on editing
-work onto a teammate that has already finished its assigned task. See
-`docs/REPO_STYLE.md`.
-
-## Templates
-
-Use the reusable templates in `references/parallel_plan_templates.md` for:
-- stream brief format
-- compact stream handoff format
-- stream report file format
-- synthesis and checkpoint checklist
-- anti-pattern checks for fake parallelism and memory overload
+Finish when all shared prerequisites are resolved, ownership is non-overlapping, every stream has a
+bounded brief and verification, all required reports and checks pass, and the integrated result has
+one ordered completion gate.

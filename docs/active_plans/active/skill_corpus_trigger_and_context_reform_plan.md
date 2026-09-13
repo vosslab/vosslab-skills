@@ -55,6 +55,12 @@ evidence rather than a line-count quota.
 - Recovery rule: when an entrypoint exceeds either maximum, consolidate its core control flow and
   move the remaining conditional procedures, examples, schemas, and mode-specific guidance to
   coherent references. Add no live-entrypoint size exemptions.
+- Autonomous execution rule: the manager may dispatch every implementation, inspection, and
+  review package to subagents without waiting for a human decision. Capture the fixed inputs,
+  expected invariants, commands, and results in repository evidence; use deterministic tests,
+  synthetic fixtures, debug harnesses, or independent subagent review for judgments that cannot
+  be made by a single static check. A disagreement is resolved by the stated policy, a third
+  independent inspection when needed, and recorded evidence, not by pausing for human approval.
 
 ## Scope
 
@@ -202,14 +208,14 @@ the dependency order shown below.
 - Depends on: Milestone 1.1 -- descriptions must implement the new selection rule.
 - Deliverables: update the four non-overlapping trigger groups below, using the audit's proposed
   wording as the starting point except for the clarified `repo-rules-reader` boundary.
-- Entry criteria: trigger matrix cases are frozen in the validation report before edits.
+- Entry criteria: the manager captures the audit's fixed intended and adjacent cases in the
+  validation-report worksheet before edits.
 - Exit criteria:
   - Every intended case still selects its skill.
   - Every recorded routine adjacent case does not select its specialist skill.
   - No body workflow is changed merely because its trigger changed.
-- Parallel-plan ready: yes -- max parallel doers: 4, one per group, only if parallel execution is
-  later authorized. Each group owns distinct frontmatter files and returns matrix results to one
-  integration owner.
+- Parallel-plan ready: yes -- max parallel doers: 4, one per group. Each group owns distinct
+  frontmatter files and returns fixture-backed matrix results to one integration owner.
 
 The trigger groups and intended boundaries are:
 
@@ -315,7 +321,11 @@ The trigger groups and intended boundaries are:
 - Entry criteria: current files are read while preserving content outside the intended edit
   boundary.
 - Exit criteria: every path has a documented conversion or exact-exclusion decision.
-- Parallel-plan ready: no -- one classifier prevents inconsistent encoding judgments.
+- Parallel-plan ready: yes -- assign independent manual-inspection subagents to the
+  `ideonomy-plain` and `ideonomy-rich` trees. Each inspector records character/path/function
+  evidence for a non-ASCII path; the encoding-policy owner applies the exact functional-notation
+  rule, requests a third independent inspection on dissent, and records the resolution. No human
+  classification or approval is a gate.
 
 #### Milestone 5.2: Enforce the exact encoding boundary
 
@@ -357,7 +367,8 @@ The trigger groups and intended boundaries are:
   - Representative use cases produce the same or better workflow and completion behavior.
   - Before/after lines and characters are recorded without treating the count alone as success.
 - Parallel-plan ready: yes -- max parallel doers: 4 by documentation, expert, management/planning,
-  and quality skill families after the shared rules are frozen.
+  and quality skill families after the shared rules are frozen. Each doer returns a measurement
+  fixture, route map, and deterministic link/test evidence to the integration owner.
 
 ### Phase 7: Enforcement and generation
 
@@ -445,13 +456,15 @@ The trigger groups and intended boundaries are:
 
 ### Work packages WP-T1 through WP-T4: Narrow trigger groups
 
-- Owner: one focused owner per group when parallel execution is authorized; otherwise one serial
-  trigger owner.
+- Owner: one focused owner per group under the manager, with a serial trigger owner only when the
+  manager determines that the groups no longer have independent file ownership.
 - Touch points: the 16 `SKILL.md` frontmatter descriptions listed in Phase 2.
 - Depends on: WP-A1.
 - Acceptance criteria: each group passes its intended/adjacent matrix and preserves body behavior.
-- Evidence or review: three cold reads of the fixed cases; report majority and dissent without an
-  exact-wording regression test.
+- Evidence or review: three independent subagent cold reads of captured fixed cases, with the
+  expected verdict withheld until each result is recorded. Report majority and dissent without an
+  exact-wording regression test; route dissent to a fourth policy-bound review if the first three
+  do not produce a majority.
 - Obvious follow-ons: pass final descriptions to the generator owner.
 
 ### Work package WP-C1: Consolidate generic delegation
@@ -471,8 +484,9 @@ The trigger groups and intended boundaries are:
 - Depends on: WP-A1.
 - Acceptance criteria: core planning authorities always load; specialized guidance loads by concern;
   repository evidence is inspected for the actual boundary.
-- Evidence or review: exercise one simple plan and one multi-concern plan and record which sources
-  were purposefully loaded.
+- Evidence or review: exercise captured simple-plan and multi-concern synthetic request fixtures,
+  record which sources were purposefully loaded, and use a debug harness or scripted trace where
+  available to prove the route selection.
 - Obvious follow-ons: keep all required planning behavior and update any internal links.
 
 ### Work package WP-C3: Consolidate repeats and live catalogs
@@ -504,7 +518,8 @@ The trigger groups and intended boundaries are:
 - Depends on: WP-A1.
 - Acceptance criteria: every `SKILL.md` and ideonomy-plain file is ASCII; exact rich-reference
   exclusions correspond only to functional glyph use.
-- Evidence or review: fresh character/path inventory plus general and entrypoint-specific gates.
+- Evidence or review: fresh character/path inventory, independent manual subagent classifications,
+  and general and entrypoint-specific gates.
 - Obvious follow-ons: include the exact retained UTF-8 paths and rationale in the validation report.
 
 ### Work package WP-S1: Route oversized entrypoints
@@ -514,7 +529,8 @@ The trigger groups and intended boundaries are:
 - Depends on: WP-C2, WP-C3, WP-I1, and WP-I2.
 - Acceptance criteria: conditional detail moves to reachable owners; coherent workflow and every
   named safeguard remain in force.
-- Evidence or review: per-skill before/after measurement and representative behavioral review.
+- Evidence or review: per-skill before/after measurement, captured representative-use fixtures,
+  deterministic route/link checks, and independent subagent behavioral review.
 - Obvious follow-ons: supply final corpus measurements to WP-G1.
 
 ### Work package WP-G1: Harden size enforcement
@@ -534,8 +550,9 @@ The trigger groups and intended boundaries are:
 - Depends on: WP-T1 through WP-T4, WP-I1, WP-I2, and WP-G1.
 - Acceptance criteria: generated projections match sources and all focused gates pass together.
 - Evidence or review: commands and exact results recorded in the validation report.
-- Obvious follow-ons: leave the completed active plan and report ready for human review without
-  repository-history or staging operations.
+- Obvious follow-ons: leave the completed active plan and report with machine-readable commands,
+  fixtures, and independent-review evidence; do not perform repository-history or staging
+  operations.
 
 ## Acceptance criteria and gates
 
@@ -558,9 +575,11 @@ The trigger groups and intended boundaries are:
   reviewer, expert parity, and ASCII policy remain behaviorally unchanged.
 - Integration gate: frontmatter, prefix, discovery, sidecar, internal-link, Markdown-link, parity,
   ASCII, whitespace, size, index, and manifest checks pass together after one regeneration.
-- Independent review gate, when authorized: a reviewer receives the changed sources and fixed
-  cases without the expected verdict, then reports selection misses, accidental workflow loss, or
-  unsupported exclusions.
+- Independent review gate: the manager assigns a reviewer subagent that did not edit the affected
+  sources the changed sources and fixed cases without the expected verdict. The reviewer reports
+  selection misses, accidental workflow loss, or unsupported exclusions; a finding blocks the
+  affected package until a fresh independent review passes. This gate is required and does not
+  await human authorization.
 
 ## Test and verification strategy
 
@@ -572,8 +591,7 @@ exact description snapshots would preserve wording rather than behavior.
 Run generators only after all frontmatter changes:
 
 ```bash
-source source_me.sh && python3 tools/build_plugin_manifest.py
-source source_me.sh && python3 tools/build_skills_index.py
+source source_me.sh && python3 index_lib/build_all.py
 ```
 
 Run the integrated focused gate:
@@ -587,6 +605,7 @@ source source_me.sh && python3 -m pytest \
   tests/test_skill_discovery.py \
   tests/test_expert_skill_parity.py \
   tests/test_skill_body_size.py \
+  tests/test_skill_entrypoint_ascii.py \
   tests/test_ascii_compliance.py \
   tests/test_whitespace.py \
   tests/test_no_local_only_markdown_links.py \
@@ -597,10 +616,13 @@ source source_me.sh && python3 -m pytest \
 
 Failure semantics:
 
-- A trigger miss blocks its trigger group and requires description revision plus a fresh cold pass.
+- A trigger miss blocks its trigger group and requires description revision plus a fresh
+  independent cold pass against the captured case fixture.
 - Missing applicable planning authority blocks the planner-routing milestone; loading unrelated
-  specialized authority sends the route back for simplification.
-- A missing domain safeguard blocks duplication or entrypoint cleanup.
+  specialized authority sends the route back for simplification. Synthetic simple and
+  multi-concern request fixtures make this decision reproducible without a human-run plan.
+- A missing domain safeguard blocks duplication or entrypoint cleanup; prove preservation through
+  the existing named check, a captured fixture, or a targeted debug harness before continuing.
 - A non-ASCII `SKILL.md`, wildcard exclusion, or unexplained exact UTF-8 path blocks ASCII closure.
 - A hard size failure blocks generation; consolidate the control plane and move conditional detail
   into coherent, directly routed references.
@@ -623,19 +645,22 @@ Failure semantics:
 
 ## Rollout and release checklist
 
-- [ ] Authoring authority reflects the clarified trigger, context, size, and encoding design.
-- [ ] All 16 descriptions pass intended and adjacent selection review.
-- [ ] `repo-rules-reader` preserves comprehensive one-pass orientation and session reuse.
-- [ ] `blueprint-plan-drafter` uses core, concern-dependent, and discovered-evidence inputs.
-- [ ] Generic duplication and live catalogs have one owner; domain contracts remain.
-- [ ] `make-goal` live identity is consistent before generation.
-- [ ] Every `SKILL.md` and ideonomy-plain file is ASCII.
-- [ ] Every retained UTF-8 path is exact and functionally justified.
-- [ ] Entrypoint cleanup preserves coherent workflows and routed large references.
-- [ ] The hard 150-line/8,000-character size test passes the live corpus and its own boundary cases.
-- [ ] Plugin manifests and `docs/SKILLS_INDEX.md` are regenerated from final sources.
-- [ ] Focused integrated validation and the evidence report are complete.
-- [ ] No repository-history or staging operation was performed.
+- [x] Authoring authority reflects the clarified trigger, context, size, and encoding design.
+- [x] All 16 descriptions pass captured intended and adjacent selection fixtures with independent
+  subagent review.
+- [x] `repo-rules-reader` preserves comprehensive one-pass orientation and session reuse.
+- [x] `blueprint-plan-drafter` uses core, concern-dependent, and discovered-evidence inputs.
+- [x] Generic duplication and live catalogs have one owner; domain contracts remain.
+- [x] `make-goal` live identity is consistent before generation.
+- [x] Every `SKILL.md` and ideonomy-plain file is ASCII.
+- [x] Every retained UTF-8 path is exact and functionally justified by independent manual
+  subagent inspection.
+- [x] Entrypoint cleanup preserves coherent workflows and routed large references.
+- [x] The hard 150-line/8,000-character size test passes the live corpus and its own boundary cases.
+- [x] Plugin manifests and `docs/SKILLS_INDEX.md` are regenerated from final sources.
+- [x] Focused integrated validation, synthetic/fixture evidence, and the independent-review record
+  are complete.
+- [x] No repository-history or staging operation was performed.
 
 ## Documentation close-out requirements
 
@@ -643,8 +668,8 @@ Failure semantics:
   validation report named in Milestone 7.2.
 - `docs/CHANGELOG.md` entry: record trigger narrowing, context routing, shared-guidance ownership,
   `make-goal`, ASCII decisions, size policy, generator output, failures, and exact test results.
-- Archive / closure notes: leave the completed plan in place for human review; plan archival is
-  outside this execution scope.
+- Archive / closure notes: leave the completed plan and reproducible evidence in place for later
+  inspection; plan archival is outside this execution scope and is not a completion dependency.
 
 ## Patch plan and reporting format
 
@@ -660,11 +685,13 @@ Each patch report states files changed, requirement satisfied, focused verificat
 dependency, and any safeguard explicitly rechecked. Reports never claim whole-corpus completion
 before Patch 7 passes.
 
-## Open questions and decisions needed
+## Autonomous decision procedure
 
-- Manager decision procedure for each ideonomy-rich UTF-8 path:
-  - Decision owner or dedicated class: encoding-policy owner.
-  - Evidence and decision rule: retain UTF-8 only when replacing the character would change the
-    notation or rendered teaching example; otherwise convert the file to ASCII.
-- Non-blocking follow-up: none. The procedures above resolve the remaining per-file choices during
+- For every ideonomy-rich UTF-8 path, the encoding-policy owner uses the independent inspection
+  record and retains Unicode only when replacing the character changes the notation or rendered
+  teaching example; otherwise the file is converted to ASCII.
+- A dissenting inspection receives a third independent subagent read. The manager applies the same
+  functional-notation rule to the recorded evidence and continues; there is no human decision
+  point.
+- Non-blocking follow-up: none. The procedures above resolve all remaining per-file choices during
   execution without changing the requested outcome.

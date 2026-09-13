@@ -12,4 +12,4 @@ tree-sitter-rust  # Rust grammar for the Graphify cfg(test) prune step
 
 # Development dependencies
 pyyaml
-tabulate  # plain-text table rendering for developer tools (tools/list_loaded_skills.py)
+tabulate  # plain-text table rendering for index_lib/list_loaded_skills.py

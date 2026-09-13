@@ -11,9 +11,9 @@ An ordered axis with marked points. The idea is placed at its position; what's a
 
 ## What scales surface
 
-- **Quantitative parametrization** — turning a categorical idea into a position-on-an-axis is itself a re-framing.
-- **Adjacency-as-alternative** — the position next to the idea is the easiest expansion (often an "almost the same but more / less of X" variant).
-- **Unnamed extremes** — the 100% version of many ideas has no canonical name. Coining one is generative.
+- **Quantitative parametrization** - turning a categorical idea into a position-on-an-axis is itself a re-framing.
+- **Adjacency-as-alternative** - the position next to the idea is the easiest expansion (often an "almost the same but more / less of X" variant).
+- **Unnamed extremes** - the 100% version of many ideas has no canonical name. Coining one is generative.
 
 ## Worked example
 

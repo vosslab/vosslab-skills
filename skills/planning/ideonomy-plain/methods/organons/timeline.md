@@ -11,10 +11,10 @@ A scale with time as the axis and events as marks. Distinct from a generic scale
 
 ## What timelines surface
 
-- **Past-future asymmetry** — the same idea looks different from the past (causal explanation) than from the future (planning/aspiration). Both views matter.
-- **Co-occurring events** — placing the idea on a timeline alongside other events surfaces correlations and conflicts the idea-in-isolation hides.
-- **Empty stretches** — long gaps in the timeline around the idea reveal periods of dormancy, accumulation, or invisibility that warrant explanation.
+- **Past-future asymmetry** - the same idea looks different from the past (causal explanation) than from the future (planning/aspiration). Both views matter.
+- **Co-occurring events** - placing the idea on a timeline alongside other events surfaces correlations and conflicts the idea-in-isolation hides.
+- **Empty stretches** - long gaps in the timeline around the idea reveal periods of dormancy, accumulation, or invisibility that warrant explanation.
 
 ## Pairing
 
-Timelines pair with **tree-finding** (each event can be decomposed into a sub-timeline of finer events) and with **abstraction-lift** (the "shape of the trajectory" abstracts away from specific event content — exponential growth, S-curve, oscillation, decay — and re-instantiates in other domains). They're the right organon when the idea is durational or trajectory-shaped rather than static.
+Timelines pair with **tree-finding** (each event can be decomposed into a sub-timeline of finer events) and with **abstraction-lift** (the "shape of the trajectory" abstracts away from specific event content - exponential growth, S-curve, oscillation, decay - and re-instantiates in other domains). They're the right organon when the idea is durational or trajectory-shaped rather than static.

@@ -9,9 +9,9 @@ import shutil
 from dataclasses import dataclass
 
 # local repo modules
-import install_lib.agent_catalog
 import install_lib.install_target_data
-import install_lib.skill_discovery
+import index_lib.agent_catalog
+import index_lib.skill_discovery
 
 
 @dataclass(frozen=True)
@@ -63,13 +63,13 @@ def _item_sources(
 	target: install_lib.install_target_data.InstallTarget,
 ) -> list[tuple[str, str, pathlib.Path | None, bytes | None]]:
 	"""Return linked skills and authored or rendered platform agents."""
-	discovery = install_lib.skill_discovery.collect_skill_files(repo_root, repo_root / "skills")
+	discovery = index_lib.skill_discovery.collect_skill_files(repo_root, repo_root / "skills")
 	if target.target_id == "codex":
 		categories = sorted({path.parent.parent for path in discovery.skill_files})
 		items = [("skills", path.name, path, None) for path in categories]
 	else:
 		items = [("skills", path.parent.name, path.parent, None) for path in discovery.skill_files]
-	agent_sources = install_lib.agent_catalog.adapter_agent_sources(repo_root, target.adapter)
+	agent_sources = index_lib.agent_catalog.adapter_agent_sources(repo_root, target.adapter)
 	for name, source, contents in agent_sources:
 		items.append(("agents", name, source, contents))
 	return items

@@ -69,29 +69,17 @@ guaranteed a README link in the same run; link it on a later pass when it is pre
    - Read `AGENTS.md`, `docs/REPO_STYLE.md`, and `docs/MARKDOWN_STYLE.md`.
    - List `docs/` contents and root docs (`AGENTS.md`, `README.md`, `LICENSE`).
 2. Dispatch the per-doc skills by dependency edges
-   - Start immediately in one concurrent batch (no dependencies): `arch-docs`,
-     `setup-install-usage-docs`, `see-also-docs`, `news-release-docs`,
-     `readme-docs`, and the remaining-docs audit (step 3).
-   - `screenshot-docs` <- `readme-docs`: dispatch as soon as `readme-docs` has reserved
-     the screenshot block, concurrently with the still-running producers (do not wait
-     for the slow `see-also-docs`).
-   - `agents-md-fixer` <- doc producers and audit outputs: dispatch once the `docs/*.md`
-     files it links exist.
+   - Follow the ownership and dependency edges above. Start independent owners and the
+     remaining-docs audit together; release downstream owners when their input exists.
    - `screenshot-docs` runs after README prose exists. When no app window or display is
      available, it adds a Known-gaps line to the report, leaves existing screenshots and
      the managed block in place, leaves both block sentinels for the next run, and
      `agents-md-fixer` still proceeds.
    - Let each skill decide whether its docs need creation or refresh; each skill owns
      its own content.
-   - Under `delegate-manager-to-subagents`, dispatch a fresh subagent per skill. Send
-     every dependency-free task as one parallel batch, then dispatch `screenshot-docs`
-     and `agents-md-fixer` the moment their edges resolve rather than waiting on the
-     whole batch.
 3. Audit the remaining docs (this skill's direct responsibility)
-   - Each file below is an independent atomic task that joins the dependency-free batch.
-     Under `delegate-manager-to-subagents`, give each file its own subagent with one
-     owner, one target file, and one verification result. This list is the source of
-     truth for which files the audit covers.
+   - Each file below is an independent audit target. This list is the source of truth
+     for which files the audit covers.
    - For each below, create or update a doc only when repo evidence supports at
      least one useful section beyond its title, intro, and any known gaps. When
      evidence is thin, record the doc under Known gaps in the step-8 report and
@@ -122,9 +110,7 @@ guaranteed a README link in the same run; link it on a later pass when it is pre
    - Keep links relative and descriptive.
    - Use present tense, short bullets, and avoid speculation.
 7. Update changelog
-   - Update `docs/CHANGELOG.md` directly when this skill runs as a standalone
-     task; under `delegate-manager-to-subagents`, dispatch a docs subagent to add
-     the entry.
+   - Update `docs/CHANGELOG.md` directly.
 8. Provide a short report
    - Per-doc skills run: which of the per-doc owners ran and what each reported.
    - Created: list new docs.
@@ -144,19 +130,3 @@ When evidence supports a doc this skill writes directly (step 3), follow this sh
 When not to create a file: when the only content would be a title, an intro, and a
 known-gaps list, write no file. Record the doc under Known gaps in the step-8 report so
 the gap stays visible and the owning skill can create the doc once evidence supports it.
-
-## Delegated execution
-
-Under `delegate-manager-to-subagents`, dispatch a fresh subagent for each per-doc
-skill and for each remaining-docs audit file, each with one bounded task, the
-relevant repo rules, and one verification step. Give each subagent a single atomic
-task.
-
-Be efficient with time: subagents and tokens are cheap, wall time is scarce.
-Dispatch every dependency-free task as one parallel batch, then release
-`screenshot-docs` and `agents-md-fixer` the moment their edges in "Owned-doc routing"
-resolve rather than waiting on the whole batch (this keeps the fast
-`readme-docs` -> `screenshot-docs` path off the critical path of the network-bound
-`see-also-docs`). Give each task one owner, one clear outcome, and one
-verification step. See `docs/REPO_STYLE.md#core-philosophies` ("Be efficient with
-time", "Atomic task decomposition", "Prompt positively") and the `parallel-plan` skill.

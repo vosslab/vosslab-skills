@@ -36,26 +36,22 @@ structural evidence while the primary tier supplies the release-gated integratio
 ## Regenerate outputs
 
 Edit canonical skill, category, sidecar, catalog, or authored agent source data, then run the
-matching generator or validator. The check forms report drift without writing files.
+merged indexing command. Its check form reports sidecar or generated-output drift without writing.
 
 ```bash
-source source_me.sh && python3 tools/build_skills_index.py
-source source_me.sh && python3 tools/build_plugin_manifest.py
-source source_me.sh && python3 tools/build_agents_index.py
-
-source source_me.sh && python3 tools/build_skills_index.py --check
-source source_me.sh && python3 tools/build_plugin_manifest.py --check
-source source_me.sh && python3 tools/openai_sidecars.py --check
-source source_me.sh && python3 tools/build_agents_index.py --check
+source source_me.sh && python3 index_lib/build_all.py
+source source_me.sh && python3 index_lib/build_all.py --check
 ```
 
-The manifest builder produces Claude, Codex, Cursor, and OpenCode manifest artifacts. The agent
-index builder produces [AGENTS_INDEX.md](AGENTS_INDEX.md) from
+The merged launcher validates OpenAI sidecars, produces Claude, Codex, Cursor, and OpenCode
+manifest artifacts, writes [SKILLS_INDEX.md](SKILLS_INDEX.md), and builds
+[AGENTS_INDEX.md](AGENTS_INDEX.md) from
 [agents/CATALOG.yaml](../agents/CATALOG.yaml) and authored Markdown. The installer renders each
 target-specific agent file directly from those canonical sources.
-`tools/openai_sidecars.py --check` validates every tracked skill's `agents/openai.yaml`: a non-empty
-display name, a 25-64 character short description, and a default prompt containing the skill's
-`$name`. It also verifies category-specific required paths from `CATEGORY.md`.
+The focused commands under [index_lib/](../index_lib/) remain available when maintaining one
+projection. `index_lib/openai_sidecars.py --check` validates every tracked skill's
+`agents/openai.yaml`: a non-empty display name, a 25-64 character short description, a default
+prompt containing the skill's `$name`, and category-specific required paths from `CATEGORY.md`.
 
 ## Installer lifecycle
 

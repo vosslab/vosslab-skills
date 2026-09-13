@@ -1,6 +1,6 @@
 ---
 name: podman-expert
-description: "Engineer rootless Podman containers, pods, Containerfile/Buildah builds, images, registries, Skopeo, volumes, compose, Quadlet/systemd, networking, podman kube generate, and macOS podman machine. Use for Podman lifecycle or deployment work."
+description: Use when designing or diagnosing a Podman runtime, build, networking, storage, pod, Quadlet, registry, or macOS machine workflow.
 ---
 
 # Podman expert

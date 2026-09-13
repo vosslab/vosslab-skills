@@ -1,12 +1,12 @@
 # Rendering: tree
 
-A tree is a branching hierarchy — parents above, siblings across, children below. Walk all four directions; the asymmetries surface ideas.
+A tree is a branching hierarchy -- parents above, siblings across, children below. Walk all four directions; the asymmetries surface ideas.
 
 ## Form
 
 Use `╭── ├── │   ╰──` connectors for a soft, hand-drawn feel. Save `┌── ├── │   └──` for stricter, classification-style trees.
 
-## Worked example — *meditation: walking the tree*
+## Worked example -- *meditation: walking the tree*
 
 ```
                               ╔═══════════════════════════════╗
@@ -26,12 +26,12 @@ Use `╭── ├── │   ╰──` connectors for a soft, hand-drawn feel
                                             ▒           ▒              █             ▒              ▒
 ```
 
-Density `█` / `▒` shows canonical-vs-marginal at the leaf level — *retreat* is the most-saturated child, the rest are partial.
+Density `█` / `▒` shows canonical-vs-marginal at the leaf level -- *retreat* is the most-saturated child, the rest are partial.
 
 ## Conventions
 
-- Root in `╔═╗` double-line — the most important node visually
-- Mid-level nodes in `╭─╮` rounded — soft, intermediate
+- Root in `╔═╗` double-line -- the most important node visually
+- Mid-level nodes in `╭─╮` rounded -- soft, intermediate
 - Leaves are bare text or `▒`/`█` density blocks
 - Vertical drop with `│`, horizontal gather with `┴`, branch with `├` or `┤`
 - Siblings always horizontally aligned at the same row
@@ -41,9 +41,9 @@ Density `█` / `▒` shows canonical-vs-marginal at the leaf level — *retreat
 
 The point of a tree is usually one of:
 
-1. **Empty branch** — a child slot that should exist but doesn't. Mark with `◇` and isolate visually.
-2. **Cross-level sibling** — at one level up, the peers reframe the idea (meditation → markets, juries, festivals). Often the most surprising expansion. Render this *one level up* with a banner `═══ AT ONE LEVEL UP ═══` so the reader sees the reframe.
-3. **Mixed-level mistake** — two siblings at very different levels of generality. Mark with `▲` and a note: the taxonomy is sloppy here.
+1. **Empty branch** -- a child slot that should exist but doesn't. Mark with `◇` and isolate visually.
+2. **Cross-level sibling** -- at one level up, the peers reframe the idea (meditation → markets, juries, festivals). Often the most surprising expansion. Render this *one level up* with a banner `═══ AT ONE LEVEL UP ═══` so the reader sees the reframe.
+3. **Mixed-level mistake** -- two siblings at very different levels of generality. Mark with `▲` and a note: the taxonomy is sloppy here.
 
 ## Anti-patterns
 

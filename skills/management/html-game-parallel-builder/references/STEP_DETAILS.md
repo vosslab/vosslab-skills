@@ -3,17 +3,25 @@
 Long-form companion to the step list in [`../SKILL.md`](../SKILL.md).
 Each section here expands the corresponding control-plane summary.
 
-## Step 1: Gather UI preferences (2 min)
+## Step 1: Establish UI decisions from evidence
 
-Before writing any code, ask the user about interaction style:
+Do not stop implementation or testing to ask preference questions when the
+request is otherwise buildable. Resolve each missing UI choice in this order:
 
-- Buttons vs dropdowns vs drag-and-drop?
-- Dark theme vs light?
-- Mobile support needed?
-- Any visual references or screenshots?
+1. Explicit request constraints and supplied visual references.
+2. Repository evidence: existing screens, tokens, components, product docs,
+   accessibility conventions, and captured browser fixtures.
+3. Documented deterministic defaults: use visible buttons for discrete actions,
+   a responsive layout, keyboard-accessible controls, system-preferred color
+   scheme when no palette exists, and the smallest interaction model that
+   supports the requested core loop.
 
-You must actually ask. Do not default to a style without confirmation.
-A 2-minute conversation prevents a 30-minute rewrite.
+Record the chosen inputs and defaults with the implementation evidence so a
+later reviewer can reproduce the decision. A screenshot or browser fixture is
+evidence of the rendered result, not a reason to wait for a style decision.
+If the evidence conflicts, use the explicitly requested behavior; otherwise
+use the established repository pattern. Do not invent a feature merely to make
+one presentation choice more elaborate.
 
 ## Step 2: Define minimum viable scope
 
@@ -122,10 +130,8 @@ chmod +x devel/setup_typescript.sh devel/setup_playwright.sh \
          run_web_server.sh build_github_pages.sh \
          export_single_file.sh check_codebase.sh dist_clean.sh
 mv src_index.html src/index.html
-mv src_layout.md docs/SRC_LAYOUT.md   # or wherever the project keeps docs
+mv src_layout.md docs/SRC_LAYOUT.md   # or the project's documented source-layout location
 # tsconfig.json, eslint.config.js, package.json stay at repo root
-mkdir -p .github/workflows
-mv deploy_pages_workflow.yml .github/workflows/deploy-pages.yml
 ```
 
 After copying, run `./devel/setup_typescript.sh` (or `npm run setup`) to
@@ -133,21 +139,15 @@ install dependencies and produce the initial `dist/` build.
 Optionally run `./devel/setup_playwright.sh` to install browsers for
 the between-batch smoke test.
 
-Do not overwrite an existing `.github/workflows/deploy-pages.yml`; if
-one already exists, leave it alone and patch minimally.
-
-The workflow file under `.github/workflows/` requires workflow-file
-permission to push. The user typically gets:
-
-```text
-refusing to allow a Personal Access Token to create or update workflow
-.github/workflows/deploy-pages.yml without workflow scope
-```
-
-When this happens, the user should add the workflow through the GitHub
-web UI or update their token's permission. See
-[`GITHUB_PAGES_DEPLOY.md`](GITHUB_PAGES_DEPLOY.md)
-for the three remediations in order of "least annoying".
+The `dist/` build is the default completion artifact. Treat a local
+`.github/workflows/deploy-pages.yml` as optional delivery configuration: do
+not overwrite an existing workflow, and create or modify it only when the
+request includes that configuration. External push, Pages configuration, and
+publication are a separate authorized branch; read
+[`GITHUB_PAGES_DEPLOY.md`](GITHUB_PAGES_DEPLOY.md) before entering it. If
+authority, credentials, repository target, or current Pages state is missing,
+finish and validate `dist/`, retain the needed workflow/template and commands
+locally, and record external delivery as not performed rather than blocked.
 
 The build pipeline:
 
@@ -160,7 +160,7 @@ The build pipeline:
 `tsc` is the type-check gate only; esbuild is the bundler. Do not
 remove `noEmit: true` from `tsconfig.json`.
 
-## Step 6: Integration fix loop
+## Step 6: Integration and independent-review loop
 
 After the final smoke test, if Playwright finds errors:
 
@@ -173,3 +173,13 @@ After the final smoke test, if Playwright finds errors:
 
 Repeat until clean. The fix scope should be small (1-2 modules) if
 contracts were followed.
+
+After a clean repair loop, assign a fresh reviewer who did not author the
+affected modules. Give the reviewer the request, captured UI-decision evidence,
+build and smoke results, and the produced artifact without an expected verdict.
+The reviewer independently checks the requested core loop, browser evidence,
+and the distinction between live preview, `dist/`, and optional `dist-single/`.
+If the reviewer disagrees with the implementation team, send the same evidence
+to a third independent inspector and apply the documented contracts and
+fixtures. Repair and repeat the review if an evidence-backed finding remains;
+do not defer the judgment to a human preference decision.

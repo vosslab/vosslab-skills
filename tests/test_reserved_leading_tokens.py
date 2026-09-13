@@ -14,7 +14,7 @@ import file_utils
 REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
 
-import install_lib.skill_discovery
+import index_lib.skill_discovery
 
 # Harness built-in slash commands. Update when the harness changes.
 HARNESS_RESERVED = {
@@ -62,7 +62,7 @@ def leading_token(skill_name: str) -> str:
 #============================================
 def active_skill_names() -> list[str]:
 	"""Return names for every publishable skill across category folders."""
-	discovery = install_lib.skill_discovery.collect_skill_files(pathlib.Path(REPO_ROOT), SKILLS_DIR)
+	discovery = index_lib.skill_discovery.collect_skill_files(pathlib.Path(REPO_ROOT), SKILLS_DIR)
 	return sorted(skill_file.parent.name for skill_file in discovery.skill_files)
 
 

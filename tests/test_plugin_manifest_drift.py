@@ -8,7 +8,7 @@ array is a thematic tag list (`skills`, `claude-code`, ...), not a skill
 roster, and is intentionally not checked here.
 
 This test catches the case where someone added or renamed a skill but
-forgot to run `tools/build_plugin_manifest.py`.
+forgot to run `index_lib/build_all.py`.
 """
 
 import json
@@ -16,7 +16,7 @@ import pathlib
 
 import file_utils
 
-import install_lib.skill_discovery
+import index_lib.skill_discovery
 
 REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
@@ -30,7 +30,7 @@ def test_plugin_manifest_skills_match_skill_dirs() -> None:
 	The `skills` array in `.claude-plugin/plugin.json` must list every
 	publishable skill directory returned by shared discovery, and only those.
 	"""
-	discovery = install_lib.skill_discovery.collect_skill_files(
+	discovery = index_lib.skill_discovery.collect_skill_files(
 		pathlib.Path(REPO_ROOT),
 		SKILLS_DIR,
 	)
@@ -54,10 +54,10 @@ def test_plugin_manifest_skills_match_skill_dirs() -> None:
 	assert not missing_in_manifest, (
 		f"{len(missing_in_manifest)} skill folder(s) missing from manifest "
 		f"skills: {', '.join(missing_in_manifest)}. "
-		f"Run: tools/build_plugin_manifest.py"
+		f"Run: index_lib/build_all.py"
 	)
 	assert not extra_in_manifest, (
 		f"{len(extra_in_manifest)} skills entry(ies) in manifest with no "
 		f"matching skill folder: {', '.join(extra_in_manifest)}. "
-		f"Run: tools/build_plugin_manifest.py"
+		f"Run: index_lib/build_all.py"
 	)

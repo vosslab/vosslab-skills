@@ -1,6 +1,6 @@
 ---
 name: wasm-rust-expert
-description: "WebAssembly, wasm-bindgen, wasm-pack, web-sys, wasm32 targets, WASI, browser Canvas, and Wasm performance engineering. Use for Rust code that ships to browsers or Wasm runtimes; use rust-code-expert for pure Rust."
+description: Use when Rust/WebAssembly boundary design, wasm-bindgen or web-sys integration, WASI targeting, browser Canvas, parity, or Wasm performance is central.
 ---
 
 # Wasm Rust expert

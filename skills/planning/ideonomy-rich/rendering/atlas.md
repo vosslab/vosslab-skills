@@ -4,9 +4,9 @@ An atlas is a *bound collection of maps over the same territory at different sca
 
 ## Form
 
-Multi-panel layout. Each panel is its own framed organon (chart, tree, scale, list — whichever fits the perspective). Panels share a header that names the territory.
+Multi-panel layout. Each panel is its own framed organon (chart, tree, scale, list -- whichever fits the perspective). Panels share a header that names the territory.
 
-## Worked example — *meditation: the four maps*
+## Worked example -- *meditation: the four maps*
 
 ```
 ╔═════════════════════════════════════════════════════════════════════════════════╗
@@ -51,12 +51,12 @@ Multi-panel layout. Each panel is its own framed organon (chart, tree, scale, li
 - Outer header in `╔═╗` double-line, names the territory
 - Each map in `╭──╮` rounded, with title bar `╭── MAP N: NAME ─╮`
 - Side-by-side when two maps are roughly similar width; stacked otherwise
-- Each map has its own `★ pivot:` line — the local insight from that lens
+- Each map has its own `★ pivot:` line -- the local insight from that lens
 - Closing `╔═╗` synthesis panel that names what the atlas shows that no single map shows
 
 ## Drama
 
-The atlas's drama is in the *synthesis panel*. It's not just "here are four views" — it's "putting these four views next to each other reveals X that none of them shows alone." If you can't write a synthesis, the atlas wasn't earned; one of the maps would have sufficed.
+The atlas's drama is in the *synthesis panel*. It's not just "here are four views" -- it's "putting these four views next to each other reveals X that none of them shows alone." If you can't write a synthesis, the atlas wasn't earned; one of the maps would have sufficed.
 
 ## Anti-patterns
 

@@ -16,9 +16,9 @@ The act of enumerating forces you to face the question *am I done?* The answer i
 
 ## What lists surface
 
-- **Asymmetric coverage** — when most of your items cluster in one region of the implicit space, the empty regions are candidates for invention.
-- **Unnamed members** — items you can describe but can't name in a single word; coining the name is part of the expansion.
-- **Boundary cases** — items where you're unsure whether they belong; their borderline status reveals what the implicit definition is.
+- **Asymmetric coverage** - when most of your items cluster in one region of the implicit space, the empty regions are candidates for invention.
+- **Unnamed members** - items you can describe but can't name in a single word; coining the name is part of the expansion.
+- **Boundary cases** - items where you're unsure whether they belong; their borderline status reveals what the implicit definition is.
 
 ## Pairing
 

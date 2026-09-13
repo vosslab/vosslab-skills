@@ -11,10 +11,10 @@ An ordered sequence where order is load-bearing. Distinct from a list because th
 
 ## What procedures surface
 
-- **Implicit prerequisites** — steps depend on conditions you'd never have stated explicitly until forced to write them down.
-- **Recoverability per step** — some steps are reversible if they fail; some aren't. The asymmetry tells you where the risk lives.
-- **Hidden parallelism** — when you map dependencies, you often discover steps that *could* run in parallel but conventionally don't. Each is a potential variant of the procedure.
-- **Step-level substitution** — substituting one step for another (different ingredient, different algorithm, different ritual phrase) produces variants of the whole procedure.
+- **Implicit prerequisites** - steps depend on conditions you'd never have stated explicitly until forced to write them down.
+- **Recoverability per step** - some steps are reversible if they fail; some aren't. The asymmetry tells you where the risk lives.
+- **Hidden parallelism** - when you map dependencies, you often discover steps that *could* run in parallel but conventionally don't. Each is a potential variant of the procedure.
+- **Step-level substitution** - substituting one step for another (different ingredient, different algorithm, different ritual phrase) produces variants of the whole procedure.
 
 ## Pairing
 

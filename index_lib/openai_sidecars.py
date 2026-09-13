@@ -9,8 +9,8 @@ import subprocess
 import sys
 
 # local repo modules
-import install_lib.frontmatter
-import install_lib.skill_discovery
+import index_lib.frontmatter
+import index_lib.skill_discovery
 
 
 MIN_SHORT_DESCRIPTION_CHARS = 25
@@ -19,14 +19,14 @@ MAX_SHORT_DESCRIPTION_CHARS = 64
 
 #============================================
 def discover_skill_sources(skills_root: pathlib.Path) -> list[pathlib.Path]:
-	"""Return category-valid sources from an explicit temporary test tree."""
-	return install_lib.skill_discovery.filesystem_skill_inventory(skills_root).skill_files
+	"""Return category-valid sources from an explicit local skills tree."""
+	return index_lib.skill_discovery.filesystem_skill_inventory(skills_root).skill_files
 
 
 #============================================
 def skill_name(skill_file: pathlib.Path) -> str:
 	"""Return the validated skill name authored in a skill's frontmatter."""
-	metadata = install_lib.frontmatter.parse_markdown_frontmatter(
+	metadata = index_lib.frontmatter.parse_markdown_frontmatter(
 		skill_file.read_text(encoding="utf-8"),
 		skill_file.as_posix(),
 	)
@@ -40,12 +40,12 @@ def skill_name(skill_file: pathlib.Path) -> str:
 def category_required_paths(
 	skill_file: pathlib.Path,
 	skills_root: pathlib.Path,
-	categories: dict[str, install_lib.skill_discovery.SkillCategory] | None = None,
+	categories: dict[str, index_lib.skill_discovery.SkillCategory] | None = None,
 ) -> tuple[str, ...]:
 	"""Read one skill category's required paths from its CATEGORY.md metadata."""
 	if categories is None:
-		categories = install_lib.skill_discovery.load_skill_categories(skills_root)
-	category_name = install_lib.skill_discovery.skill_category(skill_file, skills_root, categories)
+		categories = index_lib.skill_discovery.load_skill_categories(skills_root)
+	category_name = index_lib.skill_discovery.skill_category(skill_file, skills_root, categories)
 	required_paths = categories[category_name].required_paths
 	return required_paths
 
@@ -54,7 +54,7 @@ def category_required_paths(
 def validate_skill_sidecar(
 	skill_file: pathlib.Path,
 	skills_root: pathlib.Path,
-	categories: dict[str, install_lib.skill_discovery.SkillCategory] | None = None,
+	categories: dict[str, index_lib.skill_discovery.SkillCategory] | None = None,
 ) -> list[str]:
 	"""Return all metadata and category-path contract problems for one skill."""
 	problems: list[str] = []
@@ -63,7 +63,7 @@ def validate_skill_sidecar(
 	if not sidecar_file.is_file():
 		problems.append(f"{skill_file.as_posix()}: missing agents/openai.yaml")
 	else:
-		sidecar = install_lib.frontmatter.read_yaml_mapping(sidecar_file)
+		sidecar = index_lib.frontmatter.read_yaml_mapping(sidecar_file)
 		interface = sidecar.get("interface")
 		if not isinstance(interface, dict):
 			problems.append(f"{sidecar_file.as_posix()}: missing interface mapping")
@@ -98,11 +98,11 @@ def validate_skill_sidecar(
 def validate_skill_sidecars(
 	skill_files: list[pathlib.Path],
 	skills_root: pathlib.Path,
-	categories: dict[str, install_lib.skill_discovery.SkillCategory] | None = None,
+	categories: dict[str, index_lib.skill_discovery.SkillCategory] | None = None,
 ) -> list[str]:
 	"""Return contract problems across sidecars without assuming a repository count."""
 	if categories is None:
-		categories = install_lib.skill_discovery.load_skill_categories(skills_root)
+		categories = index_lib.skill_discovery.load_skill_categories(skills_root)
 	problems: list[str] = []
 	for skill_file in skill_files:
 		problems.extend(validate_skill_sidecar(skill_file, skills_root, categories))
@@ -141,23 +141,38 @@ def parse_args() -> argparse.Namespace:
 
 
 #============================================
-def main() -> int:
-	"""Run the complete repository sidecar contract gate."""
-	parse_args()
-	repo_root = get_repo_root()
+def validate_repository(repo_root: pathlib.Path) -> tuple[list[str], int]:
+	"""Return sidecar problems and the canonical repository skill count."""
 	skills_root = repo_root / "skills"
-	inventory = install_lib.skill_discovery.tracked_skill_inventory(repo_root, skills_root)
+	inventory = index_lib.skill_discovery.tracked_skill_inventory(repo_root, skills_root)
 	problems = validate_skill_sidecars(
 		inventory.skill_files,
 		skills_root,
 		inventory.categories,
 	)
+	result = (problems, len(inventory.skill_files))
+	return result
+
+
+#============================================
+def run_check(repo_root: pathlib.Path) -> int:
+	"""Print the complete repository sidecar contract result."""
+	problems, skill_count = validate_repository(repo_root)
 	if problems:
 		for problem in problems:
 			print(problem, file=sys.stderr)
 		return 1
-	print(f"OpenAI sidecar validation passed for {len(inventory.skill_files)} skill sources.")
+	print(f"OpenAI sidecar validation passed for {skill_count} skill sources.")
 	return 0
+
+
+#============================================
+def main() -> int:
+	"""Run the complete repository sidecar contract gate."""
+	parse_args()
+	repo_root = get_repo_root()
+	status = run_check(repo_root)
+	return status
 
 
 #============================================

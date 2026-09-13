@@ -68,7 +68,7 @@ def get_repo_root() -> str | None:
 	return None
 
 
-def read_installed_plugins() -> list:
+def read_installed_plugins() -> dict[str, pathlib.Path]:
 	"""Return active plugin install paths from ~/.claude/plugins/installed_plugins.json.
 
 	The JSON keys are "<plugin>@<marketplace>"; we keep just the plugin part

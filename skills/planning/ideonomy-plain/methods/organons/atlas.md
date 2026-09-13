@@ -13,15 +13,15 @@ A bound collection of maps covering the same territory at different scales, them
    - Mythic / narrative
    - Mechanistic / process
    - Information-flow
-2. **For each perspective, produce one organon of the idea.** It can be a list, a chart, a scale — whatever fits the perspective best. (Yes, organons inside an organon. Atlases are recursive.)
-3. **Bind them.** The atlas is the collection plus the cross-references — pages should refer to each other where the same instance shows up under different perspectives.
-4. **Compare.** What does the economic perspective reveal that the phenomenological one hides, and vice versa? The disagreements are the atlas's payoff — they map the *unilateral visibility* of each perspective.
+2. **For each perspective, produce one organon of the idea.** It can be a list, a chart, a scale - whatever fits the perspective best. (Yes, organons inside an organon. Atlases are recursive.)
+3. **Bind them.** The atlas is the collection plus the cross-references - pages should refer to each other where the same instance shows up under different perspectives.
+4. **Compare.** What does the economic perspective reveal that the phenomenological one hides, and vice versa? The disagreements are the atlas's payoff - they map the *unilateral visibility* of each perspective.
 
 ## What atlases surface
 
-- **Perspective-specific blind spots** — the kinds of things one perspective makes invisible.
-- **Cross-perspective contradictions** — the same instance described very differently in two pages. These often reveal the most interesting properties.
-- **Stable invariants** — what every perspective agrees on. These are the load-bearing parts of the idea.
+- **Perspective-specific blind spots** - the kinds of things one perspective makes invisible.
+- **Cross-perspective contradictions** - the same instance described very differently in two pages. These often reveal the most interesting properties.
+- **Stable invariants** - what every perspective agrees on. These are the load-bearing parts of the idea.
 
 ## Pairing
 

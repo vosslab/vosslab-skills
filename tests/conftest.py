@@ -2,8 +2,8 @@ import sys
 
 import file_utils
 
-# Insert the repo root onto sys.path so top-level modules import from any test
-# file without installing the package first. file_utils.get_repo_root() uses
+# Insert the repo root onto sys.path so repository packages import from any
+# test file without installation or a PYTHONPATH override. file_utils uses
 # git rev-parse --show-toplevel under the hood.
 _repo_root = file_utils.get_repo_root()
 if _repo_root not in sys.path:
@@ -38,7 +38,8 @@ collect_ignore = ["e2e", "playwright"]
 #   - Recursive directory exclusions need an explicit /** because fnmatch's *
 #     does not cross "/". Use "temp_scripts/**" to exclude a whole subtree.
 #
-# This template has no repo-specific exclusions, so the registry is empty.
+# Keep repo-specific exclusions exact. The ideonomy-rich rendering guides use Unicode glyphs as
+# functional notation and rendered examples; every SKILL.md remains subject to the gate.
 # Cross-overlay doc references (a template doc naming a doc that ships from a
 # different overlay or the universal docs/ tree) use a backticked name, not a
 # markdown link: no single relative link is valid both in the split template
@@ -49,7 +50,18 @@ collect_ignore = ["e2e", "playwright"]
 #       "ascii_compliance": ["human_readable-*.html"],
 #       "pyflakes_code_lint": ["devel/scratch_*.py"],
 #   }
-REPO_HYGIENE_FILTERS = {}
+REPO_HYGIENE_FILTERS = {
+	"ascii_compliance": [
+		"skills/planning/ideonomy-rich/rendering/README.md",
+		"skills/planning/ideonomy-rich/rendering/atlas.md",
+		"skills/planning/ideonomy-rich/rendering/chart.md",
+		"skills/planning/ideonomy-rich/rendering/cycle.md",
+		"skills/planning/ideonomy-rich/rendering/dictionary.md",
+		"skills/planning/ideonomy-rich/rendering/list.md",
+		"skills/planning/ideonomy-rich/rendering/scale.md",
+		"skills/planning/ideonomy-rich/rendering/tree.md",
+	],
+}
 
 
 # === OPTIONAL_HELPERS_MENU ===

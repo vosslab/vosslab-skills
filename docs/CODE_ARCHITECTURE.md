@@ -24,20 +24,25 @@ Each direct category under [skills/](../skills/) owns a `CATEGORY.md`. Each publ
 its `SKILL.md` and `agents/openai.yaml`. [agents/CATALOG.yaml](../agents/CATALOG.yaml) must match
 the authored agent filenames and escalation routes.
 
-### Installer runtime
+### Index and installer libraries
 
 [install_skills.py](../install_skills.py) is the human-facing entry point. It resolves the
 repository root through Git and starts the interview in
 [install_lib/interview.py](../install_lib/interview.py).
 
-The root [install_lib/](../install_lib/) package separates reusable behavior:
+The root [index_lib/](../index_lib/) package owns canonical indexing and projection behavior:
 
-- [install_lib/frontmatter.py](../install_lib/frontmatter.py) parses YAML metadata and converts
+- [index_lib/frontmatter.py](../index_lib/frontmatter.py) parses YAML metadata and converts
   repository CalVer to strict manifest SemVer.
-- [install_lib/skill_discovery.py](../install_lib/skill_discovery.py) validates categories and
+- [index_lib/skill_discovery.py](../index_lib/skill_discovery.py) validates categories and
   produces tracked or filesystem-backed skill inventories.
-- [install_lib/agent_catalog.py](../install_lib/agent_catalog.py) validates agent parity and
+- [index_lib/agent_catalog.py](../index_lib/agent_catalog.py) validates agent parity and
   renders Codex, Cursor, and OpenCode projections.
+- [index_lib/build_all.py](../index_lib/build_all.py) validates sidecars and builds or checks every
+  tracked index and plugin projection in one run.
+
+The root [install_lib/](../install_lib/) package owns installation behavior:
+
 - [install_lib/install_target_data.py](../install_lib/install_target_data.py) validates target
   declarations, URLs, and contained destination paths.
 - [install_lib/installer.py](../install_lib/installer.py) builds plans, preserves matching entries,
@@ -45,17 +50,17 @@ The root [install_lib/](../install_lib/) package separates reusable behavior:
 - [install_lib/interview.py](../install_lib/interview.py) owns prompts, summaries, and final
   confirmation.
 
-[source_me.sh](../source_me.sh) exposes this root package through `PYTHONPATH` after loading the
-user shell environment. The runtime has no import dependency on [tools/](../tools/).
+[source_me.sh](../source_me.sh) exposes both root packages through `PYTHONPATH` after loading the
+user shell environment. Neither runtime package depends on [tools/](../tools/).
 
 ### Generators and validators
 
 | Tool | Canonical input | Tracked output or result |
 | --- | --- | --- |
-| [tools/build_skills_index.py](../tools/build_skills_index.py) | Categories and skill frontmatter | [SKILLS_INDEX.md](SKILLS_INDEX.md) |
-| [tools/build_agents_index.py](../tools/build_agents_index.py) | Agent catalog and authored Markdown | [AGENTS_INDEX.md](AGENTS_INDEX.md) |
-| [tools/build_plugin_manifest.py](../tools/build_plugin_manifest.py) | Skill inventory and [VERSION](../VERSION) | Platform plugin manifests |
-| [tools/openai_sidecars.py](../tools/openai_sidecars.py) | Skill sidecars and category requirements | Validation result only |
+| [index_lib/build_skills_index.py](../index_lib/build_skills_index.py) | Categories and skill frontmatter | [SKILLS_INDEX.md](SKILLS_INDEX.md) |
+| [index_lib/build_agents_index.py](../index_lib/build_agents_index.py) | Agent catalog and authored Markdown | [AGENTS_INDEX.md](AGENTS_INDEX.md) |
+| [index_lib/build_plugin_manifest.py](../index_lib/build_plugin_manifest.py) | Skill inventory and [VERSION](../VERSION) | Platform plugin manifests |
+| [index_lib/openai_sidecars.py](../index_lib/openai_sidecars.py) | Skill sidecars and category requirements | Validation result only |
 
 The generators support check-only validation where documented in [USAGE.md](USAGE.md). Generated
 files are small and intentionally tracked.
@@ -108,12 +113,13 @@ hidden configuration and does not prune stale entries that are no longer in the 
 - Add a category with `skills/<category>/CATEGORY.md`; add skills beneath that category.
 - Add a skill with `SKILL.md`, `agents/openai.yaml`, and the category-required paths.
 - Add an agent with one authored file under [agents/](../agents/) and one matching catalog record.
-- Add a platform with `install_targets/<platform>/TARGET.md`. Reuse an adapter or add rendering
-  behavior under [install_lib/](../install_lib/).
+- Add a platform with `install_targets/<platform>/TARGET.md`. Add projection behavior under
+  [index_lib/](../index_lib/) and installation behavior under [install_lib/](../install_lib/).
 - Add permanent unit behavior under [tests/](../tests/) and whole-CLI behavior under
   [tests/e2e/](../tests/e2e/).
-- Add repository generators and validators under [tools/](../tools/); add maintainer-only release
-  and repair commands under [devel/](../devel/).
+- Add indexing, metadata, and generated-projection behavior under [index_lib/](../index_lib/); add
+  standalone domain utilities under [tools/](../tools/) and maintainer-only release or repair
+  commands under [devel/](../devel/).
 
 ## Known gaps
 

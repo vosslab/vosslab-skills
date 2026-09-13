@@ -1,6 +1,6 @@
 ---
 name: postgresql-expert
-description: Design, tune, migrate, and operate PostgreSQL databases. Use for psql, schema design, indexing, EXPLAIN ANALYZE/query plans, MVCC, VACUUM/bloat, replication/failover, pg_dump/PITR, connection pooling, extensions, and migrations.
+description: Use when PostgreSQL-specific schema, query-plan, indexing, MVCC, maintenance, replication, recovery, pooling, or migration judgment is central.
 ---
 
 # PostgreSQL expert

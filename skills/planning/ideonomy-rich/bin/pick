@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# pick — randomly select a method tuple from the ideonomy catalog
+# pick - randomly select a method tuple from the ideonomy catalog
 #
 # Usage:
 #   bin/pick                    # default: 2 operators, 1 organon, 3 dim-prompts
@@ -11,7 +11,7 @@
 #
 # Silent behavior (no flags): each picked file is `touch`ed at the end. The
 # picker weights against recently-touched files (1-hour half-life), so the
-# catalog rotates naturally within a session — a method picked five minutes
+# catalog rotates naturally within a session - a method picked five minutes
 # ago is much less likely to be picked again. --seed mode skips the touch
 # so reproducibility is preserved.
 
@@ -71,7 +71,7 @@ else
 fi
 NOW=$(date +%s)
 
-# pick_n DIR N SEED — echo N files (one per line), weighted against recency.
+# pick_n DIR N SEED - echo N files (one per line), weighted against recency.
 # Searches recursively under DIR. Skips README.md and files starting "_".
 # Under --seed, weighting is disabled so picks stay reproducible.
 pick_n() {
@@ -108,7 +108,7 @@ pick_n() {
 
 # Pre-evaluate $RANDOM in the parent shell. In bash 3.2, $RANDOM inside a
 # command substitution's args is evaluated in the *subshell's* RNG, which has
-# its own (non-deterministic) seed — so reproducibility under --seed only
+# its own (non-deterministic) seed - so reproducibility under --seed only
 # works if we capture the seeds here first.
 SEED_OPS=$RANDOM
 SEED_ORGS=$RANDOM

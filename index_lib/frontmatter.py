@@ -1,4 +1,4 @@
-"""Parse YAML metadata and normalize versions at manifest boundaries."""
+"""Parse YAML metadata and normalize versions at projection boundaries."""
 
 from __future__ import annotations
 

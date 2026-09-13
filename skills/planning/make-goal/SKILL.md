@@ -1,9 +1,9 @@
 ---
-name: distill-plan-goal
+name: make-goal
 description: "Distill an existing plan file into a concise outcome-only goal for Codex `/goal` or any agent. States the finished result, uses positive phrasing, names the plan as primary source. Use when starting long-running agent work from a plan."
 ---
 
-# Distill plan goal
+# Make goal
 
 An agent given steps optimizes the steps; an agent given the destination optimizes the
 destination.

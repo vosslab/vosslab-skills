@@ -126,11 +126,3 @@ One paragraph: what users do with the tool.
 - `docs/INSTALL.md` and `docs/USAGE.md`, written or updated where evidence supports them.
 - Short report: created, updated, gaps reported without a file, and known gaps within
   written docs.
-
-## Delegated execution
-
-Under `delegate-manager-to-subagents`, this skill is assigned to a fresh subagent
-with one bounded task, the relevant repo rules, and one verification step.
-Do not continue the same subagent across unrelated follow-up work; dispatch a
-new subagent for each atomic task. See
-`docs/REPO_STYLE.md`.

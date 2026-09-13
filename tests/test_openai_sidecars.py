@@ -2,7 +2,7 @@
 
 import pathlib
 
-import openai_sidecars
+import index_lib.openai_sidecars
 
 
 #============================================
@@ -68,8 +68,8 @@ def test_sidecar_validator_reports_identity_errors(tmp_path: pathlib.Path) -> No
 		"  default_prompt: Use $another-skill.\n",
 	)
 
-	problems = openai_sidecars.validate_skill_sidecars(
-		openai_sidecars.discover_skill_sources(skills_root), skills_root
+	problems = index_lib.openai_sidecars.validate_skill_sidecars(
+		index_lib.openai_sidecars.discover_skill_sources(skills_root), skills_root
 	)
 	messages = "\n".join(problems)
 	assert "display_name must be non-empty" in messages
@@ -88,7 +88,7 @@ def test_sidecar_validator_reads_category_required_paths(tmp_path: pathlib.Path)
 		valid_sidecar("test-skill"),
 	)
 
-	problems = openai_sidecars.validate_skill_sidecar(skill_file, skills_root)
+	problems = index_lib.openai_sidecars.validate_skill_sidecar(skill_file, skills_root)
 
 	assert problems == [
 		f"{skill_file.as_posix()}: missing required references/workflow.md",

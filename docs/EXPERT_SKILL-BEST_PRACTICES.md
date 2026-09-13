@@ -101,7 +101,7 @@ domain token at position 1 carries identity; the suffix names what the skill is.
 - The frontmatter `name:` must match the directory name exactly.
 - Register the name and its rationale in the audit table of
   [SKILL_NAMING.md](SKILL_NAMING.md), and verify with
-  `tools/list_loaded_skills.py --check <candidate>`.
+  `index_lib/list_loaded_skills.py --check <candidate>`.
 
 ## Directory and file layout
 
@@ -133,11 +133,15 @@ The entrypoint is a YAML frontmatter block followed by a thin Markdown body. Kee
 it short and push detail into the reference guides.
 
 - Frontmatter carries exactly two keys that matter: `name` (equals the directory
-  name) and `description` (a keyword-packed trigger no longer than this repo's
+  name) and `description` (a discriminating trigger no longer than this repo's
   250-character ceiling).
-- Body section order, mirrored from the `geometry-expert` reference skill: Overview,
-  Workflow, Implementation defaults, Quality bar, Output expectations.
-- Keep the entrypoint thin, roughly 70-100 lines. Each Workflow step routes to a
+- Keep a routed Workflow section with the required project-shape decision. Keep other sections only
+  when their separate heading changes expert behavior; Overview, Implementation defaults, Quality
+  bar, and Output expectations are useful patterns rather than a mandatory skeleton.
+- State completion behavior that names the deliverable, the checks or evidence that prove it, and
+  any authorization boundary or unresolved failure that the caller must know.
+- Keep the entrypoint thin, roughly 70-100 lines, and never exceed the universal 150-line and
+  8,000-character limits in [REPO_STYLE.md](REPO_STYLE.md). Each Workflow step routes to a
   `references/*.md` guide with a Markdown link rather than inlining the detail.
 - Actionable rule: when a body section grows past a few bullets, move the prose
   into a reference guide and leave a one-line pointer with a link.
@@ -147,14 +151,16 @@ it short and push detail into the reference guides.
 The `description` field is the only text loaded at startup, so it decides whether
 the skill fires. Treat it as a trigger surface, not a summary.
 
-- Pack concrete domain keywords plus their synonyms: name the algorithms,
-  libraries, file types, and error symptoms a user would type.
-- State both what the skill does and when to use it. The `geometry-expert` description lists
-  primitives, library names, and failure
-  modes, then a "Use when" clause.
-- Actionable rule: read the description cold and ask whether a user describing
-  the problem in their own words would hit at least one keyword. Add synonyms
-  until the answer is yes.
+- State the capability, the specialized judgment that makes it necessary, and a neighboring
+  exclusion only when that exclusion prevents a demonstrated likely misroute.
+- Select for domain decisions such as robustness, architecture, framework semantics, or evaluation
+  method. Routine edits that merely occur in the same language, framework, or file type remain
+  general work.
+- Use concrete vocabulary that distinguishes the specialist without listing the whole technology
+  domain. Test intended requests and routine adjacent requests against the description as behavior;
+  avoid exact-string tests that preserve wording instead of selection quality.
+- Actionable rule: read the description cold and confirm that intended specialist requests select
+  while routine adjacent requests do not.
 
 ## Reference guide files
 
@@ -281,10 +287,9 @@ violations, so comply while authoring.
 A new or renamed skill must register in the generated indexes and the repo docs.
 The manifests are generated; edit the source and regenerate.
 
-- Regenerate the platform manifests and the skills index after adding a skill:
-  `source source_me.sh && python3 tools/build_plugin_manifest.py` writes
-  `.claude-plugin/plugin.json`, and `tools/build_skills_index.py` writes
-  `docs/SKILLS_INDEX.md`. Do not hand-edit those outputs.
+- Regenerate all indexes and projections after adding a skill:
+  `source source_me.sh && python3 index_lib/build_all.py` validates sidecars and writes the skills
+  index, agent index, and plugin manifests. Do not hand-edit those outputs.
 - Add one line to the `## Documentation` list in `README.md` and one dated entry
   in `docs/CHANGELOG.md` describing the addition.
 - Actionable rule: body-only edits to a SKILL.md leave the frontmatter

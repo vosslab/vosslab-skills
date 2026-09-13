@@ -6,7 +6,7 @@ A dictionary is a set of term-and-definition pairs. In ideonomy, dictionaries ar
 
 Each entry is its own heavy-bordered panel: term as the title bar, definition body, then attribute bullets. The double-line `╔═╗` frame says "this is a complete unit." Multiple entries stack vertically with whitespace between them.
 
-## Worked example — *vigil v2 redesign options*
+## Worked example -- *vigil v2 redesign options*
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════════════════════╗
@@ -46,11 +46,11 @@ Each entry is its own heavy-bordered panel: term as the title bar, definition bo
 ║   <KEY>          ─  <one-line tagline>                            ← title bar  ║
 ╠════════════════════════════════════════════════════════════════════════════════╣
 ║                                                                                ║
-║   <generative move that produced this entry — the operator's "X → Y">         ║
+║   <generative move that produced this entry - the operator's "X → Y">         ║
 ║                                                                                ║
 ║   <body, 2-6 lines: what it is, how it works>                                  ║
 ║                                                                                ║
-║      <small embedded diagram, frame, formula — optional>                       ║
+║      <small embedded diagram, frame, formula - optional>                       ║
 ║                                                                                ║
 ║   ▸ <attribute>:  <value, rating, or 5-dot scale ●●●○○>                       ║
 ║   ▸ <attribute>:  <value>                                                      ║
@@ -61,7 +61,7 @@ Each entry is its own heavy-bordered panel: term as the title bar, definition bo
 
 ## Conventions
 
-- **Title bar** (top): `<KEY>  ─  <tagline>` — key in caps if it's a label (A, B, C); plain if it's a name (`vigil-trail`)
+- **Title bar** (top): `<KEY>  ─  <tagline>` -- key in caps if it's a label (A, B, C); plain if it's a name (`vigil-trail`)
 - **Generative-move line** (first body line): say which operator produced this entry and what move it made, when relevant. Example: `Substitute "self-grading" → "twin-grading."` This makes the dictionary itself an instance of operator-name-and-move visibility.
 - **Body**: 2-6 lines explaining what the entry is. Keep it tight; the panel is not a paragraph dumping ground.
 - **Embedded diagram**: optional. If the entry's idea has a small visual form (a flow, a frame, a formula), embed it inside the entry's panel using `╭─╮` rounded frames so it doesn't compete with the entry's outer `╔═╗`.
@@ -70,7 +70,7 @@ Each entry is its own heavy-bordered panel: term as the title bar, definition bo
 
 ## Drama
 
-Dictionaries' drama is in the *diagonal* — when one entry's attributes are notably stronger than the others on the most-important attribute, mark it with `★` in the title bar (`╔═══ ★ B. vigil-twin  ─  ...`). The reader's eye lands on the starred entry first.
+Dictionaries' drama is in the *diagonal* -- when one entry's attributes are notably stronger than the others on the most-important attribute, mark it with `★` in the title bar (`╔═══ ★ B. vigil-twin  ─  ...`). The reader's eye lands on the starred entry first.
 
 If two entries trade off cleanly along an axis (one strong on cost, one strong on payoff), state that explicitly in the artifact text after the dictionary, with a tiny placement diagram showing where each lives.
 

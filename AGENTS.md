@@ -12,9 +12,9 @@ Canonical rules live in docs/. Read them; this file only points and flags repo q
 - Skills index: docs/SKILLS_INDEX.md
 
 ## Repo quirks
-- Run repo tools via `source source_me.sh && python3 tools/<script>.py` (Python 3.12 only). This is an AI-agent runtime rule, not a requirement for repo scripts.
-- Generated files: edit the source, then regenerate; do not hand-edit output. `tools/build_plugin_manifest.py` builds the plugin manifests (`.claude-plugin/plugin.json`) from `skills/**/SKILL.md`; `tools/build_skills_index.py` builds docs/SKILLS_INDEX.md from `skills/**/SKILL.md`; `tools/list_loaded_skills.py` lists loaded skills.
-- Only humans run `git commit`; agents stage changes and record them in docs/CHANGELOG.md.
+- Run repo Python tools via `source source_me.sh && python3 <path-to-script>.py` (Python 3.12 only). This is an AI-agent runtime rule, not a requirement for repo scripts.
+- Generated files: edit the source, then regenerate; do not hand-edit output. `index_lib/build_all.py` validates sidecars and builds the skill index, agent index, and plugin manifests from canonical sources; `index_lib/list_loaded_skills.py` lists loaded skills.
+- Preserve existing file content outside the intended edit boundary. Modify files in place, avoid repository-history or staging operations, and record requested changes in docs/CHANGELOG.md.
 - When changing code, run focused tests on the changed file (tests use the `-k` flag, e.g. `pytest test_feature.py -k changed_file.py`); documentation changes need no tests.
 
 ## User directive (overrides defaults)

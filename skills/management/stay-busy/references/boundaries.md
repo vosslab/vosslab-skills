@@ -1,35 +1,62 @@
 # Boundaries
 
-Three lists govern stay-busy: what to ask the user, what to do without
-asking, and what is forbidden. Together they prevent the two failure
-modes: passive waiting and reckless motion.
+Three lists govern stay-busy: resolvable choices, protected no-mutation
+boundaries, and safe autonomous actions. Together they prevent the two
+failure modes: passive waiting and reckless motion.
 
 The anti-metric-gaming list is the test-artifact expression of "Fix the
 design, not the symptom" from the core philosophies in
 `docs/REPO_STYLE.md`.
 
-## Ask only for
+## Resolve plan-governed choices autonomously
 
-Ask the user only when the next step changes architecture, contract,
-deletion, or broad production behavior. Concrete cases:
+Architecture, contract, deletion, and authority ambiguity are not
+automatic reasons to stop. First use the approved plan, captured inputs
+and invariants, current repository authorities, and bounded repository
+evidence to identify the option that best preserves the requested
+outcome. When that evidence establishes one clearly best reversible
+option, implement it and record the evidence and assumption.
 
-- Contract amendments (public API shape, output schema, file format).
+Use a fresh independent review before making that resolution. If the
+first two inspections disagree, request a third independent inspection
+and resolve only when the combined evidence identifies a clearly best
+reversible option. Do not substitute a weaker or narrower outcome merely
+to avoid an ambiguity.
+
+This applies, for example, to a compatible public-API or file-format
+detail, a bounded architecture choice already constrained by the plan,
+or removal of an obsolete local artifact whose replacement and recovery
+path are established by current authority. Continue unrelated safe work
+while this evidence is gathered.
+
+## Protected no-mutation boundaries
+
+Do not make a mutation when the next step is risky, irreversible,
+externally mutating, or expands authority beyond the approved plan. This
+includes:
+
 - Broad production migration (multi-service rollout, schema changes,
   irreversible data moves).
-- Deletion or quarantine of major systems (modules, services, datasets).
+- Deletion or quarantine of major systems (modules, services, datasets)
+  without a plan-established replacement and recovery path.
 - Irreversible operations (force push, history rewrite, destructive
-  git operations, production data wipe).
+  repository operations, production data wipe).
 - Safety or policy-sensitive choices (secrets handling, third-party
   publishing, security-relevant defaults).
-- Architecture switch (framework change, language change, storage
-  backend change).
-- Accepting a known invalid result as final (closing a milestone
-  despite a failing acceptance gate).
+- An architecture switch not bounded by the plan (framework, language,
+  or storage-backend change).
+- Contract amendments that expand public commitments beyond established
+  authority.
+- Accepting a known invalid result as final (closing a milestone despite
+  a failing acceptance gate).
 
-When asking, present 2 to 3 concrete options. Do not present an
-open-ended question.
+For a boundary case, record the exact action, missing authority or
+evidence, affected scope, and why it cannot be safely reversed. Leave
+that action unmodified and continue every independent safe workstream.
+The record is a blocker for that action, not a reason to require a human
+response before completing unrelated work.
 
-## Allowed without asking
+## Safe autonomous actions
 
 These actions are reversible, evidence-producing, or scoped within the
 current milestone. Do them; do not interrupt the user to confirm.

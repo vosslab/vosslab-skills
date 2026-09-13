@@ -6,7 +6,7 @@ A scale is a single ordered axis with marked positions. The position itself is t
 
 Horizontal axis with `─` for the line, `●` or `┃` for marked positions, labels above and below. Density `░▒▓█` underneath if there's a gradient (frequency, certainty, intensity).
 
-## Worked example — *meditation: cardinality scale*
+## Worked example -- *meditation: cardinality scale*
 
 ```
                         ┌─ canonical sweet spot
@@ -29,11 +29,11 @@ Horizontal axis with `─` for the line, `●` or `┃` for marked positions, la
 - `◀` at the left end → axis bottomed-out at zero or below
 - Density gradient `░▒▓█` *below* the axis represents frequency/saturation/certainty along it
 - Labels alternate above (canonical names) and below (numeric / quantitative) when both are useful
-- One vertical callout `▼` or `▲` for the pivot point — the canonical / sweet-spot / surprising location
+- One vertical callout `▼` or `▲` for the pivot point -- the canonical / sweet-spot / surprising location
 
 ## Drama
 
-Scales' drama is at the *ends*. The unattested region beyond the rightmost `●` is the coinage opportunity. Use `◇` to mark it, with a short callout below explaining what could exist there. Don't extend the axis arbitrarily — extend it just to where the absence becomes informative.
+Scales' drama is at the *ends*. The unattested region beyond the rightmost `●` is the coinage opportunity. Use `◇` to mark it, with a short callout below explaining what could exist there. Don't extend the axis arbitrarily -- extend it just to where the absence becomes informative.
 
 ## Anti-patterns
 

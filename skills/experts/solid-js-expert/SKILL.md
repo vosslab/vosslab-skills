@@ -1,6 +1,6 @@
 ---
 name: solid-js-expert
-description: 'Design, build, debug, and review SolidJS and SolidStart applications. Use for Solid reactivity, signals, stores, components, control flow, routing, server functions, data mutations, Solid Meta, or migration from React-shaped patterns.'
+description: Use when SolidJS or SolidStart reactivity, routing, server/client boundaries, data mutation, component semantics, or React migration determines the solution.
 ---
 
 # SolidJS Expert
@@ -28,27 +28,6 @@ Source: distilled from the official SolidJS documentation (docs.solidjs.com,
   stores over deeply nested signals).
 - Keep the server/client boundary explicit in any SolidStart work: name what
   runs on the server, what runs on the client, and what must be serializable.
-
-## When to use
-
-- Write or review SolidJS components, signals, stores, effects, or memos.
-- Debug "my signal/store is not updating" or reactivity that silently breaks.
-- Choose control-flow (`<For>` vs `<Index>`, `<Show>` vs `<Switch>`).
-- Build routing with Solid Router (`<Route>`, `useParams`, `query`,
-  `createAsync`, `action`).
-- Build a SolidStart app: file routing, `"use server"`, API routes, sessions,
-  data mutations, serialization.
-- Manage document head / SEO with Solid Meta.
-- Migrate React-shaped code to idiomatic Solid.
-
-## When not to use
-
-- Generic JavaScript or TypeScript type questions with no Solid involvement;
-  route TypeScript type design to `typescript-engineer`.
-- Other frameworks (React, Vue, Svelte). The reactive model here is
-  Solid-specific and does not transfer.
-- Build-tool failures (Vite/Vinxi config, package resolution) unrelated to
-  Solid APIs.
 
 ## Workflow
 
@@ -107,16 +86,9 @@ driven from the Workflow above, not this table.
 | styling, Tailwind, CSS Modules, deployment providers, deployment targets matrix | [`references/styling-and-deployment.md`](references/styling-and-deployment.md) |
 | cross-cutting footguns, mistakes, React-shaped broken code, "what do I commonly get wrong", boundary errors | [`references/gotchas.md`](references/gotchas.md) |
 
-## Delegated execution
+## Completion evidence
 
-Under `delegate-manager-to-subagents`, this skill is assigned to a fresh
-subagent with one bounded task, the relevant repo rules, and one verification
-step. Do not continue the same subagent across unrelated follow-up work;
-dispatch a new subagent for each atomic task. See `docs/REPO_STYLE.md`.
-
-### Return contract
-
-Every delegated invocation returns:
+Return the result in a reviewable form:
 
 - The proposed component, primitive, or fix as a code block ready to paste.
 - The reference file and section the answer is grounded in.
@@ -124,3 +96,5 @@ Every delegated invocation returns:
   it satisfies.
 - Any reactivity or server/client-boundary risk, with a one-line scope
   assessment (in scope or out of scope for this task).
+- The behavior checked (including granular-update evidence when code changes)
+  or the exact reason no runtime check applies.

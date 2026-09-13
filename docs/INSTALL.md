@@ -74,10 +74,7 @@ manually when its source is removed from the repository.
 Check generated artifacts and run the temporary-home interview lifecycle:
 
 ```bash
-source source_me.sh && python3 tools/build_skills_index.py --check
-source source_me.sh && python3 tools/build_plugin_manifest.py --check
-source source_me.sh && python3 tools/openai_sidecars.py --check
-source source_me.sh && python3 tools/build_agents_index.py --check
+source source_me.sh && python3 index_lib/build_all.py --check
 source source_me.sh && python3 tests/e2e/e2e_primary_adapter_contract.py
 ```
 

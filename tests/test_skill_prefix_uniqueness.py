@@ -5,7 +5,7 @@ Encodes rule 2 from `docs/SKILL_NAMING.md`: no two active vosslab skills may
 share the same first three characters. `old-*` skills are exempt
 (deprecation marker; collisions among or with them are intentional).
 
-Same content as `tools/list_loaded_skills.py --collisions` filtered to
+Same content as `index_lib/list_loaded_skills.py --collisions` filtered to
 vosslab-only, but enforced at test time so a regression surfaces in CI
 rather than only on demand.
 """
@@ -13,12 +13,11 @@ rather than only on demand.
 import pathlib
 
 import file_utils
+import index_lib.list_loaded_skills
+import index_lib.skill_discovery
 
 REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
-
-import install_lib.skill_discovery
-import list_loaded_skills
 
 PREFIX_LEN = 3
 
@@ -26,7 +25,7 @@ PREFIX_LEN = 3
 #============================================
 def active_skill_names() -> list[str]:
 	"""Return names for every publishable skill across category folders."""
-	discovery = install_lib.skill_discovery.collect_skill_files(pathlib.Path(REPO_ROOT), SKILLS_DIR)
+	discovery = index_lib.skill_discovery.collect_skill_files(pathlib.Path(REPO_ROOT), SKILLS_DIR)
 	return sorted(skill_file.parent.name for skill_file in discovery.skill_files)
 
 
@@ -47,7 +46,7 @@ def test_active_skills_have_unique_3char_prefix() -> None:
 	collisions = [
 		(prefix, members) for prefix, members in by_prefix.items()
 		if len(members) > 1
-		and frozenset(members) not in list_loaded_skills.INTENTIONAL_PREFIX_GROUPS
+		and frozenset(members) not in index_lib.list_loaded_skills.INTENTIONAL_PREFIX_GROUPS
 	]
 	if collisions:
 		lines = []

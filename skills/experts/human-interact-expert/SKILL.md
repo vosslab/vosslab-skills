@@ -1,6 +1,6 @@
 ---
 name: human-interact-expert
-description: Design and evaluate human-computer interaction methods. Use for interaction design, usability evaluation, user research methods, cognitive design guidelines, task analysis, heuristic evaluation, mental models, accessibility, and HCI study design.
+description: Use when selecting or conducting an HCI method, usability evaluation, user study, task analysis, or evidence-based interaction assessment.
 ---
 
 # Human interaction expert

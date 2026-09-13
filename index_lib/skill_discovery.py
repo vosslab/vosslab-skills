@@ -1,11 +1,11 @@
-"""Shared skill-file discovery for generated indexes and plugin manifests."""
+"""Shared skill-file discovery for installation and generated projections."""
 
 import dataclasses
 import pathlib
 import subprocess
 
 # local repo modules
-import install_lib.frontmatter
+import index_lib.frontmatter
 
 
 CATEGORY_FILENAME = "CATEGORY.md"
@@ -62,7 +62,7 @@ def read_skill_category(category_dir: pathlib.Path) -> SkillCategory:
 	if not metadata_path.is_file():
 		raise ValueError(f"Missing {CATEGORY_FILENAME} for skill category {category_dir.name!r}")
 	markdown = metadata_path.read_text(encoding="utf-8")
-	metadata = install_lib.frontmatter.parse_markdown_frontmatter(markdown, metadata_path.as_posix())
+	metadata = index_lib.frontmatter.parse_markdown_frontmatter(markdown, metadata_path.as_posix())
 	for key in ("title", "description", "order", "visibility"):
 		if key not in metadata:
 			raise ValueError(f"CATEGORY.md in {metadata_path} missing required {key!r}")
@@ -152,7 +152,7 @@ def build_skill_inventory(
 
 #============================================
 def filesystem_skill_inventory(skills_root: pathlib.Path) -> SkillInventory:
-	"""Build a temporary test inventory from local category and skill files."""
+	"""Build an inventory from category and skill files below a local skills root."""
 	if not skills_root.is_dir():
 		raise ValueError(f"Missing skills directory: {skills_root}")
 	source_paths = [

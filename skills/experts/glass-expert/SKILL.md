@@ -1,6 +1,6 @@
 ---
 name: glass-expert
-description: 'Design, implement, verify, and debug Apple Liquid Glass in SwiftUI on macOS 26+ and iOS 26. Use for `.glassEffect`, morphing, backdrop sampling, flat or invisible glass, on-screen capture proof, surface placement, and accessible contrast.'
+description: Use when Apple Liquid Glass behavior requires backdrop sampling, surface placement, morphing, capture evidence, or glass-specific contrast judgment.
 ---
 
 # Liquid Glass Expert

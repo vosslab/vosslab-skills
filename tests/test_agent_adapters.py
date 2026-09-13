@@ -7,7 +7,7 @@ import pathlib
 import tomllib
 
 # local repo modules
-import install_lib.agent_catalog
+import index_lib.agent_catalog
 
 
 #============================================
@@ -28,7 +28,7 @@ def test_codex_adapter_preserves_authored_content(tmp_path: pathlib.Path) -> Non
 	source_path = write_agent_source(tmp_path)
 	entry = {"id": "sample", "access": "workspace_write"}
 	projection = tomllib.loads(
-		install_lib.agent_catalog.render_agent(entry, source_path, "codex_toml")
+		index_lib.agent_catalog.render_agent(entry, source_path, "codex_toml")
 	)
 
 	assert projection["description"] == "Review the requested code."
@@ -41,7 +41,7 @@ def test_codex_adapter_projects_access_policy(tmp_path: pathlib.Path) -> None:
 	source_path = write_agent_source(tmp_path)
 	entry = {"id": "sample", "access": "read_only"}
 	projection = tomllib.loads(
-		install_lib.agent_catalog.render_agent(entry, source_path, "codex_toml")
+		index_lib.agent_catalog.render_agent(entry, source_path, "codex_toml")
 	)
 
 	assert projection["sandbox_mode"] == "read-only"
@@ -54,10 +54,10 @@ def test_cursor_adapter_omits_nonportable_model(tmp_path: pathlib.Path) -> None:
 	entry = {"id": "sample", "access": "read_only"}
 	projection_path = tmp_path / "cursor.md"
 	projection_path.write_text(
-		install_lib.agent_catalog.render_agent(entry, source_path, "cursor_markdown"),
+		index_lib.agent_catalog.render_agent(entry, source_path, "cursor_markdown"),
 		encoding="utf-8",
 	)
-	metadata, body = install_lib.agent_catalog.authored_agent_source(projection_path)
+	metadata, body = index_lib.agent_catalog.authored_agent_source(projection_path)
 
 	assert "model" not in metadata
 	assert body == "Follow the authored instructions.\n"
@@ -70,10 +70,10 @@ def test_opencode_adapter_projects_edit_policy(tmp_path: pathlib.Path) -> None:
 	entry = {"id": "sample", "access": "read_only"}
 	projection_path = tmp_path / "opencode.md"
 	projection_path.write_text(
-		install_lib.agent_catalog.render_agent(entry, source_path, "opencode_markdown"),
+		index_lib.agent_catalog.render_agent(entry, source_path, "opencode_markdown"),
 		encoding="utf-8",
 	)
-	metadata, body = install_lib.agent_catalog.authored_agent_source(projection_path)
+	metadata, body = index_lib.agent_catalog.authored_agent_source(projection_path)
 
 	assert metadata["permission"]["edit"] == "deny"
 	assert body == "Follow the authored instructions.\n"

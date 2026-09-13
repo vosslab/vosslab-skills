@@ -1,6 +1,6 @@
 ---
 name: pdf-guide
-description: "Use when tasks involve reading, creating, or reviewing PDF files where rendering and layout matter; prefer visual checks by rendering pages (Poppler) and use Python tools such as `reportlab`, `pdfplumber`, and `pypdf` for generation and extraction."
+description: "Use when PDF rendering, pagination, or visual page layout is part of correctness while reading, creating, or reviewing a PDF."
 ---
 
 

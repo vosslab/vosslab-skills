@@ -1,7 +1,7 @@
 """
 docs/SKILLS_INDEX.md must list every publishable skill directory.
 
-The repo's helper tool `tools/build_skills_index.py` regenerates this file
+The repo's merged indexing command `index_lib/build_all.py` regenerates this file
 deterministically. This test catches the case where someone added or
 removed a skill but forgot to run the rebuild. It checks names only, not
 ordering or descriptions, so cosmetic edits to the index don't fail.
@@ -12,7 +12,7 @@ import pathlib
 
 import file_utils
 
-import install_lib.skill_discovery
+import index_lib.skill_discovery
 
 REPO_ROOT = file_utils.get_repo_root()
 SKILLS_DIR = pathlib.Path(REPO_ROOT) / "skills"
@@ -28,7 +28,7 @@ def test_skills_index_lists_every_skill() -> None:
 	Every folder returned by shared skill discovery must appear in
 	docs/SKILLS_INDEX.md, and every listed name must be publishable.
 	"""
-	discovery = install_lib.skill_discovery.collect_skill_files(
+	discovery = index_lib.skill_discovery.collect_skill_files(
 		pathlib.Path(REPO_ROOT),
 		SKILLS_DIR,
 	)
@@ -43,10 +43,10 @@ def test_skills_index_lists_every_skill() -> None:
 	assert not missing_in_index, (
 		f"{len(missing_in_index)} skill folder(s) missing from "
 		f"docs/SKILLS_INDEX.md: {', '.join(missing_in_index)}. "
-		f"Run: tools/build_skills_index.py"
+		f"Run: index_lib/build_all.py"
 	)
 	assert not extra_in_index, (
 		f"{len(extra_in_index)} index entry(ies) with no matching skill "
 		f"folder: {', '.join(extra_in_index)}. "
-		f"Run: tools/build_skills_index.py"
+		f"Run: index_lib/build_all.py"
 	)

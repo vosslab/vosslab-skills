@@ -85,6 +85,21 @@ the existing source-file gate permits fewer than 1000 lines.
 
 ## Generated artifacts
 
+### Indexing is a root library
+
+**Decision.** Keep metadata parsing, skill discovery, agent catalog projection, sidecar validation,
+index generators, plugin generators, and the merged launcher under root [../index_lib/](../index_lib/).
+
+**Why.** These components form one repository-wide indexing domain shared by installation and
+tracked projections. Treating the commands as standalone `tools/` utilities inverted the ownership
+boundary because they necessarily imported repository packages.
+
+**Consequence.** Use `index_lib/build_all.py` as the normal generation and drift-check front door.
+Focused modules remain runnable for maintenance. [../install_lib/](../install_lib/) consumes
+`index_lib` and owns only installation behavior; [../tools/](../tools/) stays repository-independent.
+
+**Owner.** [../index_lib/INDEX_LIB_README.md](../index_lib/INDEX_LIB_README.md)
+
 ### Graphify agent guidance lives in the propagated devel README
 
 **Decision.** Document Graphify usage for downstream repositories in
