@@ -19,6 +19,8 @@ pattern. Treat a replica, a backup, and a tested recovery procedure as separate 
 
 1. Classify the PostgreSQL task and select its evidence route.
 - Name the affected schema, query, migration, cluster, pooler, or recovery target.
+- For base-schema QC or SQL production-readiness audits, read
+  [references/schema_qc.md](references/schema_qc.md) and keep the authorized audit scope explicit.
 - Consult [references/topic_index.md](references/topic_index.md) for the current-documentation route
   and executable oracle.
 - Read [references/task_selection.md](references/task_selection.md) when the work crosses an

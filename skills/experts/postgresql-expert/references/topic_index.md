@@ -6,6 +6,7 @@ an executable oracle. Use [reference_survey.md](reference_survey.md) and
 
 | Trigger or project problem | Preferred route | Current source | Executable oracle |
 | --- | --- | --- | --- |
+| Audit a SQL base or assess schema production readiness | [schema_qc.md](schema_qc.md): requirement filter, durable model, catalog, roles, ownership and workload review | Target-major PostgreSQL constraints, catalogs, RLS, locking and tool documentation | Install with intended roles in isolation; reproduce material invariants and compare selected workload/restore outcomes. |
 | Design tables, types, and constraints | PostgreSQL data types, DDL, constraints, and normalization | PostgreSQL documentation | Apply a migration to an empty database and run invariant fixtures. |
 | Select B-tree, GIN, GiST, BRIN, partial, or covering indexes | Query predicates, selectivity, operator classes, and write cost | PostgreSQL index documentation | Capture `EXPLAIN (ANALYZE, BUFFERS)` before and after on representative data. |
 | Diagnose a slow query or plan regression | Statistics, joins, row estimates, and actual plan work | PostgreSQL `EXPLAIN` documentation | Compare rows, timing, buffers, and result sets for the fixed workload. |

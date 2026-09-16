@@ -1,3 +1,12 @@
+## 2026-09-16
+
+### Additions and New Features
+
+- Added `postgresql-expert/references/schema_qc.md` for scoped SQL production-readiness reviews,
+  including durable model checks, catalog inspection queries, orphan/dormancy analysis, QC tool
+  coverage, workload evidence and pre-production schema decisions. Routed it from the skill and
+  topic index without changing installed copies or adding permanent tests.
+
 ## 2026-09-13
 
 ### Additions and New Features
