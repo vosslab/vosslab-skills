@@ -12,25 +12,30 @@ Run the guided installer from the repository root:
 ```
 
 The installer uses the current operating-system home automatically. The interview defaults to
-Claude and Codex, shows each destination, and writes only after final approval. Enter Cursor or
-OpenCode by name when their compatibility adapters are needed. Skill sources and authored Claude
-agents are linked rather than copied; re-run the same interview after changing target declarations,
-authored agents, or `agents/CATALOG.yaml`.
+Claude and Codex, shows each destination, and writes only after final approval. Enter Cursor,
+OpenCode, Grok, or Hermes by name when their compatibility adapters are needed. Skill sources and
+authored Claude agents are linked rather than copied; re-run the same interview after changing
+target declarations, authored agents, or `agents/CATALOG.yaml`. Each run also unlinks stale
+symlinks beneath the selected destinations that point into this clone but no longer match a skill
+or agent, so renamed skills leave no dangling links.
 
-Codex links repository categories at `~/.codex/skills/<category>`. Claude keeps individual skill
-links flat at `~/.claude/skills/<skill>`. Cursor uses `~/.cursor/skills`, and OpenCode uses
-`~/.config/opencode/skills`; `.agents/skills` remains an unused shared compatibility location.
+Codex and Hermes link repository categories at `~/.codex/skills/<category>` and
+`~/.hermes/skills/<category>`. Claude keeps individual skill links flat at
+`~/.claude/skills/<skill>`, as do Cursor (`~/.cursor/skills`), OpenCode
+(`~/.config/opencode/skills`), and Grok (`~/.grok/skills`); `.agents/skills` remains an unused
+shared compatibility location. Hermes installs skills only; it has no agent files.
 
 ## Platform outputs
 
 | Source | Generated projection | Installation adapters |
 | --- | --- | --- |
-| `skills/<category>/<name>/SKILL.md` | `docs/SKILLS_INDEX.md` and platform manifests | `claude_markdown`, `codex_toml`, `cursor_markdown`, `opencode_markdown` |
-| `agents/<name>.md` | Target-specific agent file at install time | Claude Markdown, Codex TOML, Cursor Markdown, OpenCode Markdown |
+| `skills/<category>/<name>/SKILL.md` | `docs/SKILLS_INDEX.md` and platform manifests | `claude_markdown`, `codex_toml`, `cursor_markdown`, `opencode_markdown`, `skills_only` |
+| `agents/<name>.md` | Target-specific agent file at install time | Claude Markdown (also Grok), Codex TOML, Cursor Markdown, OpenCode Markdown |
 | `agents/CATALOG.yaml` | `docs/AGENTS_INDEX.md` | Catalog identity, role, and access data |
 
-Claude and Codex are primary outputs. Cursor and OpenCode are compatibility outputs with linked
-skills, generated native agent files, and focused adapter checks. This compatibility tier supplies
+Claude and Codex are primary outputs. Cursor, OpenCode, Grok, and Hermes are compatibility outputs
+with linked skills, linked or generated agent files where the platform has them, and focused
+adapter checks. This compatibility tier supplies
 structural evidence while the primary tier supplies the release-gated integration evidence.
 
 ## Regenerate outputs

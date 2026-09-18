@@ -20,13 +20,42 @@ extension installation, and destructive probes belong in an owned disposable env
 authorized. Name the report exception explicitly if the user requests a written artifact. Inspect
 existing systems with read-only queries; execute candidate DDL and EXPLAIN ANALYZE writes in isolation.
 
+## Take a census before judging
+
+Measure the whole schema before reading any table closely. A census turns "this looks
+repetitive" into counts that a remediation plan can watch fall to zero, and it finds the tables
+nobody opens. Two sources, both cheap:
+
+- A parser over every `CREATE TABLE` body in the source (strip `--` comments, find the matching
+  parenthesis, split the body on top-level commas, classify each part as a column or a table
+  constraint). Also capture `ALTER TABLE ... ADD FOREIGN KEY`, `CREATE INDEX`, `CREATE TYPE ...
+  AS ENUM`, `CREATE DOMAIN`, and `COMMENT ON`.
+- A fresh install into a disposable container, then the catalog queries below.
+
+Report these counts in the audit and keep the parser as a repository tool so the counts are
+reproducible:
+
+| Count | Source | Why it matters |
+| --- | --- | --- |
+| tables, FKs, CHECKs, indexes, routines, triggers, policies, enums | catalog | baseline that a mechanical reorganization must reproduce exactly |
+| FK edges with no index whose leading columns match the referencing columns | catalog or parser | every cascade delete and purge scans those children |
+| `text` columns whose CHECK is a literal `IN (...)` list, and how many times each list repeats | parser | stringly typed vocabularies; each repeat is a place to edit |
+| columns whose CHECK admits exactly one value | parser | constant columns carry no information, except role-typed FK carriers |
+| tables with no `timestamptz` or `date` column | parser | rows that cannot be ordered, aged, or purged by date |
+| FK columns whose name ends with something other than `<parent_table>_id` | parser | `course_id -> course_instance` hides the join from every reader |
+| files that contain both `CREATE TABLE` and `CREATE FUNCTION`; share of lines inside `$$` bodies; `COMMENT ON` count vs table count | source | whether a human can read the structure without reading behavior |
+| tables that grow with user activity but sit outside the retention purge, and tables with no writer anywhere in the repository | source grep | unbounded growth and placeholder scaffolding |
+
 ## Review the durable model
 
 Focus first on choices that become expensive to change after production data accumulates.
 
 | Concern | Questions that change the readiness judgment |
 | --- | --- |
-| Names and identities | Do table/column names describe the approved domain concepts? Are working state, immutable history, public references and internal keys distinct? |
+| Names and identities | Do table/column names describe the approved domain concepts? Are working state, immutable history, public references and internal keys distinct? Does every key column name the table it joins (`<parent_table>_id`)? How many identity conventions coexist (public ID as PK, uuid plus public reference, integer FK targets)? |
+| Repetition | Classify each repeated value: derived from other columns on the row (compute it), reachable through an FK on the row (drop it), constant (drop it), a closed vocabulary stored as text (type it), or a legitimately frozen snapshot (reference one immutable content-addressed row instead of copying columns onto the multiplying table). Notification fan-out and per-attempt policy copies multiply fastest. |
+| Clocks | Does every table carry one creation clock? Is it `timestamptz` where the server enforces, orders, or audits, and `date` where the day is the fact? Do rows mutated in place carry an update clock? Can an increment timestamp on an anonymous aggregate re-identify a person through a roster? |
+| Partition readiness | If a multiplying table may ever be partitioned, do its PK, UNIQUE constraints, and children already carry the partition column? PostgreSQL requires the partition key in every unique constraint and every FK that targets the table; adding it later is a re-key. |
 | Types | Are instants timestamptz and calendar dates date? Are quantities exact where needed? Are numeric bounds, precision, special values and key ranges deliberate? |
 | Mandatory fields | Do NOT NULL and conditional shape checks reject missing required values? CHECK expressions returning NULL pass; positive-value checks alone do not require a value. |
 | Relationships | Do FKs bind the exact owner, tenant, parent and revision? Separate valid parent IDs may still permit an invalid combination; consider composite keys. |
@@ -36,6 +65,8 @@ Focus first on choices that become expensive to change after production data acc
 | Privacy and retention | Does deletion remove all identifying evidence while preserving approved definitions and anonymous totals? Do retained addresses, hashes or JSON still identify a person? |
 | Recovery | Is retained archived data actually accessible through an authorized recovery path? Physical rows alone do not establish recoverability. |
 | Lifecycle/idempotency | Are repeated commands, late scheduled work, duplicate receipts and partial failures consistent with the stored policy and provenance? |
+| Growth outside retention | Which tables grow with user activity and have no delete path (sessions revoked but kept, access logs, receipts)? Which tables have no writer in the repository at all? Estimate steady-state rows from the product's own numbers (users x objects x attempts, capped by the purge window) before calling anything large. |
+| Source organization | Can a reader see every table definition without reading function bodies? One layer per kind (types, tables, late constraints, indexes, functions, policies, grants), one table file per aggregate with children beside their owner, and catalog comments that start with the table's role make the next audit a document read instead of a parser run. |
 
 Prefer declarative constraints for stable relational invariants. Review triggers and commands where
 constraints are insufficient. Cross-row CHECK functions do not provide a continuously enforced
@@ -158,6 +189,8 @@ Select tools for a question that remains unresolved. Tool success is not a schem
 | [Squawk](https://squawkhq.com/docs/) | Migration hazards on populated databases | Fresh-base operations and live migrations have different risks. |
 | pg_dump plus isolated restore | Reconstruction of selected schema/data with available roles | Not PITR, cluster-role recovery or proof of every restored command. |
 | Targeted SQL fixtures | Valid/invalid/boundary writes, role isolation, retention and concurrency outcomes | Cover the exercised scenario only; source cloning may omit FKs/triggers/commands. |
+| [schemalint](https://github.com/kristiandupont/schemalint) | Seven built-ins over a live catalog: snake_case, singular names, `text` over `varchar`, `timestamptz`, `jsonb`, identity over `serial`, primary key present; custom rules as Node plugins | Needs Node and a running database; a well-formed schema passes all seven on day one, so it confirms rather than finds. |
+| Repository-owned checker | The census counts above plus the repository's own rules (key names, clocks by role, partition-ready keys, role-tagged comments) as one Python script over the source or a committed catalog snapshot, with an exit code | The rules are the repository's; keep them in the repository's language, next to the schema, and let the counts be the remediation plan's progress meter. |
 
 Record installed versions, options, supported coverage, findings and tools not run. Installing an
 extension or using `pg_amcheck --install-missing` changes a database; use the authorized disposable
@@ -167,7 +200,10 @@ freeze implementation details.
 
 ## Produce the readiness report
 
-Lead with ready, not ready, or readiness not established for the stated SQL scope. Separate:
+Write two documents. The audit holds evidence and does not change as work proceeds; the
+remediation plan holds milestones and work packages and is updated as they land. Lead the
+audit with ready, not ready, or readiness not established for the stated SQL scope, then the
+completion gate (which plan milestones close the audit), then the census counts. Separate:
 
 1. Reproduced blockers: actual behavior contradicts the approved data contract.
 2. Required schema/command gaps: missing persistence, invariants or capabilities needed for that scope.
@@ -178,6 +214,12 @@ Lead with ready, not ready, or readiness not established for the stated SQL scop
 
 For each finding, state the requirement, SQL locator, trigger/scenario, consequence, evidence type,
 and bounded work needed. Mark source inferences, catalog facts and reproduced results distinctly.
+Rank per-row findings by how fast the table multiplies (attempts x questions before courses x
+assessments before authored content). When a finding contradicts the product authority (a
+retired lifecycle value, a privileged owner column, a second concurrency token, scaffolding for a
+deferred backend), cite the authority line; when the authority hedges ("may retain"), propose the
+single rule and get it settled before the freeze. Turn the settled rules into a style document
+with a checklist a table can pass or fail, so the next table is judged the same way.
 Record deliberately excluded requirements and optional/future capabilities. Report unknowns without
 turning every application dependency or unavailable cluster metric into a SQL defect.
 

@@ -79,6 +79,8 @@ category-required paths.
 | Codex | primary | `.codex/skills` | `.codex/agents` |
 | Cursor | compatibility | `.cursor/skills` | `.cursor/agents` |
 | OpenCode | compatibility | `.config/opencode/skills` | `.config/opencode/agents` |
+| Grok | compatibility | `.grok/skills` | `.grok/agents` |
+| Hermes | compatibility | `.hermes/skills` | none |
 
 [index_lib/](../index_lib/) contains frontmatter parsing, discovery, agent projection, sidecar
 validation, index generation, manifest generation, and the merged `build_all.py` command.

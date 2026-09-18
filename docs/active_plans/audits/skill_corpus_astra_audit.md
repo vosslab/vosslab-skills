@@ -2,19 +2,19 @@
 
 ## Scope and authority
 
-**Fact.** The index defines 40 publishable skills ([docs/SKILLS_INDEX.md](../../SKILLS_INDEX.md#L7)).
+**Fact.** The index defines 40 publishable skills ([SKILLS_INDEX.md](../../SKILLS_INDEX.md#L7)).
 Shared discovery excludes the 41st raw entrypoint, deprecated `old-python-code-review`
-([install_lib/skill_discovery.py](../../../install_lib/skill_discovery.py#L239-L245)); it appears
+([skill_discovery.py](../../../index_lib/skill_discovery.py#L239-L245)); it appears
 only as plan-requested inventory evidence.
 
 **Fact.** Repo policy governs evidence, positive prompting, grounded gates, atomic ownership, and
-completion ([docs/REPO_STYLE.md](../../REPO_STYLE.md#L8-L30)); human guidance prioritizes KISS and
+completion ([REPO_STYLE.md](../../REPO_STYLE.md#L8-L30)); human guidance prioritizes KISS and
 the smallest ownership-correct implementation
-([docs/HUMAN_GUIDANCE.md](../../HUMAN_GUIDANCE.md#L11-L18)). External-review guidance requires
+([HUMAN_GUIDANCE.md](../../HUMAN_GUIDANCE.md#L11-L18)). External-review guidance requires
 source-of-truth checks, labeled reasoning, grounded/test-light gates, and positive omission
-([ChatGPT_External_Plan_Reviewer_Guidance.md](../../../ChatGPT_External_Plan_Reviewer_Guidance.md#L23-L37),
-[ChatGPT_External_Plan_Reviewer_Guidance.md](../../../ChatGPT_External_Plan_Reviewer_Guidance.md#L57-L75),
-[ChatGPT_External_Plan_Reviewer_Guidance.md](../../../ChatGPT_External_Plan_Reviewer_Guidance.md#L77-L101)).
+(`ChatGPT_External_Plan_Reviewer_Guidance.md`,
+`ChatGPT_External_Plan_Reviewer_Guidance.md`,
+`ChatGPT_External_Plan_Reviewer_Guidance.md`).
 
 **Fact.** The plan adopts A1-A6 and D1-D4 with repository policy taking precedence (`plan-moonlit-noodling-horizon.md:8-24`).
 
@@ -145,7 +145,7 @@ The first five columns are facts or measurements. `Done` is an interpretation of
 `docs/*_STYLE.md`, and the latest changelog
 ([SKILL.md](../../../skills/orientation/repo-rules-reader/SKILL.md#L3-L23)). Reproducible measurement
 `wc -l AGENTS.md docs/*_STYLE.md` is 3,724 lines; the current latest block is 69 more
-([docs/CHANGELOG.md](../../CHANGELOG.md#L1-L69)), for 3,793 loaded lines.
+([CHANGELOG.md](../../CHANGELOG.md#L1-L69)), for 3,793 loaded lines.
 `blueprint-plan-drafter` front-loads five repo guides, six fixed references, and two conditional inputs
 ([SKILL.md](../../../skills/planning/blueprint-plan-drafter/SKILL.md#L68-L81)).
 
@@ -201,16 +201,16 @@ both named plan files
 **Fact.** `skills/planning/make-goal/` disagrees with `name: distill-plan-goal`
 ([SKILL.md](../../../skills/planning/make-goal/SKILL.md#L1-L3)). The existing test explicitly
 requires equality
-([tests/test_skill_frontmatter.py](../../../tests/test_skill_frontmatter.py#L70-L83)); a current
+([test_skill_frontmatter.py](../../../tests/test_skill_frontmatter.py#L70-L83)); a current
 focused run fails on this mismatch. The preliminary assumption that it passed is false.
 
 **Recommendation.** Keep the existing `make-goal` directory and rename the frontmatter/public skill
 identity to `make-goal`. Update callers and generated metadata in the same follow-up work package.
 
 **Fact.** Expert guidance prescribes a five-section, roughly 70-100-line entrypoint
-([docs/EXPERT_SKILL-BEST_PRACTICES.md](../../EXPERT_SKILL-BEST_PRACTICES.md#L130-L143)), but the
+([EXPERT_SKILL-BEST_PRACTICES.md](../../EXPERT_SKILL-BEST_PRACTICES.md#L130-L143)), but the
 parity gate enforces only a `project_workflow.md` route, not those headings
-([tests/test_expert_skill_parity.py](../../../tests/test_expert_skill_parity.py#L270-L277)). Twelve
+([test_expert_skill_parity.py](../../../tests/test_expert_skill_parity.py#L270-L277)). Twelve
 of 17 experts currently carry both `Quality bar` and `Output expectations` headings. Against the
 proposed paired ceiling, 15 of 40 live entrypoints exceed 150 physical lines, 15 exceed 8,000
 characters, and 17 violate at least one limit. `ideonomy-plain` and `solid-js-expert` fail only the
@@ -225,7 +225,7 @@ of the 17 over-budget entrypoints; the per-file measurements above are the repro
 
 **Fact.** `tests/test_skill_body_size.py` already discovers live entrypoints through shared
 discovery, but it only warns beyond 300 lines or 24,000 characters
-([tests/test_skill_body_size.py](../../../tests/test_skill_body_size.py#L1-L43)). Current maxima are
+([test_skill_body_size.py](../../../tests/test_skill_body_size.py#L1-L43)). Current maxima are
 281 lines and 14,638 characters in different entrypoints, so the test passes without warning
 ([SKILL.md](../../../skills/management/stay-busy/SKILL.md#L1-L281),
 [SKILL.md](../../../skills/experts/typescript-engineer/SKILL.md#L1-L250)).
@@ -242,9 +242,9 @@ budget conformance.
 
 **Fact.** Expert guidance currently calls the description "keyword-packed," tells authors to list
 domain vocabulary, and says to add synonyms until an underspecified request hits
-([docs/EXPERT_SKILL-BEST_PRACTICES.md](../../EXPERT_SKILL-BEST_PRACTICES.md#L135-L157)). It also
+([EXPERT_SKILL-BEST_PRACTICES.md](../../EXPERT_SKILL-BEST_PRACTICES.md#L135-L157)). It also
 prescribes five body sections and only a rough line target
-([docs/EXPERT_SKILL-BEST_PRACTICES.md](../../EXPERT_SKILL-BEST_PRACTICES.md#L130-L143)).
+([EXPERT_SKILL-BEST_PRACTICES.md](../../EXPERT_SKILL-BEST_PRACTICES.md#L130-L143)).
 **Interpretation.** This advice aligns with the measured domain-wide descriptions and repetition.
 
 **Recommendation.** Put the universal 150-line/8,000-character `SKILL.md` caps in
@@ -256,8 +256,8 @@ advisory; route quality and one-concern ownership matter more than unloaded char
 
 **Fact (reproduced runtime evidence, 2026-09-12).** The changelog records a former whole-tree
 ideonomy ASCII exception
-([docs/CHANGELOG-2026-08a.md](../../CHANGELOG-2026-08a.md#L93-L100)); current `tests/conftest.py` has
-no exclusion ([tests/conftest.py](../../../tests/conftest.py#L41-L52)). The exposed full gate reports
+([CHANGELOG-2026-08a.md](../../CHANGELOG-2026-08a.md#L93-L100)); current `tests/conftest.py` has
+no exclusion ([conftest.py](../../../tests/conftest.py#L41-L52)). The exposed full gate reports
 `10 failed, 690 passed`: `negation-cascade.md` (5), rich `SKILL.md` (508), and rich `rendering/`
 README (19), atlas (402), chart (291), cycle (55), dictionary (921), list (28), scale (117), and tree
 (105). This is runtime evidence from `pytest tests/test_ascii_compliance.py`.
@@ -269,7 +269,7 @@ guides use glyphs as functional vocabulary, but that does not justify Unicode in
 including deprecated and archived copies. Move rich glyph examples from the entrypoint and make
 style-only tables ASCII. Because the test is vendored, list only exact, justified UTF-8 reference
 paths in repo-local `REPO_HYGIENE_FILTERS["ascii_compliance"]`
-([tests/conftest.py](../../../tests/conftest.py#L22-L39)); use no wildcard or `SKILL.md` entry. Verify
+([conftest.py](../../../tests/conftest.py#L22-L39)); use no wildcard or `SKILL.md` entry. Verify
 the gate collects every `SKILL.md` and passes.
 
 ## Hypothesis results
@@ -281,7 +281,7 @@ the gate collects every `SKILL.md` and passes.
 | H3 | **Weakened.** Guidance requires five sections ([source](../../EXPERT_SKILL-BEST_PRACTICES.md#L130-L143)), but parity checks only routing ([gate](../../../tests/test_expert_skill_parity.py#L270-L277)); pilot before removal. |
 | H4 | **Weakened.** False-hit cases and the 3,793-line cost are confirmed, but zero behavior loss is not; pilot the narrowed trigger before adoption. |
 | H5 | **Rejected.** Named references are actively routed by [Solid](../../../skills/experts/solid-js-expert/SKILL.md#L82-L108) and the other linked sources above. |
-| H6 | **Confirmed.** Required reads prevent recorded failures ([docs/CHANGELOG-2026-06a.md](../../CHANGELOG-2026-06a.md#L925-L934)); keep short positive prerequisites with same-session reuse. |
+| H6 | **Confirmed.** Required reads prevent recorded failures ([CHANGELOG-2026-06a.md](../../CHANGELOG-2026-06a.md#L925-L934)); keep short positive prerequisites with same-session reuse. |
 
 ## Ranked fixes
 
@@ -343,7 +343,7 @@ The following is a **Recommendation** for a separate plan, with one fresh owner 
 
 **Fact.** `ChatGPT_External_Plan_Reviewer_Guidance.md` is an untracked root Markdown file. Repo style
 places durable Markdown documentation under `docs/` with SCREAMING_SNAKE_CASE names
-([docs/REPO_STYLE.md](../../REPO_STYLE.md#L283-L295)).
+([REPO_STYLE.md](../../REPO_STYLE.md#L283-L295)).
 
 **Recommendation.** Give it the tracked canonical home `docs/EXTERNAL_PLAN_REVIEWER_GUIDANCE.md` in
 the follow-up and update consumers. This audit changes no skill.

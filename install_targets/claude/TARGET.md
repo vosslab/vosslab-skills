@@ -2,6 +2,7 @@
 id: claude
 adapter: claude_markdown
 support_tier: primary
+skill_layout: flat
 destinations:
   skills: .claude/skills
   agents: .claude/agents

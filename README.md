@@ -2,7 +2,7 @@
 
 Reusable skills and agent roles for coding, documentation, code review, and
 education-content production. Canonical repository data produces first-class Claude and Codex
-installations, with maintained Cursor and OpenCode compatibility outputs.
+installations, with maintained Cursor, OpenCode, Grok, and Hermes compatibility outputs.
 
 ## Quick start
 
@@ -14,15 +14,16 @@ the default selection.
 ./install_skills.py
 ```
 
-The interview shows the destinations before asking for confirmation. Choose Cursor or OpenCode
-when their compatibility adapters are useful. See
+The interview shows the destinations before asking for confirmation. Choose Cursor, OpenCode, Grok,
+or Hermes when their compatibility adapters are useful. See
 [docs/INSTALL.md](docs/INSTALL.md) for destinations and update behavior.
 
 Skills are linked directly from each platform destination back to this clone, so the installer does
 not duplicate skill trees and source edits are immediately visible. Codex preserves the repository
-categories at `~/.codex/skills/<category>`; Claude remains flat at
-`~/.claude/skills/<skill>`. Authored Claude agents use the same link model. Native Codex, Cursor,
-and OpenCode agent projections are the only generated files.
+categories at `~/.codex/skills/<category>` (Hermes does the same); Claude remains flat at
+`~/.claude/skills/<skill>` (as do Cursor, OpenCode, and Grok). Authored Claude agents use the same
+link model for Claude and Grok. Native Codex, Cursor, and OpenCode agent projections are the only
+generated files. Re-running the installer unlinks stale links into this clone left by renamed skills.
 
 ## Canonical model
 
@@ -32,8 +33,9 @@ and OpenCode agent projections are the only generated files.
 - `agents/<name>.md` contains the authored Claude-compatible agent instruction body.
   [agents/CATALOG.yaml](agents/CATALOG.yaml) supplies each agent's identity, responsibility,
   Gas Town role, access level, authority, and escalation metadata.
-- `install_targets/<platform>/TARGET.md` declares an adapter, support tier, and destinations.
-  Claude and Codex are `primary`; Cursor and OpenCode are `compatibility`.
+- `install_targets/<platform>/TARGET.md` declares an adapter, support tier, skill layout, and
+  destinations. Claude and Codex are `primary`; Cursor, OpenCode, Grok, and Hermes are
+  `compatibility`.
 - [install_skills.py](install_skills.py) and [install_lib/](install_lib/) create
   reproducible local installations without installer state or hidden configuration.
 

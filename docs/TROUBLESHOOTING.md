@@ -26,8 +26,11 @@ content outside the platform destination before running `python3 install_skills.
 
 ## Stale installed entry
 
-The installer keeps no hidden ownership state and does not prune entries. If a skill or agent is
-removed from the repository, remove its old destination link or file manually.
+The installer keeps no hidden ownership state. It treats a symlink whose target resolves inside
+this clone as its own and unlinks it when no current skill or agent claims it, so renamed or
+removed skills disappear on the next run for the same platform. Generated agent files (Codex TOML,
+Cursor and OpenCode Markdown) carry no ownership marker; remove an obsolete generated agent file
+manually.
 
 ## Broken links after moving
 

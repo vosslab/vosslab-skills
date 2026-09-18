@@ -64,11 +64,14 @@ def _item_sources(
 ) -> list[tuple[str, str, pathlib.Path | None, bytes | None]]:
 	"""Return linked skills and authored or rendered platform agents."""
 	discovery = index_lib.skill_discovery.collect_skill_files(repo_root, repo_root / "skills")
-	if target.target_id == "codex":
+	if target.skill_layout == "category":
 		categories = sorted({path.parent.parent for path in discovery.skill_files})
 		items = [("skills", path.name, path, None) for path in categories]
 	else:
 		items = [("skills", path.parent.name, path.parent, None) for path in discovery.skill_files]
+	# skills_only targets declare no agents destination and receive no agent projection.
+	if "agents" not in target.destinations:
+		return items
 	agent_sources = index_lib.agent_catalog.adapter_agent_sources(repo_root, target.adapter)
 	for name, source, contents in agent_sources:
 		items.append(("agents", name, source, contents))
@@ -114,6 +117,7 @@ def build_plan(
 			items.append(InstallItem(kind, name, source, destination, contents))
 		plans.append({"target": target, "items": items})
 	return {
+		"repo_root": str(repo_root.resolve()),
 		"home_root": str(home),
 		"plans": plans,
 	}
@@ -169,8 +173,39 @@ def _install_item(home_root: pathlib.Path, item: InstallItem) -> None:
 
 
 #============================================
+def _prune_stale_links(
+	repo_root: pathlib.Path,
+	home: pathlib.Path,
+	target: install_lib.install_target_data.InstallTarget,
+	planned: set[pathlib.Path],
+) -> list[dict]:
+	"""Remove symlinks into this repository that no planned item claims anymore."""
+	# Renamed or removed skills leave dangling per-skill links behind. Only links
+	# that resolve inside this repository are ours to remove; foreign links,
+	# regular files, and generated agent files are left alone.
+	repo = repo_root.resolve()
+	changes: list[dict] = []
+	for destination_name in sorted(target.destinations):
+		root = install_lib.install_target_data.resolve_target_destination(
+			home, target, destination_name
+		)
+		if not root.is_dir():
+			continue
+		for child in sorted(root.iterdir()):
+			if not child.is_symlink() or child in planned:
+				continue
+			if not _symlink_target(child).is_relative_to(repo):
+				continue
+			_require_safe_path(home, child, allow_leaf_symlink=True)
+			child.unlink()
+			changes.append({"action": "unlink", "path": child.relative_to(home).as_posix()})
+	return changes
+
+
+#============================================
 def apply_plan(plan: dict) -> dict:
 	"""Install repository skills and agents as the authoritative current source."""
+	repo_root = pathlib.Path(plan["repo_root"])
 	home = pathlib.Path(plan["home_root"])
 	changes: list[dict] = []
 	for target_plan in plan["plans"]:
@@ -183,4 +218,6 @@ def apply_plan(plan: dict) -> dict:
 			action = "link" if item.source is not None else "generate"
 			relative = item.destination.relative_to(home).as_posix()
 			changes.append({"action": action, "path": relative})
+		planned = {item.destination for item in target_plan["items"]}
+		changes.extend(_prune_stale_links(repo_root, home, target_plan["target"], planned))
 	return {"changes": changes}

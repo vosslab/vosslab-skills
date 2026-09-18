@@ -182,28 +182,6 @@ Preferred structure:
   and `docs/NEWS.md` before printing the tag and `gh release create` commands. Run with
   `--dry-run` to preview all steps without mutating the repo, or `--write` to update the doc files.
 
-## Skill entrypoints
-
-- Treat a skill description as a selection boundary. Name the specialized capability and the
-  judgment that makes the skill useful. Add a neighboring exclusion only when evidence shows a
-  likely misroute; routine work in an adjacent technology is not sufficient reason to select a
-  specialist.
-- Keep shared purpose, essential constraints, mode selection, routing, and completion behavior in
-  `SKILL.md`. Move conditional procedures, examples, schemas, and mode-specific guidance into a
-  coherent supporting reference and link it directly where the workflow decides to load it.
-- Classify substantial inputs as always-read core authorities, task-dependent authorities, or
-  repository evidence discovered for the current request. Load the core every time, load
-  specialized authorities only for affected concerns, and inspect current repository evidence for
-  the actual implementation boundary.
-- Keep every `SKILL.md` ASCII. Supporting references may use UTF-8 when Unicode characters are
-  functional notation or rendered examples. Record any repository hygiene exception as an exact
-  reference-file path; ordinary prose, style-only formatting, and `SKILL.md` receive no exception.
-- Keep every live `SKILL.md` at or below both 150 physical lines and 8,000 characters. The
-  measurements include frontmatter and newline characters. Directly routed supporting references
-  are outside this entrypoint limit.
-- When an entrypoint exceeds either limit, consolidate its core workflow and move conditional
-  detail into directly routed references. Add no live-entrypoint size exemption.
-
 ## Scripts and executables
 - Keep scripts self-contained and single-purpose.
 - Add a shebang for executable scripts and keep them runnable directly.

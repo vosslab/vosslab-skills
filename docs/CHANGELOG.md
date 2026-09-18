@@ -1,3 +1,47 @@
+## 2026-09-18
+
+### Additions and New Features
+
+- Added `install_targets/grok/TARGET.md` (compatibility, `claude_markdown`, flat skills at
+  `.grok/skills`, linked agents at `.grok/agents`) and `install_targets/hermes/TARGET.md`
+  (compatibility, `skills_only`, category links at `.hermes/skills`, no agents).
+- Added stale-link pruning to `install_lib/installer.py`: after installing a platform, symlinks
+  directly beneath its destinations whose target resolves inside this clone but matches no planned
+  item are unlinked and reported as `unlink` changes. Foreign links, plain directories, regular
+  files, and generated agent files are never touched.
+
+### Behavior or Interface Changes
+
+- `TARGET.md` now requires `skill_layout: flat | category`. The installer branches on it instead
+  of the previous hardcoded `target_id == "codex"` check.
+- The `agents` destination is optional and tied to the adapter: `skills_only` targets must omit
+  it, every other adapter must declare it. `install_lib.install_target_data.InstallTarget` gained
+  a `skill_layout` field; `build_plan` output gained a `repo_root` key.
+- `index_lib.agent_catalog.adapter_agent_sources` raises for `skills_only` rather than returning
+  an empty list; the installer skips the call when no agents destination exists.
+- Interview and summary output print `agents -> none` / `Agents: none` for skills-only targets.
+
+### Fixes and Maintenance
+
+- Synchronized shared style guides, tests, and repository support files from the starter template.
+
+### Decisions and Failures
+
+- Grok reuses `claude_markdown` rather than a new renderer because Grok documents Claude-format
+  skills and agents as native input and already scans `~/.claude/skills` and `~/.claude/agents`.
+- Generated agent files are not pruned: a regular file carries no proof that this installer wrote
+  it, while a symlink target inside the clone does. Manual removal remains documented in
+  `docs/TROUBLESHOOTING.md`.
+
+### Developer Tests and Notes
+
+- Updated `tests/test_install_target_data.py` and `tests/test_skill_installer.py` for
+  `skill_layout`; added tests for the `skills_only` destination rule, the agents-required rule, and
+  stale-link pruning that leaves foreign entries alone. `tests/e2e/e2e_primary_adapter_contract.py`
+  still passes unchanged.
+- Refreshed `README.md`, `docs/INSTALL.md`, `docs/USAGE.md`, `docs/FILE_STRUCTURE.md`,
+  `docs/CODE_ARCHITECTURE.md`, and `docs/TROUBLESHOOTING.md` for the new targets and pruning.
+
 ## 2026-09-16
 
 ### Additions and New Features

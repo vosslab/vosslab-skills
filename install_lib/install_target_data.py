@@ -14,9 +14,16 @@ SUPPORTED_ADAPTERS = frozenset({
 	"codex_toml",
 	"cursor_markdown",
 	"opencode_markdown",
+	"skills_only",
 })
+# skills_only platforms have no agent projection and declare no agents destination.
+SKILLS_ONLY_ADAPTER = "skills_only"
 SUPPORTED_TIERS = frozenset({"primary", "compatibility"})
-REQUIRED_DESTINATION_NAMES = frozenset({"skills", "agents"})
+# flat links every skill directly beneath the skills root; category links each
+# skills/<category> directory so the platform sees nested category folders.
+SUPPORTED_SKILL_LAYOUTS = frozenset({"flat", "category"})
+REQUIRED_DESTINATION = "skills"
+OPTIONAL_DESTINATION = "agents"
 
 
 @dataclasses.dataclass(frozen=True)
@@ -26,6 +33,7 @@ class InstallTarget:
 	target_id: str
 	adapter: str
 	support_tier: str
+	skill_layout: str
 	destinations: dict[str, pathlib.PurePosixPath]
 
 
@@ -58,14 +66,25 @@ def validate_relative_path(value: object, field_name: str, source: str) -> pathl
 
 
 #============================================
-def validate_destinations(value: object, source: str) -> dict[str, pathlib.PurePosixPath]:
+def validate_destinations(
+	value: object,
+	source: str,
+	adapter: str,
+) -> dict[str, pathlib.PurePosixPath]:
 	"""Return the complete named projection destination mapping for one target."""
 	if not isinstance(value, dict):
 		raise ValueError(f"destinations in {source} must be a mapping")
-	if set(value) != REQUIRED_DESTINATION_NAMES:
-		raise ValueError(f"destinations in {source} must name skills and agents")
+	allowed_names = {REQUIRED_DESTINATION, OPTIONAL_DESTINATION}
+	if REQUIRED_DESTINATION not in value or not set(value) <= allowed_names:
+		raise ValueError(f"destinations in {source} must name skills and optionally agents")
+	# The agents destination exists exactly when the adapter projects agents.
+	has_agents = OPTIONAL_DESTINATION in value
+	if adapter == SKILLS_ONLY_ADAPTER and has_agents:
+		raise ValueError(f"destinations in {source} must omit agents for {SKILLS_ONLY_ADAPTER}")
+	if adapter != SKILLS_ONLY_ADAPTER and not has_agents:
+		raise ValueError(f"destinations in {source} must name agents for adapter {adapter!r}")
 	destinations: dict[str, pathlib.PurePosixPath] = {}
-	for name in sorted(REQUIRED_DESTINATION_NAMES):
+	for name in sorted(value):
 		destination = validate_relative_path(value[name], f"destinations.{name}", source)
 		destinations[name] = destination
 	if len(set(destinations.values())) != len(destinations):
@@ -93,12 +112,18 @@ def load_target(path: pathlib.Path) -> InstallTarget:
 		raise ValueError(f"support_tier in {source} must be a supported string")
 	if support_tier not in SUPPORTED_TIERS:
 		raise ValueError(f"support_tier in {source} is unsupported: {support_tier!r}")
+	skill_layout = required_metadata(metadata, "skill_layout", source)
+	if not isinstance(skill_layout, str):
+		raise ValueError(f"skill_layout in {source} must be a supported string")
+	if skill_layout not in SUPPORTED_SKILL_LAYOUTS:
+		raise ValueError(f"skill_layout in {source} is unsupported: {skill_layout!r}")
 	destinations_value = required_metadata(metadata, "destinations", source)
-	destinations = validate_destinations(destinations_value, source)
+	destinations = validate_destinations(destinations_value, source, adapter)
 	target = InstallTarget(
 		target_id=target_id,
 		adapter=adapter,
 		support_tier=support_tier,
+		skill_layout=skill_layout,
 		destinations=destinations,
 	)
 	return target

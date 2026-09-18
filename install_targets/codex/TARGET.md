@@ -2,6 +2,7 @@
 id: codex
 adapter: codex_toml
 support_tier: primary
+skill_layout: category
 destinations:
   skills: .codex/skills
   agents: .codex/agents

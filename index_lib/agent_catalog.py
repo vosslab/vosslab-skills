@@ -244,6 +244,8 @@ def adapter_agent_sources(
 	adapter: str,
 ) -> list[tuple[str, pathlib.Path | None, bytes | None]]:
 	"""Return canonical authored or rendered agent files for one installation adapter."""
+	if adapter == "skills_only":
+		raise ValueError("skills_only adapter has no agent projection")
 	sources: list[tuple[str, pathlib.Path | None, bytes | None]] = []
 	for entry in load_agents(repo_root):
 		source_path = repo_root / "agents" / f"{entry['id']}.md"

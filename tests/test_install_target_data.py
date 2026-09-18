@@ -25,7 +25,7 @@ def test_load_target_accepts_valid_declaration(tmp_path: pathlib.Path) -> None:
 	path = write_target(
 		tmp_path,
 		"claude",
-		"id: claude\nadapter: claude_markdown\nsupport_tier: primary\n"
+		"id: claude\nadapter: claude_markdown\nsupport_tier: primary\nskill_layout: flat\n"
 		"destinations:\n  skills: .claude/skills\n  agents: .claude/agents\n",
 	)
 
@@ -51,11 +51,46 @@ def test_load_target_rejects_unsupported_adapter(tmp_path: pathlib.Path) -> None
 	path = write_target(
 		tmp_path,
 		"unknown",
-		"id: unknown\nadapter: raw_markdown\nsupport_tier: primary\n"
+		"id: unknown\nadapter: raw_markdown\nsupport_tier: primary\nskill_layout: flat\n"
 		"destinations:\n  skills: .unknown/skills\n  agents: .unknown/agents\n",
 	)
 
 	with pytest.raises(ValueError, match="adapter.*unsupported"):
+		install_lib.install_target_data.load_target(path)
+
+
+#============================================
+def test_skills_only_adapter_declares_no_agents_destination(tmp_path: pathlib.Path) -> None:
+	"""A skills_only platform installs skills alone and rejects an agents destination."""
+	path = write_target(
+		tmp_path,
+		"hermes",
+		"id: hermes\nadapter: skills_only\nsupport_tier: compatibility\nskill_layout: category\n"
+		"destinations:\n  skills: .hermes/skills\n",
+	)
+	target = install_lib.install_target_data.load_target(path)
+	assert set(target.destinations) == {"skills"}
+
+	path = write_target(
+		tmp_path,
+		"hermes_agents",
+		"id: hermes_agents\nadapter: skills_only\nsupport_tier: compatibility\n"
+		"skill_layout: category\ndestinations:\n  skills: .h/skills\n  agents: .h/agents\n",
+	)
+	with pytest.raises(ValueError, match="must omit agents"):
+		install_lib.install_target_data.load_target(path)
+
+
+#============================================
+def test_agent_adapter_requires_agents_destination(tmp_path: pathlib.Path) -> None:
+	"""An adapter that projects agents must declare where they land."""
+	path = write_target(
+		tmp_path,
+		"claude",
+		"id: claude\nadapter: claude_markdown\nsupport_tier: primary\nskill_layout: flat\n"
+		"destinations:\n  skills: .claude/skills\n",
+	)
+	with pytest.raises(ValueError, match="must name agents"):
 		install_lib.install_target_data.load_target(path)
 
 
@@ -65,7 +100,7 @@ def test_load_target_requires_distinct_named_destinations(tmp_path: pathlib.Path
 	path = write_target(
 		tmp_path,
 		"shared",
-		"id: shared\nadapter: claude_markdown\nsupport_tier: primary\n"
+		"id: shared\nadapter: claude_markdown\nsupport_tier: primary\nskill_layout: flat\n"
 		"destinations:\n  skills: .shared/items\n  agents: .shared/items\n",
 	)
 
@@ -79,7 +114,7 @@ def test_target_destinations_reject_escape_and_symlink(tmp_path: pathlib.Path) -
 	path = write_target(
 		tmp_path,
 		"escape",
-		"id: escape\nadapter: claude_markdown\nsupport_tier: primary\n"
+		"id: escape\nadapter: claude_markdown\nsupport_tier: primary\nskill_layout: flat\n"
 		"destinations:\n  skills: ../outside\n  agents: .escape/agents\n",
 	)
 	with pytest.raises(ValueError, match="destinations.skills.*stay below"):
@@ -94,6 +129,7 @@ def test_target_destinations_reject_escape_and_symlink(tmp_path: pathlib.Path) -
 		target_id="claude",
 		adapter="claude_markdown",
 		support_tier="primary",
+		skill_layout="flat",
 		destinations={
 			"skills": pathlib.PurePosixPath(".claude/skills"),
 			"agents": pathlib.PurePosixPath(".claude/agents"),

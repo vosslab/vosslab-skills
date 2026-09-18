@@ -56,7 +56,7 @@ def interview_platforms(
 	primary = []
 	for target_id, target in targets.items():
 		skills_path = target.destinations["skills"]
-		agents_path = target.destinations["agents"]
+		agents_path = target.destinations.get("agents", "none")
 		print(f"  {target_id}: {target.support_tier}")
 		print(f"    skills -> {skills_path}; agents -> {agents_path}")
 		if target.support_tier == "primary":
@@ -88,6 +88,10 @@ def print_plan_summary(plan: dict) -> None:
 		)
 		print(f"  {target.target_id} ({target.support_tier})")
 		print(f"    Skills: {target.destinations['skills']} ({skill_count} links)")
+		# skills_only targets declare no agents destination.
+		if "agents" not in target.destinations:
+			print("    Agents: none")
+			continue
 		print(
 			f"    Agents: {target.destinations['agents']} "
 			f"({agent_link_count} links, {generated_agent_count} generated files)"

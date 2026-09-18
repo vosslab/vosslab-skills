@@ -32,10 +32,8 @@ origin belongs there too. Rules: [REPO_STYLE.md](REPO_STYLE.md).
 
 ## Testing and gates
 
-- Keep plan gates and requirements grounded in reality. Avoid arbitrary thresholds such as
-  "must load in under 400ms" and avoid byte-equivalence, pixel-equivalence, or exhaustive
-  matrices unless the product actually depends on them; plans making improvements should not
-  expect byte-identical output.
+- Keep plan gates and requirements grounded in reality. Avoid arbitrary thresholds.
+- Plans making improvements should not expect byte-identical output.
 - I want robust software: it continues to function despite imperfect inputs, data, state, or
   behavior. Handle imperfections according to their context and impact, with graceful recovery
   that preserves useful operation whenever possible.
