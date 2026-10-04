@@ -16,6 +16,35 @@ See the Required reading block in `SKILL.md`.
   - Canonical authoring reference: PGML-first structure, randomization rules,
     inline grading, HTML whitelist.
 
+Also read these two when the task writes or edits student-facing text (stems,
+choices, matching values, instructions, hints):
+
+- [references/docs/QUESTION_PEDAGOGY_GUIDE.md](docs/QUESTION_PEDAGOGY_GUIDE.md)
+  - How questions are designed and reviewed: design workflow, distractor design,
+    statement banks, matching sets, answer verification, review rubric (U, M, S, T, F, O).
+- [references/docs/QUESTION_VOICE_GUIDE.md](docs/QUESTION_VOICE_GUIDE.md)
+  - Wording and formatting of student-facing text: stem anatomy, emphasis, hints,
+    choices, instructions by item type, numbers and units, mechanics.
+
+## Question design and review
+
+- [references/docs/QUESTION_EXEMPLARS.md](docs/QUESTION_EXEMPLARS.md)
+  - Worked model and fix examples for stems, choices, statement banks, matching sets,
+    seriously absurd choices, and distractor recipes. Read the exemplar closest to the
+    item at hand during the design step.
+- [references/docs/QUESTION_EVIDENCE.md](docs/QUESTION_EVIDENCE.md)
+  - Evidence behind the rules: corpus audit, the professor's correction log, verified published
+    research, and book passages. Read when a rule's reason matters or a case is unclear.
+- [topic_index.md](topic_index.md)
+  - Routes wording, distractor, statement, matching, absurd-choice, and review requests to
+    the guides, and maps each PGML item type to its review rubric groups.
+- Emphasis: the guides decide what to emphasize, and
+  [references/docs/webwork/QUESTION_STATEMENT_EMPHASIS.md](docs/webwork/QUESTION_STATEMENT_EMPHASIS.md)
+  decides how to render emphasis in PGML. Where they differ on what to emphasize, the voice
+  guide wins.
+- The three guides are snapshots of the canonical files in the biology-problems repository
+  (`docs/QUESTION_*.md`). Edit the canonical files there and refresh the snapshots.
+
 ## Core authoring
 
 - [references/docs/webwork/WEBWORK_HEADER_STYLE.md](docs/webwork/WEBWORK_HEADER_STYLE.md)

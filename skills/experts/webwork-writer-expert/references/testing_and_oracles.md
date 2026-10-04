@@ -12,6 +12,8 @@ Include at least these cases when writing or validating a problem set:
 - **Off-by-tolerance**: an answer just outside the tolerance window; must grade
   as wrong for numeric problems (validates the tolerance bound is enforced).
 - **Wrong answer**: a clearly incorrect value or selection; must grade as 0%.
+- **Every distractor**: submit each wrong choice once; each must grade as 0% and
+  only the key as 100%.
 - **Partial credit**: for multi-part problems, a response with some sub-parts
   correct; must produce the expected fractional score.
 - **Edge-case answer**: zero, negative, very large, or the boundary value
@@ -47,9 +49,26 @@ declaring a problem correct.
   a wrong answer, and (where applicable) a partial answer via the renderer
   API's `answers_submitted` parameter; confirm the score matches expectation.
   See `references/docs/RENDERER_API_USAGE.md` for the submission format.
-- **Seed reproducibility test**: run the renderer with `$problemSeed = N` twice;
-  confirm the rendered HTML is byte-for-byte identical (or canonically
-  equivalent) between runs.
+- **Seed reproducibility test**: run the renderer with `$problemSeed = N` twice
+  on the same file version; confirm the rendered HTML is byte-for-byte identical
+  (or canonically equivalent) between runs. An edit that improves wording or
+  distractors is expected to change the rendered output.
+- **Student-text rubric read**: render several seeds in HTML mode and read each
+  stem and choice set against the rubric groups that
+  [topic_index.md](topic_index.md) routes for the PGML item type (universal U1-U9
+  plus M, T, F, or O; plus S for statement pools). Record each finding, fix it,
+  and render again. The rubric lives in the Review rubric of
+  [references/docs/QUESTION_PEDAGOGY_GUIDE.md](docs/QUESTION_PEDAGOGY_GUIDE.md).
+- **Distractor-rationale table**: list every choice with its role (key, named
+  student error, or absurd) and the Perl line that builds it. Every ordinary
+  wrong choice names one student error; duplicates and any distractor equal to
+  the key are removed.
+- **Independent key verification**: for computed items, enumerate every scenario
+  in a temporary check or recompute with a second implementation, and compare to
+  the key. For recall, matching, and statement items, a separate agent checks each
+  key against the source data. Rereading the generator's own logic does not
+  count; see Answer verification in
+  [references/docs/QUESTION_PEDAGOGY_GUIDE.md](docs/QUESTION_PEDAGOGY_GUIDE.md).
 - **OPL header validation**: confirm `DESCRIPTION`, `DBsubject`, and `KEYWORDS`
   header tags are present; check that `DBsubject` matches an existing OPL
   subject string if submitting to the OPL.
@@ -87,10 +106,12 @@ Collect these artifacts to prove a problem or a batch of problems improved:
   problems) and the correct answer matches the changed parameters.
 - **OPL header checklist**: a line-by-line listing of the required header tags
   and whether each is present in the file.
+- **Student-text review notes**: the rubric groups applied, the findings fixed,
+  the distractor-rationale table, and the key-verification method used.
 
 ## How to prove a problem improved
 
-To close a "fix this problem" task, provide evidence of all four of these:
+To close a "fix this problem" task, provide evidence of all five of these:
 
 1. Renderer lint output is clean after the change (no `error_flag`, no
    `pg_warn` entries). Include the before and after lint output if the problem
@@ -101,3 +122,5 @@ To close a "fix this problem" task, provide evidence of all four of these:
    answer grades as 0%.
 4. Seed reproducibility confirmed: two calls with the same seed produce the
    same output.
+5. Student-text review recorded: the routed rubric applied to rendered samples,
+   the distractor-rationale table filled in, and the key verified independently.

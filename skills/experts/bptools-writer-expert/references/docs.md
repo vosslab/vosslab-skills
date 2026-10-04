@@ -7,7 +7,12 @@ this skill's root directory unless noted otherwise.
 Snapshot note: the docs under `references/docs/` were copied from the
 `biology-problems` repo. They can drift. For questions where live code
 behavior matters, prefer the live files in the target repo
-(`git rev-parse --show-toplevel` from inside `biology-problems`).
+(`git rev-parse --show-toplevel` from inside `biology-problems`). The question pedagogy, voice,
+and exemplars guides are maintained in the target repo's `docs/` and refreshed here as exact
+copies. The other authoring snapshots (`QUESTION_AUTHORING_GUIDE.md` and the two family guides
+under `references/docs/problems/`) adjust repo-relative links so they resolve inside this skill:
+`../../docs/X.md` becomes `../../X.md`, and links to unbundled repo files become backticked
+repo paths.
 
 ## Required reading (load before any bptools edit)
 
@@ -19,6 +24,26 @@ Mandated by the Required reading block in `SKILL.md`.
   `git rev-parse --show-toplevel` + `/bptools.py`).
   - Canonical helper API surface for `formatBB_*`, `collect_and_write_questions`,
     `make_outfile`, and anti-cheat flags.
+
+### Student-facing text
+
+Required for any task that writes or edits stems, choices, hints, YAML statements, or matching
+values. The three guides are byte-identical snapshots of the target repo's canonical docs.
+
+- [references/docs/QUESTION_PEDAGOGY_GUIDE.md](docs/QUESTION_PEDAGOGY_GUIDE.md)
+  - Design workflow, distractor design, item structure, answer verification, and the review rubric.
+- [references/docs/QUESTION_VOICE_GUIDE.md](docs/QUESTION_VOICE_GUIDE.md)
+  - Stem anatomy, emphasis, hints, choices, instructions by item type, numbers and symbols,
+    and mechanics.
+- [references/docs/QUESTION_EXEMPLARS.md](docs/QUESTION_EXEMPLARS.md)
+  - Worked model and fix examples; read when choosing an exemplar during puzzle design.
+- [references/docs/QUESTION_EVIDENCE.md](docs/QUESTION_EVIDENCE.md)
+  - Evidence behind the rules: corpus audit (exam, generator, and bank quotes; the professor's
+    correction log), verified published research, and book passages. Read when a rule's reason
+    matters or a case is unclear.
+- [references/question_voice.md](question_voice.md)
+  - Routing guide from each authoring task to the exact headings in the three guides, plus the
+    rubric item IDs.
 
 ## Core authoring
 

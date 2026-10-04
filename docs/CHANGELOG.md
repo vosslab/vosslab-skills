@@ -1,3 +1,72 @@
+## 2026-10-03
+
+### Additions and New Features
+
+- `bptools-writer-expert` and `webwork-writer-expert` now bundle byte-identical snapshots of the
+  biology-problems question guides (`QUESTION_PEDAGOGY_GUIDE.md`, `QUESTION_VOICE_GUIDE.md`,
+  `QUESTION_EXEMPLARS.md`) under `references/docs/`, required reading for any task that writes or
+  edits student-facing text, plus `QUESTION_EVIDENCE.md` (corpus audit, the professor's correction
+  log, verified research, and book passages) so the evidence travels with the skill.
+- Added `skills/experts/bptools-writer-expert/references/question_voice.md`: routing from
+  question-writing tasks to guide headings, rubric groups by item type, and rubric item IDs.
+
+### Behavior or Interface Changes
+
+- Both writer skills gained two workflow steps: "Design the puzzle before code" (reasoning
+  target, data, named student errors mapped to distractors, chosen exemplar) and "Student-text
+  review" (rendered sample read against the routed rubric, distractor-rationale table,
+  independent answer-key check; bptools also runs the advisory `devel/check_question_text.py`).
+  Core rules add: questions are puzzles with few words, distractors come from named student
+  errors, and seriously absurd choices are welcome beside them.
+- Both skill descriptions add student-facing wording and distractor design to the trigger
+  surface; indexes regenerated with `index_lib/build_all.py`.
+- `webwork-writer-expert` routes the rubric by PGML item type and states that the voice guide
+  decides what to emphasize while `QUESTION_STATEMENT_EMPHASIS.md` decides how to render it.
+- `bptools-writer-expert` now applies the biology-problems randomization policy consistently:
+  scenarios use true randomness; meaningful numeric, genotype, ratio, and short-string ladders
+  stay ordered; and only choices without a meaningful order are shuffled. Tests never require two
+  random draws to differ.
+- Its operational references now match the live helper contracts: generators shuffle unordered
+  choice sets while helpers preserve supplied order; `Correct` and `Incorrect` are instructor
+  diagnostic fields only; and collections apply anti-cheat defaults unless an exposed override
+  needs an add/apply flag.
+
+### Fixes and Maintenance
+
+- `bptools-writer-expert/references/testing_and_oracles.md`, `project_workflow.md`, and
+  `task_selection.md` drop the `--seed 12345` byte-identical proof (`bptools.py` has no seed flag
+  and the target repo prefers true randomness); the four proof artifacts are now a rendered
+  before/after sample, a distractor-rationale table, a key-verification note, and a checker
+  report excerpt.
+- `webwork-writer-expert/references/project_workflow.md` now checks seed reproducibility within
+  one file version and expects an improving edit to change the rendered question.
+- Refreshed the bundled `QUESTION_AUTHORING_GUIDE.md`, `MC_STATEMENTS_AUTHORING_GUIDE.md`, and
+  `MATCHING_SET_AUTHORING_GUIDE.md`; their repo-relative links are adjusted to resolve inside the
+  skill (noted in `bptools-writer-expert/references/docs.md`).
+
+### Decisions and Failures
+
+- `tests/test_skill_frontmatter.py` accepts a description containing ": ", but
+  `index_lib/build_all.py` rejects it as invalid YAML; the bptools description was reworded.
+- `QUESTION_EVIDENCE.md` is bundled as the canonical audit and evidence record, replacing the
+  plan's proposed duplicate active-plan audit file.
+- The initial literal blind replay tied both arms at 189/200 rubric-category points. The accepted
+  loop-one canonical-guide revision narrows scenario variety, misconception-pair, and ratio-order
+  guidance without numerical quotas or forced no-replacement; affected treatment arms will rerun
+  before any improvement claim.
+- The initial literal replay tie at 189/200 remains valid. A first loop-one set-level summary
+  (41/44) and provisional 95%/92.5% comparison were corrected before review. Independent final
+  review accepted the corrected loop-one sample: control 185/200 (92.5%) and treatment 192/200
+  (96.0%) across R1 60/60 versus 52/60, R2 60/70 versus 70/70, and R3 65/70 versus 70/70. No
+  second guide loop is required.
+
+### Developer Tests and Notes
+
+- Skill gate: frontmatter, body size (bptools 126 lines / 7,555 chars; webwork 125 lines),
+  internal links, ASCII, Markdown links, expert parity, local-only links, index sync, manifest
+  drift, and Codex YAML parse tests pass (1,291). Final V1 rerun: 1,291 passed; the same gate
+  set passed again after the loop-one snapshot refresh (1,291).
+
 ## 2026-09-18
 
 ### Additions and New Features

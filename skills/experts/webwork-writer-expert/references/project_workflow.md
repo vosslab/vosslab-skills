@@ -90,8 +90,11 @@ or grading checks.
    - Confirm visual render looks correct via `--html` mode.
    - Confirm correct/incorrect/partial-credit answers grade as expected using
      the renderer API's `answers_submitted` field.
-   - Confirm the same `$problemSeed` produces the same question and answer
-     before and after (seed reproducibility invariant).
+   - Confirm the edited file reproduces itself: two renders of the new version with
+     the same `$problemSeed` give the same question and answer. An improving edit
+     is expected to change the rendered question.
+   - Read the rendered student-facing text against the routed rubric in
+     `references/docs/QUESTION_PEDAGOGY_GUIDE.md`.
 
 ## Problem authoring review checklist
 

@@ -25,10 +25,50 @@ relative to this skill's root directory. Derived from
 | Randomization not reproducible, wrong seed | Randomization | `references/docs/webwork/RANDOMIZATION_REFERENCE.md` | `references/docs/WEBWORK_PROBLEM_AUTHOR_GUIDE.md` |
 | OPL header tags missing or wrong | Header metadata | `references/docs/webwork/WEBWORK_HEADER_STYLE.md` | `references/docs/WEBWORK_PROBLEM_AUTHOR_GUIDE.md` |
 | Key phrase or data not emphasized in stem | Question statement | `references/docs/webwork/QUESTION_STATEMENT_EMPHASIS.md` | `references/docs/WEBWORK_PROBLEM_AUTHOR_GUIDE.md` |
+| Which words to emphasize in a stem | Emphasis targets | `references/docs/QUESTION_VOICE_GUIDE.md` (Emphasis) | `references/docs/webwork/QUESTION_STATEMENT_EMPHASIS.md` |
+| Stem wording, length, lead-in, hints, notes | Student-facing wording | `references/docs/QUESTION_VOICE_GUIDE.md` | `references/docs/QUESTION_EXEMPLARS.md` (Stems) |
+| Wrong choices, distractor design, answer set | Distractor design | `references/docs/QUESTION_PEDAGOGY_GUIDE.md` (Distractor design) | `references/docs/QUESTION_EXEMPLARS.md` (Distractor recipes) |
+| Funny, silly, or seriously absurd choices | Absurd choices | `references/docs/QUESTION_PEDAGOGY_GUIDE.md` (Seriously absurd choices) | `references/docs/QUESTION_EXEMPLARS.md` (Seriously absurd choices) |
+| "Which statement is TRUE", true and false statement pool | Statement question | `references/docs/QUESTION_PEDAGOGY_GUIDE.md` (Statement banks) | `references/docs/QUESTION_VOICE_GUIDE.md` (Statement bank form) |
+| Matching instructions, letter use, wording of matching values | Matching wording | `references/docs/QUESTION_PEDAGOGY_GUIDE.md` (Matching sets) | `references/docs/QUESTION_VOICE_GUIDE.md` (Matching) |
+| Review rendered question text, check the key | Student-text review | `references/docs/QUESTION_PEDAGOGY_GUIDE.md` (Review rubric, Answer verification) | `references/docs/QUESTION_VOICE_GUIDE.md` (Mechanics) |
 | PG macro not found, wrong PG version | Macro / version | `references/docs/webwork/PG_2_17_RENDERER_MACROS.md` | `references/docs/webwork/PG_2.20_to_2.16_features.md` |
 | PubChem or biochem molecule problem | PubChem PGML | `references/docs/pubchem/PGML_PUBCHEM_CONVERSION_SUMMARY.md` | `references/docs/pubchem/PUBCHEM_PGML_SYNTAX_NOTES.md` |
 
+## Review rubric routing
+
+Route the student-text review by PGML item type. Rubric codes (U, M, T, F, O, S) come from
+the Review rubric in `references/docs/QUESTION_PEDAGOGY_GUIDE.md`; apply the universal group
+to every item and the type group that fits.
+
+| PGML item type | Rubric groups |
+| --- | --- |
+| `RadioButtons` or `PopUp`, single answer | Universal U1-U9 plus M1-M5 |
+| `CheckboxList` | Universal U1-U9 plus M1-M5 |
+| Matching with `PopUp` widgets | Universal U1-U9 plus T1-T3 |
+| Numeric and string answer blanks | Universal U1-U9 plus F1-F3 |
+| Draggable ordering (`DraggableProof`) | Universal U1-U9 plus O1-O2 |
+
+A `RadioButtons` or `CheckboxList` item built from a true and false statement pool also takes
+S1-S4.
+
+## Emphasis ownership
+
+- The guides decide what to emphasize: `references/docs/QUESTION_VOICE_GUIDE.md` (Emphasis)
+  names the targets, such as negations and the word that separates sibling questions.
+- `references/docs/webwork/QUESTION_STATEMENT_EMPHASIS.md` decides how to render emphasis in
+  PGML: spans, colors, sizes, and the `[$var]*` pattern.
+- Where the two differ on what to emphasize, the voice guide wins.
+
 ## Per-type detail
+
+### Student-facing wording and distractors
+
+Design the data, the key, and the named student errors first, then write the thinnest
+wrapper. Build each wrong choice in Perl from one named error and comment the error beside
+it. See `references/docs/QUESTION_PEDAGOGY_GUIDE.md` (grep `Design workflow`,
+`Error-derived distractors`) and `references/docs/QUESTION_VOICE_GUIDE.md` (grep
+`Stem anatomy`, `Choices`).
 
 ### Numeric and formula answers
 
@@ -78,3 +118,7 @@ Run the renderer API lint script first. Check `flags.error_flag`,
 - HTML whitelist: table blocked, tr/td forbidden, use div, use niceTables.
 - PGML single-pass: variable contains HTML, use `[$var]*`, not `[$var]`.
 - Randomization: `$problemSeed`, `PGrandom`, reproducible, same seed same answer.
+- Wording: stem, lead-in, hint, note, instructions, too wordy, tighten, rewrite the question.
+- Distractors: wrong choices, plausible wrong answers, common mistakes, misconception.
+- Absurd choices: funny option, joke answer, silly choice, deadpan.
+- Review: proofread, check the answer key, review rubric, is this question good.

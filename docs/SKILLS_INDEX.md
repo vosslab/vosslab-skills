@@ -36,7 +36,7 @@ Delegation, parallel execution, monitoring, and multi-agent workflows.
 
 Domain-specialist implementation workflows governed by expert-skill guidance.
 
-- [experts/bptools-writer-expert/SKILL.md](../skills/experts/bptools-writer-expert/SKILL.md): Create, edit, and validate biology-problems bptools Python question generators and YAML content.
+- [experts/bptools-writer-expert/SKILL.md](../skills/experts/bptools-writer-expert/SKILL.md): Create, edit, and review biology-problems bptools question generators and YAML banks, including student-facing wording, distractor design, randomization, anti-cheat, and BBQ/QTI output via `bptools.py` and `qti_package_maker`.
 - [experts/color-accessibility-expert/SKILL.md](../skills/experts/color-accessibility-expert/SKILL.md): Detect and fix WCAG color-contrast failures in source files and images using measured, hue-preserving replacements.
 - [experts/css-creative-expert/SKILL.md](../skills/experts/css-creative-expert/SKILL.md): Use when CSS-specific composition, cascade behavior, responsive layout, theming, or motion requires design or diagnostic judgment.
 - [experts/geometry-expert/SKILL.md](../skills/experts/geometry-expert/SKILL.md): Use when computational-geometry robustness, topology, predicates, intersections, tessellation, motion planning, or realizability determines correctness.
@@ -52,7 +52,7 @@ Domain-specialist implementation workflows governed by expert-skill guidance.
 - [experts/ui-ux-engineer/SKILL.md](../skills/experts/ui-ux-engineer/SKILL.md): Use when a requested interface review or redesign requires product-level hierarchy, interaction, accessibility, forms, navigation, states, or responsive UX judgment.
 - [experts/vision-expert/SKILL.md](../skills/experts/vision-expert/SKILL.md): Use when computer-vision pipeline design or evaluation is central, including image processing, detection, segmentation, tracking, OCR, datasets, robustness, or model selection.
 - [experts/wasm-rust-expert/SKILL.md](../skills/experts/wasm-rust-expert/SKILL.md): Use when Rust/WebAssembly boundary design, wasm-bindgen or web-sys integration, WASI targeting, browser Canvas, parity, or Wasm performance is central.
-- [experts/webwork-writer-expert/SKILL.md](../skills/experts/webwork-writer-expert/SKILL.md): Create, edit, and lint WeBWorK PG/PGML questions.
+- [experts/webwork-writer-expert/SKILL.md](../skills/experts/webwork-writer-expert/SKILL.md): Create, edit, review, and lint WeBWorK PG/PGML questions.
 
 ## Documentation
 

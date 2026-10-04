@@ -27,6 +27,34 @@ Identify the primary answer mechanism:
 - **Checkboxes**: one or more correct answers from a list; use
   `CheckboxList`.
 
+## Item type
+
+Name the PGML item type from the list above (radio or pop-up single answer,
+checkbox list, matching pop-ups, numeric or string blank, draggable ordering).
+The item type selects the student-text review rubric; the mapping lives in Review
+rubric routing in [topic_index.md](topic_index.md). Note whether the item draws on
+a true and false statement pool, because that adds the S rubric group.
+
+## Reasoning target
+
+State what the student does with the data, on the revised Bloom cognitive-process
+scale, before choosing data or distractors:
+
+- **Apply**: use a rule on a new case. Randomize the parts that change the answer
+  and pick numbers that make the intended arithmetic come out whole.
+- **Analyze**: pull structure out of data such as a gel, table, graph, or cross.
+  Present the data first and let it carry the difficulty.
+- **Evaluate**: judge a claim or a calculation. Use show-the-setup choices or an
+  error-analysis stem ("What did they do wrong?").
+- **Recall**: vocabulary and fact sets, such as matching sets and statement pools.
+  Label these items as recall.
+
+Examples: "analyze a gel to identify the father"; "apply 2/3 survival to a
+lethal-allele cross"; "evaluate which worked distance calculation pairs the right
+progeny classes". The full design steps are in
+[references/docs/QUESTION_PEDAGOGY_GUIDE.md](docs/QUESTION_PEDAGOGY_GUIDE.md)
+(Design workflow).
+
 ## Input constraints
 
 - HTML whitelist: `div`, `span`, `br`, `p`, `a`, `img`, `svg` are allowed
@@ -75,6 +103,8 @@ Identify the grading mechanism before writing the problem:
 
 - What answer type does the student produce: a number, an expression, a
   selection, a sequence, or free text?
+- What is the reasoning target: apply, analyze, evaluate, or recall?
+- Which named student errors become the wrong choices?
 - Does the answer vary per seed, or is it a fixed correct answer across all seeds?
 - What HTML elements are in the question body, and do any conflict with the
   whitelist?

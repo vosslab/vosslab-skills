@@ -1,7 +1,7 @@
 # Task selection
 
 Use this reference to classify a bptools authoring request before consulting the topic index or
-domain guides. Answer all four dimension questions to frame the task, then locate the matching guide.
+domain guides. Answer all six dimension questions to frame the task, then locate the matching guide.
 
 ## Task dimensions
 
@@ -9,7 +9,8 @@ domain guides. Answer all four dimension questions to frame the task, then locat
 
 Choose the family that best describes the content:
 
-- Multiple-choice (MC): one correct answer, shuffled distractors. Format: `formatBB_MC_Question`.
+- Multiple-choice (MC): one correct answer; preserve meaningful natural choice order and shuffle
+  choices with no meaningful order. Format: `formatBB_MC_Question`.
 - Multiple-answer (MA): one or more correct answers, student must select all. Format:
   `formatBB_MA_Question`.
 - Matching set: pair a list of terms to a list of definitions or descriptions. Format:
@@ -30,6 +31,32 @@ Choose the family that best describes the content:
   and answer is constructed from multiple sub-parts. Typically uses `formatBB_MA_Question`
   with care for answer key ordering.
 
+### Item type
+
+Item type picks the rubric group that reviews the student-facing text. Pair it with the family:
+
+- MC, MA, and figure-based families (pedigree, tree, PubChem) with MC or MA answers: universal
+  items plus the multiple-choice items (U, M).
+- MC statements from a YAML bank: universal, statement-bank, and multiple-choice items (U, S, M).
+- Matching set: universal and matching items (U, T).
+- FIB, FIB_PLUS, NUM: universal and fill-in-the-blank items (U, F).
+- ORD: universal and ordering items (U, O).
+
+`references/question_voice.md` lists the item IDs and routes each type to the guide headings that
+govern its stem, choices, and instructions.
+
+### Reasoning target
+
+Name what the student does with the data, on the revised Bloom process scale:
+
+- Apply: use a rule on a new case (a lethal-allele cross, a dilution, a restriction digest).
+- Analyze: pull structure out of data (read a gel, a pedigree, a gene map).
+- Evaluate: judge a claim or a calculation (find the error, pick the right setup).
+- Recall: retrieve vocabulary or facts (matching sets, statement banks); label these as recall.
+
+The target sets the data design and the named student errors recorded in the authoring contract
+(see `references/project_workflow.md`).
+
 ### Output format
 
 Choose the delivery format the LMS or test runner requires:
@@ -47,39 +74,45 @@ a QTI or HTML path.
 
 ### Randomization scope
 
-Define which level of randomization applies:
+The repo draws scenarios with true randomness for student assessments, because predictable
+sequences make cheating easier. Define which level applies:
 
-- Per-instance: each call to `write_question(N, args)` produces a different question from the
-  same generator. Distractors, values, and wording change for each N. This is the standard mode
-  controlled by seeded randomness; use `random.seed(args.seed + N)` or the bptools convention.
-- Per-version: the same seed produces an identical question set. Used for reproducibility checks
-  and audit trails. Pass a fixed `--seed` argument; the output must be byte-identical on repeat
-  runs.
+- Per-instance: each call to `write_question(N, args)` draws a scenario with true randomness.
+  Size the pool for useful variation across the requested count, while recognizing that random
+  draws may repeat. This is the standard mode.
 - Per-release: a YAML bank is authored once; the generator reads the bank and draws from it
   across exam versions. The bank changes only when the domain content is updated, not on each run.
+- Deterministic (debugging, reproducibility checks, and unit tests only): select scenarios in a
+  fixed order behind an explicit option such as `--sorted` from `bptools.add_scenario_args`.
+  Keep the student-facing default random.
 
-Identify the scope before writing or modifying `write_question`. Scope mismatches cause
-unreproducible output or unintentional exam version drift.
+Identify the scope before writing or modifying `write_question`. A scenario pool smaller than the
+requested count produces repeated items; size the pool first.
 
 ### Anti-cheat policy
 
 State the anti-cheat requirements before authoring question content:
 
-- Distractor scrambling: answer-choice order must differ across instances. Enabled by default in
-  `collect_and_write_questions` unless overridden. Do not disable without a documented reason.
-- Hidden answer key: the BBQ text encodes the correct answer by position, not by label. Never
-  print the answer key to stdout or embed it in the question stem.
+- Distractor scrambling: the generator explicitly scrambles choices with no meaningful natural
+  order. Preserve natural numeric, genotype, ratio, and short-string ladders; the formatter
+  preserves the order it receives.
+- Hidden answer key: BBQ encodes the key with `Correct` and `Incorrect` fields. Keep key cues
+  out of student-facing stems, choices, and published self-tests. Instructor-console diagnostics
+  may display the key.
 - Metadata sanitization: Python comments, debug prints, and generator filenames must not leak
-  subject matter in a way that reveals the answer. Apply `apply_anticheat_args(args)` when
-  the generator uses `add_anticheat_args(parser)`.
-- Seed reproducibility: a fixed `--seed` must reproduce the same question set for audit purposes.
-  Verify by running twice with identical arguments and comparing output files byte-by-byte.
+  subject matter in a way that reveals the answer. When a generator exposes anti-cheat overrides,
+  use `add_anticheat_args(parser)` and `apply_anticheat_args(args)`; collection applies the
+  shared defaults.
+- Randomness: student-facing scenario selection uses true randomness. Choice sets with no
+  meaningful natural order are scrambled; meaningful natural ladders stay in that order. Do not
+  require two random draws to differ.
 
 ## Clarifying questions to answer internally
 
 - What question family is requested? Is there an existing generator in the same domain to reuse?
+- Which item type (rubric group) governs the review, and what reasoning target does the item test?
 - What output format does the target LMS require?
 - Does the task require greenfield authoring or improvement of an existing generator?
-- What randomization scope is needed: exploratory, reproducible, or release-stable?
+- What randomization scope is needed: per-instance, per-release, or a debugging-only deterministic mode?
 - Are there anti-cheat requirements beyond the defaults?
 - Which domain-specific guide must be loaded (matching, pedigree, phylogenetic, PubChem)?
