@@ -26,8 +26,8 @@ Section meanings live in `DEFINITIONS.md`.
   `grep '^# Plan:'`. The descriptive title that follows uses sentence case
   (only the first word and proper nouns capitalized).
 - Plan H2 / H3 / H4 headings use **sentence case** per `docs/MARKDOWN_STYLE.md`.
-- Plan headings omit numeric prefixes. Milestone IDs (`M1`, `M2`, ...) and work-package IDs
-  (`WP-T1`, ...) live inside section bodies, not in headings.
+- Plan headings omit numeric prefixes. Milestone IDs (`M1`, `M2`, ...) live inside section bodies,
+  not in headings. Detailed task assignments and package IDs belong to execution.
 - Keep code samples inside fenced blocks so heading scanners recognize plan headings accurately.
 
 ## Tier 1: Canonical core headings
@@ -56,21 +56,20 @@ they appear in this order, after the canonical core:
 | Order | Heading | Notes |
 | --- | --- | --- |
 | 6 | Current state summary | |
-| 7 | Architecture boundaries and ownership | with `### Mapping (milestones / workstreams -> components / patches)` subsection |
-| 8 | Milestone plan | leads with an at-a-glance milestone summary table (`M / Title / Summary / Goal`), then per-milestone subsections with a `Parallel-plan ready: yes/no` slot |
-| 9 | Workstream breakdown | |
-| 10 | Work packages | |
-| 11 | Acceptance criteria and gates | |
-| 12 | Test and verification strategy | multi-workstream form; small plans use Tier 3 `Verification` |
-| 13 | Migration and compatibility policy | |
-| 14 | Risk register | |
-| 15 | Rollout and release checklist | |
-| 16 | Documentation close-out requirements | |
-| 17 | Patch plan and reporting format | |
-| 18 | Open questions and decisions needed | non-blocking items only |
+| 7 | Architecture boundaries and ownership | with `### Mapping (milestones -> components)` and `### File scope` subsections |
+| 8 | Milestone plan | leads with a summary table (`M / Title / Summary / Goal`), then milestone outcomes and a brief `Parallel-plan ready: yes/no` reason |
+| 9 | Test and verification strategy | detailed technical form; small plans use Tier 3 `Verification` |
+| 10 | Migration and compatibility policy | |
+| 11 | Risk register | |
+| 12 | Rollout and release checklist | |
+| 13 | Documentation close-out requirements | |
+| 14 | Open questions and decisions needed | non-blocking items only |
 
-Tier 2 has 13 H2 sections (the Mapping subsection at position 7 is rendered as
-H3 inside Architecture boundaries and ownership, not counted separately).
+Mapping and File scope are H3 subsections inside Architecture boundaries and ownership.
+File scope names expected files or directories, intended changes, and canonical sources for
+generated outputs. Include relevant tests and documentation. Refine this boundary as evidence
+emerges. Use a compact list or table; task assignments and dispatch belong to execution.
+Completion criteria live in milestone exit criteria and Test and verification strategy.
 
 ## Tier 3: Allowed add-on headings
 
@@ -116,20 +115,21 @@ Core headings stay canonical. These add-ons provide smaller or specialized shape
 
 Choose the archetype from the work's purpose and coordination needs.
 
-### Multi-workstream archetype
+### Coordinated technical archetype
 
-Use when coordination benefits from explicit workstreams, ownership boundaries, milestone
-dependencies, or a substantial risk surface.
+Use when cross-module changes, shared contracts, migrations, compatibility risk, or coordinated
+multi-agent implementation and review need explicit technical decisions and milestone dependencies.
 
 Base sections plus the execution sections the coordination model needs:
 Context, Objectives, Design philosophy, Scope, Non-goals,
-Architecture boundaries and ownership (with Mapping),
-Milestone plan, Workstream breakdown, Work packages,
+Architecture boundaries and ownership (with Mapping and File scope),
+Milestone plan, Test and verification strategy,
 with other Tier 2 sections added when applicable.
 
 ### Step-list / small archetype
 
-Use when a direct sequence is enough to coordinate the work.
+Use when a direct sequence is enough and the user has chosen Blueprint's core structure.
+For a concise plan with simpler headings, use `modest-plan-drafter`.
 
 Required sections (Tier 1) plus typical Tier 3:
 Context, Objectives, Design philosophy, Scope, Non-goals,
@@ -156,6 +156,6 @@ per-hypothesis investigation milestones (under `## Milestone plan`),
 ## Archetype selection
 
 - Use the diagnostic archetype when the plan's purpose is to discover or characterize.
-- Use the multi-workstream archetype when execution needs explicit coordination across owners,
-  dependencies, or interfaces.
+- Use the coordinated technical archetype when execution needs explicit coordination across
+  components, dependencies, or interfaces.
 - Use the step-list archetype when a direct sequence provides enough coordination.

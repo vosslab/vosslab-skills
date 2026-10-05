@@ -1,3 +1,92 @@
+## 2026-10-04
+
+### Additions and New Features
+
+- Added `modest-plan-drafter` for concise coding, teaching, research, writing, and organizational
+  plans. Its default shape covers goal and context, approach, and observable completion checks,
+  with file scope for file-based work and a soft one-page target.
+
+### Behavior or Interface Changes
+
+- Added conditional Graphify reference pointers to `delegate-manager-to-subagents` and
+  `parallel-plan`, keeping both entrypoints short. Their self-contained guides cover focused
+  investigation, source verification, evidence in briefs, shared-dependency checks, and single-owner
+  map refreshes while preserving the existing question, dispatch, and review workflows.
+- Blueprint remains the detailed technical planner, with routing based on cross-module
+  coordination, shared contracts, migrations, compatibility risk, and coordinated implementation
+  and review. Its templates now include concise file scope and milestone-level dependencies;
+  detailed task assignments and dispatch are left to execution.
+- Both planners now apply grounded requirements, robustness, KISS, restrained configuration,
+  meaningful permanent-test retention, temporary-check closeout, and actionable gate failures.
+  Graphify guidance uses available maps for focused investigation and verifies findings in current
+  sources; planning remains functional without Graphify.
+- `delegate-manager-to-subagents` and `parallel-plan` now center execution on an active
+  clarification, challenge, decision, and escalation loop. Their seven-part briefs define outcome,
+  ownership, context, dependencies, question checkpoint, evidence, and review route; each brief
+  explicitly invites agents to challenge unsupported assumptions.
+- Decision records now name evidence, affected work, acceptance changes, and next-action owner.
+  Dependent work stays pending while a decision is unresolved. A question closes only after every
+  affected agent restates the resulting constraint, applies it, and provides relevant verification
+  evidence.
+- Delegation now selects an explicit smallest capable, cheaper-than-manager model from the live
+  catalog; exceptions require a capability reason and receive a fresh agent. Every implementation,
+  correction, review, re-review, and integration assignment uses a fresh agent. Specification
+  acceptance precedes a separate quality review, and final integration assesses composition,
+  architecture, and approved-plan coverage.
+- Review scope may start from changed files or cover the codebase as needed. Existing references
+  hold detailed brief templates, ledger fields, decision records, examples, pressure scenarios,
+  and model-selection guidance so both entrypoints remain short.
+
+### Fixes and Maintenance
+
+- Reviewed all five changed skill entrypoints for content efficiency. Consolidated Blueprint's
+  repeated contract, workflow, and completion wording; moved both planners' Graphify usage into
+  conditional local references and Modest's software-only verification policy into its own guide.
+  Blueprint shrank from 117 lines/6,678 characters to 74/4,278; Modest from 88/5,971 to 70/4,348.
+  The delegation, parallel-execution, and goal-distillation entrypoints were already focused and
+  retained their existing content.
+- Regenerated the four stale plugin manifests from canonical `VERSION` data: their five version
+  fields now read `26.10.0`; `index_lib/build_all.py --check` confirms all projections are current.
+
+### Removals and Deprecations
+
+- Removed Blueprint's Workstream breakdown, Work packages, Acceptance criteria and gates, and
+  Patch plan and reporting format sections from its templates and heading rules. Completion
+  evidence remains in milestone exit criteria and verification; the references no longer require
+  package-level dependencies or preassigned agent counts.
+
+### Decisions and Failures
+
+- Initial parallel-plan quality review found malformed task-state table markup and inconsistent
+  escalation status wording. Fresh corrections aligned task and question states, made approved
+  plan identity explicit in the ledger, and required specification acceptance before quality review.
+- A bounded exercise comparison exposed incomplete per-task propagation records and one unsupported
+  model identifier. Detailed records now track each affected brief, restatement, application,
+  verification, and next-action owner; they distinguish individual release from whole-question
+  closure and verify the exact selected model identifier against the live catalog.
+- Baseline and treatment manager exercises are scripted process evaluations, not product-runtime
+  tests. Targeted rechecks demonstrated the corrected propagation, pending-state, escalation, and
+  supported smaller-model selection records without a broad behavioral-success claim.
+
+### Developer Tests and Notes
+
+- Delegation Graphify additions passed both skill validators, explicit reference/ASCII/size checks,
+  20 selected Markdown-link/ASCII checks, and catalog validation. The entrypoints gained three lines
+  each and remain 83 lines (`delegate-manager-to-subagents`) and 91 lines (`parallel-plan`).
+- Planner validation passed both skill validators, direct sidecar and entrypoint checks, 17
+  existing skill checks, and 31 selected Markdown-link/ASCII checks. Catalog generation and
+  `index_lib/build_all.py --check` passed with Modest included in the tracked inventory.
+- A one-time template comparison confirmed removal of exactly the four requested H2 sections
+  while retaining the remaining H2 order. Three manual fixture walkthroughs covered coordinated
+  coding, bounded coding, and non-coding teaching plans, including file scope, compatibility,
+  intended output changes, and proportionate verification. These were static walkthroughs rather
+  than independent model evaluations; no permanent tests or temporary artifacts were added.
+- Final validation selected 38 relevant checks: 20 scalar skill gates plus 18 path-scoped Markdown
+  and ASCII checks, including this changelog; 1,238 unrelated cases were deselected. Both skill
+  validators reported `Skill is valid!`; the final index check passed; whitespace check was clean.
+  Entrypoints are 80 lines/4,297 characters (`delegate-manager-to-subagents`) and 88 lines/5,271
+  characters (`parallel-plan`).
+
 ## 2026-10-03
 
 ### Additions and New Features

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modest Plan Drafter"
+  short_description: "Draft concise coding and non-coding plans"
+  default_prompt: "Use $modest-plan-drafter to draft a concise plan with goal and context, an approach, file scope when relevant, and grounded completion checks before execution."

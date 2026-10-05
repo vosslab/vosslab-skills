@@ -14,7 +14,24 @@ Canonical definitions live in [DEFINITIONS.md](DEFINITIONS.md).
 - Define scope and non-goals explicitly.
 - Describe current state when it materially affects the plan.
 - Declare architecture and ownership boundaries when coordination needs them.
-- Give manager/subagent decision procedures to choices that repository evidence can resolve.
+- Give evidence-led decision procedures to choices that investigation can resolve.
+
+## Simplicity, robustness, and configuration
+
+- Apply KISS aggressively. Prefer the smallest coherent design that satisfies actual requirements
+  and known failure modes. Mechanisms, abstractions, policies, state, and tests must earn complexity
+  by solving a demonstrated need.
+- Keep configuration simple. Add options, parameters, modes, overrides, and extension points only
+  for demonstrated needs. Prefer sensible fixed behavior for internal implementation choices.
+- When callers need different behavior, first determine whether a simpler shared design should
+  handle it automatically or the tasks are genuinely different. Account for the code, tests,
+  documentation, maintenance, and combinations each additional choice creates.
+- Robust software continues to function despite imperfect inputs, data, state, or behavior.
+  Handle imperfections according to context and impact, using graceful recovery to preserve useful
+  operation where appropriate while protecting correctness.
+- Prefer adaptability over speculative edge-case handling: clear boundaries, stable domain concepts,
+  and replaceable components let unexpected cases be addressed later. Cover concrete requirements
+  and likely failure modes now.
 
 ## Evidence-led design
 - Separate observations, hypotheses, and decisions.
@@ -25,48 +42,57 @@ Canonical definitions live in [DEFINITIONS.md](DEFINITIONS.md).
 ## Milestone design
 - Apply this section when the selected plan uses milestones.
 - Use milestones with clear dependency flow.
-- Milestone numbers are labels, not ordering. Ordering is defined by Depends on and Gates.
-- Derive workstream count from natural independence and available subagents.
-- Declare dependencies by dependency ID in `Depends on`, with a short reason.
-- Dependencies live at the work package level, not hidden inside milestone prose.
-- Keep inherently serial work in one lane.
+- Milestone numbers are labels, not ordering. Ordering is defined by dependencies and exit criteria.
+- State meaningful dependencies in milestone details, using milestone IDs or named prerequisites
+  with a short reason. Keep them visible rather than burying them in prose.
+- Give a brief `Parallel-plan ready: yes/no` reason. Workstreams may name naturally independent
+  areas in a short note; the execution manager derives tasks, assignments, and agent counts later.
 - Each included milestone states:
-  - Depends on (dependency IDs, or none) with a short reason
+  - Depends on (milestone IDs or prerequisite, or none) with a short reason
   - Deliverables
-  - Done checks
   - Entry criteria (allow "none")
-  - Exit criteria (allow "none")
+  - Exit criteria (observable done checks)
 - Mark optional milestones explicitly.
 - Keep stretch goals separate from required delivery milestones.
 
-### Workstream breakdown
-- Apply this section when a milestone uses independent workstreams.
-- For each workstream, include:
-  - Goal
-  - Owner
-  - Work packages
-  - Interfaces (what it needs from other workstreams, what it provides)
-  - Review boundary when the work modifies the repository
+## File scope
 
-### Work package assignments
-- Give every work package one owner and one reviewable outcome.
-- Decompose each workstream into natural one-owner work packages.
-- Include fields useful to execution:
-  - Work package title (verb + object)
-  - Owner
-  - Touch points (files, components)
-  - Acceptance criteria
-  - Dependencies (other work packages)
+- Under Architecture boundaries and ownership, name expected files or directories and each change's
+  purpose. Small plans can use Files to modify. Use current source evidence for paths.
+- Include relevant tests, documentation, and generated outputs with their canonical sources;
+  regenerate outputs from those sources.
+- Treat file scope as the expected edit boundary, refined as evidence emerges. It communicates
+  what changes, while detailed task assignments and dispatch are defined during execution.
 
-## Acceptance and gates
-- Add observable acceptance criteria where the plan uses gates.
-- Select the gates supported by the change and repository guidance.
-- Use deterministic outcomes where stability matters.
+## Grounded requirements and gates
+
+- Base requirements on product needs, meaningful contracts, measured constraints, or demonstrated
+  failures. A precise number needs a reason that matters to the outcome.
+- Improvement plans should permit intended changes. Require byte equivalence, pixel equivalence,
+  exhaustive matrices, or performance thresholds only when the product actually depends on them.
+- Put observable completion checks in milestone exit criteria and the verification strategy.
+  Select blocking checks supported by the change and repository guidance.
+- Give every new behavior gate a failure plan: the decision, correction, or recovery action that
+  follows failure. If failure would change no decision or identify no real correctness problem,
+  remove the gate. Keep useful diagnostic measurements advisory when appropriate.
 
 ## Testing and verification
 - Match verification to the change and repository guidance. Applicable evidence may include focused
   checks, integration behavior, E2E evidence, regression coverage, or independent agent review.
-- Include failure semantics (what blocks progression).
+- Consult applicable `docs/REPO_STYLE.md`, `docs/PYTEST_STYLE.md`, `tests/TESTS_README.md`,
+  `devel/DEVEL_README.md`, and relevant specialized guidance in the target repository when present.
+- Classify one-time implementation checks separately from permanent tests. Tests are liabilities
+  as well as assets: each permanent test constrains future design and must earn its place.
+- Use the permanent-test checklist in `docs/PYTEST_STYLE.md`. Retain tests for intentionally stable,
+  important behavior with plausible regression risk. Prefer contracts and meaningful behavior over
+  implementation details. When in doubt, remove the test.
+- Use temporary checks freely for implementation proof. Keep them in repository-relative
+  `tests/_temp/`, outside permanent test ownership and Git tracking. Follow repository conventions
+  for running temporary checks. At closeout, promote only tests whose behavior deserves permanent
+  protection and remove the rest.
+- If a test demands an unrelated implementation hack, question the test first.
+- State what blocks progression and the response to failure. Existing tests should distinguish
+  deliberate behavior changes from regressions in requirements that still apply.
 
 ## Risk register
 - Apply this section when material risks need active treatment.
@@ -82,12 +108,11 @@ Canonical definitions live in [DEFINITIONS.md](DEFINITIONS.md).
 - Use stable terminology consistently across sections.
 - Plan headings use sentence case per `docs/MARKDOWN_STYLE.md`; un-numbered; canonical names match [PLAN_HEADINGS.md](PLAN_HEADINGS.md) verbatim.
 - When a milestone plan is present, lead with an at-a-glance summary table (`M / Title / Summary / Goal`).
-- When architecture boundaries are present, map milestones and workstreams to durable components
-  and natural review boundaries.
+- When architecture boundaries are present, map milestones to durable components and natural
+  review boundaries, then give the expected file scope.
 - Avoid hidden assumptions and implied dependencies.
 - Separate facts, decisions, and non-blocking follow-up questions.
 - Maintain a status tracker when the plan spans an active implementation period.
-- Use patch labels in reports when the repository tracks implementation that way.
 
 ## Quality checks
 - Give each included milestone deliverables and done conditions.
@@ -97,8 +122,10 @@ Canonical definitions live in [DEFINITIONS.md](DEFINITIONS.md).
 - Give high-impact risks an owner and recovery approach.
 - Use durable behavior or component names in repository identifiers.
 - Use milestone for schedule and stage, pass, or component for durable implementation concepts.
-- Give each work package one owner and a reviewable outcome.
-- Declare dependencies by ID with a short reason when packages depend on one another.
+- State milestone dependencies or named prerequisites with a short reason.
+- Keep file scope and verification concrete without recreating task-assignment sections.
+- Ground requirements and blocking checks in actual needs and give failures an actionable response.
+- Justify permanent tests separately from one-time evidence and close out temporary checks.
 - Keep one abstraction level per plan.
 - Use bounded experiments while the core failure remains uncertain.
 - Prefer a concise plan shape that supplies enough coordination for the work.

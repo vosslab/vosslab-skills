@@ -7,7 +7,7 @@ copy.
 For naming, casing, ordering, tier classification, and rejected variants,
 see `PLAN_HEADINGS.md` -- this file is the form, that file is the rules.
 
-For owner / agent-type choices, see `EXECUTION_RESOURCES.md`.
+For the handoff from planning to execution, see `EXECUTION_RESOURCES.md`.
 For terminology, see `DEFINITIONS.md`.
 
 Replace every `<...>` placeholder with concrete content. Delete sections that
@@ -32,7 +32,7 @@ sections most commonly needed. Three archetype outlines follow the skeleton.
 
 ## Design philosophy
 
-`<Name this plan's own trade-off and the rejected alternative in 2-4 sentences. Cite the four core philosophies from docs/REPO_STYLE.md by name only when this plan actually leans on one; do not copy/paste them. Empty stub bodies are rejected.>`
+`<Name this plan's own trade-off and the rejected alternative in 2-4 sentences. Cite a core philosophy from docs/REPO_STYLE.md by name when this plan actually leans on it.>`
 
 - Evidence strategy for uncertain methods: `<small experiment, comparison, or measurement used to choose>`
 
@@ -60,26 +60,33 @@ blocked. -->
 
 `<components, ownership, durable terminology. For step-list / small plans, replace this section with ## Files to modify or ## Critical files instead.>`
 
-### Mapping (milestones / workstreams -> components / patches)
+### Mapping (milestones -> components)
 
-This mapping table is for execution routing: it ties each
-milestone/workstream to the durable code component and natural review boundary. The
+This mapping table ties each milestone to the durable code component and natural review boundary. The
 plain-language what/why overview lives in the separate
 milestone summary table under `## Milestone plan`.
 
-| Milestone / Workstream | Component | Review boundary |
+| Milestone | Component | Review boundary |
 | --- | --- | --- |
-| `<M1 / WS-A>` | `<component name>` | `<natural review boundary>` |
+| `<M1>` | `<component name>` | `<natural review boundary>` |
+
+### File scope
+
+Name expected files or directories and the purpose of each change. Include relevant tests,
+documentation, and generated outputs with their canonical sources. Treat this as the expected
+edit boundary, refined as evidence emerges. A compact list is equally suitable.
+
+| File or directory | Intended change | Canonical source, for generated output |
+| --- | --- | --- |
+| `<path>` | `<purpose of change>` | `<source path, if generated>` |
 
 ## Milestone plan
 
 Lead with this at-a-glance milestone summary table, then give the detailed
 per-milestone subsections below it. A reader should grasp the whole milestone
 arc from it alone. Keep the columns to plain
-what/why content only -- no workstream IDs, dependency IDs, or patch counts.
-That routing detail belongs to the separate milestone mapping table under
-`## Architecture boundaries and ownership` (`### Mapping (milestones /
-workstreams -> components / patches)`), which exists for execution, not review.
+what/why content. Record milestone dependencies in the milestone details and component boundaries
+in the Mapping table. Detailed task assignments and dispatch are created during execution.
 
 Milestone summary table:
 
@@ -90,54 +97,20 @@ Milestone summary table:
 
 ### Milestone `<N>`: `<title>`
 
-- Depends on: `<dependency IDs, or none>` -- `<short reason>`
+- Depends on: `<milestone IDs or prerequisite, or none>` -- `<short reason>`
 - Deliverables: `<files, behavior, decisions, or evidence produced>`
-- Workstreams: `<WS-A, WS-B, ...>` (IDs that can run in parallel)
+- Workstreams: `<brief independent areas, when useful>`
 - Entry criteria: `<observable preconditions, or none>`
 - Exit criteria:
   - `<measurable done check>`
   - `<obvious follow-on, e.g., update docs/CHANGELOG.md>`
-- Parallel-plan ready: `<yes / no>` -- max parallel doers: `<N, derived from independence>`. If `no`, give a one-sentence reason.
+- Parallel-plan ready: `<yes / no>` -- `<short independence or dependency reason>`
 
 (Repeat per milestone.)
 
-## Workstream breakdown
-
-### Workstream `<id>`: `<title>`
-
-- Goal: `<workstream outcome>`
-- Owner: `<agent type from EXECUTION_RESOURCES.md>`
-- Work packages: `<owned work-package IDs>`
-- Interfaces:
-  - Needs: `<inputs from other workstreams>`
-  - Provides: `<outputs other workstreams consume>`
-- Review boundary, when modifying the repository: `<component or behavior boundary>`
-
-## Work packages
-
-### Work package `<id>`: `<verb + object>`
-
-- Owner: `<agent type>`
-- Touch points: `<files / components>`
-- Depends on: `<work-package IDs, or none>`
-- Acceptance criteria:
-  - `<observable, independently verifiable check>`
-- Evidence or review, when useful:
-  - `<repository-appropriate command, captured result, comparison, or independent review>`
-- Obvious follow-ons:
-  - `<finish-the-obvious step the doer must complete before stopping>`
-
-(Repeat per work package.)
-
-## Acceptance criteria and gates
-
-- Per-patch gate: `<criterion>`
-- Integration gate: `<criterion>`
-- Independent review gate, when useful: `<criterion>`
-
 ## Test and verification strategy
 
-`<verification appropriate to the change and repository rules. For small plans, replace this section with ## Verification (Tier 3 add-on) instead.>`
+`<verification appropriate to the change and repository rules; distinguish one-time evidence from permanent tests. Ground blocking checks in real needs and state the response to failure. For small plans, use ## Verification instead.>`
 
 ## Risk register
 
@@ -155,12 +128,7 @@ Milestone summary table:
 - Active plan / progress tracker updates: `<files>`
 - `docs/CHANGELOG.md` entry: `<owner, expected categories>`
 - Archive / closure notes: `<destination>`
-
-## Patch plan and reporting format
-
-- Patch 1: `<component> <intent>`
-- Patch 2: `<component> <intent>`
-- Patch N: `<remaining repository-required work>`
+- Temporary verification closeout, when applicable: `<promote justified tests; remove the rest>`
 
 ## Open questions and decisions needed
 
@@ -180,10 +148,10 @@ when to use that Tier 3 add-on.)
 The outlines below show the heading shape for each archetype defined in
 `PLAN_HEADINGS.md`.
 
-## Example 1: Multi-workstream archetype
+## Example 1: Coordinated technical archetype
 
-Use when coordination benefits from explicit workstreams, ownership boundaries, or milestone
-dependencies.
+Use when technical decisions span components, shared contracts, migrations, compatibility risks,
+or coordinated multi-agent implementation and review.
 
 Heading sequence used:
 
@@ -196,16 +164,13 @@ Heading sequence used:
 ## Non-goals
 ## Current state summary
 ## Architecture boundaries and ownership
-### Mapping (milestones / workstreams -> components / patches)
+### Mapping (milestones -> components)
+### File scope
 ## Milestone plan
-## Workstream breakdown
-## Work packages
-## Acceptance criteria and gates
 ## Test and verification strategy
 ## Risk register
 ## Rollout and release checklist
 ## Documentation close-out requirements
-## Patch plan and reporting format
 ## Open questions and decisions needed
 ```
 
@@ -223,7 +188,7 @@ Heading sequence used:
 ## Design philosophy
 ## Scope
 ## Non-goals
-## Approach                  (Tier 3, replaces Milestone plan + Workstream breakdown)
+## Approach                  (Tier 3, replaces Milestone plan)
 ## Files to modify           (Tier 3, replaces Architecture boundaries and ownership)
 ## Verification              (Tier 3, replaces Test and verification strategy)
 ## Open questions and decisions needed
@@ -257,7 +222,5 @@ Heading sequence used:
 ## Open questions and decisions needed
 ```
 
-The diagnostic archetype intentionally omits `Workstream breakdown`, `Work
-packages`, `Rollout and release
-checklist`, and `Patch plan and reporting format` because the deliverable is
-a finding document, not a code change.
+The diagnostic archetype centers investigation evidence and decision rules. Add file scope when
+the investigation produces or changes files, and rollout work only when the deliverable needs it.

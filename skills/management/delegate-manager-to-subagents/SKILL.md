@@ -7,62 +7,77 @@ description: "Manage execution of an approved plan through subagents. Use when t
 
 ## Plan leads
 
-The approved plan defines the work: task text, scope, dependencies, sequence, ownership,
-verification, and acceptance criteria. Preserve those decisions. Use this skill for delegation
-choices the plan leaves open.
+The approved plan defines task text, scope, dependencies, ownership, verification, and acceptance.
+Preserve those decisions. Use this skill for delegation choices the plan leaves open.
+
+For code investigation and dependency-aware dispatch, read
+[GRAPHIFY_GUIDE.md](references/GRAPHIFY_GUIDE.md) when a Graphify map or repo wrapper is available.
 
 ## Manager role
 
-- Track plan tasks and dependencies.
-- Assign all file changes to subagents.
-- Read reports and diffs.
-- Dispatch follow-up work.
-- Keep ready tasks moving.
-- Summarize completion and residual risk.
+- Track tasks, dependencies, decisions, reviews, and acceptance in a simple file-backed ledger that
+  stays with the plan artifacts, separate from product code.
+- Dispatch all file changes to subagents. The manager coordinates, decides, routes review, and
+  accepts work.
+- Give every assignment to a fresh agent, including fixes, reviews, re-reviews, and integration.
+- Select and state a smaller, cheaper delegate model than the manager by default. Use the smallest
+  capable live-catalog model; record the capability reason when a larger model is necessary or no
+  cheaper suitable model is available. Use a fresh replacement agent for capability escalation.
 
-## Delegation practices
+## Active questioning
 
-- Give each atomic task one owner and one clear outcome.
-- Use a fresh subagent for each task.
-- Dispatch independent ready tasks in parallel when the plan allows.
-- Follow plan dependencies for sequential work.
-- Preserve the plan's task text in each brief.
-- Include the context, ownership boundary, and verification needed for that task.
-- Use the plan's verification commands. When the plan leaves testing open in a pytest repository,
-  run `pytest tests/`.
-- Require handoffs to name changed files, commands run, results, concerns, and residual risks.
-- Assign implementation and review to separate subagents.
-- Ground reviewer findings in the diff, plan, and verification evidence.
-- Send review findings to an implementation subagent, then obtain an independent re-review.
+Every brief invites clarification, challenge, decision, and escalation questions. Subagents actively
+challenge unsupported assumptions, including the manager's, and ask whenever uncertainty could affect
+requirements, scope, ownership, shared interfaces, verification, or acceptance.
 
-## Flexible task brief
+For unclear work or a shared boundary, require an early checkpoint: interpretation, intended approach,
+affected boundaries, and unresolved questions. A question states the ambiguity, options and consequences
+when applicable, grounded recommendation, and exact blocking point.
 
-Use the plan's own structure. A useful brief usually contains:
+The manager responds with a decision, evidence, or bounded investigation; it probes unclear answers and
+escalates missing product intent or authority to the human. Continue until the ambiguity is resolved or
+escalated. While pending, agents continue only isolated, non-conflicting work and mark dependent work
+pending. After receiving a decision, restate the resulting constraint before dependent implementation.
+A question closes after every affected agent confirms its interpretation, applies the decision, and
+provides relevant verification evidence.
 
-- Plan path and task text.
-- Relevant context and dependencies.
-- Owned files or behavior.
-- Plan-defined verification and expected handoff evidence.
+## Dispatch brief
 
-## Workflow
+Supply the complete approved task text once in this seven-part brief:
 
-1. Read the approved plan.
-2. Track its tasks and dependencies.
-3. Dispatch ready tasks with the plan text preserved.
-4. Review each report and diff.
-5. Dispatch independent review at the points defined by the plan or before accepting changed work.
-6. Dispatch fixes and re-review until the plan's acceptance criteria pass.
-7. Report completed tasks, verification results, and residual risks.
+1. Assignment and outcome
+2. Ownership and boundaries
+3. Context and constraints
+4. Dependencies and coordination
+5. Approach and question checkpoint
+6. Verification and handoff evidence
+7. Review and completion route
+
+Use [example-briefs.md](references/example-briefs.md) for the exact template. Read
+[manager_contract.md](references/manager_contract.md) for questions, decisions, ledger fields, and closure.
+
+## Evidence and review
+
+- Require exact commands and decisive output, or the exit status for a silent command; map deliverables
+  to requirements; scope failures, warnings, skipped checks, and remaining limitations.
+- Use the plan's verification contract and choose appropriate checks for the repository and task.
+- Route fresh specification review first. After it accepts the work, route a different fresh quality
+  reviewer. Give fixes and every re-review fresh agents.
+- Let reviewers use a change-focused or codebase-wide scope as needed. Findings identify supporting
+  file/line or command evidence and the limits of the conclusion.
+- After task reviews pass, obtain fresh integration review of composition, architecture, and complete
+  plan coverage before accepting the plan.
+
+## Parallel work
+
+Dispatch ready work concurrently only when ownership is isolated and no in-flight dependency remains.
+Record why work is serialized. Resolve shared contracts through a narrow specialist decision before
+dependent work starts. Use [parallel-dispatch-examples.md](references/parallel-dispatch-examples.md) for
+coordination and pressure scenarios, and [role-catalog.md](references/role-catalog.md) for role and model
+selection.
 
 ## Completion
 
-Complete a task when its plan-defined outcome and verification pass and independent review accepts
-the resulting change. Complete the plan when every required task meets those conditions.
-
-## Optional guidance
-
-- Use [role-catalog.md](references/role-catalog.md) when the plan leaves role selection open.
-- Use [example-briefs.md](references/example-briefs.md) for compact task briefs.
-- Use [parallel-dispatch-examples.md](references/parallel-dispatch-examples.md) for dependency-based
-  dispatch.
-- Use [manager_contract.md](references/manager_contract.md) for ownership boundaries.
+Complete a task after its plan outcome, verification evidence, decision closure, and required reviews
+pass. Complete the plan after integration review accepts the combined result and the ledger records
+completion evidence and residual risks.

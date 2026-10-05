@@ -80,4 +80,4 @@ earns a mention by preventing drift.
 
 ## Related skills
 
-`blueprint-plan-drafter` writes the plan; this skill distills it.
+`blueprint-plan-drafter` and `modest-plan-drafter` write plans; this skill distills them.

@@ -4,7 +4,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 40
+Total skills: 41
 
 ## Orientation
 
@@ -14,12 +14,13 @@ Rules and authoring guidance loaded when an agent starts unfamiliar work.
 
 ## Planning
 
-Idea exploration and forward-looking plans used before implementation.
+Idea exploration and forward-looking coding or non-coding plans used before execution.
 
-- [planning/blueprint-plan-drafter/SKILL.md](../skills/planning/blueprint-plan-drafter/SKILL.md): Create forward-looking implementation plans without writing code.
+- [planning/blueprint-plan-drafter/SKILL.md](../skills/planning/blueprint-plan-drafter/SKILL.md): Draft detailed coding plans for cross-module coordination, shared contracts, migrations, compatibility risks, or coordinated multi-agent implementation and review.
 - [planning/ideonomy-plain/SKILL.md](../skills/planning/ideonomy-plain/SKILL.md): Expand, vary, invert, or recombine an idea with randomized ideonomy methods.
 - [planning/ideonomy-rich/SKILL.md](../skills/planning/ideonomy-rich/SKILL.md): Expand an idea with randomized ideonomy methods and expressive monospace art.
 - [planning/make-goal/SKILL.md](../skills/planning/make-goal/SKILL.md): Distill an existing plan file into a concise outcome-only goal for Codex `/goal` or any agent.
+- [planning/modest-plan-drafter/SKILL.md](../skills/planning/modest-plan-drafter/SKILL.md): Draft concise plans for bounded coding, teaching, research, writing, or organizational work.
 
 ## Management
 

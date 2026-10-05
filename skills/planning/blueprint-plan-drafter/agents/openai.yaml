@@ -1,4 +1,4 @@
 interface:
   display_name: "Blueprint Plan Drafter"
-  short_description: "Draft forward-looking implementation plans"
-  default_prompt: "Use $blueprint-plan-drafter to create a new implementation plan without writing code, following repository rules and using the sections appropriate to the work."
+  short_description: "Draft detailed technical implementation plans"
+  default_prompt: "Use $blueprint-plan-drafter to draft a detailed coding plan with grounded requirements, file scope, milestones, and proportionate verification before implementation."

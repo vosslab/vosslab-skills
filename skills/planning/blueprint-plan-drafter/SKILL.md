@@ -1,19 +1,19 @@
 ---
 name: blueprint-plan-drafter
-description: Create forward-looking implementation plans without writing code. Use for new plans, major rewrites, milestones, migrations, risks, rollout strategy, and acceptance gates.
+description: Draft detailed coding plans for cross-module coordination, shared contracts, migrations, compatibility risks, or coordinated multi-agent implementation and review. Use modest-plan-drafter for concise, bounded coding or non-coding plans.
 ---
 
 # Blueprint plan drafter
 
-## Purpose
+## Purpose and routing
 
-Build an execution-ready plan whose structure fits the work. This skill writes planning and
-progress documentation, not production code or tests.
+Draft planning and progress documentation for detailed technical decisions and coordination. Use
+`modest-plan-drafter` when a concise approach and completion checks adequately describe the work.
+Honor explicit skill choices; if a requested Modest plan leaves important technical decisions
+unresolved, explain the need for Blueprint or expand the relevant detail. Let decision complexity
+determine detail, rather than document length.
 
 ## Authority model
-
-Classify inputs before drafting so purposeful context stays complete and unrelated guidance stays
-unloaded.
 
 ### Always-read authorities
 
@@ -31,8 +31,6 @@ unloaded.
 - Read `refactor_progress.md` or relevant active plans when they exist and affect coordination.
 - Read [`references/PLAN_TEMPLATE_EXAMPLE.md`](references/PLAN_TEMPLATE_EXAMPLE.md) only when an
   archetype example will clarify the plan shape.
-- Read [`references/EXECUTION_RESOURCES.md`](references/EXECUTION_RESOURCES.md) when the work needs
-  ownership classes, subagents, or multiple workstreams.
 
 ### Repository evidence
 
@@ -40,49 +38,37 @@ Inspect the architecture, code, tests, documentation, current behavior, and rece
 to establish the actual implementation boundary. Treat older plans as evidence rather than current
 implementation authority.
 
-## Planning contract
-
-- Use the canonical core in order: Context, Objectives, Design philosophy, Scope, and Non-goals.
-- Add milestones, workstreams, gates, risks, tests, rollout, release, or other allowed sections only
-  when they improve execution. Follow `PLAN_HEADINGS.md` for names, order, and substitutions.
-- Decompose implementation into one-owner work packages with explicit dependencies, outcomes,
-  verification, and obvious follow-ons.
-- Give uncertain choices an evidence-led decision procedure with observations, hypotheses,
-  comparison criteria, success measures, and correction paths.
-- Keep one abstraction level per plan: root-cause stabilization, technical redesign, or program
-  coordination. Use the scrap-vs-fix criteria in `plan_quality_standard.md` when evidence challenges
-  the current design.
-- State completion conditions and authorization boundaries appropriate to the repository and change.
+For broad code investigation, read [GRAPHIFY_GUIDE.md](references/GRAPHIFY_GUIDE.md) when a Graphify
+map or repository wrapper is available. Otherwise use targeted searches and source inspection.
 
 ## Workflow
 
-1. Establish the authority and evidence baseline using the three input classes above.
-2. Define the charter: objective, scope, non-goals, assumptions, constraints, terminology, and
-   ownership boundaries.
-3. Choose the smallest plan shape that carries the actual dependencies and decisions.
-4. Define work packages, dependency order, owners, acceptance evidence, and follow-on work.
-5. Record material risks with impact, trigger, owner, and mitigation.
-6. Define documentation, generation, validation, rollout, and release work required for closure.
-7. Draft from `PLAN_TEMPLATE_BLANK.md`, then apply the quality standard until every execution path
-   is concrete and internally consistent.
-
-## Parallel readiness
-
-For each milestone, state `Parallel-plan ready: yes` with independent workstream IDs and a justified
-maximum, or `Parallel-plan ready: no` with the dependency that requires serial work. Give shared
-resources and generated artifacts one owner. Use `parallel-plan` only for genuinely independent
-lanes.
+1. Draft from the blank template using the canonical core: Context, Objectives, Design philosophy,
+   Scope, and Non-goals. Add only applicable sections, following the headings reference.
+2. State assumptions, constraints, component responsibilities, and authorization boundaries. Give
+   file-based work a concise File scope under Architecture boundaries and ownership, or Files to
+   modify for the small archetype: expected paths and changes, including relevant tests, docs,
+   and generated outputs with their canonical sources. Refine this boundary as evidence emerges.
+3. Define milestone deliverables, meaningful dependencies, entry and exit criteria, and a brief
+   `Parallel-plan ready: yes/no` reason. Workstreams may name independent areas; detailed task
+   assignments, package IDs, and agent counts belong to execution.
+4. Separate observations, hypotheses, and decisions. Resolve uncertain methods through bounded
+   comparisons with success measures and correction paths. Keep one abstraction level per plan:
+   stabilization, technical redesign, or program coordination. Apply the quality standard's
+   scrap-vs-fix criteria when evidence challenges the design.
+5. Select verification using the quality standard's KISS, robustness, configuration, and test-retention
+   criteria. Ground requirements in actual needs and give new blocking gates a failure response.
+6. Cover material risks with impact, trigger, owner, and mitigation, plus the documentation,
+   generation, rollout, and release work required for closure.
 
 ## Handoff
 
-- Use `make-goal` to distill the finished plan into an outcome-only long-running goal.
-- Use `delegate-manager-to-subagents` when the approved plan calls for delegated execution.
-- Use `audit-code-reviewer` for a requested parallel pre-merge or pre-release audit.
-- Use `gas-town-workflow` only when the user requests that role-mapped workflow.
+Planning ends with the plan artifact, before production code or tests. For a requested next stage,
+use `make-goal` to distill an outcome-only goal, or read
+[EXECUTION_RESOURCES.md](references/EXECUTION_RESOURCES.md) for execution and review routing.
 
 ## Completion criteria
 
-Finish when the plan contains the required core, every included milestone has observable done
-checks, dependencies and ownership are explicit, execution-blocking decisions have evidence-led
-resolution paths, required documentation and generation work is assignable, remaining questions
-are non-blocking, and every milestone has an honest parallel-readiness result.
+Finish when the plan is internally consistent, its outcomes and boundaries are clear, and every
+execution path has appropriate completion evidence. Resolve blocking choices or define an
+evidence-led investigation before dependent work; remaining follow-up questions are non-blocking.

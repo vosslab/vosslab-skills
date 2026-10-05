@@ -24,9 +24,15 @@
 
 ## Architecture boundaries and ownership
 
-### Mapping (milestones / workstreams -> components / patches)
+### Mapping (milestones -> components)
 
-| Milestone / Workstream | Component | Review boundary |
+| Milestone | Component | Review boundary |
+| --- | --- | --- |
+|  |  |  |
+
+### File scope
+
+| File or directory | Intended change | Canonical source, for generated output |
 | --- | --- | --- |
 |  |  |  |
 
@@ -45,34 +51,6 @@
 - Exit criteria:
 - Parallel-plan ready:
 
-## Workstream breakdown
-
-### Workstream:
-
-- Goal:
-- Owner:
-- Work packages:
-- Needs:
-- Provides:
-- Review boundary, when modifying the repository:
-
-## Work packages
-
-### Work package:
-
-- Owner:
-- Touch points:
-- Depends on:
-- Acceptance criteria:
-- Evidence or review, when useful:
-- Obvious follow-ons:
-
-## Acceptance criteria and gates
-
-- Per-patch gate:
-- Integration gate:
-- Independent review gate, when useful:
-
 ## Test and verification strategy
 
 ## Risk register
@@ -90,11 +68,7 @@
 - Active plan / progress tracker:
 - docs/CHANGELOG.md entry:
 - Archive / closure notes:
-
-## Patch plan and reporting format
-
-- Patch 1:
-- Patch N: remaining repository-required work
+- Temporary verification closeout, when applicable:
 
 ## Open questions and decisions needed
 

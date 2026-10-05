@@ -7,78 +7,85 @@ description: "In-flight nudge to split current work into independent tracks for 
 
 ## Purpose
 
-Turn current in-flight work into the smallest set of independent workstreams that lowers elapsed
-time to a correct, integrated result. Use the milestone, workstream, work package, and patch terms
-from `blueprint-plan-drafter` without creating a new full plan.
+Turn in-flight work into the smallest set of independent workstreams that lowers elapsed time to a
+correct, integrated result. Use the approved plan as authority; this skill splits and dispatches
+work without creating a new plan. Read [parallel_plan_templates.md](references/parallel_plan_templates.md)
+when preparing briefs, a ledger, handoffs, or integration.
 
-## Select an execution mode
+For code investigation and stream-boundary checks, read
+[GRAPHIFY_GUIDE.md](references/GRAPHIFY_GUIDE.md) when a Graphify map or repo wrapper is available.
 
-- Use real parallel execution when independent streams can run concurrently with isolated file or
-  state ownership.
-- Use orchestration-only when the environment cannot provide concurrency; still write complete
-  stream briefs and dependency order.
-- Keep work serial when dispatch, coordination, and integration would cost more than the split saves.
-- Resolve shared types, schemas, fixtures, interfaces, and migration order before dispatch.
+## Choose an execution mode
 
-## Discover available roles
+- Use parallel execution only for ready, isolated streams with separate mutable-resource ownership.
+- Use orchestration-only when concurrency is unavailable; retain complete briefs and dependency order.
+- Keep work serial when coordination and integration cost more than the split saves; record why.
+- Delegate all implementation and shared-prerequisite changes. Resolve shared contracts through a
+  narrow specialist decision or stub before dependent changes begin.
 
-Inspect the live agent catalog exposed by the current environment and the target repository's
-owned agent metadata, if present. Read the matching role instructions before assignment. Use the
-most specialized available role whose permissions and responsibility fit the stream; use generic
-owner labels when no catalog exists. Treat the live catalog as authority rather than copying role
-names into this skill.
+## Select owners and models
 
-## Define workstreams
+Inspect the live agent catalog and repository-owned agent metadata before assignment. Read applicable
+role instructions. Give every assignment--implementation, specialist decision, correction, review,
+re-review, and integration--to a fresh agent; live questions and answers remain within its assignment.
 
-For each stream, state:
+Default to an explicitly selected model that is smaller and cheaper than the manager and capable of
+the assignment. Use the smallest capable model in the live catalog. Record why a larger model is
+needed or why no cheaper suitable candidate exists. Give capability escalation to a fresh agent.
 
-- one objective and one owner;
-- the exact files, directories, or mutable state it owns;
-- dependencies and required inputs;
-- an assignment-sized set of work packages;
-- one focused verification step;
-- an orchestrator-selected, collision-safe report path when file-backed reports are needed.
+The manager owns dispatch, dependency tracking, decisions, review routing, and acceptance. Owners
+change only their assigned files or state, but may inspect all repository context needed for sound
+work or review.
 
-Merge or serialize streams that would edit the same files or mutable state. Use the smallest number
-of streams that materially improves wall time.
+## Map readiness and dispatch
 
-## Dispatch and integration
+Create the parallel-ready map before dispatch. For every stream, identify its objective, owner and
+model choice, files or state, dependencies, unresolved decisions, checks, review route, and
+integration path. Use collision-safe report paths and a simple file-backed ledger in the plan-artifact
+area, separate from product code. Delegate ledger-file updates.
 
-1. Complete shared prerequisites in the manager context.
-2. Launch every ready stream concurrently through the environment's supported dispatch mechanism.
-3. Require compact handoffs; keep large logs and detailed findings in the assigned report files.
-4. Confirm every expected report exists and every stream-specific check passes.
-5. Integrate in dependency order and run the shared verification gate once.
-6. Repair failed streams or integration before declaring the milestone complete.
+Dispatch every isolated ready stream concurrently. Serialize colliding or dependent work and record
+the reason. Propagate each manager decision to every affected brief. The ledger records owner, status,
+dependencies, questions, decisions, reviews, checks, and completion evidence. A decision records the
+answer, rationale or evidence, affected tasks, acceptance change, and next-action owner.
 
-Use [`references/parallel_plan_templates.md`](references/parallel_plan_templates.md) for stream
-briefs, compact handoffs, report structure, synthesis, checkpoints, and fake-parallelism checks.
+## Ask, challenge, and decide
 
-## Independence rules
+Every brief explicitly invites questions and challenges to unsupported assumptions, including the
+manager's. Require an early understanding, approach, affected-boundaries, and questions checkpoint
+before substantive work on an unclear task or shared boundary.
 
-- Parallel streams have no in-flight dependency on one another's output.
-- Each mutable resource has exactly one owner.
-- Dependency-establishing work finishes before dependent streams launch.
-- Research and review streams receive only the evidence needed for independent judgment.
-- Status messages report progress; follow-up editing work receives a fresh bounded assignment under
-  the active environment's delegation rules.
+Agents ask throughout execution when uncertainty could affect requirements, scope, ownership, shared
+interfaces, verification, or acceptance. Use clarification, challenge, decision, or escalation as
+appropriate. A decision-shaped question states the ambiguity, viable options and consequences when
+applicable, grounded recommendation, and exact blocking point.
 
-## Output contract
+The manager supplies a decision, evidence, or bounded investigation; continue until the ambiguity is
+resolved or escalated. While a decision is pending, continue only isolated, non-conflicting work and
+mark dependent work pending. After a decision, restate the resulting constraint before implementing
+dependent work. An escalated question remains escalated pending the human's product or authority
+decision; the human owns that next action, and dependent tasks remain pending. Close a question only
+when affected agents confirm their interpretation, apply the decision, and provide relevant
+verification evidence.
 
-Produce:
+## Evidence, review, and integration
 
-1. The milestone objective.
-2. Workstreams with owners, scope boundaries, dependencies, and verification.
-3. Work packages within each workstream.
-4. An ordered patch and integration plan.
-5. Checkpoints with pass/fail criteria and correction paths.
+Use the seven-part brief and evidence-first handoff in the reference. State exact commands and
+decisive output, or silence plus exit status; map changed files to requirements; scope failures,
+warnings, skipped checks, and limitations. Keep summaries concise and reference larger artifacts.
 
-Each stream handoff reports status, report path when assigned, three to six summary bullets,
-validation status, and blocking issues. Each detailed report records assumptions, decisions,
-concrete next steps, changed files, and validation performed.
+Route each completed task to a fresh specification reviewer. Start a different fresh quality
+reviewer only after the specification reviewer accepts the work. Route findings with file, line,
+or command-output evidence to a fresh correction agent and obtain a fresh specification re-review;
+after the re-review accepts the corrections, start a different fresh quality review.
+Choose change-focused or codebase-wide review as the task warrants; reviewers inspect all context
+required for a sound conclusion.
+
+After task reviews pass, run the integration checks and use a fresh independent integration reviewer
+to assess composition, architecture, and complete plan coverage. Repair failures before completion.
 
 ## Completion
 
-Finish when all shared prerequisites are resolved, ownership is non-overlapping, every stream has a
-bounded brief and verification, all required reports and checks pass, and the integrated result has
-one ordered completion gate.
+Finish when shared prerequisites and decisions are resolved, ownership is non-overlapping, every
+stream has a bounded brief and verification, reviews and evidence accept each task, and the integrated
+result passes its final gate.
