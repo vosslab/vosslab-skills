@@ -1,3 +1,22 @@
+## 2026-10-11
+
+### Additions and New Features
+
+- Added `prune-tests`, titled "Aggressive Test Removal", for decisive permanent-suite reduction
+  across languages and frameworks. It prioritizes deleting entire modules and unused support,
+  treats completed development checks as temporary, and requires exceptional demonstrated value
+  from every retained test, including passing tests. Its scope includes inline and colocated tests
+  while preserving surrounding production code.
+
+### Developer Tests and Notes
+
+- Validated the new skill and UI sidecar, regenerated metadata through `index_lib/build_all.py`,
+  and passed its `--check` mode plus 15 focused metadata, sidecar, size, and index checks.
+- Static scenario review covered deleting marginal modules, completed development checks,
+  passing low-value tests, fragile tests without rehabilitation, and unused support, while
+  retaining exceptionally valuable protection. This reviewed the instructions; it did not run
+  a test-pruning exercise or change this repository's tests.
+
 ## 2026-10-04
 
 ### Additions and New Features

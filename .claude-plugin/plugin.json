@@ -60,6 +60,7 @@
     "./skills/planning/make-goal",
     "./skills/planning/modest-plan-drafter",
     "./skills/quality/audit-code-reviewer",
+    "./skills/quality/prune-tests",
     "./skills/quality/unit-test-starter"
   ]
 }
