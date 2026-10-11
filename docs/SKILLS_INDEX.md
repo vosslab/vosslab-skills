@@ -75,5 +75,5 @@ Documentation creation, conversion, release notes, and visual capture.
 Code review, auditing, and test generation during delivery.
 
 - [quality/audit-code-reviewer/SKILL.md](../skills/quality/audit-code-reviewer/SKILL.md): Coordinate independent multi-reviewer audits before a merge or release; not for an ordinary single-pass review.
-- [quality/prune-tests/SKILL.md](../skills/quality/prune-tests/SKILL.md): Aggressively delete permanent tests and reduce suite size and complexity across languages and frameworks.
+- [quality/prune-tests/SKILL.md](../skills/quality/prune-tests/SKILL.md): Reduce permanent test-suite maintenance burden across languages and frameworks by removing low-value tests and unnecessary support while preserving meaningful protection worth its upkeep.
 - [quality/unit-test-starter/SKILL.md](../skills/quality/unit-test-starter/SKILL.md): Add focused Python pytest coverage when a repository needs behavior-level tests; not for mechanical test-per-file generation or whole-system workflows.

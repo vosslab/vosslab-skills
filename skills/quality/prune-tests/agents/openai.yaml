@@ -1,4 +1,4 @@
 interface:
-  display_name: "Aggressive Test Removal"
-  short_description: "Aggressively delete tests with little lasting value"
-  default_prompt: "Use $prune-tests to aggressively reduce the permanent test suite in this repository, retaining only protection with exceptional, demonstrated long-term value."
+  display_name: "Prune Test Burden"
+  short_description: "Remove costly low-value tests; retain meaningful protection"
+  default_prompt: "Use $prune-tests to reduce permanent test maintenance burden in this repository. Remove costly or low-value tests and infrastructure, while retaining simple deterministic tests with meaningful stable protection."

@@ -1,5 +1,13 @@
 ## 2026-10-11
 
+### Behavior or Interface Changes
+
+- Reframed `prune-tests` around maintenance burden instead of maximal deletion. It now retains
+  simple, deterministic tests when meaningful stable protection outweighs their small cost, asks
+  for bounded assertion-level review of uncertain groups, and separately reports burden removed,
+  retained protection, and known losses. It continues to remove costly low-value infrastructure
+  and requires production-preservation review for mixed source/test files.
+
 ### Additions and New Features
 
 - Added `prune-tests`, titled "Aggressive Test Removal", for decisive permanent-suite reduction
