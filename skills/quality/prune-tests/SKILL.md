@@ -16,8 +16,11 @@ simpler suite that still protects important behavior efficiently.
 
 ## Establish the scope
 
-- Default to the current repository's permanent suite when the user supplies no narrower scope.
+- Default to the current repository's own permanent suite when the user supplies no narrower scope.
   Include all languages, frameworks, test lanes, and inline or colocated tests.
+- Exclude vendored tests and their support files from inventory, evaluation, pruning, and cleanup.
+  Identify them by upstream ownership, vendor markers, or repository documentation, even when
+  they live outside a vendor directory. Leave them unchanged.
 - Read applicable repository testing and development rules. Identify the suite's entrypoints,
   supporting infrastructure, collection commands, and execution commands.
 - Record a comparable starting inventory: tests, support files, dependencies, runtime, and known
@@ -56,7 +59,8 @@ retention quotas.
   rescue them. A small correction to an otherwise valuable assertion is appropriate when it fixes
   a demonstrated false positive; do not turn pruning into speculative test expansion.
 - Remove fixtures, snapshots, helpers, dev dependencies, runners, and test-only configuration
-  made unused by deletion. Check remaining consumers before removing shared support.
+  made unused by deletion. Check remaining consumers, including vendored tests, before removing
+  shared support; preserve anything they still require.
 - In files that mix production code and tests, identify the test ownership with syntax-aware
   boundaries or an equivalent language-native method. Review the resulting production diff before
   completion; never treat a large deletion as evidence that shared source survived.

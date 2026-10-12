@@ -2,6 +2,8 @@
 
 ### Behavior or Interface Changes
 
+- Excluded vendored tests and their support files from `prune-tests` inventory, evaluation,
+  pruning, and cleanup, regardless of directory. Shared support required by vendored tests stays.
 - Reframed `prune-tests` around maintenance burden instead of maximal deletion. It now retains
   simple, deterministic tests when meaningful stable protection outweighs their small cost, asks
   for bounded assertion-level review of uncertain groups, and separately reports burden removed,
