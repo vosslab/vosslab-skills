@@ -1,3 +1,19 @@
+## 2026-10-12
+
+### Behavior or Interface Changes
+
+- Split `prune-tests` into a short entrypoint and evaluation/execution references, with "When in
+  doubt, delete the test" governing the workflow. Tightened retention examples, made marginal
+  protection explicit, and clarified the repository-relative temporary-check directory.
+- Refined `prune-tests` to delete by default within its eligible scope and retain on evidence from
+  actual assertions. Cheap tests still need meaningful protection; uncertain cases receive bounded
+  inspection before remaining doubt favors deletion. Test ownership is separate from ownership of
+  the implementation under test, so local dependency-integration checks receive ordinary review.
+- Clarified `prune-tests` retention of inexpensive checks enforcing explicit repository policies,
+  including ASCII/encoding and whitespace rules. Source inspection and simplicity do not make a
+  check incidental; policy violations count as actionable failures. Apply vendored ownership
+  exclusions before evaluating value, including propagated repository hygiene checks.
+
 ## 2026-10-11
 
 ### Behavior or Interface Changes
