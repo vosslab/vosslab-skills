@@ -2,6 +2,9 @@
 
 ### Behavior or Interface Changes
 
+- Split bptools table guidance from its corpus evidence: `table_formatting.md` retains everyday
+  authoring guidance, while the linked `table_corpus_examples.md` holds survey scope, source/output
+  examples, and evidence limits for optional lookup.
 - Made browser-calculated overall widths the default for ordinary bptools data tables, with
   explicit dimensions reserved for scientific geometry. Rephrased table-authoring instructions
   positively around desired sizing, visibility, styling, and pagination behavior.
