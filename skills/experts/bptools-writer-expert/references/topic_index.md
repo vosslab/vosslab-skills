@@ -26,6 +26,7 @@ the question family or output format is still unclear.
 | Standardize -d/-x flag handling across generators | Flag unification | `references/docs/UNIFICATION_PLAN.md` |
 | Locate or audit YAML question banks | YAML bank index | `references/docs/YAML_QUESTION_BANK_INDEX.md` |
 | Debug unexpected BBQ or QTI output format | Engine tracing | `references/api_surface.md` (qti_package_maker section) |
+| Create, restyle, or review a table, matrix, or table-based diagram | Table formatting | [table_formatting.md](table_formatting.md) |
 
 ## Per-family detail
 

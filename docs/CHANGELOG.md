@@ -2,6 +2,21 @@
 
 ### Behavior or Interface Changes
 
+- Made browser-calculated overall widths the default for ordinary bptools data tables, with
+  explicit dimensions reserved for scientific geometry. Rephrased table-authoring instructions
+  positively around desired sizing, visibility, styling, and pagination behavior.
+- Added concise inline-CSS guidance to the bptools table reference: portable essential styles,
+  valid units and unitless exceptions, and consistent content-driven width constraints to prevent
+  unwanted table scrolling. Replaced the initial blanket scrollbar prohibition with guidance to
+  inspect rendered widths, column requirements, and ancestor overflow behavior.
+  Clarified BPW overflow as existing container behavior and added final-output pagination checks.
+- Organized bptools table guidance into data tables, reasoning matrices, scientific visuals,
+  and supporting layouts. Prefer subtle striping for longer data lists, preserve diagram geometry,
+  and check print output when relevant. Aligned the bundled voice guide with the live source.
+- Added corpus-grounded table-formatting guidance to `bptools-writer-expert`, routed from its
+  entrypoint and topic index. Covers semantic headers, numeric alignment, width, scientific
+  diagram exceptions, color pairs, and separate web/image/LMS checks. Surveyed BPQ sources and
+  BPW emitted banks; documented snapshot counts and the limits of static inspection.
 - Split `prune-tests` into a short entrypoint and evaluation/execution references, with "When in
   doubt, delete the test" governing the workflow. Tightened retention examples, made marginal
   protection explicit, and clarified the repository-relative temporary-check directory.

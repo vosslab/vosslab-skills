@@ -41,6 +41,10 @@ Domain-specific guides in `references/docs/problems/` must be loaded when the
 task touches that domain (matching sets, PUBCHEM, MC statements, pedigrees,
 phylogenetic trees). See `references/docs.md` for the full index.
 
+For questions containing tables, read
+[references/table_formatting.md](references/table_formatting.md) before creating or changing
+their markup. It covers data tables, scientific matrices, diagram exceptions, and export checks.
+
 ## Workflow
 
 0) Classify the request and detect project state
