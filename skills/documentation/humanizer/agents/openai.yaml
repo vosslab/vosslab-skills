@@ -1,0 +1,4 @@
+interface:
+  display_name: "Humanizer"
+  short_description: "Remove AI writing patterns and preserve the author voice"
+  default_prompt: "Use $humanizer to revise this text while preserving its meaning and intended voice."

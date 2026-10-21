@@ -1,5 +1,5 @@
 ---
-name: human-interact-expert
+name: hic-human-interact-expert
 description: Use when selecting or conducting an HCI method, usability evaluation, user study, task analysis, or evidence-based interaction assessment.
 ---
 

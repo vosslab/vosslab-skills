@@ -140,7 +140,8 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `geometry-expert` | compliant | (new) | Domain-noun-first; `geo` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `glass-expert` | compliant | (new) | Domain-noun-first; `gla` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `html-game-parallel-builder` | accepted-rename | web-game-parallel-builder | Drops `web-` collision with `webwork-`; `html` is short, evergreen. |
-| `human-interact-expert` | compliant | (new) | Domain-noun-first HCI specialist; `hum` is unique and `-expert` matches its method and evaluation role. |
+| `hic-human-interact-expert` | accepted-rename | human-interact-expert | User-selected `hic` prefix reserves the memorable `humanizer` name for prose editing. |
+| `humanizer` | compliant | prose-humanizer | User-selected name for prose editing; `hum` is unique after renaming the interaction specialist. |
 | `install-usage-docs` | accepted-rename | setup-install-usage-docs | Both `install` and `usage` collide with built-in CLI args; `setup-` lead token clears the collision while keeping `install`/`usage` mid-name for discoverability, with the `-docs` suffix. |
 | `old-python-code-review` | deprecated | python-reviewer / python-code-review | `old-` prefix marks for occasional use. |
 | `parallel-plan` | borderline-no-change | (unchanged) | Leading token distinct; in-flight nudge skill. |

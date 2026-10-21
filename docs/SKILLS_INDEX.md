@@ -4,7 +4,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 43
+Total skills: 44
 
 ## Orientation
 
@@ -42,7 +42,7 @@ Domain-specialist implementation workflows governed by expert-skill guidance.
 - [experts/css-creative-expert/SKILL.md](../skills/experts/css-creative-expert/SKILL.md): Use when CSS-specific composition, cascade behavior, responsive layout, theming, or motion requires design or diagnostic judgment.
 - [experts/geometry-expert/SKILL.md](../skills/experts/geometry-expert/SKILL.md): Use when computational-geometry robustness, topology, predicates, intersections, tessellation, motion planning, or realizability determines correctness.
 - [experts/glass-expert/SKILL.md](../skills/experts/glass-expert/SKILL.md): Use when Apple Liquid Glass behavior requires backdrop sampling, surface placement, morphing, capture evidence, or glass-specific contrast judgment.
-- [experts/human-interact-expert/SKILL.md](../skills/experts/human-interact-expert/SKILL.md): Use when selecting or conducting an HCI method, usability evaluation, user study, task analysis, or evidence-based interaction assessment.
+- [experts/hic-human-interact-expert/SKILL.md](../skills/experts/hic-human-interact-expert/SKILL.md): Use when selecting or conducting an HCI method, usability evaluation, user study, task analysis, or evidence-based interaction assessment.
 - [experts/openscad-3d-printing-expert/SKILL.md](../skills/experts/openscad-3d-printing-expert/SKILL.md): Write and review parametric OpenSCAD for 3D printing.
 - [experts/podman-expert/SKILL.md](../skills/experts/podman-expert/SKILL.md): Use when designing or diagnosing a Podman runtime, build, networking, storage, pod, Quadlet, registry, or macOS machine workflow.
 - [experts/postgresql-expert/SKILL.md](../skills/experts/postgresql-expert/SKILL.md): Use when PostgreSQL-specific schema, query-plan, indexing, MVCC, maintenance, replication, recovery, pooling, or migration judgment is central.
@@ -64,6 +64,7 @@ Documentation creation, conversion, release notes, and visual capture.
 - [documentation/arch-docs/SKILL.md](../skills/documentation/arch-docs/SKILL.md): Create or refresh `docs/CODE_ARCHITECTURE.md` and `docs/FILE_STRUCTURE.md` from repository evidence.
 - [documentation/book-to-markdown/SKILL.md](../skills/documentation/book-to-markdown/SKILL.md): Use when converting technical/scientific books from PDF, EPUB, HTML, DOCX, ODT, Markdown, or text into one page-free Markdown file per title.
 - [documentation/docset-updater/SKILL.md](../skills/documentation/docset-updater/SKILL.md): Refresh a repository's complete documentation set through the specialized documentation skills in dependency order, then audit unowned docs.
+- [documentation/humanizer/SKILL.md](../skills/documentation/humanizer/SKILL.md): Humanize text: strip AI-isms and add real voice.
 - [documentation/news-release-docs/SKILL.md](../skills/documentation/news-release-docs/SKILL.md): Create or refresh `docs/RELEASE_HISTORY.md` and `docs/NEWS.md` from the changelog, plus release-note input for `devel/make_release.py`.
 - [documentation/pdf-guide/SKILL.md](../skills/documentation/pdf-guide/SKILL.md): Use when PDF rendering, pagination, or visual page layout is part of correctness while reading, creating, or reviewing a PDF.
 - [documentation/readme-docs/SKILL.md](../skills/documentation/readme-docs/SKILL.md): Create or refresh a distinctive, evidence-backed `README.md` landing page for newcomers.

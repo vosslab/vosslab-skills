@@ -1,3 +1,24 @@
+## 2026-10-20
+
+### Additions and New Features
+
+- Imported the customized Hermes humanizer as `documentation/humanizer`, preserving all
+  34 writing patterns, voice calibration, examples, and upstream attribution.
+  Added an OpenAI UI sidecar and adapted character encoding and metadata for this repository.
+  Kept the memorable `humanizer` name at the user's request.
+  Removed the separate skill license file at the user's request.
+
+### Behavior or Interface Changes
+
+- Renamed `human-interact-expert` to `hic-human-interact-expert` at the user's request to avoid
+  the `hum` prefix collision with `humanizer`; updated its invocation and current catalog guidance.
+
+### Developer Tests and Notes
+
+- Regenerated indexes and plugin metadata after the new skill entered the tracked inventory.
+  Python 3.12 validation passed for metadata, sidecars, all 34 writing patterns, renamed paths,
+  unique `hum`/`hic` prefixes, and index freshness; `git diff --check` passed.
+
 ## 2026-10-12
 
 ### Behavior or Interface Changes
