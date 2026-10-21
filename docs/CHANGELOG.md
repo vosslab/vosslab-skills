@@ -61,6 +61,53 @@
   retaining exceptionally valuable protection. This reviewed the instructions; it did not run
   a test-pruning exercise or change this repository's tests.
 
+## 2026-10-19
+
+### Behavior or Interface Changes
+
+- Completed the OpenSCAD book-corpus survey and added a routed extended-modeling guide covering
+  assembly development, public part interfaces, section views, scale-sensitive fits, text layout,
+  external generators, and application limits. Recorded historical syntax and damaged-listing
+  cautions rather than treating book examples as verified executable code.
+- Pointed OpenSCAD book locators to the dedicated `3d_printing_and_cad/` collection after
+  confirming the reviewed copies match those in `technology/`; retained all source books.
+- Incorporated inspected passages from the newly available OpenSCAD cookbook, additive
+  manufacturing design guide, and print-failure reference into `openscad-3d-printing-expert`.
+  Added support-angle conventions, functional hole alternatives, reinforcement, trapped-material
+  removal, and fit-failure diagnosis while keeping machine-specific numerical guidance conditional.
+
+### Developer Tests and Notes
+
+- OpenSCAD expert parity, selected Markdown/ASCII checks, general skill checks, and index-sync
+  validation passed. A direct inventory check confirmed every subject-folder book appears in the
+  local source guide; static checks found no duplicate section headings or non-ASCII skill text.
+  Whitespace checks passed. Book examples were not compiled or physically printed.
+
+## 2026-10-18
+
+### Additions and New Features
+
+- Expanded `openscad-3d-printing-expert` with source-writing best practices for parameter flow,
+  scope, module design, coordinate frames, Boolean construction, imports, and tessellation.
+- Added practical fit/print design guidance, historical-model lessons, and passage-level book
+  and public documentation references. Historical models and local books remain unchanged.
+
+### Behavior or Interface Changes
+
+- The OpenSCAD workflow now loads the coding guide before source edits and separates nominal
+  dimensions, manufacturing tolerance, fit clearance, and Boolean overlap. Verification distinguishes
+  source evaluation, exact export, mesh inspection, slicing, and physical fit.
+
+### Developer Tests and Notes
+
+- OpenSCAD is not installed on this host; no render, slicer, or physical-print validation is claimed.
+- OpenSCAD expert parity and 26 selected Markdown/ASCII checks passed; 16 general skill checks
+  passed. The skill index was regenerated and its synchronization check passed. Generation also
+  reflects the two already-staged pedigree entries without modifying their source files.
+- Full index generation is blocked by missing sidecars/guides in those unrelated pedigree skills.
+  The repository-wide entrypoint ASCII check fails on four existing `.system` skills. These
+  unrelated files were left unchanged; scoped checks and the whitespace check passed.
+
 ## 2026-10-04
 
 ### Additions and New Features

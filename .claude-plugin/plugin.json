@@ -36,6 +36,7 @@
     "./skills/experts/geometry-expert",
     "./skills/experts/glass-expert",
     "./skills/experts/human-interact-expert",
+    "./skills/experts/openscad-3d-printing-expert",
     "./skills/experts/podman-expert",
     "./skills/experts/postgresql-expert",
     "./skills/experts/pyside6-engineer",

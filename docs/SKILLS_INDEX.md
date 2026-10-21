@@ -4,7 +4,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 42
+Total skills: 43
 
 ## Orientation
 
@@ -43,6 +43,7 @@ Domain-specialist implementation workflows governed by expert-skill guidance.
 - [experts/geometry-expert/SKILL.md](../skills/experts/geometry-expert/SKILL.md): Use when computational-geometry robustness, topology, predicates, intersections, tessellation, motion planning, or realizability determines correctness.
 - [experts/glass-expert/SKILL.md](../skills/experts/glass-expert/SKILL.md): Use when Apple Liquid Glass behavior requires backdrop sampling, surface placement, morphing, capture evidence, or glass-specific contrast judgment.
 - [experts/human-interact-expert/SKILL.md](../skills/experts/human-interact-expert/SKILL.md): Use when selecting or conducting an HCI method, usability evaluation, user study, task analysis, or evidence-based interaction assessment.
+- [experts/openscad-3d-printing-expert/SKILL.md](../skills/experts/openscad-3d-printing-expert/SKILL.md): Write and review parametric OpenSCAD for 3D printing.
 - [experts/podman-expert/SKILL.md](../skills/experts/podman-expert/SKILL.md): Use when designing or diagnosing a Podman runtime, build, networking, storage, pod, Quadlet, registry, or macOS machine workflow.
 - [experts/postgresql-expert/SKILL.md](../skills/experts/postgresql-expert/SKILL.md): Use when PostgreSQL-specific schema, query-plan, indexing, MVCC, maintenance, replication, recovery, pooling, or migration judgment is central.
 - [experts/pyside6-engineer/SKILL.md](../skills/experts/pyside6-engineer/SKILL.md): Use when PySide6-specific widget architecture, signals and slots, model-view design, threading, window behavior, or GUI testing requires Qt judgment.

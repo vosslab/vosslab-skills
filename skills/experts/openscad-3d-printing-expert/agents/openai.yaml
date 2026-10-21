@@ -1,0 +1,4 @@
+interface:
+  display_name: "OpenSCAD 3D Printing Expert"
+  short_description: "Design and validate printable OpenSCAD models"
+  default_prompt: "Use $openscad-3d-printing-expert to design, implement, debug, or review a parametric OpenSCAD model for 3D printing. Ground dimensions, Boolean geometry, printability, and mesh validation in the target printer and slicer."
