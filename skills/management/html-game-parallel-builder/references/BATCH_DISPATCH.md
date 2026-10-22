@@ -36,6 +36,10 @@ Use [`../templates/agent_prompt_template.md`](../templates/agent_prompt_template
 for every coding subagent. It adds these game-specific requirements to
 the manager dispatch contract:
 
+- Include the relevant concise shared-design-brief fields: intended experience,
+  gameplay and visual behavior, surprise and progression contribution, visual
+  identity and visible consequence, cross-module dependencies, and observable
+  acceptance evidence. Select the fields that affect the owned artifact.
 - Use ES `import` and `export` with extensionless imports.
 - Import contracts from `src/types/*.ts` with `import type`.
 - Keep cross-module shapes centralized; never redeclare them locally.

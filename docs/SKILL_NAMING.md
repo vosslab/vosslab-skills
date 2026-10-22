@@ -137,6 +137,7 @@ hyphen-token (5+ chars) with another skill or has a content collision.
 | `make-goal` | compliant | `distill-plan-goal` | Verb-first; first-2 "make goal" names the artifact and action; `mak` 3-char prefix is unique. |
 | `docset-updater` | compliant | docset-refresh | Agent-form suffix matches update-if-drifted behavior. |
 | `gas-town-workflow` | borderline-no-change | (unchanged) | Repo-specific brand name; leading token unique. |
+| `game-design-expert` | compliant | (new) | Domain-noun-first game-design specialist; `gam` is unique and `-expert` matches design and review work. |
 | `geometry-expert` | compliant | (new) | Domain-noun-first; `geo` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `glass-expert` | compliant | (new) | Domain-noun-first; `gla` 3-char prefix unique; `-expert` suffix matches specialist role. |
 | `html-game-parallel-builder` | accepted-rename | web-game-parallel-builder | Drops `web-` collision with `webwork-`; `html` is short, evergreen. |

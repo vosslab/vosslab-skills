@@ -1,0 +1,4 @@
+interface:
+  display_name: "Game Design Expert"
+  short_description: "Build surprising games with distinctive worlds and feel"
+  default_prompt: "Use $game-design-expert to improve this game's controls, surprises, visual identity, and payoff, then verify the integrated experience independently."

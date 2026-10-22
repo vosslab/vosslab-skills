@@ -334,6 +334,7 @@ linkable routing index. Each falls cleanly on one side.
 | --- | --- | --- | --- |
 | `css-creative-expert` | yes | gitignored book corpus | book trio; CSS craft, layout, color design, effects, and motion survey |
 | `geometry-expert` | yes | gitignored book corpus | book trio; `reference_survey.md` reference implementation |
+| `game-design-expert` | yes | gitignored book corpus | book trio; successful-game cases, controls, surprise, art direction, and independent assessment |
 | `glass-expert` | yes | committed guide set | routes via `topic_index.md`; survey not applicable; adds `scripts/` capture tools and `assets/` seed views |
 | `hic-human-interact-expert` | yes | gitignored book corpus | book trio; HCI methods, cognition, evaluation, and accessibility survey |
 | `podman-expert` | yes | gitignored book corpus | book trio; rootless container lifecycle and operations survey |

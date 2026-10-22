@@ -42,6 +42,25 @@ The orchestrator has already produced:
 Treat these as fixed. If you need to extend them, file a request with
 the orchestrator.
 
+## Shared design brief
+
+Read the current brief in `<project planning document>` before writing code.
+Your assignment must preserve the relevant parts below:
+
+- Intended experience: `<experience>`
+- Gameplay and visual behavior: `<behavior>`
+- Surprise and progression contribution: `<discovery, new interaction, or payoff this work supports>`
+- Visual identity and visible consequence: `<relevant character, world, or state-change intent>`
+- Cross-module dependencies: `<dependencies>`
+- Observable acceptance evidence: `<evidence>`
+
+Include the creative fields relevant to the owned artifact; keep unrelated fields
+out of its assignment. Connect supporting modules to the experience they enable.
+
+If your owned files cannot support this brief with the supplied contracts,
+report the missing dependency to the orchestrator. Do not substitute a generic
+feature or silently drop the intended behavior.
+
 ## Rules
 
 - Your files are `.ts`. Use ES `import` / `export` for everything.
@@ -84,4 +103,5 @@ and follow its decision tree. Game-shape questions start at
 
 <replace this block with the specific instructions for this agent's
 files: what behavior to implement, which contract types to consume,
-which DOM ids to read or create, what the smoke test will click>
+which DOM ids to read or create, what the shared brief requires from these
+files, and what the smoke test will click>

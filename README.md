@@ -59,6 +59,8 @@ from those canonical sources. See
 - [docs/USAGE.md](docs/USAGE.md): Canonical sources, generated outputs, and verification.
 - [docs/SKILLS_INDEX.md](docs/SKILLS_INDEX.md): Generated skill catalog.
 - [docs/AGENTS_INDEX.md](docs/AGENTS_INDEX.md): Generated agent roles and authority index.
+- [Game design expert](skills/experts/game-design-expert/SKILL.md): Controls, surprise, visual
+  identity, progression, and independent assessment for new and existing games.
 - [docs/CODE_ARCHITECTURE.md](docs/CODE_ARCHITECTURE.md): Components, data flow, and extension
   points.
 - [docs/FILE_STRUCTURE.md](docs/FILE_STRUCTURE.md): Directory map and generated-output owners.

@@ -1,8 +1,43 @@
 ## 2026-10-22
 
+### Additions and New Features
+
+- Added `game-design-expert` with practical lessons from six user-selected games and verified
+  references to Koster, Swink, Fullerton, and Schell. Covers responsive controls, surprising
+  encounters, expressive artwork, meaningful progress, and new versus existing game workflows.
+  Full book copies remain in the ignored local corpus; the skill works without them.
+
+### Behavior or Interface Changes
+
+- Connected the parallel game builder to a shared creative brief before contracts and dispatch.
+  Assignments carry gameplay and visual intent through integrated experience review, and the first
+  playable slice sequences the requested scope instead of silently reducing it.
+- Made unattended completion explicit, with proportional behavior checks, independent assessment
+  for substantive changes, and correction paths. Treat M.U.L.E. as a caution about overconstrained
+  art and costly comparisons; keep creative comparisons bounded and purposeful.
+
 ### Fixes and Maintenance
 
 - Synchronized shared style guides, tests, and repository support files from the starter template.
+
+### Removals and Deprecations
+
+- Removed the parallel builder's duplicate copies of the two game style guides. Both game skills
+  consult target-repository guides when available; starter-template sources retain ownership.
+
+### Developer Tests and Notes
+
+- Regenerated indexes and plugin manifests with `index_lib/build_all.py`; check mode passes and
+  includes `game-design-expert`. Validated the new skill's metadata, sidecar, reference parity,
+  ASCII, entrypoint size, 12 book search routes, and ignored corpus. Neither skill bundles the
+  two style guides. `quick_validate.py` and `git diff --check` pass.
+- An independent design-only exercise covered six realistic requests using just the committed
+  skill references, plus routine-edit routing and an unattended correction path. Made surprise,
+  progression, identity, and visible consequence explicit in relevant coding assignments after
+  the exercise identified a handoff gap. No runtime game playtest was performed for this change.
+- The 12-file skill validation run passed 1,378 checks. Two unrelated existing failures remain:
+  stale `human-interact-expert` links in the prior skill-corpus audit and the oversized humanizer
+  entrypoint. No permanent tests or additional validation infrastructure were added.
 
 ## 2026-10-20
 

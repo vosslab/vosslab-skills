@@ -3,10 +3,16 @@
 Long-form companion to the step list in [`../SKILL.md`](../SKILL.md).
 Each section here expands the corresponding control-plane summary.
 
-## Step 1: Establish UI decisions from evidence
+## Step 1: Establish the shared design brief from evidence
+
+Before contracts or assignments, invoke `game-design-expert` and record a
+concise shared brief in the project's existing planning documentation. It must
+state the intended experience, core actions and decisions, surprise and
+progression, relevant gameplay and visual behavior, visual identity and
+visible consequence, cross-module dependencies, and observable evidence.
 
 Do not stop implementation or testing to ask preference questions when the
-request is otherwise buildable. Resolve each missing UI choice in this order:
+request is otherwise buildable. Resolve each missing choice in this order:
 
 1. Explicit request constraints and supplied visual references.
 2. Repository evidence: existing screens, tokens, components, product docs,
@@ -16,24 +22,29 @@ request is otherwise buildable. Resolve each missing UI choice in this order:
    scheme when no palette exists, and the smallest interaction model that
    supports the requested core loop.
 
-Record the chosen inputs and defaults with the implementation evidence so a
-later reviewer can reproduce the decision. A screenshot or browser fixture is
-evidence of the rendered result, not a reason to wait for a style decision.
-If the evidence conflicts, use the explicitly requested behavior; otherwise
-use the established repository pattern. Do not invent a feature merely to make
-one presentation choice more elaborate.
+Record the chosen inputs and defaults with the brief and implementation
+evidence so a later reviewer can reproduce the decision. A screenshot or
+browser fixture is evidence of the rendered result, not a reason to wait for a
+style decision. If the evidence conflicts, use the explicitly requested
+behavior; otherwise use the established repository pattern. Do not invent a
+feature merely to make one presentation choice more elaborate. Every listed
+prerequisite, including assets, previews, captures, and assessments, needs an
+agent-executable path while the human is unavailable.
 
 ## Step 2: Define minimum viable scope
 
-Start small. Get the core loop working end-to-end before expanding.
+Start with a first playable slice. Get the core loop working end-to-end before
+expanding it into the requested game.
 
 - 1-2 core mechanics (not 5).
 - 1-2 content types (not 5).
 - Fixed difficulty (not 3 levels).
 - No save/load in first pass.
 
-If a feature can be added after the core loop works, defer it. Wall
-clock matters; scope creep at the start kills it.
+Use the slice to sequence work, not to silently abandon requested features.
+Record the full requested outcome and place each requested feature in a later
+batch or an explicit delivery milestone. Reduce scope only when the request or
+concrete delivery evidence supports that decision; report the resulting limit.
 
 ### Step 2 sub-step: Decompose into modules
 
@@ -160,7 +171,7 @@ The build pipeline:
 `tsc` is the type-check gate only; esbuild is the bundler. Do not
 remove `noEmit: true` from `tsconfig.json`.
 
-## Step 6: Integration and independent-review loop
+## Step 6: Integration and proportional independent-review loop
 
 After the final smoke test, if Playwright finds errors:
 
@@ -174,12 +185,19 @@ After the final smoke test, if Playwright finds errors:
 Repeat until clean. The fix scope should be small (1-2 modules) if
 contracts were followed.
 
-After a clean repair loop, assign a fresh reviewer who did not author the
-affected modules. Give the reviewer the request, captured UI-decision evidence,
-build and smoke results, and the produced artifact without an expected verdict.
-The reviewer independently checks the requested core loop, browser evidence,
-and the distinction between live preview, `dist/`, and optional `dist-single/`.
-If the reviewer disagrees with the implementation team, send the same evidence
-to a third independent inspector and apply the documented contracts and
-fixtures. Repair and repeat the review if an evidence-backed finding remains;
-do not defer the judgment to a human preference decision.
+For a substantive gameplay, artwork, progression, or uncertain experience
+change, assign a fresh reviewer who did not author the affected modules. Give
+the reviewer the request, shared brief, build and smoke results, and produced
+artifact without an expected verdict. The reviewer checks actual controls,
+pacing, novelty, character and world identity, progression, payoff, browser
+evidence, and the distinction between live preview, `dist/`, and optional
+`dist-single/`.
+
+Straightforward documentation or settled small fixes need the applicable
+existing validator and manager evidence, not an extra reviewer. If the
+implementation team and independent reviewer have a material, evidence-based
+disagreement, send the same evidence to a third independent inspector. Repair
+and repeat the proportionate review if a supported finding remains; do not
+defer the judgment to a human preference decision. Automated behavior tests
+demonstrate behavior, and agent review provides design judgment; neither proves
+human enjoyment.

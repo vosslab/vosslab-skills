@@ -4,7 +4,7 @@
 
 Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.
 
-Total skills: 44
+Total skills: 45
 
 ## Orientation
 
@@ -40,6 +40,7 @@ Domain-specialist implementation workflows governed by expert-skill guidance.
 - [experts/bptools-writer-expert/SKILL.md](../skills/experts/bptools-writer-expert/SKILL.md): Create, edit, and review biology-problems bptools question generators and YAML banks, including student-facing wording, distractor design, randomization, anti-cheat, and BBQ/QTI output via `bptools.py` and `qti_package_maker`.
 - [experts/color-accessibility-expert/SKILL.md](../skills/experts/color-accessibility-expert/SKILL.md): Detect and fix WCAG color-contrast failures in source files and images using measured, hue-preserving replacements.
 - [experts/css-creative-expert/SKILL.md](../skills/experts/css-creative-expert/SKILL.md): Use when CSS-specific composition, cascade behavior, responsive layout, theming, or motion requires design or diagnostic judgment.
+- [experts/game-design-expert/SKILL.md](../skills/experts/game-design-expert/SKILL.md): Use when designing or improving a game's controls, mechanics, surprise, progression, character identity, or art direction, especially when a working game feels repetitive, generic, or unrewarding.
 - [experts/geometry-expert/SKILL.md](../skills/experts/geometry-expert/SKILL.md): Use when computational-geometry robustness, topology, predicates, intersections, tessellation, motion planning, or realizability determines correctness.
 - [experts/glass-expert/SKILL.md](../skills/experts/glass-expert/SKILL.md): Use when Apple Liquid Glass behavior requires backdrop sampling, surface placement, morphing, capture evidence, or glass-specific contrast judgment.
 - [experts/hic-human-interact-expert/SKILL.md](../skills/experts/hic-human-interact-expert/SKILL.md): Use when selecting or conducting an HCI method, usability evaluation, user study, task analysis, or evidence-based interaction assessment.

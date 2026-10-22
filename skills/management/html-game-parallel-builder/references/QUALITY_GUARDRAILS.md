@@ -15,7 +15,7 @@ not skip.
 
 | Bottleneck | Time | Why sequential | Mitigation |
 | --- | --- | --- | --- |
-| UI preference interview | ~2 min | Must happen before any code. | Prepare a short checklist; ask before opening the repo. |
+| Shared design brief | ~2 min | It gives contracts and assignments one creative target. | Use `game-design-expert`, request evidence, and documented defaults; do not wait for a human reply. |
 | Type contracts | ~5-10 min | Every agent needs the contracts before writing code. | Reuse the feature-area split from `game-type-patterns.md`; do not invent a new layout per game. Promote a shape to `src/types/` only on the third cross-module use, per `modular-type-design.md`. |
 | Batch 1 foundation | ~2 min | Constants, characters, and game state define the data model all other modules depend on. | Keep Batch 1 to 3 files max; data model and state machine only, no UI, no game logic. |
 | Smoke tests between batches | ~2 min each, 4 total | Each batch must pass before the next starts. | Tight smokes: build, load, console check, click one element. Save full playthroughs for the final batch. Reuse the recipe in `../templates/playwright_smoke_test.md`. |
@@ -64,11 +64,11 @@ Two options when a module is complex:
 
 1. Split it into smaller files assigned to separate agents in the
    same batch.
-2. Reduce scope for the first pass.
+2. Sequence the first playable slice ahead of later requested features.
 
-Prefer option 2 (reduce scope) over option 1 (split files) when
-possible. Splitting adds coordination overhead. Reducing scope
-removes work entirely.
+Prefer option 2 when possible. Splitting adds coordination overhead. The first
+slice orders work; it does not remove requested features from the final
+delivery without an explicit, evidence-backed scope decision.
 
 ## Rationalization table
 
@@ -76,13 +76,13 @@ removes work entirely.
 | --- | --- |
 | "Contracts take too long" | 10 min contracts vs 60 min debugging mismatches. Not negotiable. |
 | "We can fix integration later" | Integration bugs compound. 2 mismatched modules = 1 fix. 14 mismatched modules = 20 fixes. |
-| "Let's add all features now" | Get 2 working before adding 3 more. Scope creep killed every podcast build that tried it. |
+| "Let's add all features now" | Get the first playable slice working, then deliver the remaining requested features in planned batches. |
 | "Smoke tests slow us down" | 2 min smoke catches bugs worth 30 min of debugging. |
 | "Agents can figure out the interface" | They cannot. Every generator/display pair mismatched without contracts. Every single one. |
-| "I'll ask about UI preferences after" | UI rewrite cost 30 min. Asking first costs 2 min. |
+| "I'll wait for UI preferences" | Establish the shared brief from the request, repository evidence, and documented defaults. A human reply is optional refinement, never a gate. |
 | "requestAnimationFrame is optional" | Canvas will be blank. This is not optional. |
 | "All agents can run at once" | Foundation agents must finish first. Batching is the whole point. |
-| "One agent can handle this big module" | A batch finishes as fast as its slowest agent. Split or scope-reduce. |
+| "One agent can handle this big module" | Split ownership or sequence the requested work so one module does not stall the batch. |
 | "We'll test it all together at the end" | Test each module in isolation first. |
 | "TypeScript slows agents down" | `tsc --noEmit` between batches catches contract drift in seconds; the JS version found the same drift only at Playwright time. |
 | "We can `as any` the tricky spot" | Forbidden outside brand constructors and save-file type guards. Route the problem to `typescript-engineer`. |
@@ -93,13 +93,13 @@ removes work entirely.
 - Dispatching coding agents before contracts are written.
 - Skipping a smoke test between batches.
 - Skipping `tsc --noEmit` before a Playwright smoke.
-- Adding features beyond the minimum viable scope in batch 3-4.
+- Adding unplanned features while requested work remains unfinished.
 - Agent prompts that don't include the contracts list.
 - Two agents assigned to the same file.
 - No Playwright browser testing planned.
-- Skipping UI preference gathering.
+- Defining contracts or assignments without the shared design brief.
 - One agent assigned a module with 4+ content types or 400+ expected
-  lines without splitting or scope-reducing.
+  lines without splitting or sequencing its delivery.
 - Contracts written in JSDoc comments instead of `src/types/*.ts`.
 - An agent prompt that does not name the type files it must import
   from.
