@@ -37,7 +37,7 @@ the repo's conventions:
 - **Python repos**: Markdown report at `output/report_<name>.md`,
   following `docs/MARKDOWN_STYLE.md` (ASCII only, simple Markdown
   tables, descriptive link text, fenced code blocks with language
-  tags). Embed PNG paths via standard Markdown image syntax for any
+  tags). Embed final WebP screenshot paths (quality 90) via standard Markdown image syntax for any
   captured visuals.
 
 **Artifact:** report file path (Markdown for Python, HTML + PDF for

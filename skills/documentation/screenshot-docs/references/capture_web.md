@@ -28,7 +28,7 @@ Three steps cover every web capture:
 1. Start a local server for the web app.
 2. Run the Playwright template to navigate, optionally interact, and
    capture a full-page screenshot.
-3. Copy the captured PNG from `/tmp` into `docs/screenshots/`.
+3. Encode the temporary PNG as WebP at quality 90 and copy it from `/tmp` into `docs/screenshots/`.
 
 ## Step 1 - start a local server
 
@@ -100,7 +100,9 @@ Then copy it into the committed screenshots folder following
 [embedding.md](embedding.md):
 
 ```bash
-cp /tmp/concept_map_main.png docs/screenshots/concept_map_main.png
+cwebp -q 90 /tmp/concept_map_main.png -o /tmp/concept_map_main.webp
+cp /tmp/concept_map_main.webp docs/screenshots/concept_map_main.webp
+rm /tmp/concept_map_main.png
 ```
 
 ## Worked example - concept-map-maker smoke fixture
@@ -122,7 +124,9 @@ node scripts/screenshot_web.mjs \
     /tmp/concept_map_main.png
 
 # 3. Copy into docs
-cp /tmp/concept_map_main.png /path/to/concept-map-maker/docs/screenshots/concept_map_main.png
+cwebp -q 90 /tmp/concept_map_main.png -o /tmp/concept_map_main.webp
+cp /tmp/concept_map_main.webp /path/to/concept-map-maker/docs/screenshots/concept_map_main.webp
+rm /tmp/concept_map_main.png
 
 # Stop the server
 kill $server_pid
@@ -131,7 +135,7 @@ kill $server_pid
 Embed the result in `README.md`:
 
 ```markdown
-![Concept map editor showing the main canvas](docs/screenshots/concept_map_main.png)
+![Concept map editor showing the main canvas](docs/screenshots/concept_map_main.webp)
 ```
 
 ## Embed the captured screenshot
@@ -140,5 +144,5 @@ See [embedding.md](embedding.md) for the full embed syntax,
 storage conventions, and size-budget rules. The short version:
 
 - Store in `docs/screenshots/` at the target repo root.
-- Use lowercase_underscore filenames with `.png` extension.
+- Use lowercase_underscore filenames with `.webp` extension.
 - Write descriptive alt text that names what the screenshot shows.

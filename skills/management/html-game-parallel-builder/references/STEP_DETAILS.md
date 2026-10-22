@@ -163,7 +163,7 @@ locally, and record external delivery as not performed rather than blocked.
 The build pipeline:
 
 - `npx tsc --noEmit -p tsconfig.json` typechecks (no emit).
-- `npx esbuild src/init.ts --bundle --format=esm --target=es2020
+- `npx esbuild src/main.ts --bundle --format=esm --target=es2020
   --platform=browser --outfile=dist/main.js` emits the bundle.
 - `src/index.html` and `src/style.css` are copied into `dist/`.
 - `dist/.nojekyll` is created.
@@ -191,7 +191,7 @@ the reviewer the request, shared brief, build and smoke results, and produced
 artifact without an expected verdict. The reviewer checks actual controls,
 pacing, novelty, character and world identity, progression, payoff, browser
 evidence, and the distinction between live preview, `dist/`, and optional
-`dist-single/`.
+`output_single_file/`.
 
 Straightforward documentation or settled small fixes need the applicable
 existing validator and manager evidence, not an extra reviewer. If the

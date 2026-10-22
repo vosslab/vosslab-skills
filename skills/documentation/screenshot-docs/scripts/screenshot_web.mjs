@@ -14,8 +14,10 @@
  *   url         - The page to capture (e.g. http://localhost:8080/)
  *   output_path - Destination for the PNG (e.g. /tmp/capture.png)
  *
- * After capture, copy the PNG into docs/screenshots/ per embedding.md:
- *   cp /tmp/capture.png docs/screenshots/main_window.png
+ * After capture, encode the temporary PNG per embedding.md:
+ *   cwebp -q 90 /tmp/capture.png -o /tmp/capture.webp
+ *   cp /tmp/capture.webp docs/screenshots/main_window.webp
+ *   rm /tmp/capture.png
  *
  * Run this script from the target repo root so Node can find node_modules/.
  * See https://playwright.dev/docs/screenshots for install details and patterns.
@@ -30,13 +32,11 @@ const require = createRequire(resolve(process.cwd(), 'package.json'));
 const { chromium } = require('playwright');
 
 // Read URL and output path from command-line arguments.
-// Falls back to environment variables for non-interactive use.
-const url = process.argv[2] || process.env.SCREENSHOT_URL;
-const outputPath = process.argv[3] || process.env.SCREENSHOT_OUTPUT;
+const url = process.argv[2];
+const outputPath = process.argv[3];
 
 if (!url || !outputPath) {
 	console.error('Usage: node screenshot_web.mjs <url> <output_path>');
-	console.error('  or set SCREENSHOT_URL and SCREENSHOT_OUTPUT env vars');
 	process.exit(1);
 }
 

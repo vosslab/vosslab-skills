@@ -12,7 +12,8 @@ description: "Use when PDF rendering, pagination, or visual page layout is part 
 - Validate final rendering before delivery.
 
 ## Workflow
-1. Prefer visual review: render PDF pages to PNGs and inspect them.
+1. Prefer visual review: render PDF pages to temporary PNGs and inspect them.
+   Keep final named review screenshots as inspected WebP files at quality 90.
    - Use `pdftoppm` if available.
    - If unavailable, install Poppler or ask the user to review the output locally.
 2. Use `reportlab` to generate PDFs when creating new documents.

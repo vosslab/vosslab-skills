@@ -10,18 +10,19 @@ the repo root.
 ```
 docs/
   screenshots/
-    main_window.png
-    settings_dialog.png
+    main_window.webp
+    settings_dialog.webp
     concept_map_demo.gif
 ```
 
-Name PNG and GIF files with lowercase ASCII letters, digits, and underscores.
-Examples: `main_window.png`, `login_screen.png`, `chart_view_dark.png`, and
+Encode final named screenshots as WebP at quality 90 and inspect the encoded image.
+Name WebP and GIF files with lowercase ASCII letters, digits, and underscores.
+Examples: `main_window.webp`, `login_screen.webp`, `chart_view_dark.webp`, and
 `concept_map_demo.gif`.
 
 ## Size ceiling and budget
 
-Cap the longer edge of a PNG at 1920 px and keep each PNG under about 1 MB. Keep an
+Cap the longer edge of a WebP at 1920 px and keep each WebP under about 1 MB. Keep an
 animated GIF at 5 seconds or less, 800 to 1200 px wide, 1 to 15 fps, and under about
 5 MB. Use 1 to 4 fps for deliberate terminal states and 8 to 15 fps for smooth GUI or
 web motion; see [capture_animation.md](capture_animation.md). GitHub
@@ -60,7 +61,9 @@ List matching windows first with `--preview` to confirm the app name and title.
 Copy the captured image from `/tmp` into the managed folder:
 
 ```bash
-cp /tmp/main_window.png docs/screenshots/main_window.png
+cwebp -q 90 /tmp/main_window.png -o /tmp/main_window.webp
+cp /tmp/main_window.webp docs/screenshots/main_window.webp
+rm /tmp/main_window.png
 ```
 
 ## Freshness and pruning
@@ -69,14 +72,14 @@ Keep `docs/screenshots/` showing the current app and holding relevant visual evi
 
 Refresh on every run:
 - Reuse the same descriptive slug for each managed view, so a fresh capture
-  overwrites the existing PNG in place and the embeds keep working.
+  overwrites the existing WebP in place and the embeds keep working.
 - Re-capture each managed view so the managed image matches the current UI.
 
 Prune stale images after embedding:
-- Build the set of `docs/screenshots/*.png` and `docs/screenshots/*.gif` paths still
+- Build the set of `docs/screenshots/*.webp`, legacy `docs/screenshots/*.png`, and GIF paths still
   referenced by a live embed
   in `README.md` or any `docs/` file.
-- Remove every managed PNG or GIF outside that set as a filesystem change after
+- Remove every managed WebP, legacy PNG, or GIF outside that set as a filesystem change after
   confirming that it has no live embed and is not a `reference_` image. Record the
   removed paths in the current-run verification receipt.
 
@@ -97,7 +100,7 @@ List the managed assets currently present, oldest modification time first, when 
 filesystem freshness inventory is useful:
 
 ```bash
-find docs/screenshots -type f \( -name '*.png' -o -name '*.gif' \) -print0 | xargs -0 stat -f '%m %N' | sort -n
+find docs/screenshots -type f \( -name '*.webp' -o -name '*.png' -o -name '*.gif' \) -print0 | xargs -0 stat -f '%m %N' | sort -n
 ```
 
 Apply an age rule each run:
@@ -117,21 +120,21 @@ contains the embed.
 From `README.md` at the repo root, static and animated images use the same syntax:
 
 ```markdown
-![Main window showing the toolbar and canvas](docs/screenshots/main_window.png)
+![Main window showing the toolbar and canvas](docs/screenshots/main_window.webp)
 ![Dragging a node reconnects the concept map](docs/screenshots/concept_map_demo.gif)
 ```
 
 From a file under `docs/` (for example `docs/USAGE.md`):
 
 ```markdown
-![Main window showing the toolbar and canvas](screenshots/main_window.png)
+![Main window showing the toolbar and canvas](screenshots/main_window.webp)
 ```
 
 For a nested file, compute the path from that document's parent directory to
 `docs/screenshots/`. For example, `docs/guides/WORKFLOW.md` uses:
 
 ```markdown
-![Main window showing the toolbar and canvas](../screenshots/main_window.png)
+![Main window showing the toolbar and canvas](../screenshots/main_window.webp)
 ```
 
 Every embed requires descriptive alt text that names what the screenshot shows.
@@ -165,8 +168,8 @@ block, and keeps both sentinel lines exactly as written:
 
 ```
 <!-- screenshots:begin (managed by screenshot-docs) -->
-![Main window showing the toolbar and canvas](docs/screenshots/main_window.png)
-![Settings dialog with the theme selector](docs/screenshots/settings_dialog.png)
+![Main window showing the toolbar and canvas](docs/screenshots/main_window.webp)
+![Settings dialog with the theme selector](docs/screenshots/settings_dialog.webp)
 <!-- screenshots:end -->
 ```
 
@@ -188,7 +191,7 @@ import re
 
 begin = "<!-- screenshots:begin (managed by screenshot-docs) -->"
 end = "<!-- screenshots:end -->"
-embeds = "\n".join(embed_lines)  # each line is "![alt](docs/screenshots/<slug>.png)"
+embeds = "\n".join(embed_lines)  # each line is "![alt](docs/screenshots/<slug>.webp)"
 new_block = f"{begin}\n{embeds}\n{end}"
 pattern = re.compile(re.escape(begin) + r".*?" + re.escape(end), re.DOTALL)
 readme_text = pattern.sub(new_block, readme_text)
@@ -198,7 +201,7 @@ readme_text = pattern.sub(new_block, readme_text)
 
 - Repeat run with the same views: the block content matches, so the file is unchanged.
 - New or updated view: the matching embed line changes; the rest of the block stays.
-- Removed view: drop its embed line from the block and prune its PNG (see
+- Removed view: drop its embed line from the block and prune its WebP (see
   "Freshness and pruning").
 - Headless or unavailable capture environment: leave the existing block and project
   documentation unchanged, then add a Known-gaps line to the verification report. An
@@ -218,7 +221,7 @@ Brief intro paragraph here.
 
 ## Screenshots
 
-![Main window showing the toolbar and canvas](docs/screenshots/main_window.png)
+![Main window showing the toolbar and canvas](docs/screenshots/main_window.webp)
 
 ## Installation
 ...

@@ -485,50 +485,14 @@ export default function UserPage(props) {
 
 ## Environment variables
 
-Solid uses Vite. Only `VITE_`-prefixed variables are injected into client code.
+Use explicit config files or command-line arguments for application settings and
+server secrets. Keep public settings separate from server-only configuration.
+Only standard OS or ecosystem variables belong in the environment.
 
-`.env` file:
-
-```sh
-VITE_PUBLIC_ENDPOINT=https://api.example.com
-DB_PASSWORD=secret
-```
-
-Client access:
-
-```jsx
-console.log(import.meta.env.VITE_PUBLIC_ENDPOINT); // value
-console.log(import.meta.env.DB_PASSWORD);           // undefined
-```
-
-TypeScript type safety -- add `env.d.ts`:
-
-```ts
-interface ImportMetaEnv {
-    readonly VITE_PUBLIC_ENDPOINT: string;
-}
-interface ImportMeta {
-    readonly env: ImportMetaEnv;
-}
-```
-
-Server-only variables (SolidStart / Nitro): use `process.env` in `"use server"` blocks:
-
-```js
-"use server"
-const client = new DB({ host: process.env.DB_URL, password: process.env.DB_PASSWORD });
-```
-
-Private `process.env` types in `env.d.ts`:
-
-```ts
-declare namespace NodeJS {
-    interface ProcessEnv {
-        readonly DB_URL: string;
-        readonly DB_PASSWORD: string;
-    }
-}
-```
+Vite exposes `VITE_`-prefixed values to client code, so those values are public.
+Treat this as a framework behavior to understand when reviewing existing code,
+rather than a reason to introduce custom environment configuration. Keep database
+credentials and session secrets in the application's server-only config loader.
 
 ---
 

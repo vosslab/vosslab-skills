@@ -78,7 +78,7 @@ multi-package repositories.
 | Quick start only installs dependencies | Add the smallest real run and expected result |
 | Long ungrouped docs list | Curate and group by newcomer tasks, then internals and process |
 | Feature list names modules | Rewrite as capabilities, use cases, or outcomes |
-| Visual app has no visual | Add a live link, current PNG, or one focused GIF |
+| Visual app has no visual | Add a live link, current WebP screenshot at quality 90, or one focused GIF |
 | Complex tool reads like a reference manual | Keep one representative workflow and route advanced material to docs |
 | Status or limitation appears late | Move adoption-blocking information near the opening |
 | `See LICENSE` without a link or name | Name the evidenced license and link its file |

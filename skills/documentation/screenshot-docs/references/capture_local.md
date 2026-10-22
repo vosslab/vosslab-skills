@@ -57,11 +57,13 @@ exceeds the 1920 px ceiling (see [postprocess.md](postprocess.md)):
 convert /tmp/main_window.png -resize '1920x1920>' /tmp/main_window.png
 ```
 
-Then copy the finished PNG into the committed folder following
+Then encode at quality 90 and copy the finished WebP into the committed folder following
 [embedding.md](embedding.md):
 
 ```bash
-cp /tmp/main_window.png docs/screenshots/main_window.png
+cwebp -q 90 /tmp/main_window.png -o /tmp/main_window.webp
+cp /tmp/main_window.webp docs/screenshots/main_window.webp
+rm /tmp/main_window.png
 ```
 
 ## App kinds
@@ -77,11 +79,11 @@ cp /tmp/main_window.png docs/screenshots/main_window.png
 
 Use [scripts/render_artifact_libreoffice.sh](../scripts/render_artifact_libreoffice.sh) to render
 page one of a spreadsheet, document, or PDF through LibreOffice and ImageMagick. The script keeps
-intermediate output under `/tmp`, limits the final image to a 1920 px edge, and copies the PNG to
+intermediate output under `/tmp`, limits the final image to a 1920 px edge, and writes the WebP at quality 90 to
 the requested path:
 
 ```bash
-scripts/render_artifact_libreoffice.sh OUTPUT.png INPUT_ARTIFACT
+scripts/render_artifact_libreoffice.sh OUTPUT.webp INPUT_ARTIFACT
 ```
 
 For spreadsheets, set landscape and fit-to-page behavior before invoking the renderer so wide
@@ -119,7 +121,9 @@ screenshot -A "BKChem" --preview
 screenshot -A "BKChem" -t "BKChem" -f /tmp/bkchem_main.png
 
 # 4. Copy into the committed folder.
-cp /tmp/bkchem_main.png docs/screenshots/bkchem_main.png
+cwebp -q 90 /tmp/bkchem_main.png -o /tmp/bkchem_main.webp
+cp /tmp/bkchem_main.webp docs/screenshots/bkchem_main.webp
+rm /tmp/bkchem_main.png
 ```
 
 ## Headless or unavailable capture environment

@@ -29,7 +29,7 @@ Containerfiles, compose, pods, Quadlet, and `podman machine` work. Start with
   official Podman documentation when versions matter.
 3. Build the smallest rootless, reproducible image.
 - Use a Containerfile or Buildah recipe with a minimal build context and a
-  pinned base-image digest; record the resolved image identity.
+  current base image; record its resolved digest and refresh it with dependency updates.
 - Prefer a non-root runtime user and read-only filesystem. Mount only named,
   explicit writable volumes or bind mounts with documented ownership and labels.
 - Read [references/topic_index.md](references/topic_index.md) for focused

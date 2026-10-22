@@ -16,7 +16,7 @@ Read-only verification that produces a pass/fail checklist.
 - Verify `README.md` first paragraph is pure prose, under 250
   characters, no badges, no Markdown links, no code spans, no raw
   URLs (per `docs/REPO_STYLE.md` GitHub About description rules).
-- Verify `LICENSE` file is present and the license text matches the
+- Verify `LICENSE.<SPDX>` file is present and the license text matches the
   declared license per `docs/REPO_STYLE.md` licensing policy (GPLv3,
   LGPLv3, or CC BY-SA 4.0 depending on content type).
 - Output a Markdown checklist at

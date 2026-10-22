@@ -7,7 +7,7 @@ node_modules/
 
 # Build outputs
 dist/
-dist-single/
+/output*/
 _site/
 *.tsbuildinfo
 _bundle.js

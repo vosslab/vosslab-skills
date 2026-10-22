@@ -56,8 +56,8 @@ if [ ! -d node_modules ]; then
 fi
 
 # Random port per session: each port is its own browser origin, so the
-# cache is effectively invalidated every run. PORT env var overrides.
-PORT="${PORT:-$((8000 + RANDOM % 1000))}"
+# cache is effectively invalidated every run.
+PORT="$((8000 + RANDOM % 1000))"
 
 # Build the GitHub Pages artifact into dist/ (no args; contract is stable).
 ./build_github_pages.sh

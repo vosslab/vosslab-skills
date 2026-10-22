@@ -18,6 +18,14 @@
 
 ### Fixes and Maintenance
 
+- Audited skills for conflicts with the refreshed repository style guidance. Updated screenshot recipes,
+  embeds, evidence instructions, and capture helpers for final WebP screenshots at quality 90,
+  keeping PNG captures temporary and preserving GIF demonstrations and domain image formats.
+  Updated game-builder entrypoints to `src/main.ts`, license checks to `LICENSE.<SPDX>`, and
+  web capture arguments to explicit CLI configuration. Replaced mandatory base-image pinning
+  with current images and recorded digests. Replaced custom environment configuration examples
+  with explicit server configuration. Aligned portable game export with ESM and root-level
+  `output_single_file/`. Kept entrypoint changes specific and concise.
 - Synchronized shared style guides, tests, and repository support files from the starter template.
 
 ### Removals and Deprecations
@@ -27,6 +35,11 @@
 
 ### Developer Tests and Notes
 
+- Skill style alignment: 33 focused metadata, internal-link, expert-parity, sidecar, and index
+  checks pass. Real WebP encoding checks pass for both capture helpers with native capture/render
+  commands stubbed; this does not establish live desktop capture acceptance. Shell and JavaScript
+  syntax checks and index freshness pass. The broader ASCII and entrypoint-size checks still fail
+  on the unchanged humanizer entrypoint; no permanent tests were added.
 - Regenerated indexes and plugin manifests with `index_lib/build_all.py`; check mode passes and
   includes `game-design-expert`. Validated the new skill's metadata, sidecar, reference parity,
   ASCII, entrypoint size, 12 book search routes, and ignored corpus. Neither skill bundles the

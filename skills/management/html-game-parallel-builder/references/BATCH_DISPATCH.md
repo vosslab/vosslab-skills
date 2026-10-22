@@ -28,7 +28,7 @@ Batch 1.
 | B: UI shell and styling | HTML fragments, `src/index.html`, `src/style.css`, `src/ui_rendering.ts` | Interaction shell and shared controls |
 | C: Core gameplay | `src/scene_stage.ts`, `src/data_generation.ts` | Contract-conformant playable loop |
 | D: Advanced gameplay | Lab, gel, case-board, scoring, and educational modules | Analysis stages, scoring, and outcomes |
-| E: Runtime utilities | `src/timer.ts`, `src/save_load.ts`, `src/init.ts` | Bootstrap, persistence, and timers |
+| E: Runtime utilities | `src/timer.ts`, `src/save_load.ts`, `src/main.ts` | Bootstrap, persistence, and timers |
 
 ## Agent prompt requirements
 

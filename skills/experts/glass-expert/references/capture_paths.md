@@ -30,9 +30,10 @@ through it, and if the two look the same, switch to on-screen capture.
    bash scripts/capture_glass_evidence.sh <window-id> evidence/toolbar
    ```
 
-   Writes `evidence/toolbar_<light|dark>_<normal|reduced>.png` using
+   Writes `evidence/toolbar_macos<version>_<light|dark>_<normal|reduced>.webp` at quality 90 using
    `screencapture -o -l <window-id>` (`-o` omits the window shadow so pixel
-   comparisons align). The script prints the output filename.
+   comparisons align), then `cwebp -q 90`. Requires `cwebp`; the PNG is temporary.
+   The script prints the output filename. Inspect the final WebP and use its path in manifests.
 
 3. Record the OS version with the capture set (`sw_vers -productVersion`).
    Glass chrome renders differently on macOS 26 and 27 by design, so an
@@ -51,6 +52,6 @@ through it, and if the two look the same, switch to on-screen capture.
 
 ## Comparing captures
 
-Use `scripts/compare_captures.py -a one.png -b two.png` for the differential
+Use `scripts/compare_captures.py -a one.webp -b two.webp` for the differential
 verdicts; the decision rules live in
 [testing_and_oracles.md](testing_and_oracles.md).

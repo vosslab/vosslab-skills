@@ -18,7 +18,7 @@
 #
 # Hard rule: never produces single-file output. ESM only.
 # For a portable one-file HTML build, use './export_single_file.sh'
-# (writes to dist-single/game.html).
+# (writes to output_single_file/game.html).
 
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"

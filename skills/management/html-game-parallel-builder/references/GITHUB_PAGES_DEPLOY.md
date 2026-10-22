@@ -91,7 +91,7 @@ The script:
 
 1. Wipes `dist/` from scratch.
 2. Type-checks via `npx tsc --noEmit`.
-3. Bundles `src/init.ts` to `dist/main.js` with esbuild.
+3. Bundles `src/main.ts` to `dist/main.js` with esbuild.
 4. Copies `src/index.html` and `src/style.css` into `dist/`.
 5. Creates `dist/.nojekyll`.
 6. Asserts `dist/index.html` exists.
@@ -365,7 +365,7 @@ Local deployment-ready evidence:
 - Asset paths are relative, not root-relative.
 - `dist/.nojekyll` exists (the build script creates it).
 - The delivery record distinguishes the local `dist/` artifact from the live
-  preview and any explicitly requested `dist-single/` export.
+  preview and any explicitly requested `output_single_file/` export.
 
 Additional evidence required before claiming publication:
 

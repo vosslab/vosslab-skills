@@ -87,7 +87,7 @@ feature or silently drop the intended behavior.
 
 - Use button-based UI for user choices unless the user specified
   otherwise.
-- All code is bundled by esbuild from `src/init.ts`. There is no
+- All code is bundled by esbuild from `src/main.ts`. There is no
   global script-concat order; rely on real `import` statements.
 - No external runtime dependencies.
 

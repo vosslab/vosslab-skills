@@ -35,7 +35,7 @@ src/
 	educational.ts
 	ui_rendering.ts
 	save_load.ts
-	init.ts           bundle entry; imports everything else
+	main.ts           bundle entry; imports everything else
 ```
 
 ## File contracts
@@ -85,4 +85,4 @@ Do not write `from "./types/save.ts"`; that fails under the default
 ## .gitignore
 
 Copy `templates/gitignore` to `.gitignore` at the project root. It
-ignores `node_modules/`, `dist/`, `dist-single/`, and `_bundle.js`.
+ignores `node_modules/`, `dist/`, `output_single_file/`, and `_bundle.js`.

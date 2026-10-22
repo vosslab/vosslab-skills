@@ -15,7 +15,7 @@ copy `dist/` to a branch unless the user explicitly asks for branch-based
 deployment.
 
 Note on `tsc`-only projects: this skill's templates assume an esbuild
-bundle entrypoint at `src/init.ts`. Projects that prefer `tsc` multi-file
+bundle entrypoint at `src/main.ts`. Projects that prefer `tsc` multi-file
 emit should keep `src/` but supply their own `build_github_pages.sh` (see
 the sports-life-game repo for an example) and skip
 `export_single_file.sh` until they migrate to esbuild.
@@ -29,7 +29,7 @@ The three driver scripts have distinct, non-overlapping jobs:
   game come up at `http://localhost:<port>/` from this script.
 - `build_github_pages.sh`: canonical production build to `dist/`.
   Post-show release path. Must NOT produce single-file output.
-- `export_single_file.sh`: optional portable artifact to `dist-single/`.
+- `export_single_file.sh`: optional portable artifact to `output_single_file/`.
   Post-show portable-sharing path. Must NOT mutate `dist/`.
 
 ## Shipped artifacts
@@ -70,7 +70,7 @@ Toolchain (inherited byte-identical from starter):
 Game-specific overlay (skill-only, no starter counterpart):
 
 - `templates/export_single_file.sh` -- optional portable single-file
-  HTML export to `dist-single/`.
+  HTML export to `output_single_file/`.
 - `templates/src_index.html` -- entry HTML copied to `dist/index.html`.
 - `templates/src_layout.md` -- one-page `src/` skeleton.
 - `templates/agent_prompt_template.md` -- per-agent prompt skeleton.

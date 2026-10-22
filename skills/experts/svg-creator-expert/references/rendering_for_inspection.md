@@ -3,6 +3,10 @@
 This is a side route for turning an authored SVG into PNG evidence. It supports the
 drawing and revision loop; the authored SVG remains the source deliverable.
 
+Keep inspection PNGs temporary. For final named review evidence, encode at quality 90
+with `cwebp -q 90 preview.png -o preview.webp`, inspect the final WebP at display size,
+update evidence links and manifests, and remove the intermediate after conversion succeeds.
+
 ## Primary route: rsvg-convert
 
 Use `rsvg-convert` when available to produce a deterministic local PNG that an image

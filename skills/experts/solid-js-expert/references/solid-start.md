@@ -185,9 +185,12 @@ export async function logMessage(message: string) {
 ```
 
 Because the function always runs server-side, it can safely use the database,
-secrets (`process.env.SESSION_SECRET`), and session helpers. Arguments and
+secrets from server-only configuration, and session helpers. Arguments and
 return values cross the network, so they must be serializable (see
 Serialization rules).
+
+The session examples use a project-owned `~/server/config` loader for validated
+server-only file configuration, including a strong session secret. Keep it out of client bundles.
 
 ## Data loading (query + createAsync)
 
@@ -198,12 +201,13 @@ adds caching/dedup; `createAsync` reads it. See solid-router.md for full
 ```tsx
 import { query, redirect, createAsync } from "@solidjs/router";
 import { useSession } from "vinxi/http";
+import { server_config } from "~/server/config";
 import { db } from "./db";
 
 const getCurrentUserQuery = query(async (id: string) => {
 	"use server";
 	const session = await useSession({
-		password: process.env.SESSION_SECRET as string,
+		password: server_config.session_secret,
 		name: "session",
 	});
 	if (session.data.userId) {
@@ -243,12 +247,13 @@ Trace of a full mutation in SolidStart:
 ```tsx
 import { action, redirect } from "@solidjs/router";
 import { useSession } from "vinxi/http";
+import { server_config } from "~/server/config";
 import { db } from "./db";
 
 const logoutAction = action(async () => {
 	"use server";
 	const session = await useSession({
-		password: process.env.SESSION_SECRET as string,
+		password: server_config.session_secret,
 		name: "session",
 	});
 	if (session.data.sessionId) {
@@ -340,13 +345,14 @@ functions, API routes), because they need server resources and HTTP headers.
 ```ts
 // src/lib/session.ts
 import { useSession } from "vinxi/http";
+import { server_config } from "~/server/config";
 
 type SessionData = { theme: "light" | "dark" };
 
 export async function useThemeSession() {
 	"use server";
 	const session = await useSession<SessionData>({
-		password: process.env.SESSION_SECRET as string,
+		password: server_config.session_secret,
 		name: "theme",
 	});
 	if (!session.data.theme) {

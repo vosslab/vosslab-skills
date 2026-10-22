@@ -14,6 +14,7 @@ fi
 
 window_id="$1"
 prefix="$2"
+command -v cwebp >/dev/null 2>&1 || { echo "Error: install cwebp (brew install webp)" >&2; exit 1; }
 
 # Label with the actual appearance mode at capture time.
 appearance="light"
@@ -32,8 +33,12 @@ fi
 os_version="$(sw_vers -productVersion)"
 
 mkdir -p "$(dirname "$prefix")"
-output="${prefix}_macos${os_version}_${appearance}_${transparency}.png"
+output="${prefix}_macos${os_version}_${appearance}_${transparency}.webp"
+temporary_png="$(mktemp /tmp/glass_capture.XXXXXX)"
+# ASVS 5.3.2: generate the temporary capture path internally.
+trap 'rm -f "$temporary_png"' EXIT
 
 # -o omits the window shadow so pixel comparisons align across captures.
-screencapture -o -l "$window_id" "$output"
+screencapture -t png -o -l "$window_id" "$temporary_png"
+cwebp -q 90 "$temporary_png" -o "$output"
 echo "$output"

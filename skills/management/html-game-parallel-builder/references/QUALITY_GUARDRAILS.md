@@ -123,5 +123,5 @@ browser games.
 
 **Mixing build identities.** `build_github_pages.sh` is the GitHub
 Pages release path; `export_single_file.sh` is the portable artifact
-path. Each has a distinct output location (`dist/` vs `dist-single/`)
+path. Each has a distinct output location (`dist/` vs `output_single_file/`)
 for a reason. Do not blend them.

@@ -5,13 +5,13 @@ Apply these steps after capturing a screenshot and before copying it into
 
 ## Hook constraint: process under /tmp
 
-The repo permission hook scopes image tools (`convert`, `magick`, `optipng`,
-`pngcrush`, and similar) to `/tmp` paths only. Process the image while it lives
-under `/tmp`, then copy the finished PNG into `docs/screenshots/` with `cp`.
+The repo permission hook scopes image tools (`convert`, `magick`, `cwebp`,
+and similar) to `/tmp` paths only. Process the image while it lives
+under `/tmp`, then encode at quality 90 and copy the finished WebP into `docs/screenshots/` with `cp`.
 
 ## Size ceiling and budget
 
-Cap the longer edge at 1920 px and keep each PNG under about 1 MB. For the
+Cap the longer edge at 1920 px and keep each WebP under about 1 MB. For the
 common landscape screenshot the longer edge is the width, so this reads as a
 1920 px width cap; a tall portrait capture is bounded by its height instead. A
 file whose longer edge exceeds 1920 px and is over 1 MB should be resized
@@ -28,7 +28,7 @@ detail away.
 
 The budget is not about storage cost (GitHub charges nothing for it). It is
 about page load time on the README and Pages, and about git history weight: a
-committed PNG stays in `.git` forever, so every re-capture adds another copy.
+committed screenshot stays in `.git` forever, so every re-capture adds another copy.
 
 ## Aspect ratio: design for 16:10 landscape
 
@@ -67,7 +67,9 @@ on the PATH; both are ImageMagick):
 
 ```bash
 convert /tmp/capture.png -resize '1920x1920>' /tmp/capture.png
-cp /tmp/capture.png docs/screenshots/main_window.png
+cwebp -q 90 /tmp/capture.png -o /tmp/capture.webp
+cp /tmp/capture.webp docs/screenshots/main_window.webp
+rm /tmp/capture.png
 ```
 
 The `>` suffix only shrinks images larger than the target, so a capture whose
@@ -83,15 +85,15 @@ img.thumbnail((1920, 1920))           # in-place, preserves aspect ratio
 img.save('/tmp/capture.png')
 ```
 
-## Optional: lossless optimize
+## Encode the final screenshot
 
-Resize does the heavy lifting. If `optipng` or `pngcrush` happens to be
-installed, you may crush the resized `/tmp` file for a further 5 to 20 percent.
-Use this optional step when either tool is already on the PATH, and keep the capture
-workflow dependency-free:
+Require `cwebp` (Homebrew package `webp`) and encode every final named screenshot at
+quality 90. PNG is a temporary capture or processing format. Inspect the final WebP
+at its intended display size for readable text and visual detail; update embeds and
+artifact manifests to its `.webp` filename. Remove the PNG after successful conversion.
 
 ```bash
-optipng -o3 /tmp/capture.png            # or: pngcrush -rem allb -reduce /tmp/capture.png /tmp/capture_crushed.png
+cwebp -q 90 /tmp/capture.png -o /tmp/capture.webp
 ```
 
 ## Summary workflow
@@ -103,9 +105,8 @@ screenshot --window "App Name" /tmp/capture.png
 # 2. Resize only when the longer edge exceeds the 1920 px ceiling
 convert /tmp/capture.png -resize '1920x1920>' /tmp/capture.png
 
-# 3. Optional: lossless crush, only if optipng/pngcrush is already installed
-optipng -o3 /tmp/capture.png
-
-# 4. Copy finished PNG into the committed folder
-cp /tmp/capture.png docs/screenshots/main_window.png
+# 3. Encode at quality 90 and publish the final WebP
+cwebp -q 90 /tmp/capture.png -o /tmp/capture.webp
+cp /tmp/capture.webp docs/screenshots/main_window.webp
+rm /tmp/capture.png
 ```

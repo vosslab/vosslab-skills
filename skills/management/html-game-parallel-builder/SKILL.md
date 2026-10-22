@@ -36,7 +36,7 @@ every coding assignment.
 ## Build and release identity
 
 Default to a GitHub Pages-ready build in `dist/`. Use a portable single-file
-export in `dist-single/` only when explicitly requested. Keep the three paths
+export in `output_single_file/` only when explicitly requested. Keep the three paths
 separate: `run_web_server.sh` serves the live preview,
 `build_github_pages.sh` produces the Pages build, and
 `export_single_file.sh` produces the optional portable artifact. Read

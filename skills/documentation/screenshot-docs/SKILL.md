@@ -12,7 +12,7 @@ Capture reproducible static or animated proof of an application's value, store i
 
 ## Ownership boundary
 
-This skill may write PNG/GIF assets, managed screenshot-block contents, and capture infrastructure
+This skill may write WebP/GIF assets, managed screenshot-block contents, and capture infrastructure
 in the target repository's established support location. Treat application implementation as
 read-only. Prepare a changelog-ready handoff after capture.
 
@@ -25,17 +25,18 @@ rules, alt text, freshness, and pruning behavior.
 
 1. Classify the target as PySide6 GUI, Swift GUI, terminal/CLI, served web app, or static web app
    with [`references/detection.md`](references/detection.md).
-2. Choose PNG, a short GIF, or both with
+2. Choose WebP, a short GIF, or both with
    [`references/capture_animation.md`](references/capture_animation.md). Use motion only when it
    explains one compact interaction better than a stable frame.
 3. Locate the exact managed block in approved README/docs targets. Establish the target and relative
    asset path before capture; preserve both sentinels on every rewrite.
 4. Capture through the matching route below and create a deterministic repository-owned harness
    when the workflow has durable documentation value.
-5. Post-process with [`references/postprocess.md`](references/postprocess.md). Keep PNGs within the
+5. Post-process with [`references/postprocess.md`](references/postprocess.md): WebP at quality 90,
+   temporary PNGs, and final-image inspection. Keep screenshots within the
    documented edge limit and GIFs within duration, dimensions, frame-rate, palette, playback, and
    file-size limits.
-6. Store stable descriptive ASCII slugs as `docs/screenshots/<slug>.png` or
+6. Store stable descriptive ASCII slugs as `docs/screenshots/<slug>.webp` or
    `docs/screenshots/<slug>_demo.gif` so recapture updates the same asset.
 7. Rewrite managed blocks through the algorithm in `embedding.md`, computing asset paths relative to
    each document.

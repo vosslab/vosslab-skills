@@ -24,7 +24,7 @@ owners run together:
 - `news-release-docs` -> `docs/RELEASE_HISTORY.md`, `docs/NEWS.md`
 - `readme-docs` -> `README.md` (sole owner; links the core docs by convention,
   reserves the screenshot block)
-- `screenshot-docs` -> `docs/screenshots/` PNGs and the managed screenshot block
+- `screenshot-docs` -> `docs/screenshots/` WebP screenshots at quality 90 and the managed screenshot block
   inside `README.md` and `docs/`
 - `agents-md-fixer` -> `AGENTS.md` (bare-path pointers into `docs/*.md`)
 
@@ -67,7 +67,7 @@ guaranteed a README link in the same run; link it on a later pass when it is pre
 
 1. Read the rules and inventory
    - Read `AGENTS.md`, `docs/REPO_STYLE.md`, and `docs/MARKDOWN_STYLE.md`.
-   - List `docs/` contents and root docs (`AGENTS.md`, `README.md`, `LICENSE`).
+   - List `docs/` contents and root docs (`AGENTS.md`, `README.md`, `LICENSE.<SPDX>`).
 2. Dispatch the per-doc skills by dependency edges
    - Follow the ownership and dependency edges above. Start independent owners and the
      remaining-docs audit together; release downstream owners when their input exists.

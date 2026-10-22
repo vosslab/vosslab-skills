@@ -6,8 +6,9 @@ Use this guide on the target project, not while authoring this skill.
 
 1. Identify the executable, supported runtime, listening port, health command,
    writable paths, configuration sources, and external dependencies.
-2. Create the smallest Containerfile with a pinned base-image digest, a
+2. Create the smallest Containerfile with a current base image, a
    non-root runtime user, a read-only filesystem, and explicit writable mounts.
+   Record the resolved image digest for evidence and refresh it with dependency updates.
 3. Build, run, inspect, and exercise one health or functional command through
    the exposed service boundary.
 4. Add compose, a pod, Quadlet, or generated Kubernetes YAML only when its

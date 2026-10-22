@@ -97,7 +97,7 @@ README score: 82/100 -> 94/100
 Gates: 6/6 pass
 Strongest gain: Proof and demonstration, 10 -> 20
 Remaining opportunity: Add a current output comparison, owner screenshot-docs,
-target README.md and docs/screenshots/output_comparison.png
+target README.md and docs/screenshots/output_comparison.webp
 ```
 
 Pair every remaining opportunity with the dispatch brief in

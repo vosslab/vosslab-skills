@@ -14,7 +14,7 @@ Good GIF subjects:
 - A compact workflow with two or three visible steps.
 - A transition or response that a still image communicates poorly.
 
-Use a static PNG for stable layout, detailed text, charts, settings, or output readers
+Use a static WebP for stable layout, detailed text, charts, settings, or output readers
 need time to inspect. Use a video with playback controls for a tutorial longer than 5
 seconds. Prefer one strong GIF over several competing animations on the same page.
 
@@ -153,4 +153,4 @@ same result.
 - Confirm the start and final states are both visible long enough to recognize.
 - Confirm the frame contains only the intended app, public sample data, and relevant UI.
 - Confirm alt text and adjacent prose explain the result on their own.
-- Run the same freshness and pruning checks as for PNG screenshots.
+- Run the same freshness and pruning checks as for WebP screenshots.

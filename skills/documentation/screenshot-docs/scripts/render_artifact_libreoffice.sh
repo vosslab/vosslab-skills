@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Render a spreadsheet or document artifact to a landscape PNG.
+# Render a spreadsheet or document artifact to a landscape WebP at quality 90.
 # Preparation, usage, and output contracts live in
 # ../references/capture_local.md#document-and-spreadsheet-artifacts.
 
@@ -12,9 +12,14 @@ artifact="${2:-}"
 #============================================
 # Validate arguments.
 if [ -z "${output}" ] || [ -z "${artifact}" ]; then
-	echo "Usage: render_artifact_libreoffice.sh OUTPUT.png INPUT_ARTIFACT" >&2
+	echo "Usage: render_artifact_libreoffice.sh OUTPUT.webp INPUT_ARTIFACT" >&2
 	exit 1
 fi
+if [[ "${output}" != *.webp ]]; then
+	echo "Error: output must use the .webp extension" >&2
+	exit 1
+fi
+command -v cwebp > /dev/null 2>&1 || { echo "Error: install cwebp (brew install webp)" >&2; exit 1; }
 if [ ! -f "${artifact}" ]; then
 	echo "Error: artifact not found: ${artifact}" >&2
 	exit 1
@@ -69,6 +74,10 @@ magick -density 150 "${tmp_pdf}[0]" \
 	"${tmp_png}"
 
 #============================================
-# Copy the finished PNG to the requested output path.
-cp "${tmp_png}" "${output}"
+# Encode the final screenshot before removing its temporary PNG.
+# ASVS 1.2.5: pass paths as quoted arguments to the encoder.
+tmp_webp="/tmp/${artifact_stem}_render.webp"
+cwebp -q 90 "${tmp_png}" -o "${tmp_webp}"
+cp "${tmp_webp}" "${output}"
+rm "${tmp_png}"
 echo "Wrote ${output}"
