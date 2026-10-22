@@ -74,8 +74,57 @@ Pytest excludes only `tests/e2e/` and `tests/playwright/` through `tests/conftes
 - Use `tests/e2e/` or `tests/playwright/` when real processes, services, browsers, networks, or
   whole-system workflows are essential to the behavior.
 
-`tests/test_checkout_disk_budget.py` is the documented exception to the no-subprocess fast-lane
-default. Its local `du` call measures the checkout that the gate protects.
+The three disk-budget tests are mandatory base-lane exceptions to the no-subprocess default, not
+optional or E2E-only checks:
+
+- `tests/test_checkout_disk_budget.py` measures the complete checkout with local `du`.
+- `tests/test_podman_disk_budget.py` measures machine-wide Podman storage in every repository.
+- Rust repositories receive `tests/test_target_disk_budget.py`, which measures local `target/`
+  build artifacts with `du`.
+
+These checks make responsible use of finite disk space part of continuous development. A failure
+means development has exceeded a storage budget. Inspect the reported storage, remove stale
+generated artifacts deliberately, and rerun the base suite. Do not skip or delete the check;
+propagation restores vendored disk-budget tests.
+
+## FIXTURE POLICY
+
+Treat fixtures as liabilities. Most fixtures add indirection, hidden coupling, and maintenance cost,
+so avoid them unless an actual product need depends on the shared setup, file shape, or loader
+behavior. Test-author convenience alone does not justify a fixture.
+
+Write test inputs directly in the test by default. Put the setup near the assertion so the test is
+easy to read, move, and maintain.
+
+Inline means the test input is written directly in the test file, close to the assertion. Use a
+literal string, literal object, short list, or a short helper function used only by tests in that
+same file.
+
+This policy covers both test data files under `tests/fixtures/` and custom `@pytest.fixture`
+functions.
+
+Use fixtures for these durable cases:
+
+1. Use the built-in `tmp_path` fixture when a test needs a temporary file or directory.
+2. Use the vendored `collect_report` autouse harness for hygiene report checks. See
+   [PYTEST_AUTHORING_GUIDE.md](PYTEST_AUTHORING_GUIDE.md#use-the-hygiene-harness).
+3. Use an existing repository file directly when that real file's required shape or loader
+   behavior is what the test checks: a shipped config, a template, or committed production data
+   that already exists for a non-test reason.
+
+For all other tests, write the input directly in the test.
+
+Use `tmp_path` for file-shaped test input, such as a CSV, YAML, JSON, or image, that exists only for
+the test. Write the inline data into a `tmp_path` file at runtime so the data lives in the test and
+the file exists only during the run. Add a permanent committed file only when that file already has
+a non-test purpose in the repository, or when a human explicitly approves it as durable shared test
+infrastructure.
+
+During early implementation, keep scratch setup in the test. Once the behavior is pinned, keep that
+setup in the test instead of moving it into a shared fixture.
+
+Treat a committed `tests/fixtures/` directory as shared test infrastructure. Get explicit human
+sign-off before adding one. These directories often accumulate stale files after their first use.
 
 ## Assertion shapes
 

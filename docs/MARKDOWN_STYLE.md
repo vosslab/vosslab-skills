@@ -6,6 +6,8 @@ Keep documentation concise, scannable, and consistent.
 
 ## Standard
 
+- Markdown syntax rules apply to `.md` files. Djot (`.djot`) follows the syntax supported by its
+  renderer; shared writing, naming, and character conventions still apply.
 - Follow the [GitHub Flavored Markdown specification](https://github.github.com/gfm/) for Markdown
   syntax.
 - Use GitHub Flavored Markdown by default.

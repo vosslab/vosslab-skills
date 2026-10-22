@@ -42,7 +42,6 @@ stats.html
 # -------------------- LOCAL REPOSITORY RULES --------------------
 # ADD YOUR CUSTOM IGNORES BELOW
 # Propagation preserves this section.
-# ------------------ END LOCAL REPOSITORY RULES ------------------
 
 skills/.*/
 .cursor/agents/

@@ -131,7 +131,10 @@ Assert visible behavior and app state, and signal pass or fail one way per file.
 - Run headless Chromium (`chromium.launch()` with no arguments defaults to
   headless).
 - Write screenshots to `test-results/`, which is gitignored.
-- Number per-step screenshots (`00_initial.png`, `01_after_click.png`) for
+- Save final named screenshots as WebP at quality 90 (`cwebp -q 90`). Use the buffer conversion
+  example in [PLAYWRIGHT_USAGE.md](PLAYWRIGHT_USAGE.md#take-a-screenshot); retain PNG only as a
+  transient capture intermediate when required by the tool.
+- Number per-step screenshots (`00_initial.webp`, `01_after_click.webp`) for
   walkthroughs so the sequence is readable.
 - Sweep a matrix with `browser.newContext({ viewport, colorScheme })` when you
   need desktop and mobile across light and dark.

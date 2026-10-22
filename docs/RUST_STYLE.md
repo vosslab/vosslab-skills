@@ -720,9 +720,8 @@ repository-wide form selected by the manager:
 Both forms intentionally allow future major, minor, and patch releases. Application
 repositories use `Cargo.lock` as the exact tested resolution between refreshes in
 either mode. A future package intended for crates.io uses the explicit-floor form
-because crates.io rejects bare wildcard requirements. Reserve an exact `=...`
-requirement for a temporary upstream constraint, and record its reason and removal
-condition
+because crates.io rejects bare wildcard requirements. Keep requirements open-ended even when upstream compatibility needs repair; follow
+[REPO_STYLE.md](REPO_STYLE.md) instead of adding exact pins or upper bounds
 ([Version requirement syntax](https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html#version-requirement-syntax)).
 
 **Refresh sequence.** `Cargo.toml` describes compatible ranges; `Cargo.lock` records

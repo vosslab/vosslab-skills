@@ -4,26 +4,28 @@
 
 ## What this repo is
 
-This is a TypeScript browser app. You write code in `src/`, bundle it into
-`dist/`, and ship `dist/` to GitHub Pages. A small set of named shell scripts
-is the whole interface: drive the repo through them and you never need to open
-`package.json`. The npm aliases (`npm run build`, `serve`, `check`, `clean`,
-`test:playwright`) mirror the scripts one to one as an optional convenience.
+This is a TypeScript project with a fast shared code-quality gate. Repositories
+that declare `REPO_TYPE=githubpages` additionally receive the template's Pages
+bundle, preview, deployment, and build-aware Playwright front doors.
 
 ## Front door shell scripts
 
 | Script | What it does |
 | --- | --- |
 | `./check_codebase.sh` | Fast gate: typecheck, lint, format check, Node unit tests. |
+| `./dist_clean.sh` | Wipe `dist/`. |
+
+The `githubpages` child type additionally provides:
+
+| Script | What it does |
+| --- | --- |
 | `./build_github_pages.sh` | Bundle `src/` into `dist/` (the Pages artifact). |
 | `./run_web_server.sh` | Build `dist/`, serve a local preview on a random port. |
 | `./run_playwright_tests.sh` | Run browser tests; builds `dist/` as needed. |
-| `./dist_clean.sh` | Wipe `dist/`. |
 
-Run `./check_codebase.sh --help` for usage. `./run_web_server.sh` picks a
-random port each run so the browser cache stays fresh; set `PORT` to override.
-`./run_playwright_tests.sh` lets Playwright's own `webServer` config start the
-test server, and accepts `--build` to force a rebuild first.
+Run `./check_codebase.sh --help` for usage. In a `githubpages` repository,
+`./run_web_server.sh` picks a random port so the browser cache stays fresh, and
+`./run_playwright_tests.sh` accepts `--build` to force a rebuild first.
 
 ## Repo layout you edit
 
@@ -49,9 +51,10 @@ stronger permanent tests that protect behavior worth preserving. When in doubt, 
 - Node unit tests live in `tests/test_*.mjs`. Add one by dropping a
   `test_<name>.mjs` into `tests/`; `./check_codebase.sh` picks it up
   automatically through `node --import tsx --test 'tests/test_*.mjs'`.
-- Browser tests live under `tests/playwright/`. Run them with
-  `./run_playwright_tests.sh`. See `docs/PLAYWRIGHT_USAGE.md` for the browser
-  test conventions.
+- Browser tests live under `tests/playwright/`. Run `npm run test:playwright`
+  in generic TypeScript repositories. The `githubpages` child also provides
+  `./run_playwright_tests.sh` for build-aware runs. See `docs/PLAYWRIGHT_USAGE.md`
+  for the browser test conventions.
 - Whole-system E2E lives under `tests/e2e/` and runs directly, excluded from
   pytest. See `E2E_TESTS.md` for the non-browser E2E conventions.
 
@@ -61,11 +64,12 @@ A typical edit loop runs the tiers in this order:
 
 - Edit files under `src/`.
 - Run `./check_codebase.sh` for the fast gate.
-- Run `./run_web_server.sh` and eyeball the app in a browser.
-- Run `./run_playwright_tests.sh` to confirm browser behavior.
+- Run `npm run test:playwright` when browser coverage applies.
+- In a `githubpages` repository, run `./run_web_server.sh` for a local preview
+  and `./run_playwright_tests.sh` for a build-aware browser check.
 - Review `tests/_temp/`; promote tests that earned permanence and remove the rest.
 
-## Ship to GitHub Pages
+## Ship to GitHub Pages (`githubpages` only)
 
 - Run `./build_github_pages.sh` to emit `dist/`, including `dist/.nojekyll` so
   Pages serves files whose names start with an underscore.

@@ -182,7 +182,8 @@ Previews are useful for design feedback, but previews are not a substitute for t
 
 ## 12. Use SwiftPM and reproducible dependencies
 
-Use Swift Package Manager for modular Swift code and explicit dependencies. Keep dependencies small, pinned, and justified.
+Use Swift Package Manager for modular Swift code and explicit dependencies. Keep dependencies small and justified. Follow the latest-version policy in
+[REPO_STYLE.md](REPO_STYLE.md): use unpinned requirements or open-ended minimum versions.
 
 SwiftPM resolves dependencies using `Package.swift` and `Package.resolved` when that file is present.[^swiftpm-resolve] The `swift package resolve` command can also be configured to use only versions from `Package.resolved` and fail if resolution is out of date.[^swiftpm-package-resolve]
 

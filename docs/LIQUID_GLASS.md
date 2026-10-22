@@ -330,6 +330,10 @@ it.[^meet-liquid-glass] Two capture hazards follow:
 
 ### Evidence protocol
 
+Save final named screenshot evidence as WebP at quality 90 (`cwebp -q 90`), following
+`docs/REPO_STYLE.md`. Keep any required PNG capture transient, and inspect the final WebP for
+the backdrop detail and state differences described below.
+
 1. Put strong multi-color content behind the glass surface -- a gradient, a photo, or
    syntax-highlighted text that reaches under the glass edges.
 2. Capture the live window on screen. The glass region must show blurred, refracted color from

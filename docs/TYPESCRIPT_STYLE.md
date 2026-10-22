@@ -11,25 +11,20 @@ downstream consumers), so dependency floors are set as high as practical and ref
 toward newest, not kept low and wide. State the policy, not a frozen version, so this doc
 never goes stale against a sync run.
 
-- Policy: pin every dependency `>={latest}`, with floors raised as high as practical at each
+- Policy: give every dependency an open-ended minimum of `>={latest}`, with floors raised as high as practical at each
   template refresh. The policy is the rule; do not hardcode a major version here.
 - Rationale: an application carries no compatibility burden for nonexistent library users.
   High floors only buy newer bug fixes and diagnostics (better AI-assisted coding) at zero
   cost. A published library does the opposite and keeps floors low and wide.
-- Pin shape: use `>=` always. Add a `<` upper bound ONLY for a confirmed incompatibility,
-  never as a default. Live example: typescript-eslint caps the TypeScript it supports
-  (currently `<6.1.0`); if TypeScript outruns typescript-eslint, a temporary `<` cap waits
-  for the matching typescript-eslint release rather than breaking lint.
-- Refresh command: `devel/sync_typescript_package_pins.py` rewrites every pin to `>={latest}`
+- Requirement shape: use `>=` without upper bounds. Follow the latest-version policy in
+  `docs/REPO_STYLE.md`; repair incompatibilities against current releases.
+- Refresh command: `devel/sync_typescript_package_pins.py` rewrites every minimum to `>={latest}`
   from the npm registry. It is a refresh HELPER, not a dependency solver: it writes `>=`
   uniformly and never emits `<` caps, compound ranges, non-`latest` dist-tags, or
   `workspace:*`, and it leaves private/E404 and consumer-extra packages untouched.
-- Manual `<` exception: the tool rewrites a hand-placed `<` cap back to `>={latest}` on its
-  next run, so a necessary cap is a MANUAL exception re-applied after each sync. Teaching the
-  tool to preserve caps is separate follow-up.
 - `allowScripts` keys are version-pinned (`name@version`): after a sync that bumps esbuild or
-  fsevents, re-apply the matching `allowScripts` entry by hand in `noexist/package.json`, the
-  same class of manual exception as a `<` cap. Without it, esbuild's postinstall binary gate
+  fsevents, re-apply the matching `allowScripts` entry by hand in `noexist/package.json`, an
+  execution permission for that resolved package, not a dependency version constraint. Without it, esbuild's postinstall binary gate
   returns and fresh `npm install` runs will miss the platform binary.
 - Lockfile: the committed `package-lock.json` is a snapshot regenerated forward on each
   refresh, so installs move to the newest resolved set. It records the current resolution and
@@ -255,8 +250,9 @@ Use inline setup first. For fixture cases, see `PYTEST_AUTHORING_GUIDE.md`.
 * `_temp*` scratch names and `dist_*/` private lane-build directories are excluded by ESLint, Playwright, Prettier, and repo hygiene discovery. Each collector owns its exclusion; gitignore alone does not prevent directory-globbing tools from collecting an untracked scratch file.
 * Prettier scope in this repo is JS, TypeScript, MJS, CJS, TSX, MTS, CTS only. JSON, YAML, Markdown, and Python files are explicitly NOT prettier-managed.
 * Indent is two spaces for every prettier-managed extension (prettier default; documented in propagated `.prettierrc`). This differs from the Python tabs rule in `docs/PYTHON_STYLE.md`; agents editing `.py` use tabs, agents editing `.ts`/`.mjs`/etc use two spaces. Do not over-generalize one language's rule to the other.
-* Auto-fix path when `./check_codebase.sh` step 4 (`format:check`) fails: run `npx prettier --write '**/*.{ts,tsx,mts,cts,js,mjs,cjs}'` (the `npm run format:write` alias mirrors this).
-* `.prettierignore` ships from the template and covers scratch names (`_temp*`), private lane builds (`dist_*/`), and noisy generated trees (`node_modules/`, `dist/`, `dist-single/`, `_site/`, `generated/`, `coverage/`, `playwright-report/`, `test-results/`, `blob-report/`, `package-lock.json`).
+* Auto-fix path when `./check_codebase.sh` step 4 (`format:check`) fails: run `npm run format:write`.
+* `.prettierignore` ships from the template and covers shared exclusions. Put repository-owned exclusions in `.prettierignore.local`, a consumer-owned file shipped once and never overwritten.
+* Every Prettier check and write command passes `.gitignore`, `.prettierignore`, and `.prettierignore.local` explicitly with repeated `--ignore-path` flags because naming an ignore path replaces Prettier's default ignore inputs.
 
 ### ESLint canonical rules
 
@@ -325,7 +321,11 @@ Heads-up: `tsc -p tsconfig.lint.json` exits 2 with `TS18003` ("No inputs were fo
 
 ## BUILD SYSTEM
 
-Use `npx tsc --noEmit -p tsconfig.json` to type-check, and `npx esbuild <entry>.ts --bundle --format=esm --target=es2020 --platform=browser --minify --sourcemap --outfile=dist/main.js` for runtime bundle.
+Use `npx tsc --noEmit -p tsconfig.json` to type-check. Repositories declaring
+`REPO_TYPE=githubpages` use `npx esbuild <entry>.ts --bundle --format=esm
+--target=es2020 --platform=browser --minify --sourcemap
+--outfile=dist/main.js` for the runtime bundle. Generic TypeScript repositories
+own the build command appropriate to their application.
 
 ### Why this shape
 
@@ -360,18 +360,17 @@ Document a build variant only where a real design need drives it, not by head co
 - Pre-build codegen: a generation step run BEFORE bundling, e.g. compiling YAML to JSON or
   generating SVG assets, wired into `build_github_pages.sh` ahead of the esbuild call.
 
-### Front door: run the shell scripts directly
+### Front doors
 
-The named shell scripts are the operational interface for everyone, including
-non-TypeScript coders and non-technical users. Run them directly by name; you
-never need to open `package.json` to learn how to drive a repo:
+The shared TypeScript front doors are:
 
 - `./check_codebase.sh` (run the fast typecheck, lint, format, and unit-test gate).
-- `./build_github_pages.sh` (build the GitHub Pages bundle).
-- `./run_web_server.sh` (build and serve a local preview).
 - `./devel/clean_build.sh` (wipe `dist/`).
-- `./run_playwright_tests.sh` (build as needed, then run the Playwright
-  browser tests). This is its own front door so `check_codebase.sh` stays the fast gate.
+
+The `githubpages` child type adds `./build_github_pages.sh`,
+`./run_web_server.sh`, and `./run_playwright_tests.sh`. Generic TypeScript
+repositories do not receive those build-specific scripts and run browser tests
+with `npm run test:playwright` when applicable.
 
 Each script invokes its tools directly (`npx tsc`, `npx eslint`, `npx prettier`,
 `node --test`). The `package.json` `scripts` block is a thin pass-through: the
@@ -413,7 +412,7 @@ Alias rules:
   mirrors a real tool command: the optional `pdf` alias (`node tools/html_to_pdf.mjs`) is
   present in several repos and is a fine thin mirror of a real tool.
 - Repo-specific domain scripts are acceptable additions when they mirror a real tool, e.g.
-  `virtual-lab-protocol-simulation`'s `layout:*` and `*:png` scripts (`node tools/...`). They
+  `virtual-lab-protocol-simulation`'s layout and image-export scripts (`node tools/...`). They
   are optional per-repo extras, not part of the canonical alias set.
 - Keep a small mirror set. Do not gut all npm scripts unless the repo is
   intentionally non-idiomatic TypeScript; a TypeScript developer expects some
@@ -422,10 +421,10 @@ Alias rules:
 | Shell script | npm alias | Job |
 | --- | --- | --- |
 | `./check_codebase.sh` | `npm run check` | Typecheck, lint, format-check, Node unit tests |
-| `./build_github_pages.sh` | `npm run build` | Build the esbuild bundle into `dist/` |
-| `./run_web_server.sh` | `npm run serve` | Build and serve `dist/` on a random port |
 | `./devel/clean_build.sh` | `npm run clean` | Remove `dist/` |
-| `./run_playwright_tests.sh` | `npm run test:playwright` | Build as needed, then run Playwright browser tests |
+
+`npm run test:playwright` invokes Playwright directly. A `githubpages`
+repository can instead call its build-aware runner directly.
 
 The remaining `package.json` aliases have no shell-script front door. Run their
 direct command instead of the alias when you are not in an npm workflow. Use the
@@ -433,7 +432,7 @@ locally-installed form (`npx ...`) so the command works without a global install
 
 | npm alias | Direct command |
 | --- | --- |
-| `npm run format:write` | `npx prettier --write '**/*.{ts,tsx,mts,cts,js,mjs,cjs}'` |
+| `npm run format:write` | `npx prettier --write --ignore-path .gitignore --ignore-path .prettierignore --ignore-path .prettierignore.local '**/*.{ts,tsx,mts,cts,js,mjs,cjs}'` |
 | `npm run setup` | `./devel/setup_typescript.sh` |
 | `npm run setup:playwright` | `./devel/setup_playwright.sh` |
 
@@ -453,10 +452,8 @@ shell wrapper only when it improves usability, never a hidden alias.
 
 ### Canonical scripts
 
-See the shell-script/npm-alias table above for the full list of scripts and their jobs.
-Script names for reference:
-`build_github_pages.sh`, `run_web_server.sh`, `check_codebase.sh`,
-`devel/clean_build.sh`, `run_playwright_tests.sh`.
+See the shell-script/npm-alias table above for the shared scripts. The Pages
+front doors named there exist only when `REPO_TYPE=githubpages`.
 
 ### Repo-local extras
 
@@ -464,7 +461,7 @@ Consumer repos often add thin domain-specific commands beyond the shared front
 doors. Examples in the current corpus include:
 
 - `layout:*` scripts for layout metrics and diffs
-- `protocol:png` and `scene:png` for image export helpers
+- `protocol:*` and `scene:*` for image export helpers; final named screenshots use WebP at quality 90
 - `pdf` as a thin wrapper around `node tools/html_to_pdf.mjs`
 - a `dev` command for watch-mode builds in some browser-game repos
 
@@ -513,15 +510,16 @@ These repos deploy through GitHub Actions from the build output:
 
 ## Canonical repo shape
 
-This is the baseline TypeScript repository layout:
+For `githubpages`, the baseline TypeScript repository layout is:
 
 - `src/main.ts` &mdash; canonical entry point (`src/main.tsx` for JSX or Solid).
 - `src/index.html` &mdash; HTML host with `<script type="module" src="main.js">`.
 - `src/style.css` &mdash; stylesheet copied verbatim into `dist/`.
 - `dist/` &mdash; only build output (canonical GitHub Pages artifact).
 
-Entry point: `src/main.ts` (or `src/main.tsx` for JSX/Solid) is canonical. `src/init.ts` is
-LEGACY: `build_github_pages.sh` still accepts it as a fallback and prints a rename warning, so
+Entry point: `src/main.ts` (or `src/main.tsx` for JSX/Solid) is canonical for
+the Pages build. `src/init.ts` is LEGACY: `build_github_pages.sh` still accepts
+it as a fallback and prints a rename warning, so
 migrate it to `src/main.ts`. The names are not co-equal; `main.ts`/`main.tsx` is the target
 and `init.ts` is deprecated.
 
@@ -542,7 +540,8 @@ This is the canonical floor, not a ceiling. Per-repo additions (`src/*.ts` modul
 * YAML favorite, readable, editable
 * CSV spreadsheet input and output
 * JSON good for larger structured data
-* PNG images, graphics, figures, pixel data
+* WebP at quality 90 for final named screenshots; follow the screenshot policy in `docs/REPO_STYLE.md`.
+* Choose other image and scientific pixel-data formats for the artifact's requirements.
 
 ## GENERAL STYLE
 
