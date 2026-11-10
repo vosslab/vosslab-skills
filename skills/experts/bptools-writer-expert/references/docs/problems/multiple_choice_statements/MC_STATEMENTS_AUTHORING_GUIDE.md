@@ -6,7 +6,7 @@ This folder contains YAML "statement banks" and a generator that turns them into
 
 1. Copy `problems/multiple_choice_statements/TEMPLATE.yml` to a new file (pick a clear name like `membrane_diffusion.yml`).
 2. Set `topic:` to the concept you want in the question stem.
-3. Add items under `true_statements:` and `false_statements:`, with a larger false pool than true pool (see Pool sizes in [QUESTION_PEDAGOGY_GUIDE.md](../../QUESTION_PEDAGOGY_GUIDE.md)).
+3. Add items under `true_statements:` and `false_statements:`, with a larger false pool than true pool (see Pool sizes in [QUESTION_PEDAGOGY_GUIDE.md](../../docs/QUESTION_PEDAGOGY_GUIDE.md)).
 4. For key concepts that have multiple equivalent phrasings, make 2 to 4 variants (see the ID naming rule below).
 5. Test-generate a small sample:
 
@@ -123,6 +123,13 @@ These are the same concept with different phrasing, so they share the `3` and wi
 
 ## Replacement Rules (Formatting, Color, Consistency)
 
+For presentation choices, use [QUESTION_COLOR_GUIDE.md](../../docs/QUESTION_COLOR_GUIDE.md).
+When quieting or replacing a color rule, preserve its original definition as a YAML comment.
+Keep active substitutions for aliases, notation, capitalization, and meaningful markup.
+Use `replacement_rules: {}` when the mapping contains only comments. Existing helpers add bold
+around replacements; for mixed neutral and colored text, separate explicit `strong` segments
+keep the colored spans compatible with the PGML exporter.
+
 `replacement_rules` is a simple "search and replace" table applied to question text and choices.
 It is commonly used for:
 
@@ -137,7 +144,7 @@ Tip: `problems/multiple_choice_statements/recommended_colors.csv` contains a sug
 - Enforcement rule: if you can underline two separate facts, split the statement.
 - Biology-first wording: concrete verbs (binds, phosphorylates, opens, inhibits).
 - Avoid double negatives.
-- Statement form and length: see Statement bank form and Parallel form in [QUESTION_VOICE_GUIDE.md](../../QUESTION_VOICE_GUIDE.md).
+- Statement form and length: see Statement bank form and Parallel form in [QUESTION_VOICE_GUIDE.md](../../docs/QUESTION_VOICE_GUIDE.md).
 
 ## What Makes A Good False Statement (biology patterns)
 
@@ -149,17 +156,17 @@ Aim for "plausible but wrong" in a way that diagnoses a misconception. Good patt
 - Swapped cofactors or ions (Mg2+ vs Ca2+).
 - Wrong sign/relationship for thermodynamics (use `&Delta;G` / equilibrium logic).
 
-Practical trick: write the true statement first, then create the false statement by changing exactly one detail. For swap construction, out-of-scope facts, and absurd variants, see One-term swaps, Out-of-scope facts and bracketed numbers, and Seriously absurd choices in [QUESTION_PEDAGOGY_GUIDE.md](../../QUESTION_PEDAGOGY_GUIDE.md).
+Practical trick: write the true statement first, then create the false statement by changing exactly one detail. For swap construction, out-of-scope facts, and absurd variants, see One-term swaps, Out-of-scope facts and bracketed numbers, and Seriously absurd choices in [QUESTION_PEDAGOGY_GUIDE.md](../../docs/QUESTION_PEDAGOGY_GUIDE.md).
 
 ## How To Avoid Accidental Cues
 
-See Balanced hedges and absolutes in [QUESTION_PEDAGOGY_GUIDE.md](../../QUESTION_PEDAGOGY_GUIDE.md) and Parallel form in [QUESTION_VOICE_GUIDE.md](../../QUESTION_VOICE_GUIDE.md). Review rubric items S1 to S4 and M4 in the pedagogy guide list the checks.
+See Balanced hedges and absolutes in [QUESTION_PEDAGOGY_GUIDE.md](../../docs/QUESTION_PEDAGOGY_GUIDE.md) and Parallel form in [QUESTION_VOICE_GUIDE.md](../../docs/QUESTION_VOICE_GUIDE.md). Review rubric items S1 to S4 and M4 in the pedagogy guide list the checks.
 
 ## Difficulty Control (quick slider)
 
 - Easier:
   - Use direct definitions.
-  - For how false statements are built at every level, see One-term swaps and Difficulty from data in [QUESTION_PEDAGOGY_GUIDE.md](../../QUESTION_PEDAGOGY_GUIDE.md).
+  - For how false statements are built at every level, see One-term swaps and Difficulty from data in [QUESTION_PEDAGOGY_GUIDE.md](../../docs/QUESTION_PEDAGOGY_GUIDE.md).
 - Harder:
   - Make false statements "plausible but wrong" (common misconceptions).
   - Use more similar terms (then rely on the conflict grouping rule to avoid near-duplicates in the same question).
@@ -220,4 +227,4 @@ Before using a bank in an assessment, do a quick pass for:
 - Duplicate statement text: the generator fails if the exact same sentence appears twice (even across true/false).
 - Replacement rule overlap: prefer specific, non-overlapping phrases to avoid nested spans or partial matches (for example avoid having `cells`, `Cells`, and `' cell'` all at once unless you really need it).
 - One-pass grammar scan: fix obvious typos and subject/verb agreement; it improves student trust even when the biology is correct.
-- Rubric pass: apply items S1 to S4 and M4 from [QUESTION_PEDAGOGY_GUIDE.md](../../QUESTION_PEDAGOGY_GUIDE.md), then run `devel/check_question_text.py` on the BBQ output (advisory).
+- Rubric pass: apply items S1 to S4 and M4 from [QUESTION_PEDAGOGY_GUIDE.md](../../docs/QUESTION_PEDAGOGY_GUIDE.md), then run [check_question_text.py](../../devel/check_question_text.py) on the BBQ output (advisory).

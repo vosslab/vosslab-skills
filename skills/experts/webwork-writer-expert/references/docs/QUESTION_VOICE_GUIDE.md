@@ -1,6 +1,6 @@
 # Question voice guide
 
-Canonical source for the wording and formatting of student-facing question text in this
+Canonical source for the wording of student-facing question text in this
 repository. Design and review rules live in [QUESTION_PEDAGOGY_GUIDE.md](QUESTION_PEDAGOGY_GUIDE.md);
 worked examples live in [QUESTION_EXEMPLARS.md](QUESTION_EXEMPLARS.md); evidence lives in
 [QUESTION_EVIDENCE.md](QUESTION_EVIDENCE.md). Each rule lives in one of these files; the others
@@ -76,8 +76,6 @@ Emphasize only the word that changes the answer or tells two sibling questions a
 - Capitals for truth targets and other discriminators: LEAST, TRUE, FALSE, DIFFERENT.
 - Underline (or bold) for sibling discriminators: woman/man, sons/daughters, linear DNA
   section/circular DNA plasmid.
-- A fixed color only for a contrasted pair that recurs (female and male; mitosis and meiosis),
-  always with a text label so the meaning survives without color.
 
 Write the question sentence in plain text; Neil's printed exams set every question in bold as a
 page style, and generators leave that to the exam formatter.
@@ -182,8 +180,6 @@ binomial name plus common name throughout).
 - Keep statements short (about 7 to 12 words).
 - Write the `topic` string to read naturally after "Which one of the following statements is
   TRUE regarding ...": "PCR primers that are efficient and avoid mispriming".
-- Use `replacement_rules` color on the contrasted term (mitosis vs meiosis, increases vs
-  decreases, REJECTED vs NOT REJECTED).
 - Write custom stems with `override_question_*` for classification banks: "Which one of the
   following English words is <strong>NOT</strong> a palindrome?"
 
@@ -205,13 +201,16 @@ binomial name plus common name throughout).
 
 (Blackboard BBQ output; PGML follows the webwork skill's whitelist.)
 
+Blackboard markup and element-local CSS rules: [BB_ULTRA_STYLE.md](BB_ULTRA_STYLE.md).
+Color presentation: [QUESTION_COLOR_GUIDE.md](QUESTION_COLOR_GUIDE.md).
+
 - Use a small set of elements: `p`, `br`, `strong`, `u`, `sub`, `sup`, `table`, and `span` for
-  color or monospace. Blackboard may rewrite complex markup; tables are fine because they are
-  converted to images before import (`docs/HUMAN_GUIDANCE.md`).
-- Keep tables minimal: a header row and thin borders. Add row fills or captions only when the
-  color is data.
-- Use color only when it carries meaning (a parental chromosome, a contrasted term, a gel band),
-  and pair it with a text label.
+  monospace and other inline formatting. Blackboard may rewrite complex markup; tables are fine
+  because they are converted to images before import (`docs/HUMAN_GUIDANCE.md`).
+- Match formatting to the table's purpose. For ordinary data lists, use clear headers, thin
+  borders, and compact spacing; prefer subtle alternating row shading when it helps students
+  follow longer rows or lists. Very small tables can stay plain. Preserve the specialized geometry
+  of matrices and scientific diagrams. Add captions when identification helps.
 
 ## Mechanics
 

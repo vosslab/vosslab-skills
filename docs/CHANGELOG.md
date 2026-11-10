@@ -1,3 +1,17 @@
+## 2026-11-09
+
+### Fixes and Maintenance
+
+- Refresh the question color guide with concept-recognition examples and practical palette
+  guidance; keep YAML implementation notes in the specialized bank authoring snapshots.
+
+## 2026-11-08
+
+### Fixes and Maintenance
+
+- Refresh question voice and authoring snapshots from biology-problems; include the dedicated
+  question color guide and its direct palette, contrast, and style references.
+
 ## 2026-10-22
 
 ### Additions and New Features

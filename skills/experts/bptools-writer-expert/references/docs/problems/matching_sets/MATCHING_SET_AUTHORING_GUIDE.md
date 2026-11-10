@@ -8,7 +8,7 @@ This folder contains YAML "matching set" banks and small helper scripts that tur
    - Suggested naming convention: use a clear topic prefix so sets map to chapters, like `enzymes_*`, `macromolecules_*`, `membranes_*`, `genetics_*`, `cell_biology_*`, `metabolism_*`.
 2. Edit the four description lines: `key description`, `keys description`, `value description`, `values description`.
 3. Add 8 to 20 keys under `matching pairs:` (your left column concepts).
-4. For each key, add phrasing variants only where real alternative phrasings exist (see Values without cues in [QUESTION_PEDAGOGY_GUIDE.md](../../QUESTION_PEDAGOGY_GUIDE.md)).
+4. For each key, add phrasing variants only where real alternative phrasings exist (see Values without cues in [QUESTION_PEDAGOGY_GUIDE.md](../../docs/QUESTION_PEDAGOGY_GUIDE.md)).
 5. Test-generate a small sample (see `Quick Test Commands` below).
 
 ## File Naming Convention (descriptive, jargon-free)
@@ -35,7 +35,7 @@ Good fits for matching sets:
 - Vocabulary: term -> definition
 - Parts to function: pathway component -> role (enzyme/channel/protein -> function)
 - Category mapping: receptor type -> modality, macromolecule -> monomer/bond type
-- Applied pairings that need reasoning: see Applied pairings in [QUESTION_PEDAGOGY_GUIDE.md](../../QUESTION_PEDAGOGY_GUIDE.md)
+- Applied pairings that need reasoning: see Applied pairings in [QUESTION_PEDAGOGY_GUIDE.md](../../docs/QUESTION_PEDAGOGY_GUIDE.md)
 
 If your goal is to test conceptual claims, misconception discrimination, or "which statement is TRUE/FALSE?" logic, consider the MC-statements format instead: `problems/multiple_choice_statements/MC_STATEMENTS_AUTHORING_GUIDE.md`.
 
@@ -146,7 +146,24 @@ Biology examples:
 
 ## Replacement Rules (Formatting, Color, Consistency)
 
+For presentation choices, use [QUESTION_COLOR_GUIDE.md](../../docs/QUESTION_COLOR_GUIDE.md).
+When quieting or replacing a color rule, preserve its original definition as a YAML comment.
+Keep active substitutions for aliases, notation, capitalization, and meaningful markup.
+Use `replacement_rules: {}` when the mapping contains only comments. Existing helpers add bold
+around replacements; for mixed neutral and colored text, separate explicit `strong` segments
+keep the colored spans compatible with the PGML exporter.
+
 `replacement_rules` is a simple "search and replace" table applied after question text and choice lists are constructed.
+Matches use the original text in one pass, with the longest key winning at each position.
+Replacement output is final: it is not searched again, so singular and plural color rules can
+coexist without nested tags. Rules that repair markup from another replacement must instead
+match the original word directly. See [USAGE.md](../../docs/USAGE.md#text-replacement-rules).
+
+Keep palette placeholders such as `EEEEEEEE` for future color additions. Short aliases such
+as `stattest` are also intentional authoring conveniences; retain them and supply their final
+display text directly. Prefer complete singular/plural keys over suffix tokens. Keep a space
+or punctuation guard when a short key would otherwise match inside an unrelated word.
+
 It is commonly used for:
 
 - Highlighting phrases with HTML `<span style="color: ...">...`
@@ -165,7 +182,7 @@ Tip: `problems/matching_sets/recommended_colors.csv` contains a suggested palett
 
 - Keys: stable concepts (enzyme class, receptor type, molecule, organelle, process).
 - Values: one function or definition (one main idea), written so there is only one reasonable matching key.
-- Value form and cues: see Values without cues in [QUESTION_PEDAGOGY_GUIDE.md](../../QUESTION_PEDAGOGY_GUIDE.md) and Matching in [QUESTION_VOICE_GUIDE.md](../../QUESTION_VOICE_GUIDE.md).
+- Value form and cues: see Values without cues in [QUESTION_PEDAGOGY_GUIDE.md](../../docs/QUESTION_PEDAGOGY_GUIDE.md) and Matching in [QUESTION_VOICE_GUIDE.md](../../docs/QUESTION_VOICE_GUIDE.md).
 
 ## Authoring Tips
 
@@ -194,7 +211,7 @@ Three quick checks that prevent "test-taking" answers:
 
 - Keep value length similar across keys (do not let one answer be twice as long).
 - Keep grammar parallel (all noun phrases, or all full sentences).
-- Keep key words, category words, and giveaway dates out of values: see Values without cues in [QUESTION_PEDAGOGY_GUIDE.md](../../QUESTION_PEDAGOGY_GUIDE.md).
+- Keep key words, category words, and giveaway dates out of values: see Values without cues in [QUESTION_PEDAGOGY_GUIDE.md](../../docs/QUESTION_PEDAGOGY_GUIDE.md).
 
 ### Normalize Formatting So Values Do Not "Telegraph" The Match
 
@@ -209,7 +226,7 @@ Quick check:
 ## Difficulty Control (quick slider)
 
 - Easier:
-  - Use direct definitions (still without key words; see Values without cues in [QUESTION_PEDAGOGY_GUIDE.md](../../QUESTION_PEDAGOGY_GUIDE.md)).
+  - Use direct definitions (still without key words; see Values without cues in [QUESTION_PEDAGOGY_GUIDE.md](../../docs/QUESTION_PEDAGOGY_GUIDE.md)).
   - Use fewer items per question (`items to match per question: 3` or `4`).
 - Harder:
   - Use mechanism/consequence phrasing instead of definitions.
@@ -224,7 +241,7 @@ Before you ship a new matching set, do a quick pass for:
 - Parallel grammar: keep values in similar grammatical form (all noun phrases, or all full sentences) to reduce "test-taking cues".
 - Appropriate specificity: if one value is much more detailed than the others, students can use length as a hint.
 - Accessibility: avoid relying on color alone to convey meaning; use color as an accent, not the only signal.
-- Rubric pass: apply items T1 to T3 from [QUESTION_PEDAGOGY_GUIDE.md](../../QUESTION_PEDAGOGY_GUIDE.md), then run `devel/check_question_text.py` on the BBQ output (advisory).
+- Rubric pass: apply items T1 to T3 from [QUESTION_PEDAGOGY_GUIDE.md](../../docs/QUESTION_PEDAGOGY_GUIDE.md), then run [check_question_text.py](../../devel/check_question_text.py) on the BBQ output (advisory).
 
 ## Copy/Paste Example (biology)
 
