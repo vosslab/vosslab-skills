@@ -2,6 +2,14 @@
 
 Use these patterns to diagnose reader problems after the clarity pass. Keep facts and the author's voice intact; the examples show editing moves, not permission to invent details.
 
+## Match a voice sample
+
+Read the author's sample before editing. Notice sentence length and rhythm, level of formality,
+paragraph openings, punctuation, recurring phrases, and transitions. Match those habits where they
+fit the new piece. If the author writes short sentences or says "stuff," keep that register rather
+than replacing it with longer sentences or more formal words. Without a sample, write for the
+reader and genre; use the examples below to restore natural rhythm without inventing personality.
+
 ## Personality and voice
 
 Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as obvious as slop. Good writing has a human behind it.

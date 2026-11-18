@@ -2,8 +2,9 @@
 
 ### Fixes and Maintenance
 
-- Merged Hermes' local humanizer guidance into `documentation/humanizer`. The shared skill now
-  includes the clarity-first review, its source notes, and the `5pm` format for everyday email.
+- Merged Hermes' local humanizer guidance into `documentation/humanizer`. The short entrypoint
+  keeps the clarity-first review and the `5pm` email format. It links to separate references for
+  voice matching, writing patterns, source notes, and a worked rewrite.
 
 ## 2026-11-17
 
