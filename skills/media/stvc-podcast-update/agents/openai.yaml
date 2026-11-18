@@ -1,0 +1,4 @@
+interface:
+  display_name: "StVC Podcast Update"
+  short_description: "Update StVC episode metadata, artwork, and wiki records"
+  default_prompt: "Use $stvc-podcast-update to carry out the requested episode update, publish only authorized changes, and verify the live result."
