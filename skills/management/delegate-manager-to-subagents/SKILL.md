@@ -7,8 +7,12 @@ description: "Manage execution of an approved plan through subagents. Use when t
 
 ## Plan leads
 
-The approved plan defines task text, scope, dependencies, ownership, verification, and acceptance.
-Preserve those decisions. Use this skill for delegation choices the plan leaves open.
+Read the approved plan at its saved handoff path. When locating it in the target repository, use
+`docs/active_plans/active/` or the location specified by repository rules.
+
+Use the approved outcomes, scope, file boundaries, and decisions as authority. Derive bounded
+assignments and fill in ownership, dependencies, and proportionate checks where the plan leaves
+them open. Record those execution details in the briefs and ledger.
 
 For code investigation and dependency-aware dispatch, read
 [GRAPHIFY_GUIDE.md](references/GRAPHIFY_GUIDE.md) when a Graphify map or repo wrapper is available.
@@ -43,7 +47,7 @@ provides relevant verification evidence.
 
 ## Dispatch brief
 
-Supply the complete approved task text once in this seven-part brief:
+Supply the complete bounded assignment and its governing requirements once in this seven-part brief:
 
 1. Assignment and outcome
 2. Ownership and boundaries
@@ -60,7 +64,8 @@ Use [example-briefs.md](references/example-briefs.md) for the exact template. Re
 
 - Require exact commands and decisive output, or the exit status for a silent command; map deliverables
   to requirements; scope failures, warnings, skipped checks, and remaining limitations.
-- Use the plan's verification contract and choose appropriate checks for the repository and task.
+- Honor verification specified in the plan. Choose proportionate repository checks where the plan
+  leaves them open.
 - Route fresh specification review first. After it accepts the work, route a different fresh quality
   reviewer. Give fixes and every re-review fresh agents.
 - Let reviewers use a change-focused or codebase-wide scope as needed. Findings identify supporting

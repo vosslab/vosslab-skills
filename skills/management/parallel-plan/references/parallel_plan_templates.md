@@ -18,11 +18,12 @@ for any capability escalation.
 
 ## Seven-part dispatch brief
 
-Give the agent the complete assigned task text; do not make it reconstruct the plan.
+Derive the assignment from the governing outcome. Give the agent the complete task text and
+the requirements it needs to follow.
 
 ```text
 Assignment and outcome:
-- Task ID and approved plan reference:
+- Task ID, saved plan path, and governing milestone or outcome:
 - Complete assigned task text:
 - Deliverable, acceptance criteria, and non-goals:
 
@@ -108,8 +109,8 @@ answer alone does not close the record.
 
 ## Plan ledger
 
-Keep a plain file-backed ledger, not a database. Its context identifies the approved plan by name or
-path and records enough coordination evidence to recover the work without repeating plan text.
+Keep a plain file-backed ledger, not a database. Reference the saved approved plan and record
+enough coordination evidence to recover the work without repeating plan text.
 
 | Task | Owner | Status | Dependencies | Questions and decisions | Reviews | Checks and evidence | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- |

@@ -4,42 +4,42 @@
 
 Language Model guide to Neil TypeScript programming
 
-## Dependency versions and pins
+## Dependency maintenance
 
-These repos are applications, not published TypeScript libraries (`private: true`, no
-downstream consumers), so dependency floors are set as high as practical and refreshed
-toward newest, not kept low and wide. State the policy, not a frozen version, so this doc
-never goes stale against a sync run.
+These repositories are applications, so requirements follow current releases. Use open-ended
+`>=` minimums without upper bounds and repair incompatibilities against current releases.
+`package-lock.json` records the tested resolution; it is committed per repository and refreshed
+forward, never propagated.
 
-- Policy: give every dependency an open-ended minimum of `>={latest}`, with floors raised as high as practical at each
-  template refresh. The policy is the rule; do not hardcode a major version here.
-- Rationale: an application carries no compatibility burden for nonexistent library users.
-  High floors only buy newer bug fixes and diagnostics (better AI-assisted coding) at zero
-  cost. A published library does the opposite and keeps floors low and wide.
-- Requirement shape: use `>=` without upper bounds. Follow the latest-version policy in
-  `docs/REPO_STYLE.md`; repair incompatibilities against current releases.
-- Refresh command: `devel/sync_typescript_package_pins.py` rewrites every minimum to `>={latest}`
-  from the npm registry. It is a refresh HELPER, not a dependency solver: it writes `>=`
-  uniformly and never emits `<` caps, compound ranges, non-`latest` dist-tags, or
-  `workspace:*`, and it leaves private/E404 and consumer-extra packages untouched.
-- `allowScripts` keys are version-pinned (`name@version`): after a sync that bumps esbuild or
-  fsevents, re-apply the matching `allowScripts` entry by hand in `noexist/package.json`, an
-  execution permission for that resolved package, not a dependency version constraint. Without it, esbuild's postinstall binary gate
-  returns and fresh `npm install` runs will miss the platform binary.
-- Lockfile: the committed `package-lock.json` is a snapshot regenerated forward on each
-  refresh, so installs move to the newest resolved set. It records the current resolution and
-  keeps moving forward; it is not a safety pin and does not justify the high floors. High
-  floors stand on the apps-not-libraries rationale alone. The `>=` shape also avoids the npm
-  `^0.x` caret quirk that would lock `^0.25` below the current `0.28` line.
-- Post-refresh validation: after a real floor bump, run `npm install` (regenerate the
-  lockfile), then `npm audit`, then `./check_codebase.sh`, so the newest combination is
-  validated by the repo's own typecheck, lint, format, and test gates before it is trusted.
+Run `./update_dependencies.sh` for maintenance. It selects the manifest, refreshes direct
+requirements and registry overrides, installs, audits, checks the codebase, builds, and proves
+the resulting lockfile with a clean install. It reports each stage so an agent can repair a
+failure and rerun it. It deliberately retains changed manifests and locks after failure.
+
+`devel/sync_typescript_package_pins.py` is the updater used by that command. It previews by
+default; use `--apply` to write, `--package-json PATH` for an explicit manifest, or
+`--select-only` when a caller only needs its selected manifest. It searches only git-tracked
+manifests in the current repository. A single eligible manifest is automatic; several require
+an interactive choice or an explicit path in noninteractive use.
+
+The updater refreshes registry dependencies and recursive override values to `>=latest`.
+It preserves npm aliases while looking up their real target, and preserves `file:`, `git:`,
+`workspace:`, and `$dependency` specifications. Override selector keys are dependency-tree
+selectors, not version requirements. A direct override must exactly match the matching direct
+requirement or use its `$dependency` reference. The updater reports registry failures instead
+of silently leaving an unknown requirement behind.
+
+Use offline pytest only for stable manifest conventions. Freshness, complete-tree resolution,
+`npm audit`, and build compatibility are live maintenance checks. `allowScripts` identities are
+install permissions, not dependency requirements. Do not add an override automatically or keep
+a routine security override in a separate ledger. Test removal in a fresh disposable resolution;
+document only a compatibility override that needs an ongoing explanation.
 
 Required strict flags stay fixed regardless of version: `strict: true`, `noImplicitAny: true`,
 `noUncheckedIndexedAccess: true`, `noImplicitOverride: true`, `verbatimModuleSyntax: true`,
 `useUnknownInCatchVariables: true`, `target: es2020`, `module: esnext`,
-`moduleResolution: bundler`. Point at the canonical `tsconfig.json` at repo root, which arrives
-by propagation and should not be edited locally.
+`moduleResolution: bundler`. The root `tsconfig.json` is seeded once and remains consumer-owned;
+retain these strict defaults when adapting its source paths to the project.
 
 ## FILENAMES
 * Prefer snake_case for TypeScript filenames.
@@ -224,7 +224,7 @@ import { writeReport } from "./write_report";
 * For real projects, use a normal test framework and keep tests in a `tests/` folder.
 * Keep tests small and deterministic.
 * Avoid network calls, random behavior, and time-based logic unless mocked.
-* Browser tests live under `tests/playwright/` (see the `PLAYWRIGHT_USAGE.md` doc where it ships). Pure Node unit tests via `node --test tests/test_*.mjs`. TS hygiene tests under `tests/test_typescript_*.py` enforce tsc, package.json schema, tsconfig canonical fields, and ESLint flat-config presence. ESLint correctness is gated by `check_codebase.sh` step 3 directly; no separate pytest wrapper.
+* Browser tests live under `tests/playwright/` (see the `PLAYWRIGHT_USAGE.md` doc where it ships). Pure Node unit tests use `node --test tests/test_*.mjs`. Template pytest checks stable TypeScript manifest and configuration conventions; typed Oxlint correctness is gated by `check_codebase.sh`, not a pytest wrapper.
 * Node unit tests are `.mjs` and run via `node --test tests/test_*.mjs` (canonical). A `.ts`
   test with the tsx loader (`node --import tsx --test`) is an accepted variant when the test
   itself needs TypeScript (`sports-life-game`).
@@ -236,51 +236,19 @@ import { writeReport } from "./write_report";
 
 Use inline setup first. For fixture cases, see `PYTEST_AUTHORING_GUIDE.md`.
 
-## FORMATTERS AND LINTERS
+## Formatters and linters
 
 * Use Prettier for formatting. Let Prettier own whitespace, semicolons, and line breaks.
-* Use ESLint for catching real bugs: unused variables, implicit `any`, unreachable code.
-* Do not fight Prettier on style choices. If Prettier formats it, that is the style.
-* ESLint rules should catch problems, not enforce cosmetic preferences that Prettier already handles.
-* Strict typing is preferred. Enable `noImplicitAny` and `strict` in `tsconfig.json`.
-* ESLint config lives at `eslint.config.js` at the repo root (canonical, propagated). Lint correctness is enforced by `check_codebase.sh` step 3 (`npx eslint --max-warnings 0 '**/*.{ts,tsx,mts,cts,js,mjs,cjs}'`).
-* Do not edit `eslint.config.js` directly; propagation overwrites it every run. Repo-specific ESLint overrides go in `eslint.config.local.js` at the repo root: a consumer-owned file shipped once (never overwritten). The canonical config imports and spreads it last, so local entries refine or override canonical rules.
-* Browser globals are supplied to `tests/playwright/**` and `tests/e2e/**` (page.evaluate callbacks reference `window`, `document`, etc.); node-only tools keep `no-undef` so real bugs still surface. Give a repo-specific browser-context tool file its globals via `eslint.config.local.js`, not by widening the canonical glob.
-* `OTHER_REPOS/**` is in the ESLint `ignores`, matching the repo-wide gitignore for the sibling-repo checkout dir.
-* `_temp*` scratch names and `dist_*/` private lane-build directories are excluded by ESLint, Playwright, Prettier, and repo hygiene discovery. Each collector owns its exclusion; gitignore alone does not prevent directory-globbing tools from collecting an untracked scratch file.
+* Use TypeScript 7 for type checking and typed Oxlint for code-quality diagnostics. This removes the TypeScript 6 compiler API dependency that held back the former ESLint stack.
+* Keep rules focused on correctness: unsafe `any`, unused values, unhandled promises, accidental coercion, mutable values, loose equality, and non-Error throws. Prettier owns cosmetic choices.
+* `oxlint.base.json` is propagated by the template. `.oxlintrc.json` is seeded once, extends that base, and remains consumer-owned, so a repository can add globals or narrow a rule without changing the shared default.
+* Browser contexts belong in the local Oxlint configuration. Generated output, `OTHER_REPOS`, scratch areas, and private build directories are excluded by the tool configuration that collects them.
+* Strict typing remains required: enable `noImplicitAny` and `strict` in `tsconfig.json`.
 * Prettier scope in this repo is JS, TypeScript, MJS, CJS, TSX, MTS, CTS only. JSON, YAML, Markdown, and Python files are explicitly NOT prettier-managed.
 * Indent is two spaces for every prettier-managed extension (prettier default; documented in propagated `.prettierrc`). This differs from the Python tabs rule in `docs/PYTHON_STYLE.md`; agents editing `.py` use tabs, agents editing `.ts`/`.mjs`/etc use two spaces. Do not over-generalize one language's rule to the other.
-* Auto-fix path when `./check_codebase.sh` step 4 (`format:check`) fails: run `npm run format:write`.
+* Auto-fix formatting with `npm run format:write`.
 * `.prettierignore` ships from the template and covers shared exclusions. Put repository-owned exclusions in `.prettierignore.local`, a consumer-owned file shipped once and never overwritten.
 * Every Prettier check and write command passes `.gitignore`, `.prettierignore`, and `.prettierignore.local` explicitly with repeated `--ignore-path` flags because naming an ignore path replaces Prettier's default ignore inputs.
-
-### ESLint canonical rules
-
-Each enabled rule enforces a single class of error:
-
-- `@typescript-eslint/no-explicit-any: error` &mdash; `any` defeats type system.
-- `@typescript-eslint/no-unused-vars: error` &mdash; dead code rots. Underscore-prefixed identifiers (`_`, `_unused`) are ignored for args, vars, and caught errors: a deliberate, visible opt-out marker, not a silent default.
-- `@typescript-eslint/explicit-function-return-type: error` &mdash; exported function signatures are API. Severity matches `check_codebase.sh` step 3 `--max-warnings 0` (the prior `warn` setting was dead documentation since `--max-warnings 0` upgraded every warn to a gate failure anyway).
-- `@typescript-eslint/no-floating-promises: error` &mdash; silent async errors.
-- `no-var: error` &mdash; function-scoping breaks expectations.
-- `prefer-const: error` &mdash; mutability should be deliberate.
-- `no-implicit-coercion: warn` &mdash; silent type coercion hides bugs.
-- `eqeqeq: error` &mdash; `==` coerces; use `===`.
-- `no-throw-literal: error` &mdash; stack traces require Error instances.
-- `no-console: warn` &mdash; production code should not log to console (user decision: warn only, do not fail builds).
-
-### Test-file rule relaxation
-
-`tests/**/*.{ts,mts}` gets a dedicated ESLint block that turns off two rules:
-
-- `@typescript-eslint/no-floating-promises: off` &mdash; `node:test`'s `test()`, `describe()`,
-  and `it()` return promises the runner awaits internally, so an unawaited call is intended
-  usage, not a floating-promise bug.
-- `no-console: off` &mdash; tests log progress freely.
-
-`src/` and `tools/` keep both rules at their strict setting above. The canonical `.mjs` test
-path already skips typed rules via `tseslint.configs.disableTypeChecked`; this block gives the
-`.ts` test variant the same treatment.
 
 ### tsconfig.json canonical fields
 
@@ -315,14 +283,14 @@ shared default. Some consumer repos enable it and others do not. The flag makes
 expose third-party `@types/*` mismatches even when `skipLibCheck: true` is set.
 Read the target repo's `tsconfig.json` before assuming the flag is present.
 
-A wider type-check pass covers `tests/` and `tools/` via `tsconfig.lint.json` (`extends: "./tsconfig.json"`, `include: ["tests/**/*.ts", "tools/**/*.ts"]`); `check_codebase.sh` step 2 always runs it.
-
-Heads-up: `tsc -p tsconfig.lint.json` exits 2 with `TS18003` ("No inputs were found in config file") when its `include` list matches no files. A consumer with no `tests/*.ts` and no `tools/*.ts` will hit this on `check_codebase.sh` step 2. Workarounds: (1) seed a stub `.ts` in either tree, or (2) edit the consumer-owned `tsconfig.lint.json` and narrow `include` to a tree that exists.
+A wider type-check pass covers TypeScript extensions under `tests/` and `tools/` through
+consumer-owned `tsconfig.lint.json`. The shared check runs it when those trees contain
+TypeScript files; empty trees need no stub file. Keep custom include paths accurate.
 
 ## BUILD SYSTEM
 
-Use `npx tsc --noEmit -p tsconfig.json` to type-check. Repositories declaring
-`REPO_TYPE=githubpages` use `npx esbuild <entry>.ts --bundle --format=esm
+Use `./node_modules/.bin/tsc --noEmit -p tsconfig.json` to type-check. Repositories declaring
+`REPO_TYPE=githubpages` use `./node_modules/.bin/esbuild <entry>.ts --bundle --format=esm
 --target=es2020 --platform=browser --minify --sourcemap
 --outfile=dist/main.js` for the runtime bundle. Generic TypeScript repositories
 own the build command appropriate to their application.
@@ -337,8 +305,8 @@ Single `dist/main.js` + `dist/index.html` + `dist/.nojekyll`. GitHub Pages serve
 
 ### esbuild CLI vs JS-API
 
-The default canonical bundler path is the esbuild CLI, invoked inline from
-`build_github_pages.sh` (the `npx esbuild ...` command above). Use the CLI unless a build
+The default canonical bundler path is the installed esbuild CLI, invoked inline from
+`build_github_pages.sh` (the `esbuild ...` command above). Use the CLI unless a build
 plugin forces the JS-API.
 
 The esbuild JS-API path -- a `pipeline/build.mjs` script that imports esbuild and calls
@@ -365,15 +333,16 @@ Document a build variant only where a real design need drives it, not by head co
 The shared TypeScript front doors are:
 
 - `./check_codebase.sh` (run the fast typecheck, lint, format, and unit-test gate).
-- `./devel/clean_build.sh` (wipe `dist/`).
+- `./update_dependencies.sh` (refresh current dependencies, audit, validate, build, and prove the lockfile).
+- `./devel/clean_build.sh` (remove build/test output and caches; retain dependencies).
 
 The `githubpages` child type adds `./build_github_pages.sh`,
 `./run_web_server.sh`, and `./run_playwright_tests.sh`. Generic TypeScript
 repositories do not receive those build-specific scripts and run browser tests
 with `npm run test:playwright` when applicable.
 
-Each script invokes its tools directly (`npx tsc`, `npx eslint`, `npx prettier`,
-`node --test`). The `package.json` `scripts` block is a thin pass-through: the
+Each script invokes locally installed tools directly (`tsc`, typed `oxlint`, `prettier`,
+and `node --test`). The `package.json` `scripts` block is a thin pass-through: the
 front-door aliases call the same shell scripts 1:1. The script name is the
 interface; the npm alias is an optional mirror for coders with npm muscle memory.
 
@@ -400,6 +369,14 @@ front-door script) are a legacy/divergent shape seen in older repos (`sports-lif
 `hantavirus-outbreak-game`): migrate them toward the named front-door scripts rather than
 treating the per-tool list as canonical.
 
+`update_dependencies.sh [--package-json PATH]` is the complete live dependency-maintenance command. It runs
+`sync_typescript_package_pins.py`, installs with strict peers, executes the offline package
+policy, checks the resolved tree and security audit, invokes this check gate once, builds when
+the project declares a build, and proves the lock with `npm ci --no-audit`. Use
+`--package-json PATH` when a repository has several eligible manifests. Its failure summary tells
+the agent whether it needs a forward compatibility repair, a vulnerability fix, or a later retry
+of an unavailable audit service.
+
 Alias rules:
 
 - Shell scripts are the canonical project interface; this is the cross-language
@@ -420,19 +397,20 @@ Alias rules:
 
 | Shell script | npm alias | Job |
 | --- | --- | --- |
-| `./check_codebase.sh` | `npm run check` | Typecheck, lint, format-check, Node unit tests |
-| `./devel/clean_build.sh` | `npm run clean` | Remove `dist/` |
+| `./check_codebase.sh` | `npm run check` | Typecheck, typed lint, format-check, Node unit tests |
+| `./update_dependencies.sh` | None | Refresh, audit, validate, build, clean-install proof |
+| `./devel/clean_build.sh` | `npm run clean` | Remove build/test output and caches; retain dependencies |
 
 `npm run test:playwright` invokes Playwright directly. A `githubpages`
 repository can instead call its build-aware runner directly.
 
 The remaining `package.json` aliases have no shell-script front door. Run their
 direct command instead of the alias when you are not in an npm workflow. Use the
-locally-installed form (`npx ...`) so the command works without a global install:
+locally installed form (`./node_modules/.bin/...`) so the command works without a global install:
 
 | npm alias | Direct command |
 | --- | --- |
-| `npm run format:write` | `npx prettier --write --ignore-path .gitignore --ignore-path .prettierignore --ignore-path .prettierignore.local '**/*.{ts,tsx,mts,cts,js,mjs,cjs}'` |
+| `npm run format:write` | `./node_modules/.bin/prettier --write --ignore-path .gitignore --ignore-path .prettierignore --ignore-path .prettierignore.local '**/*.{ts,tsx,mts,cts,js,mjs,cjs}'` |
 | `npm run setup` | `./devel/setup_typescript.sh` |
 | `npm run setup:playwright` | `./devel/setup_playwright.sh` |
 
@@ -476,7 +454,7 @@ ESM only. No IIFE. No file:// loading path.
 
 `package-lock.json` committed in every TS consumer repo. Not propagated (per-repo artifact, generated by `npm install` at bootstrap). `yarn.lock` and `pnpm-lock.yaml` not used.
 
-## Live demo / GitHub Pages
+## Live GitHub Pages link
 
 When a repo deploys to GitHub Pages, link the live instance near the top of the README so
 readers can play or run the project in one click, right from the browser without cloning or
@@ -484,16 +462,9 @@ building it locally. Treat this as a chosen convention: it began as
 `science-choose-adventure`'s single "Play it live:" line and is promoted here to a standard
 that any Pages-deploying repo opts into.
 
-### Pages deployment shape
-
-These repos deploy through GitHub Actions from the build output:
-
-- `build_github_pages.sh` emits the site into `dist/`, including `dist/.nojekyll`, and `dist/`
-  is the published site root.
-- A root-level `deploy-pages.yml` workflow seed ships alongside the repo files. A human moves
-  it into the workflows directory to activate it. Root placement is the convention: agents
-  edit only repo-root files, so the seed ships cleanly at the root and a human completes the
-  move into the workflows directory.
+The `githubpages` template owns deployment policy, workflow activation, and the published
+artifact in `docs/GITHUB_PAGES_STYLE.md`. That document is propagated only to Pages projects;
+do not copy deployment instructions into generic TypeScript repositories.
 
 ### Live URL in the README
 

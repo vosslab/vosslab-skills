@@ -1,6 +1,7 @@
 # Role guidance
 
-Use the roles and ownership defined by the approved plan. Select the smallest role that completes the task.
+Preserve roles and ownership set by the approved plan. Assign the remaining roles and ownership at
+dispatch, choosing the smallest role that completes the task.
 Each closed assignment receives a fresh agent; live questions and answers may continue within its active
 assignment.
 

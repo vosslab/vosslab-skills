@@ -1,14 +1,14 @@
 # Brief examples
 
-Use this complete template for each bounded assignment. Supply the task text directly so the agent does not
-need to reconstruct the approved plan.
+Use this template for each bounded assignment. Derive the assignment from the approved outcome
+and give the agent its complete task text and applicable plan requirements.
 
 ## Seven-part dispatch brief
 
 ```text
 Assignment and outcome:
-- Plan: [path and task identifier]
-- Complete assigned task text: [verbatim plan task]
+- Plan: [saved path and governing milestone or outcome]
+- Complete assigned task text: [bounded assignment derived from the approved plan]
 - Deliverable, acceptance criteria, and non-goals: [...]
 
 Ownership and boundaries:

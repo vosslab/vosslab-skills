@@ -13,7 +13,8 @@ bundle, preview, deployment, and build-aware Playwright front doors.
 | Script | What it does |
 | --- | --- |
 | `./check_codebase.sh` | Fast gate: typecheck, lint, format check, Node unit tests. |
-| `./dist_clean.sh` | Wipe `dist/`. |
+| `./update_dependencies.sh` | Refresh dependencies and overrides, audit, validate, build, and prove the lockfile. |
+| `./devel/clean_build.sh` | Remove build/test output and caches; keep dependencies installed. |
 
 The `githubpages` child type additionally provides:
 
@@ -69,21 +70,27 @@ A typical edit loop runs the tiers in this order:
   and `./run_playwright_tests.sh` for a build-aware browser check.
 - Review `tests/_temp/`; promote tests that earned permanence and remove the rest.
 
+## Dependency maintenance
+
+Run `./update_dependencies.sh [--package-json PATH]` when dependencies or security findings need attention. It is the
+one live maintenance command: it updates requirements and overrides to current registry releases,
+installs them, audits the resolved tree, runs the existing fast gate once, runs the declared
+production build, and verifies `npm ci --no-audit` from the resulting lockfile.
+
+The script leaves updated `package.json` and `package-lock.json` in place when a check fails.
+Use its stage summary to repair forward, then rerun it. An unavailable audit service is reported
+as an incomplete check; a returned vulnerability is a failure. Repository pytest checks stable
+manifest conventions offline; it does not claim that a package remains current or secure.
+
 ## Ship to GitHub Pages (`githubpages` only)
 
-- Run `./build_github_pages.sh` to emit `dist/`, including `dist/.nojekyll` so
-  Pages serves files whose names start with an underscore.
-- Deploy runs as a GitHub Action from `dist/`. The seed workflow ships as a
-  root-level `deploy-pages.yml`; move it into your repository workflows
-  directory to activate it.
-- Once the site is live, link `https://<owner>.github.io/<repo>/` near the top
-  of `README.md` so readers can open the app in one click.
+Follow `docs/GITHUB_PAGES_STYLE.md` for workflow activation, Actions maintenance,
+and publishing the locally validated production build.
 
 ## Common first run failures
 
-- `npx tsc -p tsconfig.lint.json` exits with TS18003 when `tests/` and `tools/`
-  contain no `.ts` files. Seed a small `.ts` stub or narrow the include list in
-  the consumer-owned `tsconfig.lint.json`.
+- The shared check skips the extra lint typecheck when `tests/` and `tools/` contain
+  no TypeScript files. Keep consumer-owned `tsconfig.lint.json` source paths accurate.
 - Playwright needs `dist/` built before it serves the app. The runner
   auto-builds when `dist/` is missing, or pass `--build` to force a rebuild.
 - A fresh `npm install` must run esbuild's postinstall step. The `allowScripts`

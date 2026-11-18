@@ -24,7 +24,6 @@ site/
 dist_*/
 _site/
 *.tsbuildinfo
-.eslintcache
 .prettiercache
 test-results/
 playwright-report/

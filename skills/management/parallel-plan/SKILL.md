@@ -1,6 +1,6 @@
 ---
 name: parallel-plan
-description: "In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that)."
+description: "In-flight nudge to split current work into independent tracks for parallel subagent dispatch."
 ---
 
 # Parallel plan
@@ -8,8 +8,13 @@ description: "In-flight nudge to split current work into independent tracks for 
 ## Purpose
 
 Turn in-flight work into the smallest set of independent workstreams that lowers elapsed time to a
-correct, integrated result. Use the approved plan as authority; this skill splits and dispatches
-work without creating a new plan. Read [parallel_plan_templates.md](references/parallel_plan_templates.md)
+correct, integrated result. For plan-based work, read the approved plan at its saved handoff path.
+When locating it in the target repository, use `docs/active_plans/active/` or the location specified
+by repository rules. Use its outcomes, scope, file boundaries, and decisions as authority.
+
+Derive streams, ownership, dependencies, and proportionate checks during execution where the
+plan leaves them open. Use any readiness notes in the plan and confirm independence against
+current repository evidence. Read [parallel_plan_templates.md](references/parallel_plan_templates.md)
 when preparing briefs, a ledger, handoffs, or integration.
 
 For code investigation and stream-boundary checks, read

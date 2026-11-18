@@ -20,9 +20,8 @@ import graphify_docs_lib
 import graphify_context_lib
 import graphify_prune_tests
 
-
+OLLAMA_MODEL = None
 CLAUDE_LABEL_MODEL = "sonnet"
-OLLAMA_MODEL = "qwen2.5-coder:7b-instruct"
 GRAPHIFY_PACKAGE = "graphifyy[ollama,sql,terraform]"
 LABEL_BACKEND = "claude-cli"
 OLLAMA_BACKEND = "ollama"
@@ -85,7 +84,6 @@ def build_parser() -> argparse.ArgumentParser:
 		dest="label_backend",
 		action="store_const",
 		const=OLLAMA_BACKEND,
-		help=f"with --fresh, label locally with {OLLAMA_MODEL}",
 	)
 	parser.set_defaults(mode=MODE_AUTO, label_backend=LABEL_BACKEND, write_svg=False)
 	return parser
@@ -196,12 +194,9 @@ def prepare_label_backend(repo_root: pathlib.Path, label_backend: str) -> None:
 	# ASVS 2.2.1: choose only the two documented fresh-build label backends.
 	if label_backend not in (LABEL_BACKEND, OLLAMA_BACKEND):
 		raise ValueError(f"Unsupported Graphify label backend: {label_backend}")
-	backend_executable = require_command(
+	require_command(
 		"ollama" if label_backend == OLLAMA_BACKEND else "claude"
 	)
-	if label_backend == OLLAMA_BACKEND:
-		print_step(f"PULLING OLLAMA MODEL: {OLLAMA_MODEL}")
-		run_command([backend_executable, "pull", OLLAMA_MODEL], repo_root)
 
 
 #============================================

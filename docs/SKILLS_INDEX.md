@@ -30,7 +30,7 @@ Delegation, parallel execution, monitoring, and multi-agent workflows.
 - [management/gas-town-workflow/SKILL.md](../skills/management/gas-town-workflow/SKILL.md): Coordinate agents with Gas Town role mapping and convoy-based task decomposition.
 - [management/hang-check/SKILL.md](../skills/management/hang-check/SKILL.md): Watch running background agents for evidence of a genuine stall without killing healthy work.
 - [management/html-game-parallel-builder/SKILL.md](../skills/management/html-game-parallel-builder/SKILL.md): Use when the user requests a parallel multi-agent build or major workstream for a modular TypeScript browser game, including integrated serving, smoke testing, export, or Pages delivery.
-- [management/parallel-plan/SKILL.md](../skills/management/parallel-plan/SKILL.md): In-flight nudge to split current work into independent tracks for parallel subagent dispatch; does not create new plans (use blueprint-plan-drafter for that).
+- [management/parallel-plan/SKILL.md](../skills/management/parallel-plan/SKILL.md): In-flight nudge to split current work into independent tracks for parallel subagent dispatch.
 - [management/stay-busy/SKILL.md](../skills/management/stay-busy/SKILL.md): Keep an agent manager productive through safe, evidence-producing follow-on work.
 
 ## Experts

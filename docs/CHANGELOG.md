@@ -1,3 +1,9 @@
+## 2026-11-18
+
+### Fixes and Maintenance
+
+- Synchronized shared style guides, tests, and repository support files from the starter template.
+
 ## 2026-12-01
 
 ### Behavior or Interface Changes
@@ -9,6 +15,8 @@
   and implementation detail.
 - Save finished repository plans from both planning skills under `docs/active_plans/active/` by
   default. Honor explicit repository conventions or user destinations and report the saved path.
+- Derive delegation and parallel dispatch briefs from the saved plan's outcomes and boundaries.
+  Fill in execution details during dispatch where the plan leaves them open.
 
 ### Fixes and Maintenance
 
