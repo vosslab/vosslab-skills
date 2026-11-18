@@ -39,6 +39,9 @@ AI-like prose. Apply the same editing checks to your own user-facing writing.
 
 ## References
 
+- Read [references/ai-writing-checklist.md](references/ai-writing-checklist.md) for substantive
+  rewrites, voice matching, or a requested AI-writing review. Use the relevant checks for short
+  edits. After multiple passes, compare final claims and certainty with the author's original.
 - Read [references/writing-patterns.md](references/writing-patterns.md) when matching a voice sample
   or diagnosing a recurring writing pattern. It includes examples and upstream attribution.
 - Read [references/zonderlabs-clarity.md](references/zonderlabs-clarity.md) for tricky clarity edits,

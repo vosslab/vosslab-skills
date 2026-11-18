@@ -18,10 +18,14 @@
 
 - Regenerated the indexes and platform manifests and verified that they include
   `stvc-podcast-update`. The full pytest suite passed with 4,740 tests and zero warnings.
+- Added the expanded AI-writing review checklist (C01-C20) to `documentation/humanizer` as a
+  routed reference. It includes the weekly research's checks for claim certainty, citation
+  intent, and voice without adding the research corpus to the entrypoint.
 
 ## 2026-11-17
 
 ### Additions and New Features
+
 - Moved `stvc-podcast-update` into shared `skills/media/`; Hermes uses a live link.
 
 ## 2026-10-22
