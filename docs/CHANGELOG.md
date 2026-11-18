@@ -25,6 +25,12 @@
   intent, and voice without adding the research corpus to the entrypoint.
 - Added whole-draft assessment and revision checks (E01-E24) to the humanizer checklist. Worked
   examples show how to preserve an instructor's voice, deadlines, and actual lesson plans.
+- Mapped the humanizer's original sources to specific checklist decisions, including how to
+  diagnose reader burden, fix structure before polishing, preserve the author's punctuation,
+  and separate pattern matches from authorship claims.
+- Consolidated overlapping humanizer checks. Put source links next to the editing decisions,
+  distinguish author feedback from reader testing, and use research or observed failures to revise
+  a check rather than adding one for every new source.
 
 ## 2026-11-17
 

@@ -1,6 +1,8 @@
 # Writing patterns and voice
 
-Use these patterns to diagnose reader problems after the clarity pass. Keep facts and the author's voice intact; the examples show editing moves, not permission to invent details.
+Use these patterns to diagnose reader problems after the clarity pass. They are examples, not
+measured frequencies or authorship evidence. Some inherited examples illustrate a more specific
+rewrite. Verify any details they would require before making a similar edit in real prose.
 
 ## Match a voice sample
 
@@ -8,39 +10,19 @@ Read the author's sample before editing. Notice sentence length and rhythm, leve
 paragraph openings, punctuation, recurring phrases, and transitions. Match those habits where they
 fit the new piece. If the author writes short sentences or says "stuff," keep that register rather
 than replacing it with longer sentences or more formal words. Without a sample, write for the
-reader and genre; use the examples below to restore natural rhythm without inventing personality.
+reader and genre. Ask for a sample if matching the author's voice is important.
 
-## Personality and voice
+## Preserve the author's voice
 
-Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as obvious as slop. Good writing has a human behind it.
+Start from the author's sentences, especially for personal judgments and observations. Keep
+neutral reporting when it fits the job, and first person when it shows who decided or did
+something. Fix repetition that makes a passage hard to follow. Keep parallel steps when they
+help the reader compare. Treat an added reaction, anecdote, or attribution as a content change
+that needs the author's input, not as a way to make prose sound human.
 
-### Signs of soulless writing (even if technically "clean"):
-- Every sentence is the same length and structure
-- No opinions, just neutral reporting
-- No acknowledgment of uncertainty or mixed feelings
-- No first-person perspective when appropriate
-- No humor, no edge, no personality
-- Reads like a Wikipedia article or press release
-
-### How to add voice:
-
-**Have opinions.** Report the facts, then react to them. "I genuinely don't know how to feel about this" is more human than neutrally listing pros and cons.
-
-**Vary your rhythm.** Short punchy sentences. Then longer ones that take their time getting where they're going. Mix it up.
-
-**Acknowledge complexity.** Real humans have mixed feelings. "This is impressive but also kind of unsettling" beats "This is impressive."
-
-**Use "I" when it fits.** First person reads as honest and fits most prose. "I keep coming back to..." or "Here's what gets me..." signals a real person thinking.
-
-**Let some mess in.** Perfect structure feels algorithmic. Tangents, asides, and half-formed thoughts are human.
-
-**Be specific about feelings.** Instead of "this is concerning," write "there's something unsettling about agents churning away at 3am while nobody's watching."
-
-### Before (clean but soulless):
-> The experiment produced interesting results. The agents generated 3 million lines of code. Some developers were impressed while others were skeptical. The implications remain unclear.
-
-### After (has a pulse):
-> I genuinely don't know how to feel about this one. 3 million lines of code, generated while the humans presumably slept. Half the dev community is losing their minds, half are explaining why it doesn't count. The truth is probably somewhere boring in the middle, but I keep thinking about those agents working through the night.
+For an example from author feedback, see the Biostats email in
+[ai-writing-checklist.md](ai-writing-checklist.md#what-to-keep-or-change). For the writing sample
+study and McDonald's account, see [checklist-sources.md](checklist-sources.md#voice-and-human-judgment).
 
 
 ## CONTENT PATTERNS
@@ -131,7 +113,8 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 
 **Marketing and blog clich&#233;s (same tell, different register):** at the end of the day, when it comes to, in a world where, moving forward, circle back, deep dive, game-changer, double down, take a step back, on the same page, make no mistake, it turns out, let me be clear, navigate (for challenges), lean into, unpack (before analysis), straightforward (to describe anything)
 
-**Problem:** These words appear far more frequently in post-2023 text. They often co-occur.
+**Problem:** A cluster can make prose vague or repetitive. Keep a word that names the right thing.
+See [checklist-sources.md](checklist-sources.md) for what corpus comparisons do and do not show.
 
 **Before:**
 > Additionally, a distinctive feature of Somali cuisine is the incorporation of camel meat. An enduring testament to Italian colonial influence is the widespread adoption of pasta in the local culinary landscape, showcasing how these dishes have integrated into the traditional diet.
@@ -183,7 +166,7 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 
 ### 11. Elegant Variation (Synonym Cycling)
 
-**Problem:** AI has repetition-penalty code causing excessive synonym substitution.
+**Problem:** Rotating labels can make the reader think the writer means different things.
 
 **Before:**
 > The protagonist faces many challenges. The main character must overcome obstacles. The central figure eventually triumphs. The hero returns home.
@@ -216,9 +199,11 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 
 ## STYLE PATTERNS
 
-### 14. Em Dash Overuse
+### 14. Punctuation and emphasis
 
-**Problem:** LLMs use em dashes (&#8212;) more than humans, mimicking "punchy" sales writing. In practice, most of these can be rewritten more cleanly with commas, periods, or parentheses.
+**Problem:** Repeated asides can bury the main clause. Use commas, periods, or parentheses if
+they make the point easier to follow. Keep a useful dash and an Oxford comma that fits the
+author's or publication's style. Neither is a reason to infer authorship or apply a quota.
 
 **Before:**
 > The term is primarily promoted by Dutch institutions&#8212;not by the people themselves. You don't say "Netherlands, Europe" as an address&#8212;yet this mislabeling continues&#8212;even in official documents.
@@ -277,13 +262,8 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 
 ### 19. Curly Quotation Marks
 
-**Problem:** ChatGPT uses curly quotes ("...") instead of straight quotes ("...").
-
-**Before:**
-> He said "the project is on track" but others disagreed.
-
-**After:**
-> He said "the project is on track" but others disagreed.
+**Check:** Follow the destination's typography. An editor or word processor may supply curly
+quotes. Keep correct punctuation rather than changing it to signal human authorship.
 
 
 ## COMMUNICATION PATTERNS
@@ -360,17 +340,18 @@ Avoiding AI patterns is only half the job. Sterile, voiceless writing is just as
 > The company plans to open two more locations next year.
 
 
-### 26. Hyphenated Word Pair Overuse
+### 26. Stacked modifiers
 
 **Words to watch:** third-party, cross-functional, client-facing, data-driven, decision-making, well-known, high-quality, real-time, long-term, end-to-end
 
-**Problem:** AI hyphenates common word pairs with perfect consistency. Humans rarely hyphenate these uniformly, and when they do, it's inconsistent. Less common or technical compound modifiers are fine to hyphenate.
+**Problem:** Several modifiers in a row can obscure the object or action. Remove vague praise or
+move a modifier into its own clause. Keep correct hyphens and technical compound terms.
 
 **Before:**
 > The cross-functional team delivered a high-quality, data-driven report on our client-facing tools. Their decision-making process was well-known for being thorough and detail-oriented.
 
 **After:**
-> The cross functional team delivered a high quality, data driven report on our client facing tools. Their decision making process was known for being thorough and detail oriented.
+> The cross-functional team used data to report on our client-facing tools. The team was known for making decisions carefully.
 
 
 ### 27. Persuasive Authority Tropes

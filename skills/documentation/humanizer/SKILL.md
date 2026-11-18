@@ -22,8 +22,9 @@ AI-like prose. Apply the same editing checks to your own user-facing writing.
 1. Read the original and any voice sample. Identify the reader, the purpose, and the main point.
 2. Fix clarity first. Name the actor and action when known, resolve vague references, and put the
    result or request where readers can find it. Flag missing facts rather than guessing.
-3. Match the author's tone and the genre. Keep useful passives, hedges, and punctuation. Treat
-   surface patterns as editing clues, not as evidence of authorship or a detector target.
+3. Match the author's tone and the genre. Keep useful passives, hedges, and punctuation. When
+   the argument or order is the problem, outline the author's points before polishing sentences.
+   Treat surface patterns as editing clues, not evidence of authorship or a detector target.
 4. Compare the rewrite with the original. Check who did what, attribution, negation, quantities,
    scope, conditions, and uncertainty. Keep claims, quotes, and personal details grounded in the
    source. Read the result aloud to check the rhythm.
@@ -40,8 +41,10 @@ AI-like prose. Apply the same editing checks to your own user-facing writing.
 ## References
 
 - Read [references/ai-writing-checklist.md](references/ai-writing-checklist.md) for substantive
-  rewrites, voice matching, or a requested AI-writing review. Use the relevant checks for short
-  edits. After multiple passes, compare final claims and certainty with the author's original.
+  rewrites, voice matching, or a requested AI-writing review. Use only the relevant checks for
+  short edits. Ground each finding in a passage and what a reader might miss or misunderstand.
+- Read [references/checklist-sources.md](references/checklist-sources.md) when updating the checklist.
+  Distinguish empirical results, author feedback, practitioner advice, and tool behavior.
 - Read [references/writing-patterns.md](references/writing-patterns.md) when matching a voice sample
   or diagnosing a recurring writing pattern. It includes examples and upstream attribution.
 - Read [references/zonderlabs-clarity.md](references/zonderlabs-clarity.md) for tricky clarity edits,
