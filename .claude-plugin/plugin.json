@@ -1,7 +1,7 @@
 {
   "name": "vosslab-skills",
   "description": "Reusable workflow skills for refactoring plans, code review, repository maintenance, and education content production.",
-  "version": "26.10.0",
+  "version": "26.11.0",
   "author": {
     "name": "Neil Voss",
     "email": "prof.neil.voss@gmail.com",
@@ -56,6 +56,7 @@
     "./skills/management/html-game-parallel-builder",
     "./skills/management/parallel-plan",
     "./skills/management/stay-busy",
+    "./skills/media/stvc-podcast-update",
     "./skills/orientation/repo-rules-reader",
     "./skills/planning/blueprint-plan-drafter",
     "./skills/planning/ideonomy-plain",
