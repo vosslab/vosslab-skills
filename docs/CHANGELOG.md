@@ -23,6 +23,8 @@
 - Added the expanded AI-writing review checklist (C01-C20) to `documentation/humanizer` as a
   routed reference. It includes the weekly research's checks for claim certainty, citation
   intent, and voice without adding the research corpus to the entrypoint.
+- Added whole-draft assessment and revision checks (E01-E24) to the humanizer checklist. Worked
+  examples show how to preserve an instructor's voice, deadlines, and actual lesson plans.
 
 ## 2026-11-17
 
