@@ -9,8 +9,8 @@ argparse setup, and output conventions used across this repo.
 ## Student-facing text
 
 For requests to find more questions for an existing topic, start with
-[TOPIC_QUESTION_DEVELOPMENT.md](TOPIC_QUESTION_DEVELOPMENT.md) to establish scope, review
-current coverage, and prepare complete candidates before implementing generators.
+`docs/TOPIC_QUESTION_DEVELOPMENT.md` in the `biology-problems` repository. Use it to establish
+scope, review current coverage, and prepare complete candidates before implementing generators.
 
 Design the puzzle first, then write the thinnest wrapper around it.
 
@@ -18,8 +18,8 @@ Design the puzzle first, then write the thinnest wrapper around it.
   data, the key, and the error-derived wrong choices.
 - Read [QUESTION_VOICE_GUIDE.md](QUESTION_VOICE_GUIDE.md) before writing the stem and choices.
 - Use [QUESTION_COLOR_GUIDE.md](QUESTION_COLOR_GUIDE.md) for concept colors and selective highlighting.
-- Run [check_question_text.py](../devel/check_question_text.py) on the generated BBQ output. Its
-  findings are advisory and point the item to a closer read.
+- Run the target repository's `devel/check_question_text.py` on the generated BBQ output.
+  Its findings are advisory and point the item to a closer read.
 
 ## Start from `TEMPLATE.py`
 
@@ -157,8 +157,8 @@ source source_me.sh && python3 problems/inheritance-problems/my_new_question.py 
 ```
 
 Cover pure helper functions that deserve protection with a pytest file in `tests/`. Asserts live
-only in `tests/`, never in generator scripts (see [PYTHON_STYLE.md](PYTHON_STYLE.md) and
-[PYTEST_STYLE.md](PYTEST_STYLE.md)).
+only in `tests/`, never in generator scripts. See the target repository's
+`docs/PYTHON_STYLE.md` and `docs/PYTEST_STYLE.md`.
 
 ## Changelog
 

@@ -83,7 +83,8 @@ def render_index(
 		"",
 		"# Skills index",
 		"",
-		"Compact index of skills in this repository. Each item links to the skill definition and gives a short purpose summary.",
+		"Compact index of skills in this repository. "
+		"Each item links to the skill definition and gives a short purpose summary.",
 		"",
 		f"Total skills: {len(skill_files)}",
 	]

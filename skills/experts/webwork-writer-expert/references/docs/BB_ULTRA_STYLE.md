@@ -61,7 +61,7 @@ to shared artwork or renderers that also produce Blackboard question content.
 
 ## Source check
 
-[test_blackboard_inline_styles.py](../tests/test_blackboard_inline_styles.py) checks tracked
+In the `biology-problems` repository, `tests/test_blackboard_inline_styles.py` checks tracked
 Python generators and YAML banks under `problems/`. It detects class attributes in markup,
 ElementTree class assignments, style blocks, and stylesheet links. PGML converters and identified
 standalone previews are excluded.

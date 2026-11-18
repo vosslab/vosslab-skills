@@ -5,6 +5,19 @@
 - Merged Hermes' local humanizer guidance into `documentation/humanizer`. The short entrypoint
   keeps the clarity-first review and the `5pm` email format. It links to separate references for
   voice matching, writing patterns, source notes, and a worked rewrite.
+- Merged Hermes' local humanizer guidance into `documentation/humanizer`. The shared skill now
+  includes the clarity-first review, its source notes, and the `5pm` format for everyday email.
+- Shortened the StVC podcast skill entrypoint to fit both size limits and the ASCII rule.
+  Moved the podcast production and thumbnail procedures into linked references.
+- Fixed links in the skill-corpus audit and bundled question-writing docs. Bundled material
+  links locally, and unbundled paths point readers to the owning `biology-problems` checkout.
+- Split the WeBWorK debugging steps, checklist, and error table into a linked companion guide.
+  Wrapped the overlong Python line in the skills index generator.
+
+### Developer Tests and Notes
+
+- Regenerated the indexes and platform manifests and verified that they include
+  `stvc-podcast-update`. The full pytest suite passed with 4,740 tests and zero warnings.
 
 ## 2026-11-17
 

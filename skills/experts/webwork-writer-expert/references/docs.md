@@ -11,7 +11,8 @@ See the Required reading block in `SKILL.md`.
 - [references/docs/HOW_TO_LINT.md](docs/HOW_TO_LINT.md)
   - How to run the local renderer API lint / render a problem end-to-end.
 - [references/docs/PG_COMMON_PITFALLS.md](docs/PG_COMMON_PITFALLS.md)
-  - Catalog of PG/PGML mistakes the renderer and reviewers catch repeatedly.
+  - Catalog of PG/PGML mistakes the renderer and reviewers catch repeatedly. For a renderer
+    failure or final pre-commit checks, use [PG_DEBUGGING_GUIDE.md](docs/PG_DEBUGGING_GUIDE.md).
 - [references/docs/WEBWORK_PROBLEM_AUTHOR_GUIDE.md](docs/WEBWORK_PROBLEM_AUTHOR_GUIDE.md)
   - Canonical authoring reference: PGML-first structure, randomization rules,
     inline grading, HTML whitelist.
