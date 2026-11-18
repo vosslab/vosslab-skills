@@ -1,3 +1,10 @@
+## 2026-11-18
+
+### Fixes and Maintenance
+
+- Merged Hermes' local humanizer guidance into `documentation/humanizer`. The shared skill now
+  includes the clarity-first review, its source notes, and the `5pm` format for everyday email.
+
 ## 2026-11-17
 
 ### Additions and New Features
