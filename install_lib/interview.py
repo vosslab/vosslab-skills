@@ -50,18 +50,31 @@ def parse_platform_selection(answer: str, targets: dict) -> list[str]:
 #============================================
 def interview_platforms(
 	targets: dict[str, install_lib.install_target_data.InstallTarget],
+	home_root: pathlib.Path,
 ) -> list[str]:
-	"""Explain available platform targets and ask which ones to install."""
+	"""Offer existing skill destinations as the default platform selection."""
 	print("\nAvailable platforms:")
 	primary = []
+	detected = []
 	for target_id, target in targets.items():
 		skills_path = target.destinations["skills"]
 		agents_path = target.destinations.get("agents", "none")
+		# ASVS 5.3.2: detect directories only at validated destinations beneath the home root.
+		try:
+			skills_root = install_lib.install_target_data.resolve_target_destination(
+				home_root, target, "skills"
+			)
+			has_skills_directory = skills_root.is_dir()
+		except (OSError, RuntimeError, ValueError):
+			has_skills_directory = False
+		if has_skills_directory:
+			detected.append(target_id)
+		detection = " (found)" if has_skills_directory else ""
 		print(f"  {target_id}: {target.support_tier}")
-		print(f"    skills -> {skills_path}; agents -> {agents_path}")
+		print(f"    skills -> {skills_path}{detection}; agents -> {agents_path}")
 		if target.support_tier == "primary":
 			primary.append(target_id)
-	default = ",".join(primary)
+	default = ",".join(detected or primary)
 	while True:
 		answer = prompt_default("Platforms, comma separated", default)
 		try:
@@ -115,7 +128,7 @@ def run(repo_root: pathlib.Path) -> int:
 	# ASVS 5.3.2: use the trusted OS home instead of accepting a filesystem path.
 	home_root = pathlib.Path.home()
 	targets = install_lib.install_target_data.load_targets(repo_root / "install_targets")
-	platforms = interview_platforms(targets)
+	platforms = interview_platforms(targets, home_root)
 	plan = install_lib.installer.build_plan(repo_root, home_root, platforms)
 	print_plan_summary(plan)
 	if not prompt_yes_no("Apply this installation"):

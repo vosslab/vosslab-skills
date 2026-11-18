@@ -71,9 +71,9 @@ files are small and intentionally tracked.
 ### Guided installation
 
 1. [install_skills.py](../install_skills.py) resolves the Git root and starts the interview.
-2. The installer uses the operating-system home and asks which platforms to install. Claude and
-   Codex are the default selection.
-3. Target metadata is loaded from [install_targets/](../install_targets/).
+2. The installer loads target metadata from [install_targets/](../install_targets/).
+3. The interview checks declared skill destinations beneath the operating-system home. It defaults
+   to platforms with existing skill directories, with Claude and Codex as the fallback.
 4. Skill discovery reads the tracked category and skill sources. Agent discovery validates
    [agents/CATALOG.yaml](../agents/CATALOG.yaml) against authored Markdown.
 5. Each target's `skill_layout` decides the link shape. `category` targets (Codex, Hermes) link

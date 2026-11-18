@@ -7,15 +7,15 @@ installations, with maintained Cursor, OpenCode, Grok, and Hermes compatibility 
 ## Quick start
 
 Clone the repository, then run the guided installer from the repository root. It installs beneath
-the current operating-system home and asks only which platforms to install; Claude and Codex are
-the default selection.
+the current operating-system home and defaults to platforms with existing skill directories.
+Claude and Codex are the default when no skill directories are found.
 
 ```bash
 ./install_skills.py
 ```
 
-The interview shows the destinations before asking for confirmation. Choose Cursor, OpenCode, Grok,
-or Hermes when their compatibility adapters are useful. See
+The interview marks the skill directories it finds and shows the destinations before asking
+for confirmation. You can enter any supported combination of platforms. See
 [docs/INSTALL.md](docs/INSTALL.md) for destinations and update behavior.
 
 Skills are linked directly from each platform destination back to this clone, so the installer does

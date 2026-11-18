@@ -2,6 +2,8 @@
 
 ### Fixes and Maintenance
 
+- Detect existing skill directories, including `~/.hermes/skills`, and use their platforms as
+  the guided installer's default. A fresh home still defaults to Claude and Codex.
 - Merged Hermes' local humanizer guidance into `documentation/humanizer`. The short entrypoint
   keeps the clarity-first review and the `5pm` email format. It links to separate references for
   voice matching, writing patterns, source notes, and a worked rewrite.

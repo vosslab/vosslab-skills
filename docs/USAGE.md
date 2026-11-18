@@ -12,10 +12,10 @@ Run the guided installer from the repository root:
 ```
 
 The installer uses the current operating-system home automatically. The interview defaults to
-Claude and Codex, shows each destination, and writes only after final approval. Enter Cursor,
-OpenCode, Grok, or Hermes by name when their compatibility adapters are needed. Skill sources and
-authored Claude agents are linked rather than copied; re-run the same interview after changing
-target declarations, authored agents, or `agents/CATALOG.yaml`. Each run also unlinks stale
+platforms with existing skill directories, or to Claude and Codex when it finds none. You can
+enter any supported platform names. The installer shows each destination and writes only after
+final approval. Skill sources and authored Claude agents are linked. Re-run the interview after
+changing target declarations, authored agents, or `agents/CATALOG.yaml`. Each run also unlinks stale
 symlinks beneath the selected destinations that point into this clone but no longer match a skill
 or agent, so renamed skills leave no dangling links.
 

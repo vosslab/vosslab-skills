@@ -45,8 +45,9 @@ Run the main script from a local clone:
 
 The interview asks for:
 
-1. Platforms as comma-separated names. The default is `claude,codex`; enter `cursor`, `opencode`,
-   `grok`, `hermes`, or another explicit combination when needed.
+1. Platforms as comma-separated names. The interview marks each existing skill directory as
+   `(found)` and defaults to those platforms. If no skill directories are found, the default is
+   `claude,codex`. Enter any supported platform names to override the default.
 2. Final approval after the installer displays the operating-system home, destinations, and item
    counts.
 
