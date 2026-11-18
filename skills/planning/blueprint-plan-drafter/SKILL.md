@@ -1,17 +1,20 @@
 ---
 name: blueprint-plan-drafter
-description: Draft detailed coding plans for cross-module coordination, shared contracts, migrations, compatibility risks, or coordinated multi-agent implementation and review. Use modest-plan-drafter for concise, bounded coding or non-coding plans.
+description: Draft detailed coding plans for cross-module coordination, shared contracts, migrations, compatibility risks, or coordinated multi-agent implementation and review.
 ---
 
 # Blueprint plan drafter
 
 ## Purpose and routing
 
-Draft planning and progress documentation for detailed technical decisions and coordination. Use
-`modest-plan-drafter` when a concise approach and completion checks adequately describe the work.
-Honor explicit skill choices; if a requested Modest plan leaves important technical decisions
-unresolved, explain the need for Blueprint or expand the relevant detail. Let decision complexity
-determine detail, rather than document length.
+Draft planning and progress documentation for detailed technical decisions and coordination.
+Honor explicit skill choices and let decision complexity determine the level of detail.
+
+Modest (`modest-plan-drafter`) differs from Blueprint in three ways.
+
+- **Shorter.** It needs less documentation and fewer required details.
+- **Quicker.** It takes less time to investigate, draft, and review.
+- **Less detailed.** It uses high-level milestones and leaves code-level choices to the implementer.
 
 ## Authority model
 
@@ -63,8 +66,13 @@ map or repository wrapper is available. Otherwise use targeted searches and sour
 
 ## Handoff
 
-Planning ends with the plan artifact, before production code or tests. For a requested next stage,
-use `make-goal` to distill an outcome-only goal, or read
+Save the finished plan as Markdown under `docs/active_plans/active/` in the target repository.
+Use a different location when the repository's rules specify one. Honor the user's requested
+destination and format. Create the destination directory if needed and report the saved path
+at handoff.
+
+Planning ends with the saved plan, before production code or tests. For a requested next stage, use
+`make-goal` to distill an outcome-only goal, or read
 [EXECUTION_RESOURCES.md](references/EXECUTION_RESOURCES.md) for execution and review routing.
 
 ## Completion criteria

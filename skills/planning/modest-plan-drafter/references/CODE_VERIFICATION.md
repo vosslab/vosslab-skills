@@ -1,6 +1,6 @@
 # Software design and verification
 
-Read for software plans so coding-specific policy stays out of non-coding planning context.
+Use for software plans when robustness or verification affects the scope.
 
 ## Robustness and adaptability
 
@@ -29,4 +29,4 @@ only checks whose behavior deserves permanent protection and remove the rest.
 
 If a test requires an unrelated implementation hack, question the test first. Permit intended
 behavior changes while preserving genuine contracts. Each blocking gate needs a grounded reason
-and a concrete decision, correction, or recovery action when it fails, as defined in the entrypoint.
+and a concrete decision, correction, or recovery action when it fails.

@@ -1,26 +1,26 @@
 ---
 name: modest-plan-drafter
-description: Draft concise plans for bounded coding, teaching, research, writing, or organizational work. Use when a short approach and observable completion checks suffice; use blueprint-plan-drafter for complex technical coordination.
+description: Draft concise plans for bounded coding, teaching, research, writing, or organizational work. Use when clear goals, scope, and high-level milestones suffice; use blueprint-plan-drafter for detailed implementation planning.
 ---
 
 # Modest plan drafter
 
 ## Purpose and routing
 
-Turn a request into a concise plan with evidence, scope, decisions, and observable outcomes.
-Produce the planning artifact before execution. Aim for roughly one page as a soft target;
-necessary decisions determine the detail.
+Draft a lightweight implementation plan before execution. State what the work should accomplish
+and leave routine implementation choices to the implementer. Aim for roughly one page as a soft
+target. Modest fits quick fixes and bounded changes across a repository.
 
-Use Modest when the outcome can be described, executed, and verified with a short approach.
-Use `blueprint-plan-drafter` for coding work involving cross-module coordination, shared contracts,
-migrations, significant compatibility risk, or coordinated multi-agent implementation and review.
-Honor explicit skill choices. If a requested Modest plan leaves important technical decisions
-unresolved, explain the need for Blueprint or expand the relevant detail.
+Use `blueprint-plan-drafter` when fundamental design choices or coordination require mapping out
+how to implement the work. Examples include changes to shared contracts, migrations, and
+coordinated multi-agent implementation and review. Honor explicit skill choices and expand
+detail where it is necessary to make the plan useful.
 
 ## Establish the evidence
 
-- Inspect source material relevant to the outcome. For repository work, read operative repository
-  rules or reuse a valid same-session receipt. Load specialized guidance only when applicable.
+- Start with targeted source inspection. Investigate further when uncertainty materially affects
+  scope or feasibility. For repository work, read operative rules or reuse a valid same-session
+  receipt. Load specialized guidance only when applicable.
 - Establish the intended audience, current state, scope, and material constraints. Resolve
   discoverable facts from evidence; clarify choices that materially change the outcome.
 - Keep observations, assumptions, and decisions distinct. Use a bounded investigation with a
@@ -31,40 +31,31 @@ map or repository wrapper is available. Otherwise use targeted searches and sour
 
 ## Draft the plan
 
-Use this default shape, adapting it to the task:
+Draft from [PLAN_TEMPLATE_BLANK.md](references/PLAN_TEMPLATE_BLANK.md) and follow
+[PLAN_HEADINGS.md](references/PLAN_HEADINGS.md) for required sections and heading variations.
+Read [PLAN_TEMPLATE_EXAMPLE.md](references/PLAN_TEMPLATE_EXAMPLE.md) when an example would help.
 
-1. **Goal and context:** intended outcome, relevant evidence, audience, and scope.
-2. **Approach:** a short sequence of meaningful actions, necessary decisions, and dependencies.
-3. **Completion checks:** observable evidence that the requested outcome is achieved.
+Make the objective visible in the opening. State one guiding choice under **Design philosophy**,
+preserve requirements that define correctness in **Scope**, and cover each scoped outcome in
+**Milestones**. A quick fix can have one milestone. Include **File scope** for identifiable edits.
 
-For file-based work, add **File scope** after Approach: expected files or directories and the
-purpose of each change. Include relevant tests, documentation, and generated outputs with their
-canonical sources. Treat this as the expected edit boundary, refined as evidence emerges.
+Keep the design proportional to demonstrated needs and established contracts. For software work,
+consult [CODE_VERIFICATION.md](references/CODE_VERIFICATION.md) when robustness or verification
+affects the scope. Include checks in a milestone when the work calls for them.
 
-Include assumptions, constraints, tradeoffs, and material risks where useful. Name exact components,
-interfaces, or validation commands when they affect execution. Leave detailed task assignments and
-dispatch to execution. Keep the artifact proportional to the decisions the work needs.
+End every Modest plan with this exact Markdown line:
 
-## Quality and verification
-
-- Ground requirements in product needs, meaningful contracts, measured constraints, or demonstrated
-  failures. Use thresholds, byte or pixel equivalence, and exhaustive matrices only when those
-  needs justify them. Improvement work should permit intended changes.
-- Apply KISS aggressively: mechanisms, abstractions, policies, state, configuration, and tests must
-  solve demonstrated needs. Prefer sensible fixed behavior or a simpler shared design before
-  adding options, parameters, modes, overrides, or extension points. Distinguish genuinely different
-  tasks from internal implementation choices; every extra choice adds maintenance and combinations.
-- Give each new blocking gate a grounded reason and a concrete decision, correction, or recovery
-  action on failure. Drop gates whose failure would identify no real problem or change no decision.
-- For software work, read [CODE_VERIFICATION.md](references/CODE_VERIFICATION.md) before drafting
-  design and completion checks. It covers robustness, adaptability, repository policy, and the
-  distinction between one-time evidence and justified permanent tests. For non-coding work, choose
-  evidence appropriate to the deliverable.
+```markdown
+*Plan created with `vosslab-skills:modest-plan-drafter`.*
+```
 
 ## Completion
 
-Finish when the outcome and boundaries are clear, the approach carries necessary decisions and
-dependencies, file scope is useful where applicable, and completion checks are observable and
-proportionate. Resolve blocking choices or define an explicit evidence-led investigation that
-precedes dependent work. Return the plan in the requested format; save a file when requested or
-required by the active workflow. Execution begins as a separate task.
+Finish when the objectives, guiding choice, scope, and milestone outcomes are clear.
+
+For repository work, save the finished plan as Markdown under `docs/active_plans/active/` in the
+target repository. Use a different location when the repository's rules specify one. Honor the
+user's requested destination and format. Create the destination directory if needed and report
+the saved path at handoff.
+
+Execution begins as a separate task.

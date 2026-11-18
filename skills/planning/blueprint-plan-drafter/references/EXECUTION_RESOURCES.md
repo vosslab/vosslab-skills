@@ -7,7 +7,6 @@ Each stage of the plan lifecycle is handled by a different skill.
 | Stage | Skill | Purpose |
 | --- | --- | --- |
 | Detailed technical planning | blueprint-plan-drafter | Define technical decisions, file scope, milestones, and completion evidence |
-| Concise planning | modest-plan-drafter | Define a bounded coding or non-coding outcome, approach, and completion checks |
 | Plan execution (parallel) | parallel-plan | Lightweight parallelization for active work |
 | Subagent dispatch | delegate-manager-to-subagents | Fresh-subagent dispatch of independent work packages |
 | Idle capacity during execution | stay-busy | Plan-related evidence work when the active plan has no obvious next task |

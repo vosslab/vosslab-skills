@@ -1,4 +1,4 @@
 interface:
   display_name: "Blueprint Plan Drafter"
   short_description: "Draft detailed technical implementation plans"
-  default_prompt: "Use $blueprint-plan-drafter to draft a detailed coding plan with grounded requirements, file scope, milestones, and proportionate verification before implementation."
+  default_prompt: "Use $blueprint-plan-drafter to draft a detailed coding plan with grounded requirements, file scope, milestones, and proportionate verification, and save it under docs/active_plans/active/ by default before implementation."

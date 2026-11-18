@@ -129,7 +129,6 @@ with other Tier 2 sections added when applicable.
 ### Step-list / small archetype
 
 Use when a direct sequence is enough and the user has chosen Blueprint's core structure.
-For a concise plan with simpler headings, use `modest-plan-drafter`.
 
 Required sections (Tier 1) plus typical Tier 3:
 Context, Objectives, Design philosophy, Scope, Non-goals,
